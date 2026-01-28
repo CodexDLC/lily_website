@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Услуги | LILY Beauty Salon</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+    <div class="site-wrapper">
+
+        <!-- TOP BAR -->
+        <div class="header-top-bar">
+            <div class="container top-bar-row">
+                <div class="top-bar-item">
+                    <span>📍 Marktstraße 10, 06366 Köthen</span>
+                </div>
+                <div class="top-bar-item">
+                    <span>📞 </span>
+                    <a href="tel:+4917659423704">+49 176 59423704</a>
+                </div>
+            </div>
+        </div>
+
+        <header class="header-split">
+            <div class="container header-row">
+                <a href="../index.html" class="logo-link"><img src="static/logo_lily.png" alt="LILY" class="logo-img"></a>
+                <nav class="nav-desktop">
+                    <a href="../index.html">Главная</a>
+                    <a href="services.html" style="color: var(--color-gold);">Услуги</a>
+                    <a href="team.html">Команда</a>
+                    <a href="contacts.html">Контакты</a>
+                </nav>
+                <button class="burger-btn" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+            </div>
+        </header>
+
+        <div class="mobile-menu-overlay" id="mobileMenu">
+            <button class="close-btn" onclick="toggleMenu()">×</button>
+            <nav class="mobile-nav-links">
+                <a href="../index.html">Главная</a>
+                <a href="services.html">Услуги</a>
+                <a href="team.html">Команда</a>
+                <a href="contacts.html">Контакты</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <span style="color: var(--color-gold); font-size: 12px; letter-spacing: 2px;">LILY Beauty Salon</span>
+            </div>
+        </div>
+
+        <section class="hero-text-block">
+            <div class="container">
+                <h1 class="hero-title">Прайс-лист</h1>
+                <p class="hero-subtitle">АКТУАЛЬНЫЕ ЦЕНЫ</p>
+            </div>
+        </section>
+
+        <main class="section">
+            <div class="container price-menu-container" id="priceListContainer">
+                </div>
+        </main>
+
+        <footer class="footer-smart">
+            <div class="container">
+                <div class="footer-bar" onclick="toggleFooter()">
+                    <div class="footer-branding">
+                        <span class="brand-name">LILY SALON</span>
+                        <span class="copyright">© 2025</span>
+                    </div>
+
+                    <div class="developer-info" style="font-size: 10px; opacity: 0.4; letter-spacing: 1px;">
+                        Developed by <a href="#" style="color: inherit; text-decoration: underline;">CodexDLC</a>
+                    </div>
+
+                    <button class="footer-toggle-btn">
+                        <span id="footerBtnText">Открыть контакты и услуги</span>
+                        <span class="arrow-icon">↓</span>
+                    </button>
+                </div>
+                <div class="footer-content" id="footerContent">
+                     <div class="footer-grid">
+                        <div class="f-col contact-col">
+                            <div class="f-row"><span class="icon">📞</span> <a href="tel:+4917659423704">+49 176 59423704</a></div>
+                            <div class="f-row"><span class="icon">📍</span> <span>06366 Köthen,<br>Lohmannstraße 111</span></div>
+                            <div class="f-row"><span class="icon">📷</span> <a href="https://instagram.com/manikure_kothen">@manikure_kothen</a></div>
+                            <div class="f-qr"><img src="static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Frisuren & Haarpflege</h4>
+                            <ul><li>Haarschnitte</li><li>Färben</li><li>Haarbehandlung</li><li>Styling</li></ul>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Nagelservice</h4>
+                            <ul><li>Maniküre</li><li>Pediküre</li><li>Verlängerung</li></ul>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Schönheit & Pflege</h4>
+                            <ul><li>Epilation</li><li>Wimpernverlängerung</li><li>Laminierung</li></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // 1. ПОЛНАЯ БАЗА ДАННЫХ (Твои реальные услуги)
+        const servicesData = [
+            {
+                category: "Maniküre & Pediküre (Ногтевой Сервис)",
+                link: "nails.html",
+                desc: "Идеальный маникюр и педикюр с покрытием Luxio.",
+                items: [
+                    { name_de: "Damenmaniküre", name_ua: "Жіночий манікюр (без покриття)", time: "40 min", price: "20.00 €" },
+                    { name_de: "Maniküre + Gellack", name_ua: "Манікюр + Гель-лак", time: "120 min", price: "40.00 €" },
+                    { name_de: "Maniküre + normaler Nagellack", name_ua: "Манікюр + звичайний лак", time: "60 min", price: "25.00 €" },
+                    { name_de: "Maniküre für Männer", name_ua: "Чоловічий манікюр", time: "45 min", price: "30.00 €" },
+                    { name_de: "Nagelverlängerungen (bis zu 3 cm)", name_ua: "Нарощування нігтів до 3 см", time: "150 min", price: "70.00 €" }
+                ]
+            },
+            {
+                category: "Frisuren & Haarpflege (Парикмахерский зал)",
+                link: "hair.html",
+                desc: "Стрижки, окрашивание Wella/L'Oreal и уход за волосами.",
+                items: [
+                    { name_de: "Damenhaarschnitt", name_ua: "Жіноча стрижка", time: "60 min", price: "ab 45.00 €" },
+                    { name_de: "Herrenhaarschnitt", name_ua: "Чоловіча стрижка", time: "45 min", price: "25.00 €" },
+                    { name_de: "Färben (Ansatz)", name_ua: "Фарбування (коріння)", time: "90 min", price: "ab 60.00 €" },
+                    { name_de: "Airtouch / Balayage", name_ua: "Складне фарбування", time: "240 min", price: "ab 250.00 €" },
+                    { name_de: "Haarpflege / Kur", name_ua: "Догляд / Лікування", time: "60 min", price: "ab 40.00 €" }
+                ]
+            },
+            {
+                category: "Augenbrauen (Брови)",
+                link: "brows.html",
+                desc: "Архитектура бровей и долговременная укладка.",
+                items: [
+                    { name_de: "Augenbrauenformen und -färben", name_ua: "Формування та фарбування брів", time: "30 min", price: "20.00 €" },
+                    { name_de: "Langanhaltendes Augenbrauenstyling", name_ua: "Довготривале укладання брів", time: "60 min", price: "40.00 €" }
+                ]
+            },
+            {
+                category: "Wimpern (Ресницы)",
+                link: "brows.html",
+                desc: "Наращивание и ламинирование ресниц.",
+                items: [
+                    { name_de: "Wimpern 2-3D", name_ua: "Нарощування 2-3D", time: "90 min", price: "75.00 €" },
+                    { name_de: "Klassiker", name_ua: "Класичне нарощування", time: "90 min", price: "50.00 €" },
+                    { name_de: "Wimpernlaminierung", name_ua: "Ламінування вій", time: "60 min", price: "45.00 €" },
+                    { name_de: "Wimpern- und Augenbrauen-Komplex", name_ua: "Комплекс для вій та брів", time: "90 min", price: "70.00 €" }
+                ]
+            },
+            {
+                category: "Kosmetologie (Косметология)",
+                link: "cosmetology.html",
+                desc: "Уход за лицом, чистки и пилинги.",
+                items: [
+                    { name_de: "Kombinierte Gesichtsreinigung", name_ua: "Комбінована чистка обличчя", time: "60 min", price: "50.00 €" },
+                    { name_de: "Carboxytherapie", name_ua: "Карбокситерапія", time: "60 min", price: "40.00 €" },
+                    { name_de: "HydraFacial", name_ua: "Апаратне очищення", time: "60 min", price: "60.00 €" },
+                    { name_de: "Kryotherapie", name_ua: "Кріотерапія", time: "30 min", price: "25.00 €" },
+                    { name_de: "Oberflächliches Schälen", name_ua: "Поверхневий пілінг", time: "30 min", price: "20.00 €" }
+                ]
+            },
+            {
+                category: "Depilation (Депиляция)",
+                link: "depilation.html",
+                desc: "Гладкая кожа для женщин и мужчин.",
+                items: [
+                    { name_de: "Oberlippe", name_ua: "Вусики", time: "10 min", price: "10.00 €" },
+                    { name_de: "Achselhöhlen", name_ua: "Пахви", time: "15 min", price: "10.00 €" },
+                    { name_de: "Beine vollständig", name_ua: "Ноги повністю", time: "45 min", price: "35.00 €" },
+                    { name_de: "Klassischer Bikini", name_ua: "Класичне бікіні", time: "45 min", price: "20.00 €" },
+                    { name_de: "Rücken (Männer)", name_ua: "Спина (Чоловіки)", time: "25 min", price: "45.00 €" }
+                ]
+            },
+            {
+                category: "Massage (Масаж)",
+                link: "massage.html",
+                desc: "Расслабляющий и лечебный массаж.",
+                items: [
+                    { name_de: "Klassische Massage", name_ua: "Класичний масаж", time: "30 min", price: "30.00 €" },
+                    { name_de: "Relax Massage", name_ua: "Релакс", time: "30 min", price: "35.00 €" },
+                    { name_de: "Ganzkörpermassage", name_ua: "Масаж усього тіла", time: "60 min", price: "50.00 €" },
+                    { name_de: "Rücken", name_ua: "Спина", time: "30 min", price: "35.00 €" }
+                ]
+            }
+        ];
+
+        function renderPriceList() {
+            const container = document.getElementById('priceListContainer');
+            let html = '';
+
+            servicesData.forEach(cat => {
+                html += `<div class="price-block">`;
+
+                // Header with Desc
+                html += `
+                    <div class="category-header">
+                        <h2 class="category-title">${cat.category}</h2>
+                        <p class="category-desc">${cat.desc}</p>
+                    </div>
+                `;
+
+                // Items (Limited to 5)
+                cat.items.slice(0, 5).forEach(item => {
+                    html += `
+                        <div class="service-row">
+                            <div class="service-names">
+                                <span class="name-de">${item.name_de}</span>
+                                <span class="name-ua">${item.name_ua}</span>
+                            </div>
+                            <div class="service-meta">
+                                <span class="meta-price">${item.price}</span>
+                                <span class="meta-time">⏱ ${item.time}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Link to full page
+                html += `
+                    <div class="service-link-wrapper">
+                        <a href="${cat.link}" class="more-link">Подробнее об услугах и мастерах →</a>
+                    </div>
+                `;
+
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // 3. ФУНКЦИИ МЕНЮ И ФУТЕРА
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if(menu) menu.classList.toggle('active');
+            document.body.classList.toggle('no-scroll');
+        }
+
+        function toggleFooter() {
+            const footer = document.querySelector('.footer-smart');
+            const btnText = document.getElementById('footerBtnText');
+            if(footer) {
+                footer.classList.toggle('active');
+                if (footer.classList.contains('active')) {
+                    btnText.innerText = "Свернуть";
+                } else {
+                    btnText.innerText = "Открыть контакты и услуги";
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', renderPriceList);
+    </script>
+</body>
+</html>

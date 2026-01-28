@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты и О Нас | LILY Beauty Salon</title>
+    <link rel="icon" type="image/png" href="static/logo_lily.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/pages.css">
+
+    <style>
+        /* === СЕТКА СТРАНИЦЫ === */
+        .page-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* === БЛОК 1: О НАС + ФОРМА === */
+        .top-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            margin-bottom: 60px;
+            align-items: start;
+        }
+
+        /* Текст "О нас" */
+        .about-content h2 {
+            font-family: var(--font-serif);
+            font-size: 36px;
+            color: var(--color-white);
+            margin-bottom: 20px;
+        }
+        .about-text {
+            color: rgba(255,255,255,0.8);
+            line-height: 1.8;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* Расширенная Форма */
+        .extended-form {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Две колонки для Имени/Фамилии */
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-line {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding: 12px 0;
+            color: white;
+            font-family: var(--font-sans);
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .input-line:focus { border-bottom-color: var(--color-gold); }
+
+        /* Выпадающий список */
+        select.input-line {
+            color: white; /* Цвет текста выбранного */
+            cursor: pointer;
+        }
+        select.input-line option {
+            background-color: #002822; /* Темный фон выпадашки */
+            color: white;
+        }
+
+        /* Текстовое поле на всю ширину */
+        .full-width {
+            grid-column: span 2;
+        }
+        textarea.input-line {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: var(--color-gold);
+            color: var(--color-emerald);
+            border: none;
+            text-transform: uppercase;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+        .btn-submit:hover { background: white; }
+
+        /* === ЗОЛОТОЙ РАЗДЕЛИТЕЛЬ === */
+        .golden-separator {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--color-gold), transparent);
+            margin: 0 0 60px 0;
+            opacity: 0.5;
+        }
+
+        /* === БЛОК 2: КОНТАКТЫ + КАРТА === */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr; /* Карта шире */
+            gap: 60px;
+            align-items: center;
+        }
+
+        .contacts-details .label {
+            color: var(--color-gold);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .contacts-details .value {
+            font-size: 18px;
+            color: white;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .map-wrapper {
+            height: 400px;
+            background: #222;
+            filter: grayscale(100%) invert(92%) contrast(83%); /* Темная карта */
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .map-frame { width: 100%; height: 100%; border: 0; }
+
+        /* === АДАПТИВ (MOBILE) === */
+        @media (max-width: 900px) {
+            .top-section { grid-template-columns: 1fr; gap: 40px; }
+            .bottom-section { grid-template-columns: 1fr; gap: 40px; }
+
+            /* Поля формы в одну колонку на телефоне */
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+
+            /* Карта всегда последняя */
+            .map-wrapper { order: 2; height: 300px; }
+            .contacts-details { order: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="site-wrapper">
+
+        <!-- TOP BAR -->
+        <div class="header-top-bar">
+            <div class="container top-bar-row">
+                <div class="top-bar-item">
+                    <span>📍 Marktstraße 10, 06366 Köthen</span>
+                </div>
+                <div class="top-bar-item">
+                    <span>📞 </span>
+                    <a href="tel:+4917659423704">+49 176 59423704</a>
+                </div>
+            </div>
+        </div>
+
+        <header class="header-split">
+            <div class="container header-row">
+                <a href="../index.html" class="logo-link"><img src="static/logo_lily.png" alt="LILY" class="logo-img"></a>
+                <nav class="nav-desktop">
+                    <a href="../index.html">Главная</a>
+                    <a href="services.html">Услуги</a>
+                    <a href="team.html">Команда</a>
+                    <a href="contacts.html" style="color: var(--color-gold);">Контакты</a>
+                </nav>
+                <button class="burger-btn" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+            </div>
+        </header>
+
+        <div class="mobile-menu-overlay" id="mobileMenu">
+            <button class="close-btn" onclick="toggleMenu()">×</button>
+            <nav class="mobile-nav-links">
+                <a href="../index.html">Главная</a>
+                <a href="services.html">Услуги</a>
+                <a href="team.html">Команда</a>
+                <a href="contacts.html">Контакты</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <span style="color: var(--color-gold); font-size: 12px; letter-spacing: 2px;">LILY Beauty Salon</span>
+            </div>
+        </div>
+
+        <main class="section">
+            <div class="container">
+
+                <div class="hero-text-block" style="padding-bottom: 40px;">
+                    <h1 class="hero-title">Связь с Нами</h1>
+                    <p class="hero-subtitle">О НАС И КОНТАКТЫ</p>
+                </div>
+
+                <section class="top-section">
+
+                    <div class="about-content">
+                        <h2>Добро пожаловать в LILY</h2>
+                        <p class="about-text">
+                            LILY Beauty Salon — это пространство, где немецкое качество встречается с индивидуальным подходом. Мы верим, что красота — это не только внешность, но и внутреннее состояние уверенности.
+                        </p>
+                        <p class="about-text">
+                            Наши мастера используют только премиальные материалы (Wella, L'Oreal, Luxio) и современные техники, чтобы подчеркнуть вашу естественную уникальность.
+                        </p>
+                        <p class="about-text" style="color: var(--color-gold); font-style: italic;">
+                            "Ваша красота — наше искусство."
+                        </p>
+                    </div>
+
+                    <div class="extended-form">
+                        <form id="telegramForm">
+                            <div class="form-grid">
+                                <input type="text" id="name" class="input-line" placeholder="Имя *" required>
+                                <input type="text" id="surname" class="input-line" placeholder="Фамилия">
+
+                                <input type="text" id="address" class="input-line" placeholder="Почтовый адрес / Город">
+                                <input type="tel" id="phone" class="input-line" placeholder="Телефон *" required>
+
+                                <div class="full-width">
+                                    <select id="service" class="input-line" required>
+                                        <option value="" disabled selected>Выберите интересующую услугу...</option>
+                                        <option value="Парикмахерский зал">Парикмахерский зал</option>
+                                        <option value="Ногтевой сервис">Ногтевой сервис</option>
+                                        <option value="Косметология">Косметология</option>
+                                        <option value="Брови и Ресницы">Брови и Ресницы</option>
+                                        <option value="Депиляция">Депиляция</option>
+                                        <option value="Массаж">Массаж</option>
+                                        <option value="Другое">Другой вопрос</option>
+                                    </select>
+                                </div>
+
+                                <textarea id="message" class="input-line full-width" placeholder="Ваш вопрос или комментарий..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit">Отправить запрос</button>
+                            <div id="successMsg" style="display:none; text-align: center; color: var(--color-gold); margin-top: 15px;">Заявка отправлена!</div>
+                        </form>
+                    </div>
+                </section>
+
+                <div class="golden-separator"></div>
+
+                <section class="bottom-section">
+
+                    <div class="contacts-details">
+                        <span class="label">Наш адрес</span>
+                        <span class="value">Marktstraße 10,<br>06366 Köthen (Anhalt)</span>
+
+                        <span class="label">Телефон</span>
+                        <span class="value"><a href="tel:+4917659423704">+49 176 59423704</a></span>
+
+                        <span class="label">Email</span>
+                        <span class="value">info@lily-salon.de</span>
+
+                        <span class="label">Часы работы</span>
+                        <span class="value" style="font-size: 16px;">
+                            Пн - Пт: 09:00 - 18:00<br>
+                            Сб: 10:00 - 14:00
+                        </span>
+                    </div>
+
+                    <div class="map-wrapper">
+                        <!-- Exact Location Iframe -->
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d218.3427857586911!2d11.978643003581395!3d51.746447810686504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a673acd91e008f%3A0xf5faa00aab8978f3!2sLILY%20Salon!5e0!3m2!1sru!2sde!4v1769633393918!5m2!1sru!2sde"
+                            class="map-frame"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+
+                </section>
+
+            </div>
+        </main>
+
+        <footer class="footer-smart">
+            <div class="container">
+                <div class="footer-bar" onclick="toggleFooter()">
+                    <div class="footer-branding">
+                        <span class="brand-name">LILY SALON</span>
+                        <span class="copyright">© 2025</span>
+                    </div>
+
+                    <div class="developer-info" style="font-size: 10px; opacity: 0.4; letter-spacing: 1px;">
+                        Developed by <a href="#" style="color: inherit; text-decoration: underline;">CodexDLC</a>
+                    </div>
+
+                    <button class="footer-toggle-btn">
+                        <span id="footerBtnText">Открыть контакты и услуги</span>
+                        <span class="arrow-icon">↓</span>
+                    </button>
+                </div>
+                <div class="footer-content" id="footerContent">
+                    <div class="footer-grid">
+                        <div class="f-col contact-col">
+                            <div class="f-row"><span class="icon">📞</span> <a href="tel:+4917659423704">+49 176 59423704</a></div>
+                            <div class="f-row"><span class="icon">📍</span> <span>06366 Köthen,<br>Lohmannstraße 111</span></div>
+                            <div class="f-row"><span class="icon">📷</span> <a href="https://instagram.com/manikure_kothen">@manikure_kothen</a></div>
+                            <div class="f-qr"><img src="static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Frisuren & Haarpflege</h4>
+                            <ul><li>Haarschnitte</li><li>Färben</li><li>Haarbehandlung</li><li>Styling</li></ul>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Nagelservice</h4>
+                            <ul><li>Maniküre</li><li>Pediküre</li><li>Verlängerung</li></ul>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Schönheit & Pflege</h4>
+                            <ul><li>Epilation</li><li>Wimpernverlängerung</li><li>Laminierung</li></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if(menu) {
+                menu.classList.toggle('active');
+                document.body.classList.toggle('no-scroll');
+            }
+        }
+
+        // TELEGRAM ОТПРАВКА
+        const BOT_TOKEN = 'ВСТАВЬ_ТОКЕН';
+        const CHAT_ID = 'ВСТАВЬ_ID';
+
+        document.getElementById('telegramForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const surname = document.getElementById('surname').value;
+            const address = document.getElementById('address').value;
+            const phone = document.getElementById('phone').value;
+            const service = document.getElementById('service').value;
+            const msg = document.getElementById('message').value;
+
+            const text = `📋 *Заявка с сайта*%0A%0A👤 *${name} ${surname}*%0A📞 ${phone}%0A🏠 ${address}%0A🎯 *Услуга:* ${service}%0A💬 ${msg}`;
+
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${text}&parse_mode=Markdown`;
+
+            fetch(url).then(r => {
+                if(r.ok) {
+                    document.getElementById('successMsg').style.display = 'block';
+                    document.getElementById('telegramForm').reset();
+                } else {
+                    alert('Ошибка отправки');
+                }
+            });
+        });
+
+        function toggleFooter() {
+            const footer = document.querySelector('.footer-smart');
+            const btnText = document.getElementById('footerBtnText');
+            if(footer) {
+                footer.classList.toggle('active');
+                if (footer.classList.contains('active')) {
+                    btnText.innerText = "Свернуть";
+                } else {
+                    btnText.innerText = "Открыть контакты и услуги";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

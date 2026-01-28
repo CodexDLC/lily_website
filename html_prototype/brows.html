@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brows & Lashes | LILY Beauty Salon</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+    <div class="site-wrapper">
+
+        <!-- TOP BAR -->
+        <div class="header-top-bar">
+            <div class="container top-bar-row">
+                <div class="top-bar-item">
+                    <span>📍 Marktstraße 10, 06366 Köthen</span>
+                </div>
+                <div class="top-bar-item">
+                    <span>📞 </span>
+                    <a href="tel:+4917659423704">+49 176 59423704</a>
+                </div>
+            </div>
+        </div>
+
+        <header class="header-split">
+            <div class="container header-row">
+                <a href="../index.html" class="logo-link"><img src="static/logo_lily.png" alt="LILY" class="logo-img"></a>
+                <nav class="nav-desktop">
+                    <a href="../index.html">Главная</a>
+                    <a href="services.html" style="color: var(--color-gold);">Услуги</a>
+                    <a href="team.html">Команда</a>
+                    <a href="contacts.html">Контакты</a>
+                </nav>
+                <button class="burger-btn" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+            </div>
+        </header>
+
+        <div class="mobile-menu-overlay" id="mobileMenu">
+            <button class="close-btn" onclick="toggleMenu()">×</button>
+            <nav class="mobile-nav-links">
+                <a href="../index.html">Главная</a>
+                <a href="services.html">Услуги</a>
+                <a href="team.html">Команда</a>
+                <a href="contacts.html">Контакты</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <span style="color: var(--color-gold); font-size: 12px; letter-spacing: 2px;">LILY Beauty Salon</span>
+            </div>
+        </div>
+
+        <!-- HERO SERVICE -->
+        <section class="hero-text-block" style="background-image: url('https://images.unsplash.com/photo-1587776100527-86f34351a668?auto=format&fit=crop&w=1200'); background-size: cover; background-position: center; position: relative;">
+            <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,56,49,0.8);"></div>
+            <div class="container" style="position: relative; z-index: 2;">
+                <h1 class="hero-title">Совершенство взгляда</h1>
+                <p class="hero-subtitle">BROWS & LASHES</p>
+            </div>
+        </section>
+
+        <main class="section">
+            <div class="container price-menu-container">
+
+                <!-- SEO TEXT -->
+                <div class="service-seo-section">
+                    <div class="service-seo-text text-center">
+                        <p>Глаза — это зеркало вашей души, и в LILY мы знаем, как сделать этот взгляд незабываемым. Мы предлагаем полный спектр услуг: от классического наращивания ресниц до инновационного ламинирования и долговременной укладки бровей. Наши мастера используют деликатные составы, которые не только создают идеальную форму и изгиб, но и укрепляют структуру волосков. Мы подберем эффект, который идеально подчеркнет глубину ваших глаз, сохраняя при этом естественность и легкость образа.</p>
+                    </div>
+                </div>
+
+                <!-- PRICE LIST (Filtered via JS) -->
+                <div id="priceListContainer"></div>
+
+                <!-- MASTERS BLOCK -->
+                <section class="service-masters-block">
+                    <h3 class="category-title" style="border:none; text-align:center; font-size: 24px; margin-bottom: 20px;">Ваши мастера</h3>
+                    <div class="masters-list" style="justify-content: center;">
+
+                        <div class="mini-master">
+                            <div style="width: 40px; height: 40px; background: #ccc; border-radius: 50%;"></div>
+                            <div>
+                                <strong style="display:block; color:var(--color-gold);">Лилия</strong>
+                                <span style="font-size:12px; opacity:0.6;">Founder & Art Director</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <div style="text-align: center; margin-top: 40px;">
+                    <a href="contacts.html" class="btn-pill">Записаться на процедуру</a>
+                </div>
+
+            </div>
+        </main>
+
+        <footer class="footer-smart">
+            <div class="container">
+                <div class="footer-bar" onclick="toggleFooter()">
+                    <div class="footer-branding">
+                        <span class="brand-name">LILY SALON</span>
+                        <span class="copyright">© 2025</span>
+                    </div>
+                    <button class="footer-toggle-btn">
+                        <span id="footerBtnText">Открыть контакты и услуги</span>
+                        <span class="arrow-icon">↓</span>
+                    </button>
+                </div>
+                <div class="footer-content" id="footerContent">
+                     <div class="footer-grid">
+                        <div class="f-col contact-col">
+                            <div class="f-row"><span class="icon">📞</span> <a href="tel:+4917659423704">+49 176 59423704</a></div>
+                            <div class="f-row"><span class="icon">📍</span> <span>06366 Köthen,<br>Lohmannstraße 111</span></div>
+                            <div class="f-row"><span class="icon">📷</span> <a href="https://instagram.com/manikure_kothen">@manikure_kothen</a></div>
+                            <div class="f-qr"><img src="static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Frisuren & Haarpflege</h4>
+                            <ul><li>Haarschnitte</li><li>Färben</li><li>Haarbehandlung</li><li>Styling</li></ul>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Nagelservice</h4>
+                            <ul><li>Maniküre</li><li>Pediküre</li><li>Verlängerung</li></ul>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Schönheit & Pflege</h4>
+                            <ul><li>Epilation</li><li>Wimpernverlängerung</li><li>Laminierung</li></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if(menu) {
+                menu.classList.toggle('active');
+                document.body.classList.toggle('no-scroll');
+            }
+        }
+
+        function toggleFooter() {
+            const footer = document.querySelector('.footer-smart');
+            const btnText = document.getElementById('footerBtnText');
+            if(footer) {
+                footer.classList.toggle('active');
+                if (footer.classList.contains('active')) {
+                    btnText.innerText = "Свернуть";
+                } else {
+                    btnText.innerText = "Открыть контакты и услуги";
+                }
+            }
+        }
+
+        // --- DATA & RENDER ---
+        const servicesData = [
+            {
+                category: "Augenbrauen (Брови)",
+                items: [
+                    { name_de: "Augenbrauenformen und -färben", name_ua: "Формування та фарбування брів", time: "30 min", price: "20.00 €" },
+                    { name_de: "Langanhaltendes Augenbrauenstyling", name_ua: "Довготривале укладання брів", time: "60 min", price: "40.00 €" }
+                ]
+            },
+            {
+                category: "Wimpern (Ресницы)",
+                items: [
+                    { name_de: "Wimpern 2-3D", name_ua: "Нарощування 2-3D", time: "90 min", price: "75.00 €" },
+                    { name_de: "Wimpern 4-6D", name_ua: "Нарощування 4-6D", time: "120 min", price: "90.00 €" },
+                    { name_de: "Klassiker", name_ua: "Класичне нарощування", time: "90 min", price: "50.00 €" },
+                    { name_de: "Korrektur (bis zu 2 Wochen)", name_ua: "Корекція (до 2 тижнів)", time: "90 min", price: "60.00 €" },
+                    { name_de: "Wimpernlaminierung", name_ua: "Ламінування вій", time: "60 min", price: "45.00 €" },
+                    { name_de: "Wimpern- und Augenbrauen-Komplex", name_ua: "Комплекс для вій та брів", time: "90 min", price: "70.00 €" },
+                    { name_de: "Entfernung von Wimpernverlängerungen", name_ua: "Зняття нарощених вій", time: "30 min", price: "10.00 €" },
+                    { name_de: "Effektzuschlag", name_ua: "Доплата за ефект", time: "5 min", price: "15.00 €" }
+                ]
+            }
+        ];
+
+        function renderPriceList() {
+            const container = document.getElementById('priceListContainer');
+            let html = '';
+
+            servicesData.forEach(cat => {
+                html += `<div class="price-block">`;
+                html += `<div class="category-header"><h2 class="category-title">${cat.category}</h2></div>`;
+                cat.items.forEach(item => {
+                    html += `
+                        <div class="service-row">
+                            <div class="service-names">
+                                <span class="name-de">${item.name_de}</span>
+                                <span class="name-ua">${item.name_ua}</span>
+                            </div>
+                            <div class="service-meta">
+                                <span class="meta-price">${item.price}</span>
+                                <span class="meta-time">⏱ ${item.time}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        document.addEventListener('DOMContentLoaded', renderPriceList);
+    </script>
+</body>
+</html>
