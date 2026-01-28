@@ -1,3 +1,7 @@
+---
+render_with_liquid: false
+---
+
 # 05. КОНТЕНТ-СТРАТЕГИЯ И ЛОКАЛИЗАЦИЯ (CONTENT MAP)
 
 [📂 Design Index](./README.md) > 📄 Content Map
