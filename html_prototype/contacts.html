@@ -143,8 +143,28 @@
             filter: grayscale(100%) invert(92%) contrast(83%); /* Темная карта */
             border-radius: 4px;
             overflow: hidden;
+            position: relative; /* Для кнопки поверх карты */
         }
         .map-frame { width: 100%; height: 100%; border: 0; }
+
+        /* Кнопка навигации под картой */
+        .btn-navigate {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 15px;
+            background-color: var(--color-gold);
+            color: var(--color-emerald);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .btn-navigate:hover {
+            background-color: white;
+        }
 
         /* === АДАПТИВ (MOBILE) === */
         @media (max-width: 900px) {
@@ -263,7 +283,12 @@
 
                     <div class="contacts-details">
                         <span class="label">Наш адрес</span>
-                        <span class="value">Marktstraße 10,<br>06366 Köthen (Anhalt)</span>
+                        <!-- Ссылка на навигацию -->
+                        <span class="value">
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=Marktstraße+10,+06366+Köthen" target="_blank" style="border-bottom: 1px dashed rgba(255,255,255,0.3);">
+                                Marktstraße 10,<br>06366 Köthen (Anhalt)
+                            </a>
+                        </span>
 
                         <span class="label">Телефон</span>
                         <span class="value"><a href="tel:+4917659423704">+49 176 59423704</a></span>
@@ -278,15 +303,21 @@
                         </span>
                     </div>
 
-                    <div class="map-wrapper">
-                        <!-- Exact Location Iframe -->
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d218.3427857586911!2d11.978643003581395!3d51.746447810686504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a673acd91e008f%3A0xf5faa00aab8978f3!2sLILY%20Salon!5e0!3m2!1sru!2sde!4v1769633393918!5m2!1sru!2sde"
-                            class="map-frame"
-                            allowfullscreen=""
-                            loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade">
-                        </iframe>
+                    <div class="map-container-block">
+                        <div class="map-wrapper">
+                            <!-- Exact Location Iframe -->
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d218.3427857586911!2d11.978643003581395!3d51.746447810686504!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a673acd91e008f%3A0xf5faa00aab8978f3!2sLILY%20Salon!5e0!3m2!1sru!2sde!4v1769633393918!5m2!1sru!2sde"
+                                class="map-frame"
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                        <!-- Кнопка навигации -->
+                        <a href="https://www.google.com/maps/dir/?api=1&destination=Marktstraße+10,+06366+Köthen" target="_blank" class="btn-navigate">
+                            📍 Проложить маршрут
+                        </a>
                     </div>
 
                 </section>
@@ -315,7 +346,12 @@
                     <div class="footer-grid">
                         <div class="f-col contact-col">
                             <div class="f-row"><span class="icon">📞</span> <a href="tel:+4917659423704">+49 176 59423704</a></div>
-                            <div class="f-row"><span class="icon">📍</span> <span>06366 Köthen,<br>Lohmannstraße 111</span></div>
+                            <div class="f-row"><span class="icon">📍</span>
+                                <!-- Updated Address Link -->
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=Marktstraße+10,+06366+Köthen" target="_blank" style="border-bottom: 1px dashed rgba(255,255,255,0.3);">
+                                    06366 Köthen,<br>Lohmannstraße 111
+                                </a>
+                            </div>
                             <div class="f-row"><span class="icon">📷</span> <a href="https://instagram.com/manikure_kothen">@manikure_kothen</a></div>
                             <div class="f-qr"><img src="static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
                         </div>

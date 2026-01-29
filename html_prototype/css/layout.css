@@ -475,6 +475,13 @@ body.no-scroll {
     }
     .f-row { justify-content: center; }
 
+    /* FIX: QR Code Centering */
+    .f-qr {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
     .footer-bar {
         flex-direction: column;
         gap: 15px;
@@ -545,8 +552,17 @@ body.no-scroll {
 
 /* Скрытие на мобилках, если экран слишком мал */
 @media (max-width: 600px) {
+    /* UPDATED: Show Top Bar on mobile, but hide address */
     .header-top-bar {
+        display: block; /* Was none */
+    }
+    /* Hide address item (first item) */
+    .top-bar-item:first-child {
         display: none;
+    }
+    /* Center the phone number */
+    .top-bar-row {
+        justify-content: center;
     }
 }
 
