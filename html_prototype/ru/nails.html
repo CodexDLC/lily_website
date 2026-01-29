@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Massage | LILY Beauty Salon</title>
+    <title>Nail Service | LILY Beauty Salon</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/pages.css">
 </head>
 <body>
     <div class="site-wrapper">
@@ -28,13 +28,13 @@
 
         <header class="header-split">
             <div class="container header-row">
-                <a href="../index.html" class="logo-link"><img src="static/logo_lily.png" alt="LILY" class="logo-img"></a>
+                <a href="index.html" class="logo-link"><img src="../static/logo_lily.png" alt="LILY" class="logo-img"></a>
                 <nav class="nav-desktop">
-                    <a href="../index.html">Startseite</a>
-                    <a href="services.html" style="color: var(--color-gold);">Leistungen</a>
-                    <a href="team.html">Team</a>
-                    <a href="contacts.html">Kontakt</a>
-                    <a href="ru/massage.html" style="margin-left: 20px; opacity: 0.7;">RU</a>
+                    <a href="index.html">Главная</a>
+                    <a href="services.html" style="color: var(--color-gold);">Услуги</a>
+                    <a href="team.html">Команда</a>
+                    <a href="contacts.html">Контакты</a>
+                    <a href="../../html_prototype/nails.html" style="margin-left: 20px; opacity: 0.7;">DE</a>
                 </nav>
                 <button class="burger-btn" onclick="toggleMenu()"><span></span><span></span><span></span></button>
             </div>
@@ -43,11 +43,11 @@
         <div class="mobile-menu-overlay" id="mobileMenu">
             <button class="close-btn" onclick="toggleMenu()">×</button>
             <nav class="mobile-nav-links">
-                <a href="../index.html">Startseite</a>
-                <a href="services.html">Leistungen</a>
-                <a href="team.html">Team</a>
-                <a href="contacts.html">Kontakt</a>
-                <a href="ru/massage.html" onclick="toggleMenu()" style="color: var(--color-gold);">RU</a>
+                <a href="index.html">Главная</a>
+                <a href="services.html">Услуги</a>
+                <a href="team.html">Команда</a>
+                <a href="contacts.html">Контакты</a>
+                <a href="../../html_prototype/nails.html" onclick="toggleMenu()" style="color: var(--color-gold);">DE</a>
             </nav>
             <div class="mobile-menu-footer">
                 <span style="color: var(--color-gold); font-size: 12px; letter-spacing: 2px;">LILY Beauty Salon</span>
@@ -55,11 +55,11 @@
         </div>
 
         <!-- HERO SERVICE -->
-        <section class="hero-text-block" style="background-image: url('https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=1200'); background-size: cover; background-position: center; position: relative;">
+        <section class="hero-text-block" style="background-image: url('https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=1200'); background-size: cover; background-position: center; position: relative;">
             <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,56,49,0.8);"></div>
             <div class="container" style="position: relative; z-index: 2;">
-                <h1 class="hero-title">Die Kunst der Entspannung</h1>
-                <p class="hero-subtitle">MASSAGE & KÖRPERPFLEGE</p>
+                <h1 class="hero-title">Безупречный маникюр и педикюр</h1>
+                <p class="hero-subtitle">NAIL SERVICE</p>
             </div>
         </section>
 
@@ -69,7 +69,7 @@
                 <!-- SEO TEXT -->
                 <div class="service-seo-section">
                     <div class="service-seo-text text-center">
-                        <p>Tauchen Sie ein in eine Atmosphäre absoluter Ruhe im Massageraum von LILY. Wir bieten verschiedene Massagetechniken an: von der klassischen Ganzkörperpflege zur Entspannung bis hin zu Anti-Cellulite-Programmen zur Figurkorrektur. Die professionellen Hände unserer Meister helfen Ihnen, Stress abzubauen, die Durchblutung zu verbessern und den Muskeltonus wiederherzustellen. Wir schaffen einen Raum, in dem die Zeit stehen bleibt, damit Sie neue Kraft schöpfen und Ihr inneres Gleichgewicht wiederfinden können.</p>
+                        <p>В LILY мы превращаем уход за ногтями в настоящий ритуал красоты. Мы специализируемся на комбинированном маникюре, идеальном выравнивании ногтевой плиты и использовании премиальных материалов, таких как Luxio. Наши мастера владеют техниками Smart-педикюра для идеальной гладкости стоп. Мы уделяем особое внимание безопасности и стерильности, чтобы вы могли полностью расслабиться и насладиться процессом создания вашего идеального образа до кончиков пальцев.</p>
                     </div>
                 </div>
 
@@ -78,14 +78,22 @@
 
                 <!-- MASTERS BLOCK -->
                 <section class="service-masters-block">
-                    <h3 class="category-title" style="border:none; text-align:center; font-size: 24px; margin-bottom: 20px;">Ihre Experten</h3>
+                    <h3 class="category-title" style="border:none; text-align:center; font-size: 24px; margin-bottom: 20px;">Ваши мастера</h3>
                     <div class="masters-list" style="justify-content: center;">
 
                         <div class="mini-master">
                             <div style="width: 40px; height: 40px; background: #ccc; border-radius: 50%;"></div>
                             <div>
-                                <strong style="display:block; color:var(--color-gold);">Anna</strong>
-                                <span style="font-size:12px; opacity:0.6;">Top-Spezialistin</span>
+                                <strong style="display:block; color:var(--color-gold);">Мария</strong>
+                                <span style="font-size:12px; opacity:0.6;">Nail Master</span>
+                            </div>
+                        </div>
+
+                        <div class="mini-master">
+                            <div style="width: 40px; height: 40px; background: #ccc; border-radius: 50%;"></div>
+                            <div>
+                                <strong style="display:block; color:var(--color-gold);">Лилия</strong>
+                                <span style="font-size:12px; opacity:0.6;">Founder & Art Director</span>
                             </div>
                         </div>
 
@@ -93,7 +101,7 @@
                 </section>
 
                 <div style="text-align: center; margin-top: 40px;">
-                    <a href="contacts.html" class="btn-pill">Termin buchen</a>
+                    <a href="contacts.html" class="btn-pill">Записаться на маникюр</a>
                 </div>
 
             </div>
@@ -107,7 +115,7 @@
                         <span class="copyright">© 2025</span>
                     </div>
                     <button class="footer-toggle-btn">
-                        <span id="footerBtnText">Kontakt & Leistungen öffnen</span>
+                        <span id="footerBtnText">Открыть контакты и услуги</span>
                         <span class="arrow-icon">↓</span>
                     </button>
                 </div>
@@ -121,26 +129,26 @@
                                 </a>
                             </div>
                             <div class="f-row"><span class="icon">📷</span> <a href="https://instagram.com/manikure_kothen">@manikure_kothen</a></div>
-                            <div class="f-qr"><img src="static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
+                            <div class="f-qr"><img src="../static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
                         </div>
                         <div class="f-col">
-                            <h4 class="f-title">Frisuren & Haarpflege</h4>
-                            <ul><li>Haarschnitte</li><li>Färben</li><li>Haarbehandlung</li><li>Styling</li></ul>
+                            <h4 class="f-title">Парикмахерский зал</h4>
+                            <ul><li>Стрижки</li><li>Окрашивание</li><li>Уход</li><li>Укладки</li></ul>
                         </div>
                         <div class="f-col">
-                            <h4 class="f-title">Nagelservice</h4>
-                            <ul><li>Maniküre</li><li>Pediküre</li><li>Verlängerung</li></ul>
+                            <h4 class="f-title">Ногтевой сервис</h4>
+                            <ul><li>Маникюр</li><li>Педикюр</li><li>Наращивание</li></ul>
                         </div>
                         <div class="f-col">
-                            <h4 class="f-title">Schönheit & Pflege</h4>
-                            <ul><li>Epilation</li><li>Wimpernverlängerung</li><li>Laminierung</li></ul>
+                            <h4 class="f-title">Косметология и Уход</h4>
+                            <ul><li>Депиляция</li><li>Наращивание ресниц</li><li>Ламинирование</li></ul>
                         </div>
                     </div>
                     <!-- LEGAL LINKS -->
                     <div class="footer-legal-links">
-                        <a href="impressum.html">Impressum</a>
+                        <a href="../impressum.html">Impressum</a>
                         <span style="opacity: 0.3; margin: 0 5px;">|</span>
-                        <a href="datenschutz.html">Datenschutz</a>
+                        <a href="../datenschutz.html">Datenschutz</a>
                     </div>
                 </div>
             </div>
@@ -163,9 +171,9 @@
             if(footer) {
                 footer.classList.toggle('active');
                 if (footer.classList.contains('active')) {
-                    btnText.innerText = "Schließen";
+                    btnText.innerText = "Свернуть";
                 } else {
-                    btnText.innerText = "Kontakt & Leistungen öffnen";
+                    btnText.innerText = "Открыть контакты и услуги";
                 }
             }
         }
@@ -173,15 +181,16 @@
         // --- DATA & RENDER ---
         const servicesData = [
             {
-                category: "Massage",
+                category: "Maniküre & Pediküre (Ногтевой Сервис)",
                 items: [
-                    { name_de: "Klassische Massage", name_ua: "Класичний масаж", time: "30 min", price: "30.00 €" },
-                    { name_de: "Relax Massage", name_ua: "Релакс", time: "30 min", price: "35.00 €" },
-                    { name_de: "Ganzkörpermassage", name_ua: "Масаж усього тіла", time: "60 min", price: "50.00 €" },
-                    { name_de: "Rücken", name_ua: "Спина", time: "30 min", price: "35.00 €" },
-                    { name_de: "Beine / Hüften", name_ua: "Ноги / Стегна", time: "30 min", price: "35.00 €" },
-                    { name_de: "Bauch", name_ua: "Живіт", time: "30 min", price: "35.00 €" },
-                    { name_de: "Anti-Cellulite-Massage + Bauch", name_ua: "Антицилюлітний + живіт", time: "30 min", price: "35.00 €" }
+                    { name_de: "Damenmaniküre", name_ua: "Жіночий манікюр (без покриття)", time: "40 min", price: "20.00 €" },
+                    { name_de: "Maniküre + Gellack", name_ua: "Манікюр + Гель-лак", time: "120 min", price: "40.00 €" },
+                    { name_de: "Maniküre + normaler Nagellack", name_ua: "Манікюр + звичайний лак", time: "60 min", price: "25.00 €" },
+                    { name_de: "Maniküre für Männer", name_ua: "Чоловічий манікюр", time: "45 min", price: "30.00 €" },
+                    { name_de: "Nagelverlängerungen (bis zu 3 cm)", name_ua: "Нарощування нігтів до 3 см", time: "150 min", price: "70.00 €" },
+                    { name_de: "Nagelverlängerungen (Größe 4-6)", name_ua: "Нарощування нігтів 4-6", time: "150 min", price: "90.00 €" },
+                    { name_de: "Hygienische Pediküre", name_ua: "Гігієнічний педикюр", time: "30 min", price: "40.00 €" },
+                    { name_de: "Pediküre + Gel-Lack", name_ua: "Педикюр + Гель-лак", time: "60 min", price: "60.00 €" }
                 ]
             }
         ];
@@ -198,6 +207,7 @@
                         <div class="service-row">
                             <div class="service-names">
                                 <span class="name-de">${item.name_de}</span>
+                                <span class="name-ua">${item.name_ua}</span>
                             </div>
                             <div class="service-meta">
                                 <span class="meta-price">${item.price}</span>

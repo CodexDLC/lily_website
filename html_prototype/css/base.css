@@ -1,4 +1,23 @@
 /* =========================================
+   0. FONTS (LOCAL)
+   ========================================= */
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: url('lato-v25-latin-regular.woff2') format('woff2');
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Playfair Display';
+    font-style: normal;
+    font-weight: 400;
+    src: url('playfair-display-v40-latin-regular.woff2') format('woff2');
+    font-display: swap;
+}
+
+/* =========================================
    1. PALETTE (DARK LUXURY)
    ========================================= */
 :root {

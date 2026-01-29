@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kontakt & Über uns | LILY Beauty Salon</title>
-    <link rel="icon" type="image/png" href="static/logo_lily.png">
+    <title>Контакты и О Нас | LILY Beauty Salon</title>
+    <link rel="icon" type="image/png" href="../static/logo_lily.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/pages.css">
 
     <style>
         /* === СЕТКА СТРАНИЦЫ === */
@@ -199,13 +199,13 @@
 
         <header class="header-split">
             <div class="container header-row">
-                <a href="../index.html" class="logo-link"><img src="static/logo_lily.png" alt="LILY" class="logo-img"></a>
+                <a href="index.html" class="logo-link"><img src="../static/logo_lily.png" alt="LILY" class="logo-img"></a>
                 <nav class="nav-desktop">
-                    <a href="../index.html">Startseite</a>
-                    <a href="services.html">Leistungen</a>
-                    <a href="team.html">Team</a>
-                    <a href="contacts.html" style="color: var(--color-gold);">Kontakt</a>
-                    <a href="ru/contacts.html" style="margin-left: 20px; opacity: 0.7;">RU</a>
+                    <a href="index.html">Главная</a>
+                    <a href="services.html">Услуги</a>
+                    <a href="team.html">Команда</a>
+                    <a href="contacts.html" style="color: var(--color-gold);">Контакты</a>
+                    <a href="../../html_prototype/contacts.html" style="margin-left: 20px; opacity: 0.7;">DE</a>
                 </nav>
                 <button class="burger-btn" onclick="toggleMenu()"><span></span><span></span><span></span></button>
             </div>
@@ -214,11 +214,11 @@
         <div class="mobile-menu-overlay" id="mobileMenu">
             <button class="close-btn" onclick="toggleMenu()">×</button>
             <nav class="mobile-nav-links">
-                <a href="../index.html">Startseite</a>
-                <a href="services.html">Leistungen</a>
-                <a href="team.html">Team</a>
-                <a href="contacts.html">Kontakt</a>
-                <a href="ru/contacts.html" onclick="toggleMenu()" style="color: var(--color-gold);">RU</a>
+                <a href="index.html">Главная</a>
+                <a href="services.html">Услуги</a>
+                <a href="team.html">Команда</a>
+                <a href="contacts.html">Контакты</a>
+                <a href="../../html_prototype/contacts.html" onclick="toggleMenu()" style="color: var(--color-gold);">DE</a>
             </nav>
             <div class="mobile-menu-footer">
                 <span style="color: var(--color-gold); font-size: 12px; letter-spacing: 2px;">LILY Beauty Salon</span>
@@ -229,52 +229,52 @@
             <div class="container">
 
                 <div class="hero-text-block" style="padding-bottom: 40px;">
-                    <h1 class="hero-title">Kontaktieren Sie uns</h1>
-                    <p class="hero-subtitle">ÜBER UNS & KONTAKT</p>
+                    <h1 class="hero-title">Связь с Нами</h1>
+                    <p class="hero-subtitle">О НАС И КОНТАКТЫ</p>
                 </div>
 
                 <section class="top-section">
 
                     <div class="about-content">
-                        <h2>Willkommen bei LILY</h2>
+                        <h2>Добро пожаловать в LILY</h2>
                         <p class="about-text">
-                            LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellen Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern auch ein innerer Zustand des Selbstvertrauens.
+                            LILY Beauty Salon — это пространство, где немецкое качество встречается с индивидуальным подходом. Мы верим, что красота — это не только внешность, но и внутреннее состояние уверенности.
                         </p>
                         <p class="about-text">
-                            Unsere Meister verwenden nur Premium-Materialien (Wella, L'Oreal, Luxio) und moderne Techniken, um Ihre natürliche Einzigartigkeit zu unterstreichen.
+                            Наши мастера используют только премиальные материалы (Wella, L'Oreal, Luxio) и современные техники, чтобы подчеркнуть вашу естественную уникальность.
                         </p>
                         <p class="about-text" style="color: var(--color-gold); font-style: italic;">
-                            "Ihre Schönheit ist unsere Kunst."
+                            "Ваша красота — наше искусство."
                         </p>
                     </div>
 
                     <div class="extended-form">
                         <form id="telegramForm">
                             <div class="form-grid">
-                                <input type="text" id="name" class="input-line" placeholder="Vorname *" required>
-                                <input type="text" id="surname" class="input-line" placeholder="Nachname">
+                                <input type="text" id="name" class="input-line" placeholder="Имя *" required>
+                                <input type="text" id="surname" class="input-line" placeholder="Фамилия">
 
-                                <input type="text" id="address" class="input-line" placeholder="Adresse / Stadt">
-                                <input type="tel" id="phone" class="input-line" placeholder="Telefon *" required>
+                                <input type="text" id="address" class="input-line" placeholder="Почтовый адрес / Город">
+                                <input type="tel" id="phone" class="input-line" placeholder="Телефон *" required>
 
                                 <div class="full-width">
                                     <select id="service" class="input-line" required>
-                                        <option value="" disabled selected>Wählen Sie eine Dienstleistung...</option>
-                                        <option value="Friseur">Friseur</option>
-                                        <option value="Nagelservice">Nagelservice</option>
-                                        <option value="Kosmetologie">Kosmetologie</option>
-                                        <option value="Augenbrauen & Wimpern">Augenbrauen & Wimpern</option>
-                                        <option value="Depilation">Depilation</option>
-                                        <option value="Massage">Massage</option>
-                                        <option value="Sonstiges">Andere Frage</option>
+                                        <option value="" disabled selected>Выберите интересующую услугу...</option>
+                                        <option value="Парикмахерский зал">Парикмахерский зал</option>
+                                        <option value="Ногтевой сервис">Ногтевой сервис</option>
+                                        <option value="Косметология">Косметология</option>
+                                        <option value="Брови и Ресницы">Брови и Ресницы</option>
+                                        <option value="Депиляция">Депиляция</option>
+                                        <option value="Массаж">Массаж</option>
+                                        <option value="Другое">Другой вопрос</option>
                                     </select>
                                 </div>
 
-                                <textarea id="message" class="input-line full-width" placeholder="Ihre Frage oder Kommentar..."></textarea>
+                                <textarea id="message" class="input-line full-width" placeholder="Ваш вопрос или комментарий..."></textarea>
                             </div>
 
-                            <button type="submit" class="btn-submit">Anfrage senden</button>
-                            <div id="successMsg" style="display:none; text-align: center; color: var(--color-gold); margin-top: 15px;">Anfrage gesendet!</div>
+                            <button type="submit" class="btn-submit">Отправить запрос</button>
+                            <div id="successMsg" style="display:none; text-align: center; color: var(--color-gold); margin-top: 15px;">Заявка отправлена!</div>
                         </form>
                     </div>
                 </section>
@@ -284,7 +284,7 @@
                 <section class="bottom-section">
 
                     <div class="contacts-details">
-                        <span class="label">Unsere Adresse</span>
+                        <span class="label">Наш адрес</span>
                         <!-- Ссылка на навигацию -->
                         <span class="value">
                             <a href="https://www.google.com/maps/dir/?api=1&destination=Lohmannstraße+111,+06366+Köthen+(Anhalt)" target="_blank" style="border-bottom: 1px dashed rgba(255,255,255,0.3);">
@@ -292,16 +292,16 @@
                             </a>
                         </span>
 
-                        <span class="label">Telefon</span>
+                        <span class="label">Телефон</span>
                         <span class="value"><a href="tel:+4917659423704">+49 176 59423704</a></span>
 
-                        <span class="label">E-Mail</span>
+                        <span class="label">Email</span>
                         <span class="value">info@lily-salon.de</span>
 
-                        <span class="label">Öffnungszeiten</span>
+                        <span class="label">Часы работы</span>
                         <span class="value" style="font-size: 16px;">
-                            Mo - Fr: 09:00 - 18:00<br>
-                            Sa: 10:00 - 14:00
+                            Пн - Пт: 09:00 - 18:00<br>
+                            Сб: 10:00 - 14:00
                         </span>
                     </div>
 
@@ -318,7 +318,7 @@
                         </div>
                         <!-- Кнопка навигации -->
                         <a href="https://www.google.com/maps/dir/?api=1&destination=Lohmannstraße+111,+06366+Köthen+(Anhalt)" target="_blank" class="btn-navigate">
-                            📍 Route planen
+                            📍 Проложить маршрут
                         </a>
                     </div>
 
@@ -340,7 +340,7 @@
                     </div>
 
                     <button class="footer-toggle-btn">
-                        <span id="footerBtnText">Kontakt & Leistungen öffnen</span>
+                        <span id="footerBtnText">Открыть контакты и услуги</span>
                         <span class="arrow-icon">↓</span>
                     </button>
                 </div>
@@ -355,26 +355,26 @@
                                 </a>
                             </div>
                             <div class="f-row"><span class="icon">📷</span> <a href="https://instagram.com/manikure_kothen">@manikure_kothen</a></div>
-                            <div class="f-qr"><img src="static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
+                            <div class="f-qr"><img src="../static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
                         </div>
                         <div class="f-col">
-                            <h4 class="f-title">Frisuren & Haarpflege</h4>
-                            <ul><li>Haarschnitte</li><li>Färben</li><li>Haarbehandlung</li><li>Styling</li></ul>
+                            <h4 class="f-title">Парикмахерский зал</h4>
+                            <ul><li>Стрижки</li><li>Окрашивание</li><li>Уход</li><li>Укладки</li></ul>
                         </div>
                         <div class="f-col">
-                            <h4 class="f-title">Nagelservice</h4>
-                            <ul><li>Maniküre</li><li>Pediküre</li><li>Verlängerung</li></ul>
+                            <h4 class="f-title">Ногтевой сервис</h4>
+                            <ul><li>Маникюр</li><li>Педикюр</li><li>Наращивание</li></ul>
                         </div>
                         <div class="f-col">
-                            <h4 class="f-title">Schönheit & Pflege</h4>
-                            <ul><li>Epilation</li><li>Wimpernverlängerung</li><li>Laminierung</li></ul>
+                            <h4 class="f-title">Косметология и Уход</h4>
+                            <ul><li>Депиляция</li><li>Наращивание ресниц</li><li>Ламинирование</li></ul>
                         </div>
                     </div>
                     <!-- LEGAL LINKS -->
                     <div class="footer-legal-links">
-                        <a href="impressum.html">Impressum</a>
+                        <a href="../impressum.html">Impressum</a>
                         <span style="opacity: 0.3; margin: 0 5px;">|</span>
-                        <a href="datenschutz.html">Datenschutz</a>
+                        <a href="../datenschutz.html">Datenschutz</a>
                     </div>
                 </div>
             </div>
@@ -382,9 +382,7 @@
 
     </div>
 
-    <!-- SCRIPTS -->
     <script>
-        // 1. Mobile Menu Toggle
         function toggleMenu() {
             const menu = document.getElementById('mobileMenu');
             if(menu) {
@@ -407,7 +405,7 @@
             const service = document.getElementById('service').value;
             const msg = document.getElementById('message').value;
 
-            const text = `📋 *Anfrage von Website*%0A%0A👤 *${name} ${surname}*%0A📞 ${phone}%0A🏠 ${address}%0A🎯 *Dienstleistung:* ${service}%0A💬 ${msg}`;
+            const text = `📋 *Заявка с сайта*%0A%0A👤 *${name} ${surname}*%0A📞 ${phone}%0A🏠 ${address}%0A🎯 *Услуга:* ${service}%0A💬 ${msg}`;
 
             const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${text}&parse_mode=Markdown`;
 
@@ -416,7 +414,7 @@
                     document.getElementById('successMsg').style.display = 'block';
                     document.getElementById('telegramForm').reset();
                 } else {
-                    alert('Fehler beim Senden');
+                    alert('Ошибка отправки');
                 }
             });
         });
@@ -427,9 +425,9 @@
             if(footer) {
                 footer.classList.toggle('active');
                 if (footer.classList.contains('active')) {
-                    btnText.innerText = "Schließen";
+                    btnText.innerText = "Свернуть";
                 } else {
-                    btnText.innerText = "Kontakt & Leistungen öffnen";
+                    btnText.innerText = "Открыть контакты и услуги";
                 }
             }
         }

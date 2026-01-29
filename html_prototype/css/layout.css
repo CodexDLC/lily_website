@@ -415,6 +415,29 @@ body.no-scroll {
     transform: rotate(180deg); /* Стрелка переворачивается */
 }
 
+/* --- LEGAL LINKS (NEW) --- */
+.footer-legal-links {
+    text-align: center;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    font-size: 12px;
+    opacity: 0.6;
+    margin-top: 20px;
+}
+
+.footer-legal-links a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer-legal-links a:hover {
+    color: var(--color-gold);
+    text-decoration: underline;
+}
+
 
 /* =========================================
    6. MOBILE ADAPTATION

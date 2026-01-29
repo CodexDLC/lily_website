@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friseur | LILY Beauty Salon</title>
+    <title>Парикмахерский зал | LILY Beauty Salon</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/pages.css">
 </head>
 <body>
     <div class="site-wrapper">
@@ -28,13 +28,13 @@
 
         <header class="header-split">
             <div class="container header-row">
-                <a href="../index.html" class="logo-link"><img src="static/logo_lily.png" alt="LILY" class="logo-img"></a>
+                <a href="index.html" class="logo-link"><img src="../static/logo_lily.png" alt="LILY" class="logo-img"></a>
                 <nav class="nav-desktop">
-                    <a href="../index.html">Startseite</a>
-                    <a href="services.html" style="color: var(--color-gold);">Leistungen</a>
-                    <a href="team.html">Team</a>
-                    <a href="contacts.html">Kontakt</a>
-                    <a href="ru/hair.html" style="margin-left: 20px; opacity: 0.7;">RU</a>
+                    <a href="index.html">Главная</a>
+                    <a href="services.html" style="color: var(--color-gold);">Услуги</a>
+                    <a href="team.html">Команда</a>
+                    <a href="contacts.html">Контакты</a>
+                    <a href="../../html_prototype/hair.html" style="margin-left: 20px; opacity: 0.7;">DE</a>
                 </nav>
                 <button class="burger-btn" onclick="toggleMenu()"><span></span><span></span><span></span></button>
             </div>
@@ -43,11 +43,11 @@
         <div class="mobile-menu-overlay" id="mobileMenu">
             <button class="close-btn" onclick="toggleMenu()">×</button>
             <nav class="mobile-nav-links">
-                <a href="../index.html">Startseite</a>
-                <a href="services.html">Leistungen</a>
-                <a href="team.html">Team</a>
-                <a href="contacts.html">Kontakt</a>
-                <a href="ru/hair.html" onclick="toggleMenu()" style="color: var(--color-gold);">RU</a>
+                <a href="index.html">Главная</a>
+                <a href="services.html">Услуги</a>
+                <a href="team.html">Команда</a>
+                <a href="contacts.html">Контакты</a>
+                <a href="../../html_prototype/hair.html" onclick="toggleMenu()" style="color: var(--color-gold);">DE</a>
             </nav>
             <div class="mobile-menu-footer">
                 <span style="color: var(--color-gold); font-size: 12px; letter-spacing: 2px;">LILY Beauty Salon</span>
@@ -58,8 +58,8 @@
         <section class="hero-text-block" style="background-image: url('https://pinlite.dev/media/storage/ad/d7/add7f82bb943e397c29a69807cc84560f435509d3843252c790157012164feae.jpg'); background-size: cover; background-position: center; position: relative;">
             <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,56,49,0.8);"></div>
             <div class="container" style="position: relative; z-index: 2;">
-                <h1 class="hero-title">Friseurkunst</h1>
-                <p class="hero-subtitle">HAARSCHNITTE • FÄRBEN • PFLEGE</p>
+                <h1 class="hero-title">Парикмахерское искусство</h1>
+                <p class="hero-subtitle">СТРИЖКИ • ОКРАШИВАНИЕ • УХОД</p>
             </div>
         </section>
 
@@ -69,19 +69,20 @@
                 <!-- SEO TEXT -->
                 <div class="service-seo-section">
                     <div class="service-seo-text text-center">
-                        <p>Bei LILY betrachten wir Haare als Leinwand und den Haarschnitt als Skulptur. Wir verwenden fortschrittliche Färbetechniken wie Airtouch und Balayage und arbeiten ausschließlich mit Premium-Marken wie Wella und L'Oreal. Jeder Besuch beginnt mit einer professionellen Beratung, bei der wir einen Look auswählen, der Ihre Gesichtsform und Haarstruktur unterstreicht. Unser Ziel ist es nicht nur, Ihr Aussehen zu verändern, sondern die Gesundheit und den natürlichen Glanz Ihres Haares zu erhalten.</p>
+                        <p>В LILY мы рассматриваем волосы как холст, а стрижку — как создание скульптуры. Мы используем передовые техники окрашивания, такие как Airtouch и Balayage, работая исключительно на премиальных брендах Wella и L'Oreal. Каждый визит начинается с профессиональной консультации, где мы подбираем образ, подчеркивающий вашу форму лица и структуру волос. Наша цель — не просто изменить ваш облик, а сохранить здоровье и природный блеск ваших волос.</p>
                     </div>
                 </div>
 
                 <!-- PRICE LIST (Only Hair) -->
                 <div class="price-block">
                     <div class="category-header">
-                        <h2 class="category-title">Preisliste</h2>
+                        <h2 class="category-title">Прайс-лист</h2>
                     </div>
 
                     <div class="service-row">
                         <div class="service-names">
                             <span class="name-de">Damenhaarschnitt</span>
+                            <span class="name-ua">Жіноча стрижка</span>
                         </div>
                         <div class="service-meta">
                             <span class="meta-price">ab 45.00 €</span>
@@ -91,6 +92,7 @@
                     <div class="service-row">
                         <div class="service-names">
                             <span class="name-de">Herrenhaarschnitt</span>
+                            <span class="name-ua">Чоловіча стрижка</span>
                         </div>
                         <div class="service-meta">
                             <span class="meta-price">25.00 €</span>
@@ -100,6 +102,7 @@
                     <div class="service-row">
                         <div class="service-names">
                             <span class="name-de">Kinderhaarschnitt</span>
+                            <span class="name-ua">Дитяча стрижка</span>
                         </div>
                         <div class="service-meta">
                             <span class="meta-price">18.00 €</span>
@@ -109,6 +112,7 @@
                     <div class="service-row">
                         <div class="service-names">
                             <span class="name-de">Färben (Ansatz)</span>
+                            <span class="name-ua">Фарбування (коріння)</span>
                         </div>
                         <div class="service-meta">
                             <span class="meta-price">ab 60.00 €</span>
@@ -118,6 +122,7 @@
                     <div class="service-row">
                         <div class="service-names">
                             <span class="name-de">Färben (Komplett)</span>
+                            <span class="name-ua">Фарбування (повне)</span>
                         </div>
                         <div class="service-meta">
                             <span class="meta-price">ab 80.00 €</span>
@@ -127,6 +132,7 @@
                     <div class="service-row">
                         <div class="service-names">
                             <span class="name-de">Airtouch / Balayage</span>
+                            <span class="name-ua">Складне фарбування</span>
                         </div>
                         <div class="service-meta">
                             <span class="meta-price">ab 250.00 €</span>
@@ -136,6 +142,7 @@
                     <div class="service-row">
                         <div class="service-names">
                             <span class="name-de">Haarpflege / Kur</span>
+                            <span class="name-ua">Догляд / Лікування</span>
                         </div>
                         <div class="service-meta">
                             <span class="meta-price">ab 40.00 €</span>
@@ -145,6 +152,7 @@
                     <div class="service-row">
                         <div class="service-names">
                             <span class="name-de">Abendfrisur</span>
+                            <span class="name-ua">Вечірня зачіска</span>
                         </div>
                         <div class="service-meta">
                             <span class="meta-price">ab 50.00 €</span>
@@ -155,15 +163,15 @@
 
                 <!-- MASTERS BLOCK -->
                 <section class="service-masters-block">
-                    <h3 class="category-title" style="border:none; text-align:center; font-size: 24px; margin-bottom: 20px;">Ihre Experten</h3>
+                    <h3 class="category-title" style="border:none; text-align:center; font-size: 24px; margin-bottom: 20px;">Ваши мастера</h3>
                     <div class="masters-list" style="justify-content: center;">
 
                         <div class="mini-master">
                             <!-- Placeholder image -->
                             <div style="width: 40px; height: 40px; background: #ccc; border-radius: 50%;"></div>
                             <div>
-                                <strong style="display:block; color:var(--color-gold);">Anna</strong>
-                                <span style="font-size:12px; opacity:0.6;">Top-Colorist</span>
+                                <strong style="display:block; color:var(--color-gold);">Анна</strong>
+                                <span style="font-size:12px; opacity:0.6;">Топ-колорист</span>
                             </div>
                         </div>
 
@@ -171,8 +179,8 @@
                             <!-- Placeholder image -->
                             <div style="width: 40px; height: 40px; background: #ccc; border-radius: 50%;"></div>
                             <div>
-                                <strong style="display:block; color:var(--color-gold);">Liliia</strong>
-                                <span style="font-size:12px; opacity:0.6;">Art Director</span>
+                                <strong style="display:block; color:var(--color-gold);">Лилия</strong>
+                                <span style="font-size:12px; opacity:0.6;">Арт-директор</span>
                             </div>
                         </div>
 
@@ -180,7 +188,7 @@
                 </section>
 
                 <div style="text-align: center; margin-top: 40px;">
-                    <a href="contacts.html" class="btn-pill">Termin buchen</a>
+                    <a href="contacts.html" class="btn-pill">Записаться на стрижку</a>
                 </div>
 
             </div>
@@ -194,7 +202,7 @@
                         <span class="copyright">© 2025</span>
                     </div>
                     <button class="footer-toggle-btn">
-                        <span id="footerBtnText">Kontakt & Leistungen öffnen</span>
+                        <span id="footerBtnText">Открыть контакты и услуги</span>
                         <span class="arrow-icon">↓</span>
                     </button>
                 </div>
@@ -208,26 +216,26 @@
                                 </a>
                             </div>
                             <div class="f-row"><span class="icon">📷</span> <a href="https://instagram.com/manikure_kothen">@manikure_kothen</a></div>
-                            <div class="f-qr"><img src="static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
+                            <div class="f-qr"><img src="../static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
                         </div>
                         <div class="f-col">
-                            <h4 class="f-title">Frisuren & Haarpflege</h4>
-                            <ul><li>Haarschnitte</li><li>Färben</li><li>Haarbehandlung</li><li>Styling</li></ul>
+                            <h4 class="f-title">Парикмахерский зал</h4>
+                            <ul><li>Стрижки</li><li>Окрашивание</li><li>Уход</li><li>Укладки</li></ul>
                         </div>
                         <div class="f-col">
-                            <h4 class="f-title">Nagelservice</h4>
-                            <ul><li>Maniküre</li><li>Pediküre</li><li>Verlängerung</li></ul>
+                            <h4 class="f-title">Ногтевой сервис</h4>
+                            <ul><li>Маникюр</li><li>Педикюр</li><li>Наращивание</li></ul>
                         </div>
                         <div class="f-col">
-                            <h4 class="f-title">Schönheit & Pflege</h4>
-                            <ul><li>Epilation</li><li>Wimpernverlängerung</li><li>Laminierung</li></ul>
+                            <h4 class="f-title">Косметология и Уход</h4>
+                            <ul><li>Депиляция</li><li>Наращивание ресниц</li><li>Ламинирование</li></ul>
                         </div>
                     </div>
                     <!-- LEGAL LINKS -->
                     <div class="footer-legal-links">
-                        <a href="impressum.html">Impressum</a>
+                        <a href="../impressum.html">Impressum</a>
                         <span style="opacity: 0.3; margin: 0 5px;">|</span>
-                        <a href="datenschutz.html">Datenschutz</a>
+                        <a href="../datenschutz.html">Datenschutz</a>
                     </div>
                 </div>
             </div>
@@ -250,9 +258,9 @@
             if(footer) {
                 footer.classList.toggle('active');
                 if (footer.classList.contains('active')) {
-                    btnText.innerText = "Schließen";
+                    btnText.innerText = "Свернуть";
                 } else {
-                    btnText.innerText = "Kontakt & Leistungen öffnen";
+                    btnText.innerText = "Открыть контакты и услуги";
                 }
             }
         }
