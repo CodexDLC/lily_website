@@ -1,0 +1,27 @@
+name: CI Develop (Linting)
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  lint:
+    name: Fast Quality Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          pip install ".[dev,bot]"
+
+      - name: Run Ruff
+        run: ruff check src/telegram_bot/ src/shared/
+
+      - name: Run Mypy
+        run: mypy src/telegram_bot/ src/shared/

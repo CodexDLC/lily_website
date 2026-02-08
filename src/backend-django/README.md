@@ -1,4 +1,4 @@
-# 🐍 Django Backend
+# 🐍 lily_website — Django Backend
 
 ## Structure
 
@@ -47,27 +47,17 @@ python manage.py runserver
 
 ## Adding a Feature
 
-1. Create app:
 ```bash
+cd src/backend-django
 python manage.py startapp my_feature features/my_feature
 ```
 
-2. Restructure:
-   - Move `views.py` → `views/__init__.py` + `views/my_view.py`
-   - Add `selectors/` folder for read queries
-   - Add `models/` folder if multiple models
-   - Update `apps.py`: `name = "features.my_feature"`
-   - Add to `core/settings/base.py` → `INSTALLED_APPS`
-   - Include URLs in `core/urls.py`
-
-## Architecture Patterns
-
-- **features/** — apps grouped in one place (not scattered in root)
-- **views/** as folder — one file per view, not one giant views.py
-- **models/** as folder — one file per model when app grows
-- **selectors/** — read-only DB queries (keeps views thin)
-- **services/** — write operations, business logic (add when needed)
-- **split settings** — base/dev/prod, secrets from .env
+Then restructure:
+1. Move `views.py` → `views/__init__.py` + `views/my_view.py`
+2. Add `selectors/` folder
+3. Update `apps.py`: `name = "features.my_feature"`
+4. Add to `core/settings/base.py` → `INSTALLED_APPS`
+5. Include URLs in `core/urls.py`
 
 ## Settings
 
@@ -76,9 +66,6 @@ python manage.py startapp my_feature features/my_feature
 | `SECRET_KEY` | insecure | Django secret key |
 | `DEBUG` | True | Debug mode |
 | `ALLOWED_HOSTS` | localhost | Comma-separated hosts |
-| `DB_NAME` | SQLite | Postgres in production |
-| `DB_USER` | — | Postgres user |
-| `DB_PASSWORD` | — | Postgres password |
-| `DB_HOST` | postgres | Postgres host |
+| `DATABASE_URL` | SQLite | Postgres in production |
 | `LANGUAGE_CODE` | en-us | Default language |
 | `TIME_ZONE` | UTC | Timezone |

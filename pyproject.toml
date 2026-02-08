@@ -1,5 +1,5 @@
 [project]
-name = "project-template"
+name = "lily_website"
 version = "0.1.0"
 description = ""
 authors = [
@@ -17,15 +17,6 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# FastAPI backend
-fastapi = [
-    "fastapi (>=0.115.8,<0.116.0)",
-    "uvicorn[standard] (>=0.34.0,<0.35.0)",
-    "sqlalchemy[asyncio] (>=2.0.38,<3.0.0)",
-    "asyncpg (>=0.30.0,<0.31.0)",
-    "alembic (>=1.14.1,<2.0.0)",
-    "python-multipart (>=0.0.20,<0.0.21)",
-]
 # Django backend
 django = [
     "django (>=5.1,<6.0)",

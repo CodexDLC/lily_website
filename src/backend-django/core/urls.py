@@ -1,5 +1,5 @@
 """
-project-template — URL Configuration.
+lily_website — URL Configuration.
 
 Features auto-included via include().
 """

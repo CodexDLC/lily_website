@@ -1,5 +1,5 @@
 """
-ASGI config for project-template.
+ASGI config for lily_website.
 """
 
 import os

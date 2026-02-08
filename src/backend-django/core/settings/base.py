@@ -1,5 +1,5 @@
 """
-project-template — Base Settings.
+lily_website — Base Settings.
 
 Common settings for all environments.
 Secrets and env-specific values loaded from .env via os.environ.

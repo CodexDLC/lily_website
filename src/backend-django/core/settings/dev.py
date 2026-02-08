@@ -1,5 +1,5 @@
 """
-project-template — Development Settings.
+lily_website — Development Settings.
 
 Inherits from base.py. SQLite, DEBUG=True, verbose logging.
 """

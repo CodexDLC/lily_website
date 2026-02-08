@@ -1,5 +1,5 @@
 """
-WSGI config for project-template.
+WSGI config for lily_website.
 """
 
 import os

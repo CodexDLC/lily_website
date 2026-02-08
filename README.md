@@ -12,12 +12,12 @@
 
 ```bash
 # Into a new folder:
-git clone https://github.com/codexdlc/project-template.git my-project
+git clone https://github.com/codexdlc/lily_website.git my-project
 cd my-project
 
 # Or into the current folder:
 mkdir my-project && cd my-project
-git clone https://github.com/codexdlc/project-template.git .
+git clone https://github.com/codexdlc/lily_website.git .
 ```
 
 ### 2. Install dependencies
@@ -47,7 +47,7 @@ The interactive CLI will ask:
 3. **Backend installer** — sets up the chosen framework (FastAPI is ready; Django is built from templates)
 4. **Bot installer** — configures the Telegram bot module
 5. **Cleaner** — removes unused modules (src dirs, deploy dirs, docs)
-6. **Renamer** — replaces `project-template` marker with your project name
+6. **Renamer** — replaces `lily_website` marker with your project name
 7. **Finalizer** — creates two git commits: `Install` (full state) → `Activate` (clean project)
 
 ---
@@ -55,7 +55,7 @@ The interactive CLI will ask:
 ## Project Structure
 
 ```
-project-template/
+lily_website/
 ├── src/
 │   ├── backend-fastapi/      # FastAPI backend (async, Clean Architecture)
 │   ├── backend-django/       # Django backend (features-based structure)

@@ -1,0 +1,35 @@
+name: CI Main (Testing & Build Check)
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  tests:
+    name: Full Test Suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: |
+          pip install ".[dev,bot]"
+
+      - name: Run Pytest
+        env:
+          SECRET_KEY: "test_secret_key_for_ci"
+        run: pytest
+
+  build-check:
+    name: Docker Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+- name: Build Bot image
+  run: docker build -f deploy/bot/Dockerfile -t check-bot .
