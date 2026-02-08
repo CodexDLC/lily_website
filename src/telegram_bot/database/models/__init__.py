@@ -1,0 +1,11 @@
+"""
+SQLAlchemy models for Telegram Bot (Direct mode).
+Place your models here when the bot works directly with the database.
+
+Import all models here so Alembic can discover them for autogenerate.
+"""
+
+from .base import Base, TimestampMixin  # noqa: F401
+
+# Import your models below:
+# from .user import BotUser  # noqa: F401
