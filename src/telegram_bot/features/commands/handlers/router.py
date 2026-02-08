@@ -5,7 +5,7 @@ Handlers для фичи commands.
 
 import contextlib
 
-from aiogram import Bot, F, Router
+from aiogram import Bot, Router
 from aiogram.exceptions import TelegramAPIError
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
@@ -13,9 +13,9 @@ from aiogram.types import CallbackQuery, Message
 from loguru import logger as log
 
 from src.telegram_bot.core.container import BotContainer
-from src.telegram_bot.features.commands.resources.texts import HELP_TEXT, SETTINGS_WIP
-from src.telegram_bot.features.commands.resources.formatters import MessageInfoFormatter
 from src.telegram_bot.features.commands.resources.callbacks import SettingsCallback
+from src.telegram_bot.features.commands.resources.formatters import MessageInfoFormatter
+from src.telegram_bot.features.commands.resources.texts import HELP_TEXT, SETTINGS_WIP
 from src.telegram_bot.services.sender.view_sender import ViewSender
 
 router = Router(name="commands_router")

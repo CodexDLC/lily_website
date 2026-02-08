@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friseur | LILY Beauty Salon</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+    <div class="site-wrapper">
+
+        <!-- TOP BAR -->
+        <div class="header-top-bar">
+            <div class="container top-bar-row">
+                <div class="top-bar-item">
+                    <span>📍 Lohmannstraße 111, 06366 Köthen</span>
+                </div>
+                <div class="top-bar-item">
+                    <span>📞 </span>
+                    <a href="tel:+4917659423704">+49 176 59423704</a>
+                </div>
+            </div>
+        </div>
+
+        <header class="header-split">
+            <div class="container header-row">
+                <a href="../index.html" class="logo-link"><img src="static/logo_lily.png" alt="LILY" class="logo-img"></a>
+                <nav class="nav-desktop">
+                    <a href="../index.html">Startseite</a>
+                    <a href="services.html" style="color: var(--color-gold);">Leistungen</a>
+                    <a href="team.html">Team</a>
+                    <a href="contacts.html">Kontakt</a>
+                    <a href="ru/hair.html" style="margin-left: 20px; opacity: 0.7;">RU</a>
+                </nav>
+                <button class="burger-btn" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+            </div>
+        </header>
+
+        <div class="mobile-menu-overlay" id="mobileMenu">
+            <button class="close-btn" onclick="toggleMenu()">×</button>
+            <nav class="mobile-nav-links">
+                <a href="../index.html">Startseite</a>
+                <a href="services.html">Leistungen</a>
+                <a href="team.html">Team</a>
+                <a href="contacts.html">Kontakt</a>
+                <a href="ru/hair.html" onclick="toggleMenu()" style="color: var(--color-gold);">RU</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <span style="color: var(--color-gold); font-size: 12px; letter-spacing: 2px;">LILY Beauty Salon</span>
+            </div>
+        </div>
+
+        <!-- HERO SERVICE -->
+        <section class="hero-text-block" style="background-image: url('https://pinlite.dev/media/storage/ad/d7/add7f82bb943e397c29a69807cc84560f435509d3843252c790157012164feae.jpg'); background-size: cover; background-position: center; position: relative;">
+            <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,56,49,0.8);"></div>
+            <div class="container" style="position: relative; z-index: 2;">
+                <h1 class="hero-title">Friseurkunst</h1>
+                <p class="hero-subtitle">HAARSCHNITTE • FÄRBEN • PFLEGE</p>
+            </div>
+        </section>
+
+        <main class="section">
+            <div class="container price-menu-container">
+
+                <!-- SEO TEXT -->
+                <div class="service-seo-section">
+                    <div class="service-seo-text text-center">
+                        <p>Bei LILY betrachten wir Haare als Leinwand und den Haarschnitt als Skulptur. Wir verwenden fortschrittliche Färbetechniken wie Airtouch und Balayage und arbeiten ausschließlich mit Premium-Marken wie Wella und L'Oreal. Jeder Besuch beginnt mit einer professionellen Beratung, bei der wir einen Look auswählen, der Ihre Gesichtsform und Haarstruktur unterstreicht. Unser Ziel ist es nicht nur, Ihr Aussehen zu verändern, sondern die Gesundheit und den natürlichen Glanz Ihres Haares zu erhalten.</p>
+                    </div>
+                </div>
+
+                <!-- PRICE LIST (Only Hair) -->
+                <div class="price-block">
+                    <div class="category-header">
+                        <h2 class="category-title">Preisliste</h2>
+                    </div>
+
+                    <div class="service-row">
+                        <div class="service-names">
+                            <span class="name-de">Damenhaarschnitt</span>
+                        </div>
+                        <div class="service-meta">
+                            <span class="meta-price">ab 45.00 €</span>
+                            <span class="meta-time">⏱ 60 min</span>
+                        </div>
+                    </div>
+                    <div class="service-row">
+                        <div class="service-names">
+                            <span class="name-de">Herrenhaarschnitt</span>
+                        </div>
+                        <div class="service-meta">
+                            <span class="meta-price">25.00 €</span>
+                            <span class="meta-time">⏱ 45 min</span>
+                        </div>
+                    </div>
+                    <div class="service-row">
+                        <div class="service-names">
+                            <span class="name-de">Kinderhaarschnitt</span>
+                        </div>
+                        <div class="service-meta">
+                            <span class="meta-price">18.00 €</span>
+                            <span class="meta-time">⏱ 30 min</span>
+                        </div>
+                    </div>
+                    <div class="service-row">
+                        <div class="service-names">
+                            <span class="name-de">Färben (Ansatz)</span>
+                        </div>
+                        <div class="service-meta">
+                            <span class="meta-price">ab 60.00 €</span>
+                            <span class="meta-time">⏱ 90 min</span>
+                        </div>
+                    </div>
+                    <div class="service-row">
+                        <div class="service-names">
+                            <span class="name-de">Färben (Komplett)</span>
+                        </div>
+                        <div class="service-meta">
+                            <span class="meta-price">ab 80.00 €</span>
+                            <span class="meta-time">⏱ 120 min</span>
+                        </div>
+                    </div>
+                    <div class="service-row">
+                        <div class="service-names">
+                            <span class="name-de">Airtouch / Balayage</span>
+                        </div>
+                        <div class="service-meta">
+                            <span class="meta-price">ab 250.00 €</span>
+                            <span class="meta-time">⏱ 240 min</span>
+                        </div>
+                    </div>
+                    <div class="service-row">
+                        <div class="service-names">
+                            <span class="name-de">Haarpflege / Kur</span>
+                        </div>
+                        <div class="service-meta">
+                            <span class="meta-price">ab 40.00 €</span>
+                            <span class="meta-time">⏱ 60 min</span>
+                        </div>
+                    </div>
+                    <div class="service-row">
+                        <div class="service-names">
+                            <span class="name-de">Abendfrisur</span>
+                        </div>
+                        <div class="service-meta">
+                            <span class="meta-price">ab 50.00 €</span>
+                            <span class="meta-time">⏱ 60 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MASTERS BLOCK -->
+                <section class="service-masters-block">
+                    <h3 class="category-title" style="border:none; text-align:center; font-size: 24px; margin-bottom: 20px;">Ihre Experten</h3>
+                    <div class="masters-list" style="justify-content: center;">
+
+                        <div class="mini-master">
+                            <!-- Placeholder image -->
+                            <div style="width: 40px; height: 40px; background: #ccc; border-radius: 50%;"></div>
+                            <div>
+                                <strong style="display:block; color:var(--color-gold);">Anna</strong>
+                                <span style="font-size:12px; opacity:0.6;">Top-Colorist</span>
+                            </div>
+                        </div>
+
+                        <div class="mini-master">
+                            <!-- Placeholder image -->
+                            <div style="width: 40px; height: 40px; background: #ccc; border-radius: 50%;"></div>
+                            <div>
+                                <strong style="display:block; color:var(--color-gold);">Liliia</strong>
+                                <span style="font-size:12px; opacity:0.6;">Art Director</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <div style="text-align: center; margin-top: 40px;">
+                    <a href="contacts.html" class="btn-pill">Termin buchen</a>
+                </div>
+
+            </div>
+        </main>
+
+        <footer class="footer-smart">
+            <div class="container">
+                <div class="footer-bar" onclick="toggleFooter()">
+                    <div class="footer-branding">
+                        <span class="brand-name">LILY SALON</span>
+                        <span class="copyright">© 2025</span>
+                    </div>
+                    <button class="footer-toggle-btn">
+                        <span id="footerBtnText">Kontakt & Leistungen öffnen</span>
+                        <span class="arrow-icon">↓</span>
+                    </button>
+                </div>
+                <div class="footer-content" id="footerContent">
+                     <div class="footer-grid">
+                        <div class="f-col contact-col">
+                            <div class="f-row"><span class="icon">📞</span> <a href="tel:+4917659423704">+49 176 59423704</a></div>
+                            <div class="f-row"><span class="icon">📍</span>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=Lohmannstraße+111,+06366+Köthen+(Anhalt)" target="_blank" style="border-bottom: 1px dashed rgba(255,255,255,0.3);">
+                                    Lohmannstraße 111,<br>06366 Köthen (Anhalt)
+                                </a>
+                            </div>
+                            <div class="f-row"><span class="icon">📷</span> <a href="https://instagram.com/manikure_kothen">@manikure_kothen</a></div>
+                            <div class="f-qr"><img src="static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Frisuren & Haarpflege</h4>
+                            <ul><li>Haarschnitte</li><li>Färben</li><li>Haarbehandlung</li><li>Styling</li></ul>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Nagelservice</h4>
+                            <ul><li>Maniküre</li><li>Pediküre</li><li>Verlängerung</li></ul>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Schönheit & Pflege</h4>
+                            <ul><li>Epilation</li><li>Wimpernverlängerung</li><li>Laminierung</li></ul>
+                        </div>
+                    </div>
+                    <!-- LEGAL LINKS -->
+                    <div class="footer-legal-links">
+                        <a href="impressum.html">Impressum</a>
+                        <span style="opacity: 0.3; margin: 0 5px;">|</span>
+                        <a href="datenschutz.html">Datenschutz</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if(menu) {
+                menu.classList.toggle('active');
+                document.body.classList.toggle('no-scroll');
+            }
+        }
+
+        function toggleFooter() {
+            const footer = document.querySelector('.footer-smart');
+            const btnText = document.getElementById('footerBtnText');
+            if(footer) {
+                footer.classList.toggle('active');
+                if (footer.classList.contains('active')) {
+                    btnText.innerText = "Schließen";
+                } else {
+                    btnText.innerText = "Kontakt & Leistungen öffnen";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

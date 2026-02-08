@@ -29,7 +29,7 @@ MODULE_PATHS: dict[str, list[str]] = {
         "src/backend-fastapi",
     ],
     "django": [
-        "src/backend-django",
+        "src/backend_django",
     ],
     "shared": [
         "src/shared",

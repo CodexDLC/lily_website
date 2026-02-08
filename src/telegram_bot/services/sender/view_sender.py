@@ -5,9 +5,9 @@ from aiogram.exceptions import TelegramAPIError
 from aiogram.fsm.context import FSMContext
 from loguru import logger as log
 
-from src.telegram_bot.services.base.base_service import BaseUIService
-from src.telegram_bot.services.base import UnifiedViewDTO, ViewResultDTO
 from src.telegram_bot.resources.constants import KEY_UI_COORDS
+from src.telegram_bot.services.base import UnifiedViewDTO, ViewResultDTO
+from src.telegram_bot.services.base.base_service import BaseUIService
 
 
 class ViewSender(BaseUIService):

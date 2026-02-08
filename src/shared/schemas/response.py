@@ -1,8 +1,4 @@
-from typing import Generic, TypeVar
-
 from pydantic import BaseModel
-
-T = TypeVar("T")
 
 
 class ResponseHeader(BaseModel):
@@ -10,6 +6,7 @@ class ResponseHeader(BaseModel):
     Метаданные ответа.
     Управляют состоянием бота и сообщают об ошибках.
     """
+
     success: bool = True
     message: str | None = None
 
@@ -23,10 +20,11 @@ class ResponseHeader(BaseModel):
     trace_id: str | None = None
 
 
-class CoreResponseDTO(BaseModel, Generic[T]):
+class CoreResponseDTO[T](BaseModel):
     """
     Стандартный ответ: Заголовок + Данные.
     Используется для обмена данными между слоями (Client -> Orchestrator).
     """
+
     header: ResponseHeader
     payload: T | None = None

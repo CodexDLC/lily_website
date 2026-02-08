@@ -1,10 +1,10 @@
 import importlib
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from loguru import logger as log
 
-from src.telegram_bot.core.settings import INSTALLED_FEATURES
 from src.telegram_bot.core.garbage_collector import GarbageStateRegistry
+from src.telegram_bot.core.settings import INSTALLED_FEATURES
 
 if TYPE_CHECKING:
     from src.telegram_bot.core.container import BotContainer
@@ -19,10 +19,10 @@ class FeatureDiscoveryService:
     3. Фабрики оркестраторов (feature_setting.py -> create_orchestrator)
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._loaded_features: set[str] = set()
 
-    def discover_all(self):
+    def discover_all(self) -> None:
         """
         Запускает полный цикл обнаружения.
         Обычно вызывается при старте бота.
@@ -63,11 +63,11 @@ class FeatureDiscoveryService:
 
         return orchestrators
 
-    def get_menu_buttons(self) -> dict[str, dict]:
+    def get_menu_buttons(self) -> dict[str, dict[str, Any]]:
         """
         Возвращает собранные кнопки меню.
         """
-        buttons = {}
+        buttons: dict[str, dict[str, Any]] = {}
         for feature_path in INSTALLED_FEATURES:
             btn = self._discover_menu(feature_path)
             if btn:
@@ -75,7 +75,7 @@ class FeatureDiscoveryService:
                 buttons[key] = btn
         return buttons
 
-    def _load_feature_setting(self, feature_path: str):
+    def _load_feature_setting(self, feature_path: str) -> Any | None:
         """
         Загружает модуль feature_setting.py для фичи.
         Пробует: feature_setting.py → __init__.py
@@ -93,21 +93,21 @@ class FeatureDiscoveryService:
 
         return None
 
-    def _discover_menu(self, feature_path: str) -> dict | None:
+    def _discover_menu(self, feature_path: str) -> dict[str, Any] | None:
         """Ищет MENU_CONFIG в menu.py"""
         module_path = f"src.telegram_bot.{feature_path}.menu"
         try:
             module = importlib.import_module(module_path)
             config = getattr(module, "MENU_CONFIG", None)
             if config and isinstance(config, dict):
-                return config
+                return cast("dict[str, Any]", config)
         except ImportError:
             pass
         except Exception as e:
             log.error(f"FeatureDiscovery | menu_error feature='{feature_path}' error='{e}'")
         return None
 
-    def _discover_garbage_states(self, feature_path: str):
+    def _discover_garbage_states(self, feature_path: str) -> None:
         """
         Ищет настройки GC в feature_setting.py (или __init__.py).
         Ожидает:
@@ -134,4 +134,6 @@ class FeatureDiscoveryService:
                 GarbageStateRegistry.register(states)
                 log.debug(f"FeatureDiscovery | gc_registered auto feature='{feature_path}'")
             else:
-                log.warning(f"FeatureDiscovery | gc_warning feature='{feature_path}' GARBAGE_COLLECT=True but no STATES found")
+                log.warning(
+                    f"FeatureDiscovery | gc_warning feature='{feature_path}' GARBAGE_COLLECT=True but no STATES found"
+                )

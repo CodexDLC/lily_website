@@ -3,9 +3,9 @@ UI сервис для фичи commands.
 Преобразует данные в готовые ViewResultDTO для отправки пользователю.
 """
 
-from src.telegram_bot.services.base.view_dto import ViewResultDTO
-from src.telegram_bot.features.commands.resources.texts import START_GREETING
 from src.telegram_bot.features.commands.resources.keyboards import build_start_keyboard
+from src.telegram_bot.features.commands.resources.texts import START_GREETING
+from src.telegram_bot.services.base.view_dto import ViewResultDTO
 
 
 class CommandsUI:

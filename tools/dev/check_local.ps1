@@ -1,11 +1,12 @@
+Clear-Host
 $ErrorActionPreference = "Stop"
 Write-Host "🚀 Starting Local Quality Check..." -ForegroundColor Cyan
 
-# 1. Backend & Tests: Ruff
+# 1. Code Style: Ruff
 Write-Host "`n🔍 Checking Style (Ruff)..." -ForegroundColor Yellow
 try {
-    # Проверяем и backend, и tests
-    ruff check backend/ tests/ --fix
+    # Проверяем всю папку src
+    ruff check src/ --fix
     if ($LASTEXITCODE -ne 0) { throw "Ruff found errors" }
     Write-Host "✅ Ruff passed!" -ForegroundColor Green
 } catch {
@@ -13,10 +14,10 @@ try {
     exit 1
 }
 
-# 2. Backend: Mypy
-Write-Host "`n🧠 Checking Backend Types (Mypy)..." -ForegroundColor Yellow
+# 2. Type Checking: Mypy
+Write-Host "`n🧠 Checking Types (Mypy)..." -ForegroundColor Yellow
 try {
-    mypy backend/
+    mypy src/
     if ($LASTEXITCODE -ne 0) { throw "Mypy found errors" }
     Write-Host "✅ Mypy passed!" -ForegroundColor Green
 } catch {
@@ -24,15 +25,15 @@ try {
     exit 1
 }
 
-# 3. Backend: Pytest (Unit Tests Only)
-# Запускаем только unit-тесты, так как для integration нужна живая БД.
-# Если хочешь запускать всё, убедись, что БД поднята, и убери "tests/unit"
+# 3. Unit Tests: Pytest
+# Запускаем только unit-тесты, исключая интеграционные (требующие БД)
 Write-Host "`n🧪 Running Unit Tests (Pytest)..." -ForegroundColor Yellow
 try {
-    # Устанавливаем фейковый ключ, если его нет в .env, чтобы тесты не падали при старте
+    # Устанавливаем фейковый ключ, если его нет в .env
     $env:SECRET_KEY = "local_test_key"
 
-    pytest tests/unit
+    # Ищем тесты в src, но игнорируем любые папки integration
+    pytest src --ignore-glob="**/integration/**"
     if ($LASTEXITCODE -ne 0) { throw "Tests failed" }
     Write-Host "✅ Tests passed!" -ForegroundColor Green
 } catch {

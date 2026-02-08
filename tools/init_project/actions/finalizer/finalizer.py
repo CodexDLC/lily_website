@@ -14,7 +14,7 @@ Flow:
 from __future__ import annotations
 
 import subprocess
-from pathlib import Path
+from pathlib import Path  # noqa: TCH003
 
 from tools.init_project.config import InstallContext, safe_rmtree
 
@@ -52,6 +52,7 @@ class FinalizerAction:
             cwd=root,
             capture_output=True,
             text=True,
+            check=False,
         )
         if result.returncode == 0:
             self._install_hash = result.stdout.strip()

@@ -34,20 +34,20 @@ class Director:
     async def set_scene(self, feature: str, payload: Any) -> Any:
         """
         Межфичевый переход: смена FSM State + вызов entry logic.
-        
+
         Args:
             feature: Имя фичи (ключ в container.features)
             payload: Данные для инициализации (если None -> handle_entry без payload)
         """
         # 1. Получаем оркестратор из контейнера
         orchestrator = self.container.features.get(feature)
-        
+
         if not orchestrator:
             logger.error(f"Director | unknown_feature='{feature}' user_id={self.user_id}")
             # Можно вернуть экран ошибки, если он есть
             return None
 
-        orchestrator = cast(OrchestratorProtocol, orchestrator)
+        orchestrator = cast("OrchestratorProtocol", orchestrator)
         if hasattr(orchestrator, "set_director"):
             orchestrator.set_director(self)
 
@@ -62,7 +62,7 @@ class Director:
         # Всегда вызываем handle_entry для инициализации фичи
         if hasattr(orchestrator, "handle_entry"):
             return await orchestrator.handle_entry(self.user_id, payload)
-        
+
         # Fallback для старых оркестраторов (если они еще есть)
         return await orchestrator.render(payload)
 

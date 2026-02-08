@@ -4,8 +4,8 @@ from loguru import logger as log
 from redis.asyncio import Redis
 
 from src.telegram_bot.core.config import BotSettings
-from src.telegram_bot.features.commands.client import AuthClient
 from src.telegram_bot.features.bot_menu.logic.orchestrator import BotMenuOrchestrator
+from src.telegram_bot.features.commands.client import AuthClient
 from src.telegram_bot.services.feature_discovery.service import FeatureDiscoveryService
 
 

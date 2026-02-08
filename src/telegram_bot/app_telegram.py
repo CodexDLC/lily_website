@@ -8,15 +8,15 @@ import asyncio
 from loguru import logger as log
 from redis.asyncio import Redis
 
+from src.shared.core.logger import setup_logging
 from src.telegram_bot.core.config import BotSettings
 from src.telegram_bot.core.container import BotContainer
 from src.telegram_bot.core.factory import build_bot
 from src.telegram_bot.core.routers import build_main_router
-from src.telegram_bot.middlewares.user_validation import UserValidationMiddleware
-from src.telegram_bot.middlewares.throttling import ThrottlingMiddleware
-from src.telegram_bot.middlewares.security import SecurityMiddleware
 from src.telegram_bot.middlewares.container import ContainerMiddleware
-from src.shared.core.logger import setup_logging
+from src.telegram_bot.middlewares.security import SecurityMiddleware
+from src.telegram_bot.middlewares.throttling import ThrottlingMiddleware
+from src.telegram_bot.middlewares.user_validation import UserValidationMiddleware
 
 
 async def startup(settings: BotSettings) -> None:

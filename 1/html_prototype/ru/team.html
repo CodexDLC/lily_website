@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Команда | LILY Beauty Salon</title>
+    <link rel="icon" type="image/png" href="../static/logo_lily.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/pages.css">
+
+    <style>
+        /* Local styles for Team page (Zebra Blocks) */
+        .team-section-block {
+            padding: 60px 0;
+        }
+
+        /* Darker block for Owner */
+        .team-section-block:nth-child(odd) {
+            background-color: rgba(0, 0, 0, 0.05); /* Subtle dark */
+        }
+
+        /* Lighter block for Team */
+        .team-section-block:nth-child(even) {
+            background-color: transparent;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 50px;
+            font-family: var(--font-serif);
+            font-size: 36px;
+            color: var(--color-white);
+        }
+    </style>
+</head>
+<body>
+    <div class="site-wrapper">
+
+        <!-- TOP BAR -->
+        <div class="header-top-bar">
+            <div class="container top-bar-row">
+                <div class="top-bar-item">
+                    <span>📍 Lohmannstraße 111, 06366 Köthen</span>
+                </div>
+                <div class="top-bar-item">
+                    <span>📞 </span>
+                    <a href="tel:+4917659423704">+49 176 59423704</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- HEADER -->
+        <header class="header-split">
+            <div class="container header-row">
+                <a href="index.html" class="logo-link"><img src="../static/logo_lily.png" alt="LILY" class="logo-img"></a>
+                <nav class="nav-desktop">
+                    <a href="index.html">Главная</a>
+                    <a href="services.html">Услуги</a>
+                    <a href="team.html" style="color: var(--color-gold);">Команда</a>
+                    <a href="contacts.html">Контакты</a>
+                    <a href="../../html_prototype/team.html" style="margin-left: 20px; opacity: 0.7;">DE</a>
+                </nav>
+                <button class="burger-btn" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+            </div>
+        </header>
+
+        <!-- MOBILE MENU OVERLAY -->
+        <div class="mobile-menu-overlay" id="mobileMenu">
+            <button class="close-btn" onclick="toggleMenu()">×</button>
+            <nav class="mobile-nav-links">
+                <a href="index.html">Главная</a>
+                <a href="services.html">Услуги</a>
+                <a href="team.html">Команда</a>
+                <a href="contacts.html">Контакты</a>
+                <a href="../../html_prototype/team.html" onclick="toggleMenu()" style="color: var(--color-gold);">DE</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <span style="color: var(--color-gold); font-size: 12px; letter-spacing: 2px;">LILY Beauty Salon</span>
+            </div>
+        </div>
+
+        <!-- HERO -->
+        <section class="hero-text-block">
+            <div class="container">
+                <h1 class="hero-title">Наша Команда</h1>
+                <p class="hero-subtitle">ЭКСПЕРТЫ КРАСОТЫ</p>
+            </div>
+        </section>
+
+        <!-- CONTENT (Zebra Blocks) -->
+        <main>
+
+            <!-- BLOCK 1: OWNER -->
+            <section class="team-section-block">
+                <div class="container">
+                    <div class="owner-block">
+                        <div class="owner-photo" style="background-image: url('https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600');"></div>
+
+                        <div class="owner-info">
+                            <h2 style="font-family: var(--font-serif); font-size: 36px; color: var(--color-white); margin-bottom: 10px;">Liliia Yakina</h2>
+                            <span class="owner-role">Founder & Art Director</span>
+
+                            <p style="color: var(--color-text-muted); line-height: 1.6; margin-bottom: 20px;">
+                                Добро пожаловать в пространство красоты LILY.
+                                Здесь мы создаем не просто образы, а настроение.
+                                Моя миссия — подарить вам уверенность в себе и высочайшее качество услуг в уютной атмосфере.
+                            </p>
+                            <p style="font-size: 12px; opacity: 0.5; font-style: italic; color: var(--color-text-muted);">
+                                (Здесь Лилия может написать свою историю или приветствие для клиентов)
+                            </p>
+
+                            <br>
+                            <a href="https://instagram.com/manikure_kothen" class="btn-pill">Написать Лилии</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BLOCK 2: TEAM GRID -->
+            <section class="team-section-block">
+                <div class="container">
+                    <h2 class="section-heading">Топ-Мастера</h2>
+
+                    <div class="team-grid">
+                        <!-- Master 1 -->
+                        <div class="master-card">
+                            <div class="master-photo" style="background-image: url('https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=600');"></div>
+                            <div class="master-info">
+                                <h3 class="master-name">Анна</h3>
+                                <p class="master-role">Топ-Колорист</p>
+                                <a href="#" class="btn-book">Профиль</a>
+                            </div>
+                        </div>
+                        <!-- Master 2 -->
+                        <div class="master-card">
+                            <div class="master-photo" style="background-image: url('https://images.unsplash.com/photo-1595959183082-7b570b7e08e2?auto=format&fit=crop&w=600');"></div>
+                            <div class="master-info">
+                                <h3 class="master-name">Мария</h3>
+                                <p class="master-role">Nail Master</p>
+                                <a href="#" class="btn-book">Профиль</a>
+                            </div>
+                        </div>
+                        <!-- Master 3 -->
+                        <div class="master-card">
+                            <div class="master-photo" style="background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600');"></div>
+                            <div class="master-info">
+                                <h3 class="master-name">Елена</h3>
+                                <p class="master-role">Косметолог</p>
+                                <a href="#" class="btn-book">Профиль</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- SMART FOOTER -->
+        <footer class="footer-smart">
+            <div class="container">
+                <div class="footer-bar" onclick="toggleFooter()">
+                    <div class="footer-branding">
+                        <span class="brand-name">LILY SALON</span>
+                        <span class="copyright">© 2025</span>
+                    </div>
+
+                    <div class="developer-info" style="font-size: 10px; opacity: 0.4; letter-spacing: 1px;">
+                        Developed by <a href="#" style="color: inherit; text-decoration: underline;">CodexDLC</a>
+                    </div>
+
+                    <button class="footer-toggle-btn">
+                        <span id="footerBtnText">Открыть контакты и услуги</span>
+                        <span class="arrow-icon">↓</span>
+                    </button>
+                </div>
+                <div class="footer-content" id="footerContent">
+                    <div class="footer-grid">
+                        <div class="f-col contact-col">
+                            <div class="f-row"><span class="icon">📞</span> <a href="tel:+4917659423704">+49 176 59423704</a></div>
+                            <div class="f-row"><span class="icon">📍</span>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=Lohmannstraße+111,+06366+Köthen+(Anhalt)" target="_blank" style="border-bottom: 1px dashed rgba(255,255,255,0.3);">
+                                    Lohmannstraße 111,<br>06366 Köthen (Anhalt)
+                                </a>
+                            </div>
+                            <div class="f-row"><span class="icon">📷</span> <a href="https://instagram.com/manikure_kothen">@manikure_kothen</a></div>
+                            <div class="f-qr"><img src="../static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Парикмахерский зал</h4>
+                            <ul><li>Стрижки</li><li>Окрашивание</li><li>Уход</li><li>Укладки</li></ul>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Ногтевой сервис</h4>
+                            <ul><li>Маникюр</li><li>Педикюр</li><li>Наращивание</li></ul>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Косметология и Уход</h4>
+                            <ul><li>Депиляция</li><li>Наращивание ресниц</li><li>Ламинирование</li></ul>
+                        </div>
+                    </div>
+                    <!-- LEGAL LINKS -->
+                    <div class="footer-legal-links">
+                        <a href="../impressum.html">Impressum</a>
+                        <span style="opacity: 0.3; margin: 0 5px;">|</span>
+                        <a href="../datenschutz.html">Datenschutz</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if(menu) {
+                menu.classList.toggle('active');
+                document.body.classList.toggle('no-scroll');
+            }
+        }
+
+        function toggleFooter() {
+            const footer = document.querySelector('.footer-smart');
+            const btnText = document.getElementById('footerBtnText');
+            if(footer) {
+                footer.classList.toggle('active');
+                if (footer.classList.contains('active')) {
+                    btnText.innerText = "Свернуть";
+                } else {
+                    btnText.innerText = "Открыть контакты и услуги";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -16,11 +16,11 @@ class BotSettings(CommonSettings):
 
     # --- Channels ---
     bug_report_channel_id: int | None = None
-    
+
     # --- Roles (ENV) ---
     # ID суперпользователей (разработчиков), через запятую
     superuser_ids: str = ""
-    
+
     # ID владельцев бота (администраторов бизнеса), через запятую
     owner_ids: str = ""
 
@@ -53,7 +53,7 @@ class BotSettings(CommonSettings):
         """
         superusers = self.superuser_ids_list
         owners = self.owner_ids_list
-        
+
         return {
             "superuser": superusers,
             # Владелец + Суперюзер (суперюзер имеет права владельца)

@@ -3,9 +3,11 @@ from aiogram.fsm.state import State, StatesGroup
 from src.telegram_bot.features.commands.logic.orchestrator import StartOrchestrator
 from src.telegram_bot.features.commands.ui.commands_ui import CommandsUI
 
+
 # 1. Определение состояний (для команд обычно не нужно, но для стандарта оставим)
 class CommandsStates(StatesGroup):
     main = State()
+
 
 STATES = CommandsStates
 
@@ -19,9 +21,10 @@ MENU_CONFIG = {
     "text": "🛠 Команды",
     "icon": "🛠",
     "description": "Управление настройками и помощь",
-    "target_state": "commands", # Директор должен знать этот ключ
-    "priority": 100
+    "target_state": "commands",  # Директор должен знать этот ключ
+    "priority": 100,
 }
+
 
 # 4. Фабрика (DI)
 def create_orchestrator(container):

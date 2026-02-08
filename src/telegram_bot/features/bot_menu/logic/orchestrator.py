@@ -1,11 +1,11 @@
 from typing import Any
 
-from src.telegram_bot.services.base.base_orchestrator import BaseBotOrchestrator
-from src.telegram_bot.services.base.view_dto import UnifiedViewDTO
-from src.telegram_bot.features.bot_menu.ui.menu_ui import BotMenuUI
-from src.telegram_bot.features.bot_menu.contracts.menu_contract import MenuDiscoveryProvider
 from src.shared.schemas.response import CoreResponseDTO, ResponseHeader
 from src.telegram_bot.core.config import BotSettings
+from src.telegram_bot.features.bot_menu.contracts.menu_contract import MenuDiscoveryProvider
+from src.telegram_bot.features.bot_menu.ui.menu_ui import BotMenuUI
+from src.telegram_bot.services.base.base_orchestrator import BaseBotOrchestrator
+from src.telegram_bot.services.base.view_dto import UnifiedViewDTO
 
 
 class BotMenuOrchestrator(BaseBotOrchestrator):
@@ -34,22 +34,22 @@ class BotMenuOrchestrator(BaseBotOrchestrator):
         """
         # 1. Получаем конфиги всех фич
         all_features = self.discovery.get_menu_buttons()
-        
+
         # 2. Фильтруем по правам доступа
         available_features = {}
         descriptions = []
-        
+
         for key, config in all_features.items():
             if self._check_access(user_id, config):
                 available_features[key] = config
-                
+
                 # Собираем описания только для доступных фич
                 if desc := config.get("description"):
                     descriptions.append(f"• {config.get('text', key)}: {desc}")
 
         # 3. Рендерим UI
         menu_view = self.ui.render_dashboard(available_features)
-        
+
         return UnifiedViewDTO(menu=menu_view, content=None)
 
     async def handle_menu_click(self, target: str, user_id: int) -> UnifiedViewDTO | None:
@@ -59,7 +59,7 @@ class BotMenuOrchestrator(BaseBotOrchestrator):
         """
         features_config = self.discovery.get_menu_buttons()
         target_config = features_config.get(target)
-        
+
         if not target_config:
             return None
 
@@ -69,18 +69,16 @@ class BotMenuOrchestrator(BaseBotOrchestrator):
             return None
 
         # Формируем ответ
-        response = CoreResponseDTO(
+        response: CoreResponseDTO[None] = CoreResponseDTO(
             header=ResponseHeader(
-                success=True,
-                next_state=target_config.get("target_state", target),
-                current_state="menu"
+                success=True, next_state=target_config.get("target_state", target), current_state="menu"
             ),
-            payload=None
+            payload=None,
         )
 
         return await self.process_response(response)
 
-    def _check_access(self, user_id: int, config: dict) -> bool:
+    def _check_access(self, user_id: int, config: dict[str, Any]) -> bool:
         """
         Проверяет, есть ли у пользователя доступ к фиче.
         Использует флаги is_admin и is_superuser.
@@ -88,13 +86,13 @@ class BotMenuOrchestrator(BaseBotOrchestrator):
         # 1. Проверка Superuser (Разработчик)
         if config.get("is_superuser"):
             return user_id in self.settings.superuser_ids_list
-            
+
         # 2. Проверка Admin (Владелец)
         if config.get("is_admin"):
             # Админ - это или владелец, или суперюзер (суперюзер имеет права владельца)
             is_owner = user_id in self.settings.owner_ids_list
             is_super = user_id in self.settings.superuser_ids_list
             return is_owner or is_super
-            
+
         # Если флагов нет - доступно всем
         return True

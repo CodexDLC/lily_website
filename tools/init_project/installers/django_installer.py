@@ -19,11 +19,9 @@ Flow:
 
 from __future__ import annotations
 
-import shutil
 from pathlib import Path
 
-from tools.init_project.config import InstallContext
-
+from tools.init_project.config import InstallContext  # noqa: TC001
 from tools.init_project.installers.base import BaseInstaller
 
 # Путь к ресурсам Django
@@ -31,7 +29,6 @@ RESOURCES_DIR = Path(__file__).parent / "django" / "resources"
 
 
 class DjangoInstaller(BaseInstaller):
-
     name = "Django"
 
     def pre_install(self, ctx: InstallContext) -> None:
@@ -39,7 +36,7 @@ class DjangoInstaller(BaseInstaller):
 
     def install(self, ctx: InstallContext) -> None:
         """Создаёт полную Django структуру из шаблонов."""
-        backend_dir = ctx.project_root / "src" / "backend-django"
+        backend_dir = ctx.project_root / "src" / "backend_django"
 
         # ── 1. Core (settings, urls, wsgi, asgi) ──
         self._create_core(backend_dir, ctx.project_name)
@@ -59,7 +56,7 @@ class DjangoInstaller(BaseInstaller):
         print("    ✅ Django structure created")
 
     def post_install(self, ctx: InstallContext) -> None:
-        manage = ctx.project_root / "src" / "backend-django" / "manage.py"
+        manage = ctx.project_root / "src" / "backend_django" / "manage.py"
         if manage.exists():
             print("    ✅ manage.py verified")
         else:
@@ -112,8 +109,11 @@ class DjangoInstaller(BaseInstaller):
 
         # apps.py
         self._render_feature_apps(
-            tpl / "apps.py.tpl", feat_dir / "apps.py",
-            app_name="main", app_class="Main", app_verbose="Main",
+            tpl / "apps.py.tpl",
+            feat_dir / "apps.py",
+            app_name="main",
+            app_class="Main",
+            app_verbose="Main",
         )
 
         # admin.py, tests.py
@@ -121,8 +121,7 @@ class DjangoInstaller(BaseInstaller):
         self._render(tpl / "tests.py.tpl", feat_dir / "tests.py", project_name)
 
         # urls.py
-        self._render(tpl / "urls.py.tpl", feat_dir / "urls.py", project_name,
-                     extra={"{{APP_NAME}}": "main"})
+        self._render(tpl / "urls.py.tpl", feat_dir / "urls.py", project_name, extra={"{{APP_NAME}}": "main"})
 
         # models.py (пустой, можно потом сделать папку)
         (feat_dir / "models.py").write_text("# from django.db import models\n", encoding="utf-8")
@@ -155,8 +154,11 @@ class DjangoInstaller(BaseInstaller):
 
         # apps.py
         self._render_feature_apps(
-            tpl / "apps.py.tpl", feat_dir / "apps.py",
-            app_name="system", app_class="System", app_verbose="System",
+            tpl / "apps.py.tpl",
+            feat_dir / "apps.py",
+            app_name="system",
+            app_class="System",
+            app_verbose="System",
         )
 
         # admin.py, tests.py

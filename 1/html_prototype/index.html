@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LILY Beauty Salon | Köthen</title>
+    <link rel="icon" type="image/png" href="html_prototype/static/logo_lily.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="html_prototype/css/base.css">
+    <link rel="stylesheet" href="html_prototype/css/layout.css">
+</head>
+<body>
+
+    <div class="site-wrapper">
+
+        <!-- TOP BAR -->
+        <div class="header-top-bar">
+            <div class="container top-bar-row">
+                <div class="top-bar-item">
+                    <span>📍 Lohmannstraße 111, 06366 Köthen</span>
+                </div>
+                <div class="top-bar-item">
+                    <span>📞 </span>
+                    <a href="tel:+4917659423704">+49 176 59423704</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- HEADER (Split + Burger) -->
+        <header class="header-split">
+            <div class="container header-row">
+
+                <a href="index.html" class="logo-link">
+                    <img src="html_prototype/static/logo_lily.png" alt="LILY" class="logo-img">
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="nav-desktop">
+                    <a href="index.html" style="color: var(--color-gold);">Startseite</a>
+                    <a href="html_prototype/services.html">Leistungen</a>
+                    <a href="html_prototype/team.html">Team</a>
+                    <a href="html_prototype/contacts.html">Kontakt</a>
+                    <a href="html_prototype/ru/index.html" style="margin-left: 20px; opacity: 0.7;">RU</a>
+                </nav>
+
+                <!-- Burger Button (Visible on Mobile) -->
+                <button class="burger-btn" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
+            </div>
+        </header>
+
+        <!-- MOBILE MENU OVERLAY -->
+        <div class="mobile-menu-overlay" id="mobileMenu">
+            <button class="close-btn" onclick="toggleMenu()">×</button>
+            <nav class="mobile-nav-links">
+                <a href="index.html" onclick="toggleMenu()">Startseite</a>
+                <a href="html_prototype/services.html" onclick="toggleMenu()">Leistungen</a>
+                <a href="html_prototype/team.html" onclick="toggleMenu()">Team</a>
+                <a href="html_prototype/contacts.html" onclick="toggleMenu()">Kontakt</a>
+                <a href="html_prototype/ru/index.html" onclick="toggleMenu()" style="color: var(--color-gold);">RU</a>
+            </nav>
+            <div class="mobile-menu-footer">
+                <span style="color: var(--color-gold); font-size: 12px; letter-spacing: 2px;">LILY Beauty Salon</span>
+            </div>
+        </div>
+
+        <!-- HERO SPLIT SECTION -->
+        <section class="hero-split">
+            <div class="container hero-grid">
+                <div class="hero-text-col">
+                    <div class="hero-uptitle">Premium Beauty Salon</div>
+                    <h1 class="hero-heading">Die Kunst <br><span class="text-gold">Ihrer Schönheit</span></h1>
+                    <p class="hero-desc">Individueller Ansatz und deutsche Qualität. Wir kreieren Looks, die inspirieren.</p>
+                    <a href="html_prototype/contacts.html" class="btn-pill">Termin buchen</a>
+                </div>
+                <div class="hero-visual-col">
+                    <!-- Local Model PNG -->
+                    <img src="html_prototype/static/model/5.png" class="hero-model-png" alt="Model">
+                </div>
+            </div>
+        </section>
+
+        <!-- CATEGORIES (BENTO GRID) -->
+        <section class="categories-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Unsere Leistungen</h2>
+                    <p class="section-desc">Wählen Sie eine Richtung</p>
+                </div>
+
+                <div class="bento-grid">
+
+                    <!-- Hair (Large) -->
+                    <a href="html_prototype/hair.html" class="bento-card card-large" style="background-image: url('https://pinlite.dev/media/storage/ad/d7/add7f82bb943e397c29a69807cc84560f435509d3843252c790157012164feae.jpg'); background-position: center top;">
+                        <div class="card-overlay">
+                            <h3>Friseur</h3>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 5px;">Haarschnitt • Färben • Pflege</p>
+                            <span class="arrow">→</span>
+                        </div>
+                    </a>
+
+                    <!-- Nails -->
+                    <a href="html_prototype/nails.html" class="bento-card" style="background-image: url('https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600');">
+                        <div class="card-overlay">
+                            <h3>Nagelservice</h3>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 5px;">Maniküre • Pediküre</p>
+                        </div>
+                    </a>
+
+                    <!-- Cosmetology -->
+                    <a href="html_prototype/cosmetology.html" class="bento-card" style="background-image: url('https://pinlite.dev/media/storage/f0/7e/f07e00cf2d3cb8c9daad9273d78923516ce2c11828faa8080df847dea1eb7c4a.jpg');">
+                        <div class="card-overlay">
+                            <h3>Kosmetologie</h3>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 5px;">Gesichtspflege • Reinigung</p>
+                        </div>
+                    </a>
+
+                    <!-- Brows -->
+                    <a href="html_prototype/brows.html" class="bento-card" style="background-image: url('https://images.unsplash.com/photo-1587776100527-86f34351a668?auto=format&fit=crop&w=600');">
+                        <div class="card-overlay">
+                            <h3>Brows & Lashes</h3>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 5px;">Laminierung • Verlängerung</p>
+                        </div>
+                    </a>
+
+                    <!-- Massage -->
+                    <a href="html_prototype/massage.html" class="bento-card" style="background-image: url('https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=600');">
+                        <div class="card-overlay">
+                            <h3>Massage</h3>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 5px;">Relax • Anti-Cellulite</p>
+                        </div>
+                    </a>
+
+                    <!-- Depilation -->
+                    <a href="html_prototype/depilation.html" class="bento-card" style="background-image: url('https://images.unsplash.com/photo-1552693673-1bf958298935?auto=format&fit=crop&w=600');">
+                        <div class="card-overlay">
+                            <h3>Depilation</h3>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 5px;">Damen • Herren</p>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer-smart">
+            <div class="container">
+                <div class="footer-bar" onclick="toggleFooter()">
+                    <div class="footer-branding">
+                        <span class="brand-name">LILY SALON</span>
+                        <span class="copyright">© 2025</span>
+                    </div>
+
+                    <div class="developer-info" style="font-size: 10px; opacity: 0.4; letter-spacing: 1px;">
+                        Developed by <a href="#" style="color: inherit; text-decoration: underline;">CodexDLC</a>
+                    </div>
+
+                    <button class="footer-toggle-btn">
+                        <span id="footerBtnText">Kontakt & Leistungen öffnen</span>
+                        <span class="arrow-icon">↓</span>
+                    </button>
+                </div>
+                <div class="footer-content" id="footerContent">
+                    <div class="footer-grid">
+                        <div class="f-col contact-col">
+                            <div class="f-row"><span class="icon">📞</span> <a href="tel:+4917659423704">+49 176 59423704</a></div>
+                            <div class="f-row"><span class="icon">📍</span>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=Lohmannstraße+111,+06366+Köthen+(Anhalt)" target="_blank" style="border-bottom: 1px dashed rgba(255,255,255,0.3);">
+                                    Lohmannstraße 111,<br>06366 Köthen (Anhalt)
+                                </a>
+                            </div>
+                            <div class="f-row"><span class="icon">📷</span> <a href="https://instagram.com/manikure_kothen">@manikure_kothen</a></div>
+                            <div class="f-qr"><img src="html_prototype/static/qr_code.png" alt="QR" style="width: 80px; opacity: 0.8;"></div>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Frisuren & Haarpflege</h4>
+                            <ul><li>Haarschnitte</li><li>Färben</li><li>Haarbehandlung</li><li>Styling</li></ul>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Nagelservice</h4>
+                            <ul><li>Maniküre</li><li>Pediküre</li><li>Verlängerung</li></ul>
+                        </div>
+                        <div class="f-col">
+                            <h4 class="f-title">Schönheit & Pflege</h4>
+                            <ul><li>Epilation</li><li>Wimpernverlängerung</li><li>Laminierung</li></ul>
+                        </div>
+                    </div>
+                    <!-- LEGAL LINKS -->
+                    <div class="footer-legal-links">
+                        <a href="html_prototype/impressum.html">Impressum</a>
+                        <span style="opacity: 0.3; margin: 0 5px;">|</span>
+                        <a href="html_prototype/datenschutz.html">Datenschutz</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // 1. Mobile Menu Toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            if(menu) {
+                menu.classList.toggle('active');
+                document.body.classList.toggle('no-scroll');
+            }
+        }
+
+        function toggleFooter() {
+            const footer = document.querySelector('.footer-smart');
+            const btnText = document.getElementById('footerBtnText');
+            if(footer) {
+                footer.classList.toggle('active');
+                if (footer.classList.contains('active')) {
+                    btnText.innerText = "Schließen";
+                } else {
+                    btnText.innerText = "Kontakt & Leistungen öffnen";
+                }
+            }
+        }
+
+        // 2. Random Mascot Rotator
+        const mascots = [
+            "html_prototype/static/model/5.png"
+        ];
+
+        function setRandomMascot() {
+            const modelImage = document.querySelector('.hero-model-png');
+
+            if (modelImage && mascots.length > 0) {
+                const randomIndex = Math.floor(Math.random() * mascots.length);
+                modelImage.src = mascots[randomIndex];
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", setRandomMascot);
+    </script>
+</body>
+</html>

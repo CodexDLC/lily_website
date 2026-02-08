@@ -1,10 +1,9 @@
-import os
-import sys
 import argparse
 from pathlib import Path
 
 # Путь к шаблонам
 TEMPLATES_DIR = Path(__file__).parent / "resources" / "templates" / "feature"
+
 
 def load_template(name: str) -> str:
     """Загружает шаблон из файла."""
@@ -13,9 +12,10 @@ def load_template(name: str) -> str:
         raise FileNotFoundError(f"Template not found: {path}")
     return path.read_text(encoding="utf-8")
 
+
 def create_feature(name: str):
     base_path = Path(__file__).parent / "features" / name
-    
+
     if base_path.exists():
         print(f"❌ Ошибка: Фича '{name}' уже существует!")
         return
@@ -32,7 +32,7 @@ def create_feature(name: str):
         base_path / "ui",
         base_path / "resources",
         base_path / "contracts",
-        base_path / "tests", # <-- Новая папка
+        base_path / "tests",  # <-- Новая папка
     ]
 
     for d in dirs:
@@ -49,7 +49,7 @@ def create_feature(name: str):
             "state_manager.py": load_template("state_manager.py"),
             "ui.py": load_template("ui.py"),
             "contract.py": load_template("contract.py"),
-            "test_orchestrator.py": load_template("test_orchestrator.py"), # <-- Новый шаблон
+            "test_orchestrator.py": load_template("test_orchestrator.py"),  # <-- Новый шаблон
             # Ресурсы
             "callbacks.py": load_template("callbacks.py"),
             "texts.py": load_template("texts.py"),
@@ -68,7 +68,7 @@ def create_feature(name: str):
         base_path / "logic" / "state_manager.py": templates["state_manager.py"],
         base_path / "ui" / "ui.py": templates["ui.py"],
         base_path / "contracts" / "contract.py": templates["contract.py"],
-        base_path / "tests" / "test_orchestrator.py": templates["test_orchestrator.py"], # <-- Создаем файл
+        base_path / "tests" / "test_orchestrator.py": templates["test_orchestrator.py"],  # <-- Создаем файл
         # Ресурсы
         base_path / "resources" / "callbacks.py": templates["callbacks.py"],
         base_path / "resources" / "texts.py": templates["texts.py"],
@@ -83,6 +83,7 @@ def create_feature(name: str):
     print(f"✅ Фича '{name}' успешно создана в {base_path}")
     print(f"👉 Не забудь добавить 'features.{name}' в INSTALLED_FEATURES (settings.py)")
 
+
 def main():
     parser = argparse.ArgumentParser(description="Утилиты управления Telegram ботом")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -95,6 +96,7 @@ def main():
 
     if args.command == "create_feature":
         create_feature(args.name)
+
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,3 @@
-from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from src.telegram_bot.features.bot_menu.resources.callbacks import DashboardCallback
@@ -25,12 +24,9 @@ class BotMenuUI:
             text = btn_data.get("text", key)
             # Если callback_data передана явно - используем её, иначе генерируем навигацию
             callback = btn_data.get("callback_data") or DashboardCallback(action="nav", target=key).pack()
-            
+
             builder.button(text=text, callback_data=callback)
 
-        builder.adjust(2) # По 2 кнопки в ряд
+        builder.adjust(2)  # По 2 кнопки в ряд
 
-        return ViewResultDTO(
-            text=DASHBOARD_TITLE,
-            kb=builder.as_markup()
-        )
+        return ViewResultDTO(text=DASHBOARD_TITLE, kb=builder.as_markup())

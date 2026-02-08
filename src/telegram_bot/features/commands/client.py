@@ -1,5 +1,4 @@
 from src.shared.schemas.user import UserUpsertDTO
-
 from src.telegram_bot.core.api_client import BaseApiClient
 
 
