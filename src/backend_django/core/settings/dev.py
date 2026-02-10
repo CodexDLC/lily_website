@@ -23,6 +23,6 @@ DEBUG = True
 # Debug tools (add django-debug-toolbar here)
 # ═══════════════════════════════════════════
 
-# INSTALLED_APPS += ["debug_toolbar"]
-# MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
-# INTERNAL_IPS = ["127.0.0.1"]
+INSTALLED_APPS += ["debug_toolbar"]  # noqa: F405
+MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")  # noqa: F405
+INTERNAL_IPS = ["127.0.0.1"]

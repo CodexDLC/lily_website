@@ -1,0 +1,31 @@
+/* =========================================
+   TEAM PAGE
+   ========================================= */
+
+/* Team Section Blocks (Zebra Style) */
+.team-section-block {
+    padding: 60px 0;
+}
+
+.team-section-block:nth-child(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.team-section-block:nth-child(even) {
+    background-color: transparent;
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 50px;
+    font-family: var(--font-serif);
+    font-size: 36px;
+    color: var(--color-white);
+}
+
+/* Team Grid */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}

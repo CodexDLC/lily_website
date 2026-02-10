@@ -22,7 +22,7 @@ class SecurityMiddleware(BaseMiddleware):
         data: dict[str, Any],
     ) -> Any:
         user = data.get("user")
-        state: FSMContext | None = data.get("state")  # type: ignore[name-defined]
+        state: FSMContext | None = data.get("state")
 
         # Если нет user или state - пропускаем проверку
         if not user or not state:

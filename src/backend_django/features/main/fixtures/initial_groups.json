@@ -1,0 +1,132 @@
+[
+  {
+    "model": "main.servicegroup",
+    "pk": 1,
+    "fields": {
+      "category": 3,
+      "title_de": "Maniküre & Pflege",
+      "title_ru": "Маникюр и Уход",
+      "title_uk": "Манікюр та Догляд",
+      "title_en": "Manicure & Care",
+      "order": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.servicegroup",
+    "pk": 2,
+    "fields": {
+      "category": 3,
+      "title_de": "Pediküre (Smart)",
+      "title_ru": "Педикюр (Smart)",
+      "title_uk": "Педикюр (Smart)",
+      "title_en": "Pedicure (Smart)",
+      "order": 2,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.servicegroup",
+    "pk": 3,
+    "fields": {
+      "category": 3,
+      "title_de": "Nagelverlängerung & Korrektur",
+      "title_ru": "Наращивание и Коррекция",
+      "title_uk": "Нарощування та Корекція",
+      "title_en": "Extensions & Correction",
+      "order": 3,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.servicegroup",
+    "pk": 4,
+    "fields": {
+      "category": 1,
+      "title_de": "Haarschnitte & Styling",
+      "title_ru": "Стрижки и Укладки",
+      "title_uk": "Стрижки та Укладки",
+      "title_en": "Haircuts & Styling",
+      "order": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.servicegroup",
+    "pk": 5,
+    "fields": {
+      "category": 2,
+      "title_de": "Coloration (Färben)",
+      "title_ru": "Окрашивание",
+      "title_uk": "Фарбування",
+      "title_en": "Coloring",
+      "order": 2,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.servicegroup",
+    "pk": 6,
+    "fields": {
+      "category": 5,
+      "title_de": "Gesichtsbehandlungen",
+      "title_ru": "Уход за лицом",
+      "title_uk": "Догляд за обличчям",
+      "title_en": "Facial Treatments",
+      "order": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.servicegroup",
+    "pk": 7,
+    "fields": {
+      "category": 6,
+      "title_de": "Augenbrauen Styling",
+      "title_ru": "Оформление бровей",
+      "title_uk": "Оформлення брів",
+      "title_en": "Eyebrow Styling",
+      "order": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.servicegroup",
+    "pk": 8,
+    "fields": {
+      "category": 7,
+      "title_de": "Wimpern",
+      "title_ru": "Ресницы",
+      "title_uk": "Вії",
+      "title_en": "Lashes",
+      "order": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.servicegroup",
+    "pk": 9,
+    "fields": {
+      "category": 9,
+      "title_de": "Depilation (Wachs/Zucker)",
+      "title_ru": "Депиляция (Воск/Сахар)",
+      "title_uk": "Депіляція (Віск/Цукор)",
+      "title_en": "Depilation (Wax/Sugar)",
+      "order": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.servicegroup",
+    "pk": 10,
+    "fields": {
+      "category": 8,
+      "title_de": "Körpermassage",
+      "title_ru": "Массаж тела",
+      "title_uk": "Масаж тіла",
+      "title_en": "Body Massage",
+      "order": 1,
+      "is_active": true
+    }
+  }
+]

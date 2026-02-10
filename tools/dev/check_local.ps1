@@ -5,8 +5,13 @@ Write-Host "🚀 Starting Local Quality Check..." -ForegroundColor Cyan
 # 1. Code Style: Ruff
 Write-Host "`n🔍 Checking Style (Ruff)..." -ForegroundColor Yellow
 try {
-    # Проверяем всю папку src
+    # Сначала пытаемся исправить автоматически
+    Write-Host "   Attempting auto-fix..." -ForegroundColor Gray
     ruff check src/ --fix
+
+    # Потом проверяем оставшиеся ошибки (без --fix!)
+    Write-Host "   Checking for remaining issues..." -ForegroundColor Gray
+    ruff check src/
     if ($LASTEXITCODE -ne 0) { throw "Ruff found errors" }
     Write-Host "✅ Ruff passed!" -ForegroundColor Green
 } catch {
@@ -17,6 +22,11 @@ try {
 # 2. Type Checking: Mypy
 Write-Host "`n🧠 Checking Types (Mypy)..." -ForegroundColor Yellow
 try {
+    # Очищаем кэш для свежей проверки
+    if (Test-Path ".mypy_cache") {
+        Write-Host "   Clearing mypy cache..." -ForegroundColor Gray
+        Remove-Item -Recurse -Force .mypy_cache
+    }
     mypy src/
     if ($LASTEXITCODE -ne 0) { throw "Mypy found errors" }
     Write-Host "✅ Mypy passed!" -ForegroundColor Green

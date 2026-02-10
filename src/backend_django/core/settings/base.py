@@ -35,6 +35,9 @@ ALLOWED_HOSTS = [h.strip() for h in os.environ.get("ALLOWED_HOSTS", "localhost,1
 # ═══════════════════════════════════════════
 
 INSTALLED_APPS = [
+    # ── Translation (must be before admin) ──
+    "modeltranslation",
+    # ── Django ──
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -44,6 +47,9 @@ INSTALLED_APPS = [
     # ── Features ──
     "features.main",
     "features.system",
+    "features.booking",
+    # ── API ──
+    "ninja",
 ]
 
 MIDDLEWARE = [
@@ -54,6 +60,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.locale.LocaleMiddleware",  # Added for i18n
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -69,6 +76,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.i18n",  # Added for i18n
+                "features.system.context_processors.site_settings",  # Global Site Settings
             ],
         },
     },
@@ -103,10 +112,25 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # ═══════════════════════════════════════════
 
-LANGUAGE_CODE = os.environ.get("LANGUAGE_CODE", "en-us")
-TIME_ZONE = os.environ.get("TIME_ZONE", "UTC")
+LANGUAGE_CODE = os.environ.get("LANGUAGE_CODE", "de")  # Default to German
+TIME_ZONE = os.environ.get("TIME_ZONE", "Europe/Berlin")
 USE_I18N = True
 USE_TZ = True
+
+LANGUAGES = [
+    ("de", "Deutsch"),
+    ("ru", "Russian"),
+    ("uk", "Ukrainian"),
+    ("en", "English"),
+]
+
+# Model Translation (django-modeltranslation)
+MODELTRANSLATION_DEFAULT_LANGUAGE = LANGUAGE_CODE.split("-")[0]
+MODELTRANSLATION_LANGUAGES = ("de", "ru", "uk", "en")
+
+LOCALE_PATHS = [
+    BASE_DIR / "locale",
+]
 
 # ═══════════════════════════════════════════
 # Static files
@@ -115,6 +139,13 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# ═══════════════════════════════════════════
+# Media files
+# ═══════════════════════════════════════════
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # ═══════════════════════════════════════════
 # Default primary key

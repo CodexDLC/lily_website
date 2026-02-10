@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Team" %} | LILY Beauty Salon{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero-text-block">
+    <div class="container">
+        <h1 class="hero-title">{% trans "Unser Team" %}</h1>
+        <p class="hero-subtitle">{% trans "SCHÖNHEITSEXPERTEN" %}</p>
+    </div>
+</section>
+
+<!-- CONTENT (Zebra Blocks) -->
+<section class="section">
+
+    <!-- BLOCK 1: OWNER -->
+    <section class="team-section-block">
+        <div class="container">
+            <div class="owner-block">
+                <!-- Owner Photo (Local) -->
+                <div class="owner-photo" style="background-image: url('{% static 'img/lily.webp' %}');"></div>
+
+                <div class="owner-info">
+                    <h2 class="owner-name">Liliia Yakina</h2>
+                    <span class="owner-role">{% trans "Gründerin & Art Director" %}</span>
+
+                    <p class="owner-description">
+                        {% trans "Willkommen im LILY Beauty Space. Hier kreieren wir nicht nur Looks, sondern Stimmungen. Meine Mission ist es, Ihnen Selbstvertrauen und höchste Servicequalität in einer gemütlichen Atmosphäre zu schenken." %}
+                    </p>
+                    <p class="owner-note">
+                        {% trans "(Hier kann Liliia ihre Geschichte oder Begrüßung für Kunden schreiben)" %}
+                    </p>
+
+                    <br>
+                    <a href="https://instagram.com/manikure_kothen" class="btn-pill">{% trans "Liliia schreiben" %}</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOCK 2: TEAM GRID -->
+    <section class="team-section-block">
+        <div class="container">
+            <h2 class="section-heading">{% trans "Top-Meister" %}</h2>
+
+            <div class="team-grid">
+                <!-- Master 1 -->
+                <div class="master-card">
+                    <div class="master-photo" style="background-image: url('https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=600');"></div>
+                    <div class="master-info">
+                        <h3 class="master-name">Anna</h3>
+                        <p class="master-role">{% trans "Top-Colorist" %}</p>
+                        <a href="#" class="btn-book">{% trans "Profil" %}</a>
+                    </div>
+                </div>
+                <!-- Master 2 -->
+                <div class="master-card">
+                    <div class="master-photo" style="background-image: url('https://images.unsplash.com/photo-1595959183082-7b570b7e08e2?auto=format&fit=crop&w=600');"></div>
+                    <div class="master-info">
+                        <h3 class="master-name">Maria</h3>
+                        <p class="master-role">{% trans "Nageldesignerin" %}</p>
+                        <a href="#" class="btn-book">{% trans "Profil" %}</a>
+                    </div>
+                </div>
+                <!-- Master 3 -->
+                <div class="master-card">
+                    <div class="master-photo" style="background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600');"></div>
+                    <div class="master-info">
+                        <h3 class="master-name">Elena</h3>
+                        <p class="master-role">{% trans "Kosmetikerin" %}</p>
+                        <a href="#" class="btn-book">{% trans "Profil" %}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</section>
+{% endblock %}

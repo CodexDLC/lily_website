@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Ungültige Anfrage" %} | LILY Beauty Salon{% endblock %}
+
+{% block content %}
+<main class="section error-page-container">
+    <div class="container">
+        <h1 class="hero-title error-code-large">400</h1>
+        <h2 class="error-subtitle">{% trans "Ungültige Anfrage" %}</h2>
+        <p class="error-message">
+            {% trans "Der Server konnte Ihre Anfrage nicht verarbeiten." %}
+        </p>
+        <a href="{% url 'home' %}" class="btn-pill">{% trans "Zur Startseite" %}</a>
+    </div>
+</main>
+{% endblock %}

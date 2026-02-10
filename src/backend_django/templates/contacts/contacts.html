@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Kontakt & Über uns" %} | {{ site_settings.company_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+
+        <div class="hero-text-block hero-text-block-padded">
+            <h1 class="hero-title">{% trans "Kontaktieren Sie uns" %}</h1>
+            <p class="hero-subtitle">{% trans "ÜBER UNS & KONTAKT" %}</p>
+        </div>
+
+        <section class="top-section">
+
+            <div class="about-content">
+                <h2>{% trans "Willkommen bei LILY" %}</h2>
+                <p class="about-text">
+                    {% trans "LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellen Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern auch ein innerer Zustand des Selbstvertrauens." %}
+                </p>
+                <p class="about-text">
+                    {% trans "Unsere Meister verwenden nur Premium-Materialien (Wella, L'Oreal, Luxio) und moderne Techniken, um Ihre natürliche Einzigartigkeit zu unterstreichen." %}
+                </p>
+                <p class="about-text text-gold-italic">
+                    "{% trans "Ihre Schönheit ist unsere Kunst." %}"
+                </p>
+            </div>
+
+            <div class="extended-form">
+                <form id="contactForm" action="#" method="post"> <!-- JS disabled for now -->
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <input type="text" id="name" name="name" class="input-line" placeholder="{% trans 'Vorname *' %}" required>
+                        <input type="text" id="surname" name="surname" class="input-line" placeholder="{% trans 'Nachname' %}">
+
+                        <input type="text" id="address" name="address" class="input-line" placeholder="{% trans 'Adresse / Stadt' %}">
+                        <input type="tel" id="phone" name="phone" class="input-line" placeholder="{% trans 'Telefon *' %}" required>
+
+                        <div class="full-width">
+                            <select id="service" name="service" class="input-line" required>
+                                <option value="" disabled selected>{% trans "Wählen Sie eine Dienstleistung..." %}</option>
+                                <option value="Friseur">{% trans "Friseur" %}</option>
+                                <option value="Nagelservice">{% trans "Nagelservice" %}</option>
+                                <option value="Kosmetologie">{% trans "Kosmetologie" %}</option>
+                                <option value="Augenbrauen & Wimpern">{% trans "Augenbrauen & Wimpern" %}</option>
+                                <option value="Depilation">{% trans "Depilation" %}</option>
+                                <option value="Massage">{% trans "Massage" %}</option>
+                                <option value="Sonstiges">{% trans "Andere Frage" %}</option>
+                            </select>
+                        </div>
+
+                        <textarea id="message" name="message" class="input-line full-width" placeholder="{% trans 'Ihre Frage oder Kommentar...' %}"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit">{% trans "Anfrage senden" %}</button>
+                </form>
+            </div>
+        </section>
+
+        <div class="golden-separator"></div>
+
+        <section class="bottom-section">
+
+            <div class="contacts-details">
+                <span class="label">{% trans "Unsere Adresse" %}</span>
+                <span class="value">
+                    <a href="{{ site_settings.google_maps_link|default:'#' }}" target="_blank" class="link-dashed">
+                        {{ site_settings.address_street }},<br>{{ site_settings.address_city }}
+                    </a>
+                </span>
+
+                <span class="label">{% trans "Telefon" %}</span>
+                <span class="value"><a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a></span>
+
+                <span class="label">{% trans "E-Mail" %}</span>
+                <span class="value">{{ site_settings.email }}</span>
+
+                <span class="label">{% trans "Öffnungszeiten" %}</span>
+                <span class="value text-small-muted">
+                    {{ site_settings.working_hours_weekdays }}<br>
+                    {{ site_settings.working_hours_saturday }}
+                </span>
+            </div>
+
+            <div class="map-container-block">
+                <div class="map-wrapper">
+                    <!-- Safe Static Map Placeholder -->
+                    <div class="map-placeholder">
+                        <span class="map-placeholder-icon">🗺️</span>
+                        <p>{% trans "Klicken Sie unten, um Google Maps zu öffnen" %}</p>
+                    </div>
+                </div>
+                <!-- Кнопка навигации -->
+                <a href="{{ site_settings.google_maps_link|default:'#' }}" target="_blank" class="btn-navigate">
+                    {% trans "📍 Route planen" %}
+                </a>
+            </div>
+
+        </section>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ service.title|default:_("Leistung") }} | LILY Beauty Salon{% endblock %}
+
+{% block content %}
+<!-- HERO SERVICE -->
+<section class="hero-text-block hero-service-bg" style="background-image: url('{{ service.image_url|default:'https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=1200' }}');">
+    <div class="hero-service-overlay"></div>
+    <div class="container hero-service-content">
+        <h1 class="hero-title">{{ service.title|default:_("Perfekte Maniküre & Pediküre") }}</h1>
+        <p class="hero-subtitle">{{ service.subtitle|default:_("NAGELSERVICE") }}</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container price-menu-container">
+
+        <!-- SEO TEXT -->
+        <div class="service-seo-section">
+            <div class="service-seo-text text-center">
+                <p>{{ service.description|default:_("Bei LILY verwandeln wir die Nagelpflege in ein echtes Schönheitsritual. Wir sind spezialisiert auf kombinierte Maniküre, perfekte Ausrichtung der Nagelplatte und die Verwendung von Premium-Materialien wie Luxio. Unsere Meister beherrschen Smart-Pediküre-Techniken für perfekt glatte Füße. Wir legen besonderen Wert auf Sicherheit und Sterilität, damit Sie sich vollkommen entspannen und den Prozess der Schaffung Ihres perfekten Looks bis in die Fingerspitzen genießen können.") }}</p>
+            </div>
+        </div>
+
+        <!-- PRICE LIST (Filtered via JS or Django Template) -->
+        <div id="priceListContainer">
+            {% if service.price_groups %}
+                {% for group in service.price_groups %}
+                <div class="price-block">
+                    <div class="category-header"><h2 class="category-title">{{ group.name }}</h2></div>
+                    {% for item in group.items %}
+                    <div class="service-row">
+                        <div class="service-names">
+                            <span class="name-de">{{ item.name }}</span>
+                        </div>
+                        <div class="service-meta">
+                            <span class="meta-price">{{ item.price }}</span>
+                            <span class="meta-time">⏱ {{ item.duration }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <!-- Fallback for static prototype if no context provided -->
+                <div class="price-block">
+                    <div class="category-header"><h2 class="category-title">{% trans "Maniküre & Pediküre" %}</h2></div>
+                    <div class="service-row">
+                        <div class="service-names"><span class="name-de">{% trans "Damenmaniküre" %}</span></div>
+                        <div class="service-meta"><span class="meta-price">20.00 €</span><span class="meta-time">⏱ 40 min</span></div>
+                    </div>
+                    <div class="service-row">
+                        <div class="service-names"><span class="name-de">{% trans "Maniküre + Gellack" %}</span></div>
+                        <div class="service-meta"><span class="meta-price">40.00 €</span><span class="meta-time">⏱ 120 min</span></div>
+                    </div>
+                    <div class="service-row">
+                        <div class="service-names"><span class="name-de">{% trans "Maniküre + normaler Nagellack" %}</span></div>
+                        <div class="service-meta"><span class="meta-price">25.00 €</span><span class="meta-time">⏱ 60 min</span></div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- MASTERS BLOCK -->
+        <section class="service-masters-block">
+            <h3 class="category-title service-masters-title">{% trans "Ihre Experten" %}</h3>
+            <div class="masters-list masters-list-centered">
+                <!-- Example Masters (Static for now) -->
+                <div class="mini-master">
+                    <div class="mini-master-avatar"></div>
+                    <div>
+                        <strong class="mini-master-name">Maria</strong>
+                        <span class="mini-master-role">{% trans "Nageldesignerin" %}</span>
+                    </div>
+                </div>
+                <div class="mini-master">
+                    <div class="mini-master-avatar"></div>
+                    <div>
+                        <strong class="mini-master-name">Liliia</strong>
+                        <span class="mini-master-role">{% trans "Gründerin & Art Director" %}</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="service-cta-wrapper">
+            <a href="{% url 'contacts' %}" class="btn-pill">{% trans "Termin buchen" %}</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,16 +1,26 @@
+{% load static %}
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}lily_website{% endblock %}</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% include "includes/_meta.html" %}
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    {% block content %}{% endblock %}
 
-    {% block extra_js %}{% endblock %}
+    <div class="site-wrapper">
+        {% include "includes/_header.html" %}
+
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        {% include "includes/_footer.html" %}
+    </div>
+
+    <script src="{% static 'js/base.js' %}"></script>
+    {% block scripts %}
+    {% endblock %}
 </body>
 </html>

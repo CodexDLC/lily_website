@@ -1,0 +1,68 @@
+/* =========================================
+   SERVICE DETAIL PAGE
+   ========================================= */
+
+/* Hero with Background */
+.hero-service-bg {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.hero-service-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,56,49,0.8);
+}
+
+.hero-service-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* SEO Section */
+.service-seo-section {
+    padding: 60px 0;
+    line-height: 1.8;
+}
+
+.service-seo-text {
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--color-text-muted);
+}
+
+/* Masters Block */
+.service-masters-block {
+    margin-top: 50px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+}
+
+.service-masters-title {
+    border: none;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.masters-list {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.masters-list-centered {
+    justify-content: center;
+}
+
+/* Service CTA */
+.service-cta-wrapper {
+    text-align: center;
+    margin-top: 40px;
+}

@@ -1,0 +1,202 @@
+[
+  {
+    "model": "main.category",
+    "pk": 1,
+    "fields": {
+      "title_de": "Friseur & Styling",
+      "title_ru": "Парикмахерский зал",
+      "title_uk": "Перукарський зал",
+      "title_en": "Hairdressing & Styling",
+      "slug": "hair",
+      "bento_group": "hair",
+      "description_de": "Exzellente Haarschnitte, Styling und Pflege mit Premium-Produkten von Wella & L'Oreal.",
+      "description_ru": "Идеальные стрижки, укладки и экспертный уход на материалах Wella и L'Oreal.",
+      "description_uk": "Ідеальні стрижки, укладки та експертний догляд на матеріалах Wella та L'Oreal.",
+      "description_en": "Exquisite haircuts, styling, and care using premium Wella & L'Oreal products.",
+      "content_de": "<p>Ihr Haar ist Ihr schönstes Accessoire. Unsere Top-Stylisten kreieren individuelle Looks, die Ihre Persönlichkeit unterstreichen.</p><ul><li><strong>Schnitt & Styling:</strong> Von klassisch bis avantgardistisch.</li><li><strong>Pflege:</strong> Wir verwenden exklusive Linien von Wella und L'Oreal für tiefenwirksame Regeneration und brillanten Glanz.</li></ul>",
+      "content_ru": "<p>Ваши волосы — это ваш главный аксессуар. Наши топ-стилисты создают индивидуальные образы, подчеркивающие вашу уникальность.</p><ul><li><strong>Стрижка и стайлинг:</strong> От точной классики до трендовых форм.</li><li><strong>Уход:</strong> Мы используем эксклюзивные линейки Wella и L'Oreal для глубокого восстановления и зеркального блеска.</li></ul>",
+      "content_uk": "<p>Ваше волосся — це ваш головний аксесуар. Наші топ-стилісти створюють індивідуальні образи, що підкреслюють вашу унікальність.</p><ul><li><strong>Стрижка та стайлінг:</strong> Від точної класики до трендових форм.</li><li><strong>Догляд:</strong> Ми використовуємо ексклюзивні лінійки Wella та L'Oreal для глибокого відновлення та дзеркального блиску.</li></ul>",
+      "content_en": "<p>Your hair is your best accessory. Our top stylists create individual looks that underline your personality.</p><ul><li><strong>Cut & Styling:</strong> From classic to avant-garde.</li><li><strong>Care:</strong> We use exclusive lines from Wella and L'Oreal for deep regeneration and brilliant shine.</li></ul>",
+      "order": 10,
+      "is_active": true,
+      "is_planned": true
+    }
+  },
+  {
+    "model": "main.category",
+    "pk": 2,
+    "fields": {
+      "title_de": "Coloration & Pflege",
+      "title_ru": "Окрашивание и Уход",
+      "title_uk": "Фарбування та Догляд",
+      "title_en": "Coloration & Care",
+      "slug": "coloration",
+      "bento_group": "hair",
+      "description_de": "Meisterhafte Techniken: Airtouch, Balayage und Farbschutz.",
+      "description_ru": "Сложные техники окрашивания: Airtouch, Balayage, Total Blonde.",
+      "description_uk": "Складні техніки фарбування: Airtouch, Balayage, Total Blonde.",
+      "description_en": "Masterful techniques: Airtouch, Balayage, and color protection.",
+      "content_de": "<p>Erleben Sie Farbe neu. Unsere Coloristen beherrschen die anspruchsvollsten Techniken für natürliche Übergänge und lebendige Dimensionen.</p><p>Wir garantieren Haarschonung auch bei komplexen Aufhellungen dank modernster Schutzsysteme in unseren Farben.</p>",
+      "content_ru": "<p>Откройте для себя новый цвет. Наши колористы владеют самыми сложными техниками (Airtouch, Шатуш, Balayage) для создания дорогих, естественных переливов.</p><p>Мы гарантируем сохранение качества волос даже при сложном осветлении благодаря современным защитным системам.</p>",
+      "content_uk": "<p>Відкрийте для себе новий колір. Наші колористи володіють найскладнішими техніками (Airtouch, Шатуш, Balayage) для створення дорогих, природних переливів.</p><p>Ми гарантуємо збереження якості волосся навіть при складному освітленні завдяки сучасним захисним системам.</p>",
+      "content_en": "<p>Experience color anew. Our colorists master the most demanding techniques for natural transitions and vibrant dimensions.</p><p>We guarantee hair protection even with complex lightening thanks to state-of-the-art protection systems.</p>",
+      "order": 15,
+      "is_active": true,
+      "is_planned": true
+    }
+  },
+  {
+    "model": "main.category",
+    "pk": 3,
+    "fields": {
+      "title_de": "Maniküre",
+      "title_ru": "Маникюр",
+      "title_uk": "Манікюр",
+      "title_en": "Manicure",
+      "slug": "manicure",
+      "bento_group": "nails",
+      "description_de": "Sichere Hardware-Maniküre und Design mit Premium-Gelen.",
+      "description_ru": "Безопасный аппаратный маникюр и покрытие премиум-материалами.",
+      "description_uk": "Безпечний апаратний манікюр та покриття преміум-матеріалами.",
+      "description_en": "Safe hardware manicure and design with premium gels.",
+      "content_de": "<h3>Perfektion bis in die Fingerspitzen</h3><p>Wir setzen auf ukrainische Premium-Marken, die weltweit für Qualität geschätzt werden:</p><ul><li><strong>Ga&Ma (Gémely):</strong> Innovative Gele, die <em>nicht in der Lampe brennen</em>. Perfekt für dünne Nägel und 'No-Filing'-Techniken.</li><li><strong>Dark:</strong> Säurefreie Materialien für maximale Sicherheit. Builder Gele für ultrastarken Halt und natürliche Optik.</li></ul>",
+      "content_ru": "<h3>Совершенство до кончиков пальцев</h3><p>Мы выбираем материалы, которые гарантируют носку без отслоек и здоровье ногтевой пластины:</p><ul><li><strong>Ga&Ma (Gémely):</strong> Инновационные жесткие гели. Они <em>не пекут в лампе</em> и идеально держат архитектуру без лишнего объема.</li><li><strong>Dark:</strong> Бескислотные материалы нового поколения. Мы используем их для укрепления и моделирования, сохраняя естественный вид ногтей.</li></ul>",
+      "content_uk": "<h3>Досконалість до кінчиків пальців</h3><p>Ми обираємо матеріали, які гарантують носіння без відшарувань та здоров'я нігтьової пластини:</p><ul><li><strong>Ga&Ma (Gémely):</strong> Інноваційні жорсткі гелі. Вони <em>не печуть у лампі</em> та ідеально тримають архітектуру без зайвого об'єму.</li><li><strong>Dark:</strong> Безкислотні матеріали нового покоління. Ми використовуємо їх для зміцнення та моделювання, зберігаючи природний вигляд нігтів.</li></ul>",
+      "content_en": "<h3>Perfection down to the fingertips</h3><p>We rely on premium brands valued worldwide for quality:</p><ul><li><strong>Ga&Ma (Gémely):</strong> Innovative gels that <em>do not burn in the lamp</em>. Perfect for thin nails and 'no-filing' techniques.</li><li><strong>Dark:</strong> Acid-free materials for maximum safety. Builder gels for ultra-strong hold and a natural look.</li></ul>",
+      "order": 20,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.category",
+    "pk": 4,
+    "fields": {
+      "title_de": "Pediküre",
+      "title_ru": "Педикюр",
+      "title_uk": "Педикюр",
+      "title_en": "Pedicure",
+      "slug": "pedicure",
+      "bento_group": "nails",
+      "description_de": "Smart-Pediküre: Die innovative Disk-Technologie für glatte Haut.",
+      "description_ru": "Smart-педикюр: инновационная дисковая техника для идеальных стоп.",
+      "description_uk": "Smart-педикюр: інноваційна дискова техніка для ідеальних стоп.",
+      "description_en": "Smart Pedicure: Innovative disk technology for smooth skin.",
+      "content_de": "<p>Gönnen Sie Ihren Füßen Luxus. Wir sind spezialisiert auf die <strong>Smart-Disk-Technik</strong>. Das bedeutet: keine Verletzungsgefahr, längere Glätte und ein polierter Effekt, der Wochen anhält.</p>",
+      "content_ru": "<p>Подарите своим ногам люкс-уход. Мы специализируемся на технике <strong>Smart (дисковый педикюр)</strong>. Это гарантирует отсутствие пропилов, зеркальную гладкость стоп и эффект, который длится дольше обычного.</p>",
+      "content_uk": "<p>Подаруйте своїм ніжкам люкс-догляд. Ми спеціалізуємося на техніці <strong>Smart (дисковий педикюр)</strong>. Це гарантує відсутність пропилів, дзеркальну гладкість стоп та ефект, що триває довше звичайного.</p>",
+      "content_en": "<p>Treat your feet to luxury. We specialize in the <strong>Smart Disk technique</strong>. This means: no risk of injury, longer-lasting smoothness, and a polished effect that lasts for weeks.</p>",
+      "order": 25,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.category",
+    "pk": 5,
+    "fields": {
+      "title_de": "Kosmetologie",
+      "title_ru": "Косметология",
+      "title_uk": "Косметологія",
+      "title_en": "Cosmetology",
+      "slug": "cosmetology",
+      "bento_group": "face",
+      "description_de": "Premium-Pflege mit Anubis Barcelona und Christina.",
+      "description_ru": "Премиум-уход и космецевтика Anubis Barcelona и Christina.",
+      "description_uk": "Преміум-догляд та космецевтика Anubis Barcelona та Christina.",
+      "description_en": "Premium care with Anubis Barcelona and Christina.",
+      "content_de": "<h3>Wissenschaft im Dienste Ihrer Schönheit</h3><p>Wir arbeiten mit hocheffektiver Kosmezeutik:</p><ul><li><strong>Anubis Barcelona (Spanien):</strong> 'Platinum'-Standard in der Pflege. Wir bieten <em>Skin Perfectionist</em> Peelings und exklusive Lifting-Protokolle.</li><li><strong>Christina (Israel):</strong> Die legendäre <em>Forever Young</em> Linie verjüngt die Haut auf zellulärer Ebene, während <em>Bio Phyto</em> für perfekte Entgiftung sorgt.</li></ul>",
+      "content_ru": "<h3>Наука на страже вашей красоты</h3><p>Мы работаем с высокоэффективной космецевтикой, решающей любые эстетические задачи:</p><ul><li><strong>Anubis Barcelona (Испания):</strong> Платиновый стандарт ухода. Азелаиновые пилинги <em>Skin Perfectionist</em> и мощные лифтинг-протоколы для сияния кожи.</li><li><strong>Christina (Израиль):</strong> Легендарная линия <em>Forever Young</em> омолаживает на клеточном уровне, а <em>Bio Phyto</em> обеспечивает идеальный детокс и здоровый цвет лица.</li></ul>",
+      "content_uk": "<h3>Наука на варті вашої краси</h3><p>Ми працюємо з високоефективною космецевтикою, що вирішує будь-які естетичні завдання:</p><ul><li><strong>Anubis Barcelona (Іспанія):</strong> Платиновий стандарт догляду. Азелаїнові пілінги <em>Skin Perfectionist</em> та потужні ліфтинг-протоколи для сяйва шкіри.</li><li><strong>Christina (Ізраїль):</strong> Легендарна лінія <em>Forever Young</em> омолоджує на клітинному рівні, а <em>Bio Phyto</em> забезпечує ідеальний детокс та здоровий колір обличчя.</li></ul>",
+      "content_en": "<h3>Science in the service of your beauty</h3><p>We work with highly effective cosmeceuticals:</p><ul><li><strong>Anubis Barcelona (Spain):</strong> 'Platinum' standard in care. We offer <em>Skin Perfectionist</em> peels and exclusive lifting protocols.</li><li><strong>Christina (Israel):</strong> The legendary <em>Forever Young</em> line rejuvenates the skin at the cellular level, while <em>Bio Phyto</em> ensures perfect detox.</li></ul>",
+      "order": 30,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.category",
+    "pk": 6,
+    "fields": {
+      "title_de": "Augenbrauen",
+      "title_ru": "Брови",
+      "title_uk": "Брови",
+      "title_en": "Eyebrows",
+      "slug": "brows",
+      "bento_group": "eyes",
+      "description_de": "Individuelle Architektur und langanhaltendes Styling.",
+      "description_ru": "Индивидуальная архитектура и долговременная укладка.",
+      "description_uk": "Індивідуальна архітектура та довготривала укладка.",
+      "description_en": "Individual architecture and long-lasting styling.",
+      "content_de": "<p>Der Rahmen für Ihr Gesicht. Wir finden die perfekte Form, die Ihre natürlichen Züge harmonisiert. Inklusive Laminierung für den trendigen 'Sable'-Look.</p>",
+      "content_ru": "<p>Брови — это «рама» для лица. Мы подбираем форму, которая гармонизирует ваши черты. Окрашивание хной или краской, а также ламинирование для послушных и густых бровей.</p>",
+      "content_uk": "<p>Брови — це «рама» для обличчя. Ми підбираємо форму, яка гармонізує ваші риси. Фарбування хною або фарбою, а також ламінування для слухняних та густих брів.</p>",
+      "content_en": "<p>The frame for your face. We find the perfect shape that harmonizes your natural features. Including lamination for the trendy fuller look.</p>",
+      "order": 40,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.category",
+    "pk": 7,
+    "fields": {
+      "title_de": "Wimpern",
+      "title_ru": "Ресницы",
+      "title_uk": "Вії",
+      "title_en": "Lashes",
+      "slug": "lashes",
+      "bento_group": "eyes",
+      "description_de": "Ausdrucksstarker Blick ohne Mascara.",
+      "description_ru": "Выразительный взгляд 24/7 без туши.",
+      "description_uk": "Виразний погляд 24/7 без туші.",
+      "description_en": "Expressive look 24/7 without mascara.",
+      "content_de": "<p>Sparen Sie Zeit am Morgen! Ob klassische Verlängerung für mehr Dichte oder Laminierung für natürlichen Schwung – wachen Sie jeden Tag perfekt gestylt auf.</p>",
+      "content_ru": "<p>Экономьте время по утрам! Будь то классическое наращивание для густоты или ламинирование для естественного изгиба — просыпайтесь каждый день уже красивой.</p>",
+      "content_uk": "<p>Економте час вранці! Чи то класичне нарощування для густоти, чи ламінування для природного вигину — прокидайтеся щодня вже красивою.</p>",
+      "content_en": "<p>Save time in the morning! Whether classic extensions for density or lamination for a natural curl – wake up perfectly styled every day.</p>",
+      "order": 45,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.category",
+    "pk": 8,
+    "fields": {
+      "title_de": "Massage",
+      "title_ru": "Массаж",
+      "title_uk": "Масаж",
+      "title_en": "Massage",
+      "slug": "massage",
+      "bento_group": "body",
+      "description_de": "Tiefenentspannung und Wiederherstellung der Energie.",
+      "description_ru": "Глубокое расслабление и восстановление энергии.",
+      "description_uk": "Глибоке розслаблення та відновлення енергії.",
+      "description_en": "Deep relaxation and energy restoration.",
+      "content_de": "<p>Lassen Sie den Stress des Alltags hinter sich. Unsere therapeutischen Massagen lösen Verspannungen, fördern die Durchblutung und stellen Ihr inneres Gleichgewicht wieder her.</p>",
+      "content_ru": "<p>Оставьте стресс за порогом. Наши массажные техники снимают зажимы, улучшают лимфодренаж и возвращают телу легкость и тонус.</p>",
+      "content_uk": "<p>Залиште стрес за порогом. Наші масажні техніки знімають затиски, покращують лімфодренаж і повертають тілу легкість та тонус.</p>",
+      "content_en": "<p>Leave the stress of everyday life behind. Our therapeutic massages release tension, promote circulation, and restore your inner balance.</p>",
+      "order": 50,
+      "is_active": true
+    }
+  },
+  {
+    "model": "main.category",
+    "pk": 9,
+    "fields": {
+      "title_de": "Depilation",
+      "title_ru": "Депиляция",
+      "title_uk": "Депіляція",
+      "title_en": "Depilation",
+      "slug": "depilation",
+      "bento_group": "hair_removal",
+      "description_de": "Seidig glatte Haut mit sanftem Sugaring oder Wachs.",
+      "description_ru": "Шелковистая кожа благодаря шугарингу или воску.",
+      "description_uk": "Шовковиста шкіра завдяки шугарингу або воску.",
+      "description_en": "Silky smooth skin with gentle sugaring or wax.",
+      "content_de": "<p>Genießen Sie das Gefühl perfekter Glätte. Wir arbeiten schnell und maximal schmerzarm, damit Sie sich in Ihrer Haut wohlfühlen.</p>",
+      "content_ru": "<p>Наслаждайтесь ощущением идеальной гладкости. Мы работаем быстро и максимально безболезненно, чтобы вы чувствовали себя уверенно в любой ситуации.</p>",
+      "content_uk": "<p>Насолоджуйтесь відчуттям ідеальної гладкості. Ми працюємо швидко та максимально безболісно, щоб ви почувалися впевнено в будь-якій ситуації.</p>",
+      "content_en": "<p>Enjoy the feeling of perfect smoothness. We work quickly and with minimal pain so you feel comfortable in your skin.</p>",
+      "order": 60,
+      "is_active": true
+    }
+  }
+]

@@ -1,0 +1,747 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-10 00:35+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\features\main\models\category.py:14
+msgid "Friseur & Styling"
+msgstr "Friseur & Styling"
+
+#: .\features\main\models\category.py:15 .\templates\contacts\contacts.html:49
+#: .\templates\includes\_footer.html:45
+msgid "Nagelservice"
+msgstr "Nagelservice"
+
+#: .\features\main\models\category.py:16 .\templates\contacts\contacts.html:50
+msgid "Kosmetologie"
+msgstr "Kosmetologie"
+
+#: .\features\main\models\category.py:17
+msgid "Brows & Lashes"
+msgstr "Brows & Lashes"
+
+#: .\features\main\models\category.py:18
+msgid "Massage & Relax"
+msgstr "Massage & Relax"
+
+#: .\features\main\models\category.py:19 .\templates\contacts\contacts.html:52
+msgid "Depilation"
+msgstr "Depilation"
+
+#: .\features\main\models\category.py:24 .\features\main\models\service.py:19
+#: .\features\main\models\service.py:59
+msgid "Title"
+msgstr "Titel"
+
+#: .\features\main\models\category.py:25
+msgid "Category name (e.g. 'Maniküre')."
+msgstr "Kategoriename (z.B. 'Maniküre')."
+
+#: .\features\main\models\category.py:29 .\features\main\models\service.py:64
+msgid "Slug"
+msgstr "Slug"
+
+#: .\features\main\models\category.py:30
+msgid "URL part (e.g. 'manicure')."
+msgstr "URL-Teil (z.B. 'manicure')."
+
+#: .\features\main\models\category.py:36
+msgid "Bento Group"
+msgstr "Bento-Gruppe"
+
+#: .\features\main\models\category.py:37
+msgid ""
+"Group for the main page grid (e.g. 'Nails' combines Manicure & Pedicure)."
+msgstr "Gruppe für das Raster der Hauptseite (z.B. 'Nails' kombiniert Maniküre & Pediküre)."
+
+#: .\features\main\models\category.py:41 .\features\main\models\service.py:97
+#: .\features\main\models\service.py:133
+msgid "Image"
+msgstr "Bild"
+
+#: .\features\main\models\category.py:42
+msgid "Background image for Hero section and Bento card."
+msgstr "Hintergrundbild für Hero-Bereich und Bento-Karte."
+
+#: .\features\main\models\category.py:46 .\features\main\models\service.py:85
+msgid "Short Description"
+msgstr "Kurzbeschreibung"
+
+#: .\features\main\models\category.py:47
+msgid "Short description displayed in the Hero section."
+msgstr "Kurzbeschreibung, die im Hero-Bereich angezeigt wird."
+
+#: .\features\main\models\category.py:51
+msgid "SEO Text / Content"
+msgstr "SEO Text / Inhalt"
+
+#: .\features\main\models\category.py:52
+msgid "Detailed text displayed at the bottom of the category page."
+msgstr "Detaillierter Text, der unten auf der Kategorieseite angezeigt wird."
+
+#: .\features\main\models\category.py:58
+msgid "Icon"
+msgstr "Icon"
+
+#: .\features\main\models\category.py:59
+msgid "SVG icon for menu or footer (optional)."
+msgstr "SVG-Icon für Menü oder Footer (optional)."
+
+#: .\features\main\models\category.py:63 .\features\main\models\service.py:24
+#: .\features\main\models\service.py:107 .\features\main\models\service.py:144
+msgid "Order"
+msgstr "Reihenfolge"
+
+#: .\features\main\models\category.py:64
+msgid "Sorting order (lower numbers come first)."
+msgstr "Sortierreihenfolge (niedrigere Zahlen kommen zuerst)."
+
+#: .\features\main\models\category.py:68 .\features\main\models\service.py:15
+#: .\features\main\models\service.py:45
+msgid "Category"
+msgstr "Kategorie"
+
+#: .\features\main\models\category.py:69
+msgid "Categories"
+msgstr "Kategorien"
+
+#: .\features\main\models\service.py:20
+msgid "Group name (e.g. 'Maniküre')."
+msgstr "Gruppenname (z.B. 'Maniküre')."
+
+#: .\features\main\models\service.py:25
+msgid "Sorting order within the category."
+msgstr "Sortierreihenfolge innerhalb der Kategorie."
+
+#: .\features\main\models\service.py:29
+msgid "Service Group"
+msgstr "Servicegruppe"
+
+#: .\features\main\models\service.py:30
+msgid "Service Groups"
+msgstr "Servicegruppen"
+
+#: .\features\main\models\service.py:46
+msgid "Main category (for filtering)."
+msgstr "Hauptkategorie (zum Filtern)."
+
+#: .\features\main\models\service.py:54
+msgid "Group"
+msgstr "Gruppe"
+
+#: .\features\main\models\service.py:55
+msgid "Optional grouping within the category."
+msgstr "Optionale Gruppierung innerhalb der Kategorie."
+
+#: .\features\main\models\service.py:60
+msgid "Service name (e.g. 'Klassische Maniküre')."
+msgstr "Servicename (z.B. 'Klassische Maniküre')."
+
+#: .\features\main\models\service.py:65
+msgid "URL part (e.g. 'classic-manicure')."
+msgstr "URL-Teil (z.B. 'classic-manicure')."
+
+#: .\features\main\models\service.py:70
+msgid "Price (€)"
+msgstr "Preis (€)"
+
+#: .\features\main\models\service.py:71
+msgid "Base price for sorting and calculation."
+msgstr "Grundpreis für Sortierung und Berechnung."
+
+#: .\features\main\models\service.py:76
+msgid "Price Display Text"
+msgstr "Preisanzeigetext"
+
+#: .\features\main\models\service.py:77
+msgid "Text to display (e.g. 'ab 30€'). If empty, uses Price field."
+msgstr "Anzuzeigender Text (z.B. 'ab 30€'). Wenn leer, wird das Preisfeld verwendet."
+
+#: .\features\main\models\service.py:80
+msgid "Duration (min)"
+msgstr "Dauer (Min)"
+
+#: .\features\main\models\service.py:81
+msgid "Duration in minutes."
+msgstr "Dauer in Minuten."
+
+#: .\features\main\models\service.py:86
+msgid "Displayed in the list view."
+msgstr "Wird in der Listenansicht angezeigt."
+
+#: .\features\main\models\service.py:90
+msgid "Full Content"
+msgstr "Vollständiger Inhalt"
+
+#: .\features\main\models\service.py:91
+msgid "Detailed description/article about the service (HTML/Markdown)."
+msgstr "Detaillierte Beschreibung/Artikel über den Service (HTML/Markdown)."
+
+#: .\features\main\models\service.py:98
+msgid "Photo of the specific service."
+msgstr "Foto des spezifischen Services."
+
+#: .\features\main\models\service.py:102
+msgid "Hit / Popular"
+msgstr "Hit / Beliebt"
+
+#: .\features\main\models\service.py:103
+msgid "Highlight this service as popular."
+msgstr "Diesen Service als beliebt hervorheben."
+
+#: .\features\main\models\service.py:108
+msgid "Sorting order."
+msgstr "Sortierreihenfolge."
+
+#: .\features\main\models\service.py:112 .\features\main\models\service.py:129
+msgid "Service"
+msgstr "Service"
+
+#: .\features\main\models\service.py:113
+msgid "Services"
+msgstr "Services"
+
+#: .\features\main\models\service.py:134
+msgid "High quality photo. Will be resized by CSS."
+msgstr "Hochwertiges Foto. Wird per CSS angepasst."
+
+#: .\features\main\models\service.py:139
+msgid "Title / Description"
+msgstr "Titel / Beschreibung"
+
+#: .\features\main\models\service.py:140
+msgid "Optional caption for the image."
+msgstr "Optionale Bildunterschrift."
+
+#: .\features\main\models\service.py:145
+msgid "Sorting order in the gallery."
+msgstr "Sortierreihenfolge in der Galerie."
+
+#: .\features\main\models\service.py:149
+msgid "Portfolio Image"
+msgstr "Portfolio-Bild"
+
+#: .\features\main\models\service.py:150
+msgid "Portfolio Images"
+msgstr "Portfolio-Bilder"
+
+#: .\features\system\models\mixins.py:18
+msgid "Created at"
+msgstr "Erstellt am"
+
+#: .\features\system\models\mixins.py:19
+msgid "Updated at"
+msgstr "Aktualisiert am"
+
+#: .\features\system\models\mixins.py:35
+msgid "Active"
+msgstr "Aktiv"
+
+#: .\features\system\models\mixins.py:36
+msgid "If unchecked, this item will be completely hidden from the site."
+msgstr "Wenn nicht angehakt, wird dieses Element komplett von der Seite ausgeblendet."
+
+#: .\features\system\models\mixins.py:40
+msgid "Available for Booking"
+msgstr "Buchbar"
+
+#: .\features\system\models\mixins.py:41
+msgid "If unchecked, shows 'Temporarily Unavailable' (e.g. no masters)."
+msgstr "Wenn nicht angehakt, wird 'Vorübergehend nicht verfügbar' angezeigt (z.B. keine Meister)."
+
+#: .\features\system\models\mixins.py:45
+msgid "Planned / Coming Soon"
+msgstr "Geplant / Demnächst"
+
+#: .\features\system\models\mixins.py:46
+msgid "If checked, shows 'Coming Soon' badge."
+msgstr "Wenn angehakt, wird 'Demnächst' angezeigt."
+
+#: .\features\system\models\mixins.py:59
+msgid "SEO Title"
+msgstr "SEO Titel"
+
+#: .\features\system\models\mixins.py:60
+msgid "Browser tab title. Defaults to object title if empty."
+msgstr "Browsertab-Titel. Standardmäßig Objekttitel, wenn leer."
+
+#: .\features\system\models\mixins.py:64
+msgid "SEO Description"
+msgstr "SEO Beschreibung"
+
+#: .\features\system\models\mixins.py:65
+msgid "Meta description for search engines."
+msgstr "Meta-Beschreibung für Suchmaschinen."
+
+#: .\features\system\models\mixins.py:71
+msgid "OG Image"
+msgstr "OG Bild"
+
+#: .\features\system\models\mixins.py:72
+msgid "Image for social media sharing (1200x630px recommended)."
+msgstr "Bild für soziale Medien (1200x630px empfohlen)."
+
+#: .\features\system\models\seo.py:18
+msgid "Home Page"
+msgstr "Startseite"
+
+#: .\features\system\models\seo.py:19
+msgid "Contacts Page"
+msgstr "Kontaktseite"
+
+#: .\features\system\models\seo.py:20
+msgid "Team Page"
+msgstr "Teamseite"
+
+#: .\features\system\models\seo.py:21
+msgid "Services List Page"
+msgstr "Dienstleistungsliste"
+
+#: .\features\system\models\seo.py:22 .\templates\includes\_footer.html:63
+msgid "Impressum"
+msgstr "Impressum"
+
+#: .\features\system\models\seo.py:23 .\templates\includes\_footer.html:65
+msgid "Datenschutz"
+msgstr "Datenschutz"
+
+#: .\features\system\models\seo.py:30
+msgid "Page Key"
+msgstr "Seitenschlüssel"
+
+#: .\features\system\models\seo.py:31
+msgid "Unique identifier for the static page."
+msgstr "Eindeutige Kennung für die statische Seite."
+
+#: .\features\system\models\seo.py:35
+msgid "Static Page SEO"
+msgstr "Statische Seite SEO"
+
+#: .\features\system\models\seo.py:36
+msgid "Static Pages SEO"
+msgstr "Statische Seiten SEO"
+
+#: .\features\system\models\site_settings.py:9
+msgid "Company Name"
+msgstr "Firmenname"
+
+#: .\features\system\models\site_settings.py:10
+msgid "Owner Name"
+msgstr "Inhabername"
+
+#: .\features\system\models\site_settings.py:11
+msgid "Tax Number (Steuernummer)"
+msgstr "Steuernummer"
+
+#: .\features\system\models\site_settings.py:14
+msgid "Phone"
+msgstr "Telefon"
+
+#: .\features\system\models\site_settings.py:15
+msgid "Email"
+msgstr "E-Mail"
+
+#: .\features\system\models\site_settings.py:16
+msgid "Street"
+msgstr "Straße"
+
+#: .\features\system\models\site_settings.py:17
+msgid "City & ZIP"
+msgstr "Stadt & PLZ"
+
+#: .\features\system\models\site_settings.py:18
+msgid "Google Maps Link"
+msgstr "Google Maps Link"
+
+#: .\features\system\models\site_settings.py:21
+msgid "Instagram URL"
+msgstr "Instagram URL"
+
+#: .\features\system\models\site_settings.py:22
+msgid "Telegram URL"
+msgstr "Telegram URL"
+
+#: .\features\system\models\site_settings.py:23
+msgid "WhatsApp URL"
+msgstr "WhatsApp URL"
+
+#: .\features\system\models\site_settings.py:26
+msgid "Mo-Fr"
+msgstr "Mo-Fr"
+
+#: .\features\system\models\site_settings.py:27
+msgid "Saturday"
+msgstr "Samstag"
+
+#: .\features\system\models\site_settings.py:28
+msgid "Sunday"
+msgstr "Sonntag"
+
+#: .\features\system\models\site_settings.py:31
+#: .\features\system\models\site_settings.py:32
+msgid "Site Settings"
+msgstr "Seiteneinstellungen"
+
+#: .\templates\400.html:5 .\templates\400.html:11
+msgid "Ungültige Anfrage"
+msgstr "Ungültige Anfrage"
+
+#: .\templates\400.html:13
+msgid "Der Server konnte Ihre Anfrage nicht verarbeiten."
+msgstr "Der Server konnte Ihre Anfrage nicht verarbeiten."
+
+#: .\templates\400.html:15 .\templates\403.html:15 .\templates\404.html:15
+#: .\templates\500.html:15
+msgid "Zur Startseite"
+msgstr "Zur Startseite"
+
+#: .\templates\403.html:5 .\templates\403.html:11
+msgid "Zugriff verweigert"
+msgstr "Zugriff verweigert"
+
+#: .\templates\403.html:13
+msgid "Sie haben keine Berechtigung, diese Seite aufzurufen."
+msgstr "Sie haben keine Berechtigung, diese Seite aufzurufen."
+
+#: .\templates\404.html:5 .\templates\404.html:11
+msgid "Seite nicht gefunden"
+msgstr "Seite nicht gefunden"
+
+#: .\templates\404.html:13
+msgid ""
+"Die von Ihnen gesuchte Seite existiert leider nicht oder wurde verschoben."
+msgstr "Die von Ihnen gesuchte Seite existiert leider nicht oder wurde verschoben."
+
+#: .\templates\500.html:5
+msgid "Serverfehler"
+msgstr "Serverfehler"
+
+#: .\templates\500.html:11
+msgid "Interner Serverfehler"
+msgstr "Interner Serverfehler"
+
+#: .\templates\500.html:13
+msgid "Es ist ein Fehler aufgetreten. Wir arbeiten bereits daran."
+msgstr "Es ist ein Fehler aufgetreten. Wir arbeiten bereits daran."
+
+#: .\templates\contacts\contacts.html:5
+msgid "Kontakt & Über uns"
+msgstr "Kontakt & Über uns"
+
+#: .\templates\contacts\contacts.html:16
+msgid "Kontaktieren Sie uns"
+msgstr "Kontaktieren Sie uns"
+
+#: .\templates\contacts\contacts.html:17
+msgid "ÜBER UNS & KONTAKT"
+msgstr "ÜBER UNS & KONTAKT"
+
+#: .\templates\contacts\contacts.html:23
+msgid "Willkommen bei LILY"
+msgstr "Willkommen bei LILY"
+
+#: .\templates\contacts\contacts.html:25
+msgid ""
+"LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellen "
+"Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern "
+"auch ein innerer Zustand des Selbstvertrauens."
+msgstr "LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellen Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern auch ein innerer Zustand des Selbstvertrauens."
+
+#: .\templates\contacts\contacts.html:28
+msgid ""
+"Unsere Meister verwenden nur Premium-Materialien (Wella, L'Oreal, Luxio) und "
+"moderne Techniken, um Ihre natürliche Einzigartigkeit zu unterstreichen."
+msgstr "Unsere Meister verwenden nur Premium-Materialien (Wella, L'Oreal, Luxio) und moderne Techniken, um Ihre natürliche Einzigartigkeit zu unterstreichen."
+
+#: .\templates\contacts\contacts.html:31
+msgid "Ihre Schönheit ist unsere Kunst."
+msgstr "Ihre Schönheit ist unsere Kunst."
+
+#: .\templates\contacts\contacts.html:39
+msgid "Vorname *"
+msgstr "Vorname *"
+
+#: .\templates\contacts\contacts.html:40
+msgid "Nachname"
+msgstr "Nachname"
+
+#: .\templates\contacts\contacts.html:42
+msgid "Adresse / Stadt"
+msgstr "Adresse / Stadt"
+
+#: .\templates\contacts\contacts.html:43
+msgid "Telefon *"
+msgstr "Telefon *"
+
+#: .\templates\contacts\contacts.html:47
+msgid "Wählen Sie eine Dienstleistung..."
+msgstr "Wählen Sie eine Dienstleistung..."
+
+#: .\templates\contacts\contacts.html:48
+msgid "Friseur"
+msgstr "Friseur"
+
+#: .\templates\contacts\contacts.html:51
+msgid "Augenbrauen & Wimpern"
+msgstr "Augenbrauen & Wimpern"
+
+#: .\templates\contacts\contacts.html:53
+msgid "Massage"
+msgstr "Massage"
+
+#: .\templates\contacts\contacts.html:54
+msgid "Andere Frage"
+msgstr "Andere Frage"
+
+#: .\templates\contacts\contacts.html:58
+msgid "Ihre Frage oder Kommentar..."
+msgstr "Ihre Frage oder Kommentar..."
+
+#: .\templates\contacts\contacts.html:61
+msgid "Anfrage senden"
+msgstr "Anfrage senden"
+
+#: .\templates\contacts\contacts.html:71
+msgid "Unsere Adresse"
+msgstr "Unsere Adresse"
+
+#: .\templates\contacts\contacts.html:78
+msgid "Telefon"
+msgstr "Telefon"
+
+#: .\templates\contacts\contacts.html:81
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: .\templates\contacts\contacts.html:84
+msgid "Öffnungszeiten"
+msgstr "Öffnungszeiten"
+
+#: .\templates\contacts\contacts.html:96
+msgid "Klicken Sie unten, um Google Maps zu öffnen"
+msgstr "Klicken Sie unten, um Google Maps zu öffnen"
+
+#: .\templates\contacts\contacts.html:101
+msgid "📍 Route planen"
+msgstr "📍 Route planen"
+
+#: .\templates\home\home.html:13
+msgid "Premium Beauty Salon"
+msgstr "Premium Beauty Salon"
+
+#: .\templates\home\home.html:14
+msgid "Die Kunst"
+msgstr "Die Kunst"
+
+#: .\templates\home\home.html:14
+msgid "Ihrer Schönheit"
+msgstr "Ihrer Schönheit"
+
+#: .\templates\home\home.html:15
+msgid ""
+"Deutsche Qualitätsstandards treffen auf ukrainische Servicekunst. Wir "
+"kreieren Looks, die inspirieren."
+msgstr "Deutsche Qualitätsstandards treffen auf ukrainische Servicekunst. Wir kreieren Looks, die inspirieren."
+
+#: .\templates\home\home.html:16 .\templates\services\detail.html:89
+msgid "Termin buchen"
+msgstr "Termin buchen"
+
+#: .\templates\home\home.html:29
+msgid "Unsere Leistungen"
+msgstr "Unsere Leistungen"
+
+#: .\templates\home\home.html:30
+msgid "Wählen Sie eine Richtung"
+msgstr "Wählen Sie eine Richtung"
+
+#: .\templates\includes\_footer.html:16 .\templates\includes\_footer.html:17
+msgid "Kontakt & Leistungen öffnen"
+msgstr "Kontakt & Leistungen öffnen"
+
+#: .\templates\includes\_footer.html:16
+msgid "Schließen"
+msgstr "Schließen"
+
+#: .\templates\includes\_footer.html:36
+msgid "Frisuren & Haarpflege"
+msgstr "Frisuren & Haarpflege"
+
+#: .\templates\includes\_footer.html:38
+msgid "Haarschnitte"
+msgstr "Haarschnitte"
+
+#: .\templates\includes\_footer.html:39
+msgid "Färben"
+msgstr "Färben"
+
+#: .\templates\includes\_footer.html:40
+msgid "Haarbehandlung"
+msgstr "Haarbehandlung"
+
+#: .\templates\includes\_footer.html:41
+msgid "Styling"
+msgstr "Styling"
+
+#: .\templates\includes\_footer.html:47
+msgid "Maniküre"
+msgstr "Maniküre"
+
+#: .\templates\includes\_footer.html:48
+msgid "Pediküre"
+msgstr "Pediküre"
+
+#: .\templates\includes\_footer.html:49
+msgid "Verlängerung"
+msgstr "Verlängerung"
+
+#: .\templates\includes\_footer.html:53
+msgid "Schönheit & Pflege"
+msgstr "Schönheit & Pflege"
+
+#: .\templates\includes\_footer.html:55
+msgid "Epilation"
+msgstr "Epilation"
+
+#: .\templates\includes\_footer.html:56
+msgid "Wimpernverlängerung"
+msgstr "Wimpernverlängerung"
+
+#: .\templates\includes\_footer.html:57
+msgid "Laminierung"
+msgstr "Laminierung"
+
+#: .\templates\includes\_header.html:27 .\templates\includes\_header.html:69
+msgid "Startseite"
+msgstr "Startseite"
+
+#: .\templates\includes\_header.html:28 .\templates\includes\_header.html:70
+msgid "Leistungen"
+msgstr "Leistungen"
+
+#: .\templates\includes\_header.html:29 .\templates\includes\_header.html:71
+#: .\templates\team\team.html:5
+msgid "Team"
+msgstr "Team"
+
+#: .\templates\includes\_header.html:30 .\templates\includes\_header.html:72
+msgid "Kontakt"
+msgstr "Kontakt"
+
+#: .\templates\services\detail.html:5
+msgid "Leistung"
+msgstr "Leistung"
+
+#: .\templates\services\detail.html:12
+msgid "Perfekte Maniküre & Pediküre"
+msgstr "Perfekte Maniküre & Pediküre"
+
+#: .\templates\services\detail.html:13
+msgid "NAGELSERVICE"
+msgstr "NAGELSERVICE"
+
+#: .\templates\services\detail.html:23
+msgid ""
+"Bei LILY verwandeln wir die Nagelpflege in ein echtes Schönheitsritual. Wir "
+"sind spezialisiert auf kombinierte Maniküre, perfekte Ausrichtung der "
+"Nagelplatte und die Verwendung von Premium-Materialien wie Luxio. Unsere "
+"Meister beherrschen Smart-Pediküre-Techniken für perfekt glatte Füße. Wir "
+"legen besonderen Wert auf Sicherheit und Sterilität, damit Sie sich "
+"vollkommen entspannen und den Prozess der Schaffung Ihres perfekten Looks "
+"bis in die Fingerspitzen genießen können."
+msgstr "Bei LILY verwandeln wir die Nagelpflege in ein echtes Schönheitsritual. Wir sind spezialisiert auf kombinierte Maniküre, perfekte Ausrichtung der Nagelplatte und die Verwendung von Premium-Materialien wie Luxio. Unsere Meister beherrschen Smart-Pediküre-Techniken für perfekt glatte Füße. Wir legen besonderen Wert auf Sicherheit und Sterilität, damit Sie sich vollkommen entspannen und den Prozess der Schaffung Ihres perfekten Looks bis in die Fingerspitzen genießen können."
+
+#: .\templates\services\detail.html:49
+msgid "Maniküre & Pediküre"
+msgstr "Maniküre & Pediküre"
+
+#: .\templates\services\detail.html:51
+msgid "Damenmaniküre"
+msgstr "Damenmaniküre"
+
+#: .\templates\services\detail.html:55
+msgid "Maniküre + Gellack"
+msgstr "Maniküre + Gellack"
+
+#: .\templates\services\detail.html:59
+msgid "Maniküre + normaler Nagellack"
+msgstr "Maniküre + normaler Nagellack"
+
+#: .\templates\services\detail.html:68
+msgid "Ihre Experten"
+msgstr "Ihre Experten"
+
+#: .\templates\services\detail.html:75 .\templates\team\team.html:91
+msgid "Nageldesignerin"
+msgstr "Nageldesignerin"
+
+#: .\templates\services\detail.html:82 .\templates\team\team.html:55
+msgid "Gründerin & Art Director"
+msgstr "Gründerin & Art Director"
+
+#: .\templates\services\services.html:11
+msgid "Preisliste"
+msgstr "Preisliste"
+
+#: .\templates\services\services.html:12
+msgid "AKTUELLE PREISE"
+msgstr "AKTUELLE PREISE"
+
+#: .\templates\services\services.html:53
+msgid "Mehr über Dienstleistungen und Meister"
+msgstr "Mehr über Dienstleistungen und Meister"
+
+#: .\templates\team\team.html:38
+msgid "Unser Team"
+msgstr "Unser Team"
+
+#: .\templates\team\team.html:39
+msgid "SCHÖNHEITSEXPERTEN"
+msgstr "SCHÖNHEITSEXPERTEN"
+
+#: .\templates\team\team.html:58
+msgid ""
+"Willkommen im LILY Beauty Space. Hier kreieren wir nicht nur Looks, sondern "
+"Stimmungen. Meine Mission ist es, Ihnen Selbstvertrauen und höchste "
+"Servicequalität in einer gemütlichen Atmosphäre zu schenken."
+msgstr "Willkommen im LILY Beauty Space. Hier kreieren wir nicht nur Looks, sondern Stimmungen. Meine Mission ist es, Ihnen Selbstvertrauen und höchste Servicequalität in einer gemütlichen Atmosphäre zu schenken."
+
+#: .\templates\team\team.html:61
+msgid "(Hier kann Liliia ihre Geschichte oder Begrüßung für Kunden schreiben)"
+msgstr "(Hier kann Liliia ihre Geschichte oder Begrüßung für Kunden schreiben)"
+
+#: .\templates\team\team.html:65
+msgid "Liliia schreiben"
+msgstr "Liliia schreiben"
+
+#: .\templates\team\team.html:74
+msgid "Top-Meister"
+msgstr "Top-Meister"
+
+#: .\templates\team\team.html:82
+msgid "Top-Colorist"
+msgstr "Top-Colorist"
+
+#: .\templates\team\team.html:83 .\templates\team\team.html:92
+#: .\templates\team\team.html:101
+msgid "Profil"
+msgstr "Profil"
+
+#: .\templates\team\team.html:100
+msgid "Kosmetikerin"
+msgstr "Kosmetikerin"

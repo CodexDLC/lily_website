@@ -95,7 +95,97 @@ System automatically tracks last visit date and sends a reminder when it's time 
 
 ---
 
-## 6. Technical Notes
+## 6. Ghost User System (Progressive Profiling)
+
+**Concept:**
+Implement a "frictionless registration" system where users are automatically registered as temporary "ghost" accounts during their first interaction (booking, commenting, etc.) without explicit account creation.
+
+### How It Works:
+
+1.  **First Booking:**
+    *   User books appointment: Name: "Anna", Phone: "+491234567890"
+    *   System creates `Client` record with `status='guest'` and unique `access_token`
+    *   User receives SMS: "Booking confirmed. Cancel: https://salon.de/cancel/{token}"
+
+2.  **Second Interaction (Comment):**
+    *   Same user leaves a review, enters email: "anna@mail.com"
+    *   System finds existing `Client` by phone and enriches data with email
+    *   Comment displays as: "Anna ⭐⭐⭐⭐⭐" (shows name since we have it)
+
+3.  **Unknown User (New Comment):**
+    *   New user leaves comment with only email: "new@mail.com"
+    *   System creates `Client` record with empty name
+    *   Comment displays as: "Guest ⭐⭐⭐⭐" (hides email/phone for privacy)
+
+4.  **Account Activation (Optional):**
+    *   User clicks "View My History" or "Create Account"
+    *   System creates Django `User` account, links to existing `Client`
+    *   All past bookings, comments, and data are instantly available
+
+### Database Structure:
+
+```python
+class Client(models.Model):
+    # Identifiers (at least one required)
+    phone = models.CharField(max_length=20, blank=True, db_index=True)
+    email = models.EmailField(blank=True, db_index=True)
+    name = models.CharField(max_length=255, blank=True)
+
+    # Link to Django User (null until activation)
+    user = models.OneToOneField(User, null=True, blank=True,
+                                 on_delete=models.SET_NULL)
+
+    # Access without password
+    access_token = models.CharField(max_length=64, unique=True)
+
+    # Status tracking
+    status = models.CharField(max_length=20, default='guest')
+    # guest → active (when user is created)
+
+    # Marketing
+    consent_marketing = models.BooleanField(default=False)
+```
+
+### Why (Value):
+
+*   **Zero Friction:** No "Create Account" barrier - user books in 30 seconds
+*   **Data Enrichment:** Each interaction adds more information automatically
+*   **GDPR-Friendly:** Legitimate interest (booking) for data collection
+*   **Marketing Base:** Build email/phone database organically
+*   **Retroactive History:** When user activates, all past data is linked
+*   **Anonymous Comments:** Can show reviews without exposing contact info
+
+### Use Cases:
+
+1.  **Booking System:** Client books without registration, manages via SMS link
+2.  **Reviews:** Verified reviews (from actual clients) shown with names
+3.  **Email Marketing:** Build subscriber list from real interactions
+4.  **Loyalty Program:** Track visit history even for "guests"
+5.  **Telegram Bot:** Link bot conversations to same Client record
+
+### Implementation Notes:
+
+*   Use `Client` model as central entity (not Django User)
+*   Django `User` is created only when needed (personal cabinet, password login)
+*   `access_token` allows booking management without authentication
+*   Match clients by phone first (primary), then email (secondary)
+
+---
+
+## 7. Priority Assessment (Impact/Effort)
+
+| Feature | Value | Effort | Verdict |
+| :--- | :---: | :---: | :--- |
+| **Service Gallery** | 🔥 High | Medium | **Must Have** (Implement first) |
+| **Master Profile** | ⭐️ High | High | **Approved** (Requires content and photoshoot) |
+| **Social QR Hub** | 💬 Medium | Low | **Nice to Have** (Easy to implement) |
+| **Smart Retention** | 💰 Very High | High | **Strategic Goal** (Requires CRM/Backend) |
+| **Ghost User System** | 🚀 Very High | Medium | **Core Feature** (Foundation for booking) |
+
+---
+
+## 8. Technical Notes
 
 *   To implement galleries, a JavaScript library (e.g., `Swiper.js` or `Splide`) or native CSS Scroll Snap will be required.
 *   Photos must be optimized (WebP) and have Lazy Loading.
+*   Ghost User system requires careful phone/email validation and GDPR compliance documentation.

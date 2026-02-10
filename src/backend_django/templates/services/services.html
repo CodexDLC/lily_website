@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ seo.seo_title|default:"Leistungen | LILY Beauty Salon" }}{% endblock %}
+{% block meta_description %}{{ seo.seo_description|default:"Unsere Leistungen und Preise." }}{% endblock %}
+
+{% block content %}
+<section class="hero-text-block">
+    <div class="container">
+        <h1 class="hero-title">{% trans "Preisliste" %}</h1>
+        <p class="hero-subtitle">{% trans "AKTUELLE PREISE" %}</p>
+    </div>
+</section>
+
+<main class="section">
+    <div class="container price-menu-container">
+
+        {% for island in islands %}
+        <!-- ISLAND = ONE price-block -->
+        <div class="price-block" data-bento="{{ island.bento_key }}">
+
+            <!-- Island Title (h2 = bento group) -->
+            <div class="category-header">
+                <h2 class="category-title">{{ island.bento_title }}</h2>
+            </div>
+
+            <!-- Services List (all services from all categories in this island) -->
+            {% for cat_data in island.categories %}
+            {% for service in cat_data.services %}
+            <div class="service-row">
+                <div class="service-names">
+                    <span class="name-de">{{ service.title }}</span>
+                    {% if service.description %}
+                    <span class="service-desc-small">{{ service.description|truncatechars:60 }}</span>
+                    {% endif %}
+                </div>
+                <div class="service-meta">
+                    <span class="meta-price">
+                        {% if service.price_info %}
+                            {{ service.price_info }}
+                        {% else %}
+                            {{ service.price }} €
+                        {% endif %}
+                    </span>
+                    <span class="meta-time">⏱ {{ service.duration }} min</span>
+                </div>
+            </div>
+            {% endfor %}
+            {% endfor %}
+
+            <!-- Link for entire island (at the bottom of price-block) -->
+            <div class="service-link-wrapper">
+                <a href="{% url 'services' %}?bento={{ island.bento_key }}" class="more-link">
+                    {% trans "Все услуги" %} {{ island.bento_title }} →
+                </a>
+            </div>
+
+        </div>
+        <!-- END ISLAND (price-block) -->
+        {% endfor %}
+
+    </div>
+</main>
+{% endblock %}
