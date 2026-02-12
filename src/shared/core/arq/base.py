@@ -8,6 +8,7 @@ from loguru import logger as log
 # Пока сделаем заглушку или импорт из telegram_bot.core.config (но это нарушение слоев)
 # Лучше всего, если BaseArqSettings будет абстрактным или принимать настройки
 
+
 class ArqService:
     """
     Обертка над клиентом ARQ.
@@ -79,6 +80,7 @@ class BaseArqSettings:
     Базовые настройки для всех ARQ воркеров.
     Наследники должны переопределить redis_settings и functions.
     """
+
     max_jobs = 20
     job_timeout = 60
     keep_result = 5

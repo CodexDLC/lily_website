@@ -5,6 +5,7 @@ class UserUpsertDTO(BaseModel):
     """
     DTO для создания или обновления пользователя (из Telegram).
     """
+
     telegram_id: int
     first_name: str
     username: str | None = None

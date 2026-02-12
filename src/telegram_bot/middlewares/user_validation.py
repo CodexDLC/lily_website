@@ -21,7 +21,7 @@ class UserValidationMiddleware(BaseMiddleware):
         user = None
 
         # Извлекаем user из разных типов событий
-        if isinstance(event, (Message, CallbackQuery)):
+        if isinstance(event, Message | CallbackQuery):
             user = event.from_user
 
         # Если нет пользователя - блокируем

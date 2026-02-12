@@ -4,14 +4,14 @@ services:
       context: ..
       dockerfile: deploy/backend/Dockerfile
     container_name: lily_website-backend
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python src/backend_django/manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     env_file:
       - ../src/backend_django/.env
     volumes:
-      - ../src/backend_django:/app
-      - ../src/shared:/app/shared
+      - ../src/backend_django:/app/src/backend_django
+      - ../src/shared:/app/src/shared:ro
       - uploads:/app/media
     depends_on:
       - redis
@@ -43,6 +43,7 @@ services:
     env_file: ../.env
     volumes:
       - ../src/telegram_bot:/app/src/telegram_bot:ro
+      - ../src/worker_arq:/app/src/worker_arq:ro
       - ../src/shared:/app/src/shared:ro
     restart: unless-stopped
     depends_on:

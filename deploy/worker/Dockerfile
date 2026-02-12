@@ -11,7 +11,9 @@ WORKDIR /app
 RUN useradd -m -u 1000 appuser
 COPY --from=builder /app/.venv /app/.venv
 COPY src/telegram_bot /app/src/telegram_bot
+COPY src/worker_arq /app/src/worker_arq
 COPY src/shared /app/src/shared
 USER appuser
 ENV PATH="/app/.venv/bin:$PATH"
-CMD ["python", "-m", "src.telegram_bot.services.worker.bot_worker"]
+ENV PYTHONPATH="/app:$PYTHONPATH"
+CMD ["python", "-m", "src.worker_arq.bot_worker"]

@@ -8,9 +8,10 @@ Poetry Action — управление зависимостями в pyproject.t
 from __future__ import annotations
 
 import re
-from pathlib import Path
+from typing import TYPE_CHECKING
 
-from tools.init_project.config import InstallContext
+if TYPE_CHECKING:
+    from tools.init_project.config import InstallContext
 
 
 class PoetryAction:
@@ -56,10 +57,10 @@ class PoetryAction:
         """
         # Паттерн: опциональный комментарий + имя группы + массив
         pattern = re.compile(
-            r"(?:^# [^\n]*\n)?"   # опциональная строка-комментарий
+            r"(?:^# [^\n]*\n)?"  # опциональная строка-комментарий
             rf"^{re.escape(group_name)}\s*=\s*\[\s*\n"  # group = [
-            r"(?:.*\n)*?"         # содержимое массива
-            r"^\]\s*\n?",         # ]
+            r"(?:.*\n)*?"  # содержимое массива
+            r"^\]\s*\n?",  # ]
             re.MULTILINE,
         )
         return pattern.sub("", content)
