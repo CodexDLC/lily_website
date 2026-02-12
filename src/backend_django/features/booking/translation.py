@@ -10,6 +10,7 @@ class MasterTranslationOptions(TranslationOptions):
     """Translation fields for Master model."""
 
     fields = (
+        "name",
         "title",
         "bio",
         "short_description",

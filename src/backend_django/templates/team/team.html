@@ -2,7 +2,8 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{% trans "Team" %} | LILY Beauty Salon{% endblock %}
+{% block title %}{{ seo.seo_title|default:"Team | LILY Beauty Salon" }}{% endblock %}
+{% block meta_description %}{{ seo.seo_description|default:'Lernen Sie unsere Experten kennen.' }}{% endblock %}
 
 {% block content %}
 <!-- HERO -->
@@ -17,63 +18,75 @@
 <section class="section">
 
     <!-- BLOCK 1: OWNER -->
+    {% if owner %}
     <section class="team-section-block">
         <div class="container">
             <div class="owner-block">
-                <!-- Owner Photo (Local) -->
-                <div class="owner-photo" style="background-image: url('{% static 'img/lily.webp' %}');"></div>
+                <!-- Owner Photo -->
+                <div class="owner-photo" style="background-image: url('{% if owner.photo %}{{ owner.photo.url }}{% else %}{% static 'img/lily.webp' %}{% endif %}');"></div>
 
                 <div class="owner-info">
-                    <h2 class="owner-name">Liliia Yakina</h2>
-                    <span class="owner-role">{% trans "Gründerin & Art Director" %}</span>
+                    <h2 class="owner-name">{{ owner.name }}</h2>
+                    <span class="owner-role">{{ owner.title }}</span>
 
-                    <p class="owner-description">
-                        {% trans "Willkommen im LILY Beauty Space. Hier kreieren wir nicht nur Looks, sondern Stimmungen. Meine Mission ist es, Ihnen Selbstvertrauen und höchste Servicequalität in einer gemütlichen Atmosphäre zu schenken." %}
-                    </p>
+                    <div class="owner-description">
+                        {{ owner.bio|safe }}
+                    </div>
+
+                    {% if owner.short_description %}
                     <p class="owner-note">
-                        {% trans "(Hier kann Liliia ihre Geschichte oder Begrüßung für Kunden schreiben)" %}
+                        {{ owner.short_description }}
                     </p>
+                    {% endif %}
 
                     <br>
-                    <a href="https://instagram.com/manikure_kothen" class="btn-pill">{% trans "Liliia schreiben" %}</a>
+                    {% if owner.instagram %}
+                    <a href="https://instagram.com/{{ owner.instagram }}" target="_blank" class="btn-pill">{% trans "Instagram" %}</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </section>
+    {% endif %}
 
     <!-- BLOCK 2: TEAM GRID -->
     <section class="team-section-block">
         <div class="container">
-            <h2 class="section-heading">{% trans "Top-Meister" %}</h2>
+            <h2 class="section-heading">{% trans "Unsere Meister" %}</h2>
 
             <div class="team-grid">
-                <!-- Master 1 -->
+                <!-- Masters Loop -->
+                {% for master in team %}
                 <div class="master-card">
-                    <div class="master-photo" style="background-image: url('https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=600');"></div>
+                    <div class="master-photo" style="background-image: url('{% if master.photo %}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}');"></div>
                     <div class="master-info">
-                        <h3 class="master-name">Anna</h3>
-                        <p class="master-role">{% trans "Top-Colorist" %}</p>
-                        <a href="#" class="btn-book">{% trans "Profil" %}</a>
+                        <h3 class="master-name">{{ master.name }}</h3>
+                        <p class="master-role">{{ master.title }}</p>
+                        {% if master.instagram %}
+                        <a href="https://instagram.com/{{ master.instagram }}" target="_blank" class="btn-book">Instagram</a>
+                        {% else %}
+                        <span class="btn-book" style="opacity:0.5; cursor:default;">Profil</span>
+                        {% endif %}
                     </div>
                 </div>
-                <!-- Master 2 -->
-                <div class="master-card">
-                    <div class="master-photo" style="background-image: url('https://images.unsplash.com/photo-1595959183082-7b570b7e08e2?auto=format&fit=crop&w=600');"></div>
+                {% endfor %}
+
+                <!-- HIRING BLOCK (If enabled) -->
+                {% if settings.hiring_active %}
+                <div class="master-card hiring-card" style="border: 1px dashed var(--color-gold); background: rgba(237, 208, 113, 0.05);">
+                    <div class="master-photo" style="background-color: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 40px; color: var(--color-gold);">+</span>
+                    </div>
                     <div class="master-info">
-                        <h3 class="master-name">Maria</h3>
-                        <p class="master-role">{% trans "Nageldesignerin" %}</p>
-                        <a href="#" class="btn-book">{% trans "Profil" %}</a>
+                        <h3 class="master-name" style="color: var(--color-gold);">{{ settings.hiring_title }}</h3>
+                        <p class="master-role" style="font-size: 14px; line-height: 1.4; margin-bottom: 15px;">
+                            {{ settings.hiring_text }}
+                        </p>
+                        <a href="{% url 'contacts' %}" class="btn-book">{% trans "Bewerben" %}</a>
                     </div>
                 </div>
-                <!-- Master 3 -->
-                <div class="master-card">
-                    <div class="master-photo" style="background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600');"></div>
-                    <div class="master-info">
-                        <h3 class="master-name">Elena</h3>
-                        <p class="master-role">{% trans "Kosmetikerin" %}</p>
-                        <a href="#" class="btn-book">{% trans "Profil" %}</a>
-                    </div>
-                </div>
+                {% endif %}
+
             </div>
         </div>
     </section>

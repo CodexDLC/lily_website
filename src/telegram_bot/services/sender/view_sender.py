@@ -7,18 +7,16 @@ from loguru import logger as log
 
 from src.telegram_bot.resources.constants import KEY_UI_COORDS
 from src.telegram_bot.services.base import UnifiedViewDTO, ViewResultDTO
-from src.telegram_bot.services.base.base_service import BaseUIService
 
 
-class ViewSender(BaseUIService):
+class ViewSender:
     """
     Сервис-почтальон.
     Отвечает за отправку и обновление сообщений (Menu и Content).
     Использует KEY_UI_COORDS для хранения ID сообщений.
     """
 
-    def __init__(self, bot: Bot, state: FSMContext, state_data: dict, user_id: int):
-        super().__init__(state_data, char_id=None)
+    def __init__(self, bot: Bot, state: FSMContext, user_id: int):
         self.bot = bot
         self.state = state
         self.user_id = user_id
@@ -27,8 +25,9 @@ class ViewSender(BaseUIService):
         """
         Основной метод синхронизации UI.
         """
+        state_data = await self.state.get_data()
         # Читаем координаты из локального ключа
-        ui_coords = self.state_data.get(KEY_UI_COORDS, {})
+        ui_coords = state_data.get(KEY_UI_COORDS, {})
 
         # --- ЛОГИКА CLEAN HISTORY ---
         if view.clean_history:

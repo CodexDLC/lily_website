@@ -16,18 +16,20 @@
 <main class="section">
     <div class="container price-menu-container">
 
-        {% for island in islands %}
-        <!-- ISLAND = ONE price-block -->
-        <div class="price-block" data-bento="{{ island.bento_key }}">
+        {% for category in islands %}
+        <!-- CATEGORY BLOCK -->
+        <div class="price-block" data-bento="{{ category.bento_group }}">
 
-            <!-- Island Title (h2 = bento group) -->
+            <!-- Category Title -->
             <div class="category-header">
-                <h2 class="category-title">{{ island.bento_title }}</h2>
+                <h2 class="category-title">{{ category.title }}</h2>
+                {% if category.description %}
+                <p class="category-desc" style="opacity: 0.7; margin-top: 5px;">{{ category.description }}</p>
+                {% endif %}
             </div>
 
-            <!-- Services List (all services from all categories in this island) -->
-            {% for cat_data in island.categories %}
-            {% for service in cat_data.services %}
+            <!-- Services List -->
+            {% for service in category.services.all %}
             <div class="service-row">
                 <div class="service-names">
                     <span class="name-de">{{ service.title }}</span>
@@ -40,24 +42,30 @@
                         {% if service.price_info %}
                             {{ service.price_info }}
                         {% else %}
-                            {{ service.price }} €
+                            ab {{ service.price }} €
                         {% endif %}
                     </span>
-                    <span class="meta-time">⏱ {{ service.duration }} min</span>
+                    <span class="meta-time">
+                        ⏱
+                        {% if service.duration_info %}
+                            {{ service.duration_info }}
+                        {% else %}
+                            {{ service.duration }} min
+                        {% endif %}
+                    </span>
                 </div>
             </div>
             {% endfor %}
-            {% endfor %}
 
-            <!-- Link for entire island (at the bottom of price-block) -->
+            <!-- Link to Detail Page -->
             <div class="service-link-wrapper">
-                <a href="{% url 'services' %}?bento={{ island.bento_key }}" class="more-link">
-                    {% trans "Все услуги" %} {{ island.bento_title }} →
+                <a href="{% url 'service_detail' slug=category.slug %}" class="more-link">
+                    {% trans "Mehr über" %} {{ category.title }} →
                 </a>
             </div>
 
         </div>
-        <!-- END ISLAND (price-block) -->
+        <!-- END CATEGORY BLOCK -->
         {% endfor %}
 
     </div>

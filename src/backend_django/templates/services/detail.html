@@ -2,15 +2,15 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{{ service.title|default:_("Leistung") }} | LILY Beauty Salon{% endblock %}
+{% block title %}{{ category.title|default:_("Leistung") }} | LILY Beauty Salon{% endblock %}
 
 {% block content %}
 <!-- HERO SERVICE -->
-<section class="hero-text-block hero-service-bg" style="background-image: url('{{ service.image_url|default:'https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=1200' }}');">
+<section class="hero-text-block hero-service-bg" style="background-image: url('{% if category.image %}{{ category.image.url }}{% else %}https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=1200{% endif %}');">
     <div class="hero-service-overlay"></div>
     <div class="container hero-service-content">
-        <h1 class="hero-title">{{ service.title|default:_("Perfekte Maniküre & Pediküre") }}</h1>
-        <p class="hero-subtitle">{{ service.subtitle|default:_("NAGELSERVICE") }}</p>
+        <h1 class="hero-title">{{ category.title }}</h1>
+        <p class="hero-subtitle">{{ category.description|default:_("LILY BEAUTY SALON") }}</p>
     </div>
 </section>
 
@@ -18,72 +18,72 @@
     <div class="container price-menu-container">
 
         <!-- SEO TEXT -->
+        {% if category.content %}
         <div class="service-seo-section">
-            <div class="service-seo-text text-center">
-                <p>{{ service.description|default:_("Bei LILY verwandeln wir die Nagelpflege in ein echtes Schönheitsritual. Wir sind spezialisiert auf kombinierte Maniküre, perfekte Ausrichtung der Nagelplatte und die Verwendung von Premium-Materialien wie Luxio. Unsere Meister beherrschen Smart-Pediküre-Techniken für perfekt glatte Füße. Wir legen besonderen Wert auf Sicherheit und Sterilität, damit Sie sich vollkommen entspannen und den Prozess der Schaffung Ihres perfekten Looks bis in die Fingerspitzen genießen können.") }}</p>
+            <div class="service-seo-text">
+                {{ category.content|safe }}
             </div>
         </div>
+        {% endif %}
 
-        <!-- PRICE LIST (Filtered via JS or Django Template) -->
+        <!-- PRICE LIST -->
         <div id="priceListContainer">
-            {% if service.price_groups %}
-                {% for group in service.price_groups %}
-                <div class="price-block">
-                    <div class="category-header"><h2 class="category-title">{{ group.name }}</h2></div>
-                    {% for item in group.items %}
-                    <div class="service-row">
-                        <div class="service-names">
-                            <span class="name-de">{{ item.name }}</span>
-                        </div>
-                        <div class="service-meta">
-                            <span class="meta-price">{{ item.price }}</span>
-                            <span class="meta-time">⏱ {{ item.duration }}</span>
-                        </div>
+            <div class="price-block">
+                <div class="category-header">
+                    <h2 class="category-title">{% trans "Preise" %}</h2>
+                </div>
+
+                {% for service in category.services.all %}
+                <div class="service-row">
+                    <div class="service-names">
+                        <span class="name-de">{{ service.title }}</span>
+                        {% if service.description %}
+                        <span class="service-desc-small">{{ service.description }}</span>
+                        {% endif %}
                     </div>
-                    {% endfor %}
+                    <div class="service-meta">
+                        <span class="meta-price">
+                            {% if service.price_info %}
+                                {{ service.price_info }}
+                            {% else %}
+                                ab {{ service.price }} €
+                            {% endif %}
+                        </span>
+                        <span class="meta-time">
+                            ⏱
+                            {% if service.duration_info %}
+                                {{ service.duration_info }}
+                            {% else %}
+                                {{ service.duration }} min
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center">
+                    <p>{% trans "Keine Dienstleistungen gefunden." %}</p>
                 </div>
                 {% endfor %}
-            {% else %}
-                <!-- Fallback for static prototype if no context provided -->
-                <div class="price-block">
-                    <div class="category-header"><h2 class="category-title">{% trans "Maniküre & Pediküre" %}</h2></div>
-                    <div class="service-row">
-                        <div class="service-names"><span class="name-de">{% trans "Damenmaniküre" %}</span></div>
-                        <div class="service-meta"><span class="meta-price">20.00 €</span><span class="meta-time">⏱ 40 min</span></div>
-                    </div>
-                    <div class="service-row">
-                        <div class="service-names"><span class="name-de">{% trans "Maniküre + Gellack" %}</span></div>
-                        <div class="service-meta"><span class="meta-price">40.00 €</span><span class="meta-time">⏱ 120 min</span></div>
-                    </div>
-                    <div class="service-row">
-                        <div class="service-names"><span class="name-de">{% trans "Maniküre + normaler Nagellack" %}</span></div>
-                        <div class="service-meta"><span class="meta-price">25.00 €</span><span class="meta-time">⏱ 60 min</span></div>
-                    </div>
-                </div>
-            {% endif %}
+            </div>
         </div>
 
         <!-- MASTERS BLOCK -->
+        {% if category.masters.all %}
         <section class="service-masters-block">
             <h3 class="category-title service-masters-title">{% trans "Ihre Experten" %}</h3>
             <div class="masters-list masters-list-centered">
-                <!-- Example Masters (Static for now) -->
+                {% for master in category.masters.all %}
                 <div class="mini-master">
-                    <div class="mini-master-avatar"></div>
+                    <div class="mini-master-avatar" style="background-image: url('{% if master.photo %}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}');"></div>
                     <div>
-                        <strong class="mini-master-name">Maria</strong>
-                        <span class="mini-master-role">{% trans "Nageldesignerin" %}</span>
+                        <strong class="mini-master-name">{{ master.name }}</strong>
+                        <span class="mini-master-role">{{ master.title }}</span>
                     </div>
                 </div>
-                <div class="mini-master">
-                    <div class="mini-master-avatar"></div>
-                    <div>
-                        <strong class="mini-master-name">Liliia</strong>
-                        <span class="mini-master-role">{% trans "Gründerin & Art Director" %}</span>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </section>
+        {% endif %}
 
         <div class="service-cta-wrapper">
             <a href="{% url 'contacts' %}" class="btn-pill">{% trans "Termin buchen" %}</a>

@@ -3,8 +3,7 @@
     "model": "main.service",
     "pk": 1,
     "fields": {
-      "category": 3,
-      "group": 1,
+      "category": 2,
       "title_de": "Klassische Damenmaniküre",
       "title_ru": "Классический женский маникюр",
       "title_uk": "Класичний жіночий манікюр",
@@ -22,15 +21,16 @@
       "content_uk": "<p>Професійний гігієнічний манікюр — основа красивих рук. Ми дбайливо видаляємо кутикулу і надаємо нігтям бажану форму.</p><p>Ідеально для тих, хто надає перевагу натуральності або хоче зробити перерву від покриття.</p>",
       "content_en": "<p>A professional hygienic manicure is the basis for beautiful hands. We gently remove the cuticles and give your nails the desired shape.</p>",
       "order": 10,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 2,
     "fields": {
-      "category": 3,
-      "group": 1,
+      "category": 2,
       "title_de": "Maniküre + Gellack (Premium)",
       "title_ru": "Маникюр + Гель-лак (Premium)",
       "title_uk": "Манікюр + Гель-лак (Premium)",
@@ -49,15 +49,16 @@
       "content_en": "<h3>Perfect durability without compromise</h3><p>We use exclusively premium materials from Ukraine (Ga&Ma, Dark). The result: Thin but extremely strong nails.</p>",
       "is_hit": true,
       "order": 20,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 3,
     "fields": {
-      "category": 3,
-      "group": 1,
+      "category": 2,
       "title_de": "Maniküre + normaler Nagellack",
       "title_ru": "Маникюр + обычный лак",
       "title_uk": "Манікюр + звичайний лак",
@@ -71,15 +72,16 @@
       "description_uk": "Класичний догляд з покриттям лаком.",
       "description_en": "Classic care with regular polish.",
       "order": 30,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 4,
     "fields": {
-      "category": 3,
-      "group": 1,
+      "category": 2,
       "title_de": "Maniküre für Männer",
       "title_ru": "Мужской маникюр",
       "title_uk": "Чоловічий манікюр",
@@ -93,15 +95,16 @@
       "description_uk": "Доглянуті руки для нього.",
       "description_en": "Well-groomed hands for him.",
       "order": 40,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 5,
     "fields": {
-      "category": 3,
-      "group": 3,
+      "category": 2,
       "title_de": "Nagelverlängerungen (bis zu 3 cm)",
       "title_ru": "Наращивание ногтей (до 3 см)",
       "title_uk": "Нарощування нігтів (до 3 см)",
@@ -119,15 +122,16 @@
       "content_uk": "<p>Мрієте про довгі нігті? Ми моделюємо ідеальну форму (мигдаль, квадрат, овал) жорсткими гелями. У вартість включено манікюр та однотонне покриття.</p>",
       "content_en": "<p>Dreaming of long nails? We model the perfect shape using hard gels. Includes manicure and single color coating.</p>",
       "order": 50,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 6,
     "fields": {
-      "category": 3,
-      "group": 3,
+      "category": 2,
       "title_de": "Russian Manicure (Extreme Länge & Design)",
       "title_ru": "Арочное моделирование / Выкладной френч",
       "title_uk": "Арочне моделювання / Викладний френч",
@@ -146,15 +150,16 @@
       "content_en": "<h3>High-End Sculpting</h3><p>This is more than a manicure – it's architecture. We create extremely long but strong nails with a perfect tunnel (C-curve).</p><p>Includes complex 'Built-in French' design. Duration: 4-5 hours.</p>",
       "is_hit": true,
       "order": 60,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 7,
     "fields": {
-      "category": 3,
-      "group": 2,
+      "category": 2,
       "title_de": "Smart-Pediküre Komplett",
       "title_ru": "Smart-педикюр (Полный)",
       "title_uk": "Smart-педикюр (Повний)",
@@ -173,7 +178,9 @@
       "content_en": "<h3>Innovation for your feet</h3><p>Patented Smart Disk technology polishes skin without injury. Smooth heels effect lasts significantly longer.</p>",
       "is_hit": true,
       "order": 70,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
@@ -181,7 +188,6 @@
     "pk": 8,
     "fields": {
       "category": 1,
-      "group": 4,
       "title_de": "Damenhaarschnitt & Styling",
       "title_ru": "Женская стрижка и Укладка",
       "title_uk": "Жіноча стрижка та Укладка",
@@ -200,7 +206,9 @@
       "content_en": "<p>We create not just a haircut, but a look that fits your lifestyle. Includes relaxing wash and styling with premium products.</p>",
       "is_hit": true,
       "order": 80,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
@@ -208,7 +216,6 @@
     "pk": 9,
     "fields": {
       "category": 1,
-      "group": 4,
       "title_de": "Herrenhaarschnitt",
       "title_ru": "Мужская стрижка",
       "title_uk": "Чоловіча стрижка",
@@ -222,15 +229,16 @@
       "description_uk": "Класична або модельна.",
       "description_en": "Classic or modern.",
       "order": 90,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 10,
     "fields": {
-      "category": 2,
-      "group": 5,
+      "category": 1,
       "title_de": "Airtouch / Balayage (Komplex)",
       "title_ru": "Сложное окрашивание (Airtouch / Balayage)",
       "title_uk": "Складне фарбування (Airtouch / Balayage)",
@@ -249,15 +257,16 @@
       "content_en": "<h3>The trend for modern hair</h3><p>Our top colorists master the Airtouch technique perfectly. We use dyes with integrated bond protection.</p>",
       "is_hit": true,
       "order": 100,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 11,
     "fields": {
-      "category": 2,
-      "group": 5,
+      "category": 1,
       "title_de": "Ansatzfärbung & Tönung",
       "title_ru": "Окрашивание корней + Тонирование",
       "title_uk": "Фарбування коріння + Тонування",
@@ -275,15 +284,16 @@
       "content_uk": "<p>Ідеальний колір від коріння до кінчиків. Ми вирівнюємо відтінок та забезпечуємо діамантовий блиск.</p>",
       "content_en": "<p>Perfect color from roots to ends. We balance the shade and ensure brilliant shine.</p>",
       "order": 110,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 12,
     "fields": {
-      "category": 5,
-      "group": 6,
+      "category": 3,
       "title_de": "HydraFacial (Hollywood Glow)",
       "title_ru": "HydraFacial (Hollywood Glow)",
       "title_uk": "HydraFacial (Hollywood Glow)",
@@ -302,15 +312,16 @@
       "content_en": "<h3>Red carpet skin in 60 minutes</h3><p>The stars' favorite hardware treatment. Vacuums impurities while infusing vitamins. No downtime.</p>",
       "is_hit": true,
       "order": 120,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 13,
     "fields": {
-      "category": 5,
-      "group": 6,
+      "category": 3,
       "title_de": "AnubisMed Peeling & Pflege",
       "title_ru": "Пилинг AnubisMed (Испания)",
       "title_uk": "Пілінг AnubisMed (Іспанія)",
@@ -328,15 +339,16 @@
       "content_uk": "<p>Інтелектуальна космецевтика з Барселони. Ми використовуємо кислоти нового покоління (азелаїнова, ферулова), які оновлюють шкіру, не викликаючи сильного лущення.</p><p>Рекомендується курсом для стійкого результату.</p>",
       "content_en": "<p>Intelligent cosmeceuticals from Barcelona. New generation acids that renew the skin without irritation.</p>",
       "order": 130,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 14,
     "fields": {
-      "category": 5,
-      "group": 6,
+      "category": 3,
       "title_de": "Christina 'Forever Young' (Anti-Age)",
       "title_ru": "Программа Christina 'Forever Young'",
       "title_uk": "Програма Christina 'Forever Young'",
@@ -354,15 +366,16 @@
       "content_uk": "<p>Захист та омолодження на клітинному рівні. Ця процедура підтягує овал обличчя та розгладжує зморшки завдяки біо-пептидам.</p><p>Ідеально перед важливими заходами («процедура на вихід»)!</p>",
       "content_en": "<p>Protection and rejuvenation at the cellular level. Tightens contours and smooths wrinkles thanks to bio-peptides.</p>",
       "order": 140,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 15,
     "fields": {
-      "category": 6,
-      "group": 7,
+      "category": 4,
       "title_de": "Augenbrauen Architektur & Farbe",
       "title_ru": "Архитектура бровей + Окрашивание",
       "title_uk": "Архітектура брів + Фарбування",
@@ -380,15 +393,16 @@
       "content_uk": "<p>Ми знаходимо форму, яка гармонізує риси вашого обличчя. Включає розмітку, корекцію воском/пінцетом та фарбування фарбою або хною.</p>",
       "content_en": "<p>We find the shape that harmonizes your facial features. Includes mapping, waxing/tweezing and tinting.</p>",
       "order": 150,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 16,
     "fields": {
-      "category": 6,
-      "group": 7,
+      "category": 4,
       "title_de": "Augenbrauenlaminierung (Brow Lift)",
       "title_ru": "Ламинирование бровей (Brow Lift)",
       "title_uk": "Ламінування брів (Brow Lift)",
@@ -407,15 +421,16 @@
       "content_en": "<p>Unruly hair? Lamination fixes hairs in the desired direction, creating visual double volume.</p>",
       "is_hit": true,
       "order": 160,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 17,
     "fields": {
-      "category": 7,
-      "group": 8,
+      "category": 4,
       "title_de": "Wimpernverlängerung 2D-3D",
       "title_ru": "Наращивание ресниц 2D-3D",
       "title_uk": "Нарощування вій 2D-3D",
@@ -433,15 +448,16 @@
       "content_uk": "<p>Ми використовуємо ультралегке волокно, яке не обтяжує рідні вії. Ідеально для відпустки або повсякденного життя, щоб забути про туш.</p>",
       "content_en": "<p>We use ultra-light fibers that do not weigh down your natural lashes.</p>",
       "order": 170,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 18,
     "fields": {
-      "category": 8,
-      "group": 10,
+      "category": 5,
       "title_de": "Ganzkörpermassage (Relax)",
       "title_ru": "Массаж всего тела (Релакс)",
       "title_uk": "Масаж усього тіла (Релакс)",
@@ -460,15 +476,16 @@
       "content_en": "<p>One hour of absolute peace. Gentle techniques and aromatic oils help you leave everyday life behind.</p>",
       "is_hit": true,
       "order": 180,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 19,
     "fields": {
-      "category": 9,
-      "group": 9,
+      "category": 6,
       "title_de": "Depilation Paket (Beine + Bikini)",
       "title_ru": "Пакет: Ноги полностью + Бикини",
       "title_uk": "Пакет: Ноги повністю + Бікіні",
@@ -487,15 +504,16 @@
       "content_en": "<p>Save with our combo offers. We use gentle wax or sugar paste for minimal pain.</p>",
       "is_hit": true,
       "order": 190,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 20,
     "fields": {
-      "category": 7,
-      "group": 8,
+      "category": 4,
       "title_de": "Wimpern- und Augenbrauen-Komplex",
       "title_ru": "Комплекс: Ресницы + Брови",
       "title_uk": "Комплекс: Вії + Брови",
@@ -511,15 +529,16 @@
       "content_de": "<p>Das perfekte Duo für einen strahlenden Blick. In einer Behandlung erhalten Sie geschwungene Wimpern und perfekt geformte Augenbrauen.</p>",
       "is_hit": true,
       "order": 5,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 21,
     "fields": {
-      "category": 5,
-      "group": 6,
+      "category": 3,
       "title_de": "Kombinierte Gesichtsreinigung",
       "title_ru": "Комбинированная чистка лица",
       "title_uk": "Комбінована чистка обличчя",
@@ -535,15 +554,16 @@
       "content_de": "<p>Tiefenreinigung der Poren von Mitessern und Unreinheiten. Wir kombinieren Handarbeit mit moderner Ultraschalltechnologie für beste Ergebnisse ohne starke Rötungen.</p>",
       "is_hit": false,
       "order": 15,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 22,
     "fields": {
-      "category": 5,
-      "group": 6,
+      "category": 3,
       "title_de": "Carboxytherapie",
       "title_ru": "Карбокситерапия",
       "title_uk": "Карбокситерапія",
@@ -559,15 +579,16 @@
       "content_de": "<p>Ein 'Fitness-Studio' für Ihre Hautgefäße. Verbessert die Durchblutung, entfernt Schwellungen und lässt die Haut atmen.</p>",
       "is_hit": false,
       "order": 25,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 23,
     "fields": {
-      "category": 5,
-      "group": 6,
+      "category": 3,
       "title_de": "Kryotherapie",
       "title_ru": "Криотерапия (Лечение холодом)",
       "title_uk": "Кріотерапія (Лікування холодом)",
@@ -583,15 +604,16 @@
       "content_de": "<p>Therapeutische Massage mit flüssigem Stickstoff. Ideal bei öliger Haut, Akne oder um den Teint am Morgen zu wecken.</p>",
       "is_hit": false,
       "order": 35,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 24,
     "fields": {
-      "category": 5,
-      "group": 6,
+      "category": 3,
       "title_de": "Oberflächliches Peeling (Schälen)",
       "title_ru": "Поверхностный пилинг",
       "title_uk": "Поверхневий пілінг",
@@ -607,15 +629,16 @@
       "content_de": "<p>Sanfte Exfoliation mit Fruchtsäuren. Entfernt abgestorbene Hautschüppchen und verleiht sofortigen 'Glow'.</p>",
       "is_hit": false,
       "order": 40,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 25,
     "fields": {
-      "category": 9,
-      "group": 9,
+      "category": 6,
       "title_de": "Oberlippe (Gesicht)",
       "title_ru": "Верхняя губа (Усики)",
       "title_uk": "Верхня губа (Вусики)",
@@ -629,15 +652,16 @@
       "description_uk": "Дбайливе видалення пушка над губою.",
       "description_en": "Gentle removal of facial hair.",
       "order": 1,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 26,
     "fields": {
-      "category": 9,
-      "group": 9,
+      "category": 6,
       "title_de": "Achselhöhlen",
       "title_ru": "Подмышки",
       "title_uk": "Пахви",
@@ -651,15 +675,16 @@
       "description_uk": "Гладка шкіра без подразнення.",
       "description_en": "Smooth skin without irritation.",
       "order": 5,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 27,
     "fields": {
-      "category": 9,
-      "group": 9,
+      "category": 6,
       "title_de": "Klassischer Bikini",
       "title_ru": "Классическое бикини",
       "title_uk": "Класичне бікіні",
@@ -673,15 +698,16 @@
       "description_uk": "По лінії білизни.",
       "description_en": "Along the underwear line.",
       "order": 15,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 28,
     "fields": {
-      "category": 9,
-      "group": 9,
+      "category": 6,
       "title_de": "Rücken (Männer)",
       "title_ru": "Спина (Мужчины)",
       "title_uk": "Спина (Чоловіки)",
@@ -695,15 +721,16 @@
       "description_uk": "Видалення волосся на спині (Віск/Цукор).",
       "description_en": "Back hair removal (Wax/Sugar).",
       "order": 50,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 29,
     "fields": {
-      "category": 8,
-      "group": 10,
+      "category": 5,
       "title_de": "Klassische Massage",
       "title_ru": "Классический массаж",
       "title_uk": "Класичний масаж",
@@ -717,15 +744,16 @@
       "description_uk": "Базовий масаж для розслаблення.",
       "description_en": "Basic massage for relaxation.",
       "order": 5,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 30,
     "fields": {
-      "category": 8,
-      "group": 10,
+      "category": 5,
       "title_de": "Rückenmassage",
       "title_ru": "Массаж спины",
       "title_uk": "Масаж спини",
@@ -739,15 +767,16 @@
       "description_uk": "Акцент на спину та шийно-комірцеву зону.",
       "description_en": "Focus on back and neck.",
       "order": 15,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   },
   {
     "model": "main.service",
     "pk": 31,
     "fields": {
-      "category": 8,
-      "group": 10,
+      "category": 5,
       "title_de": "Relax Massage",
       "title_ru": "Релакс-массаж",
       "title_uk": "Релакс-масаж",
@@ -761,7 +790,9 @@
       "description_uk": "М'яке розслаблення (30 хв).",
       "description_en": "Gentle relaxation (30 min).",
       "order": 16,
-      "is_active": true
+      "is_active": true,
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
     }
   }
 ]

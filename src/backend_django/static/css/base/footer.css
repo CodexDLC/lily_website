@@ -27,7 +27,7 @@
 }
 
 .brand-name {
-    font-family: var(--font-serif);
+    font-family: var(--font-serif, serif);
     color: var(--color-gold);
     font-size: 20px;
     letter-spacing: 2px;
@@ -84,7 +84,7 @@
 /* Footer Column Styles */
 .f-title {
     color: var(--color-gold);
-    font-family: var(--font-serif);
+    font-family: var(--font-serif, serif);
     font-style: italic;
     font-size: 18px;
     margin-bottom: 15px;

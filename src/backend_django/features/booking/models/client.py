@@ -30,9 +30,15 @@ class Client(TimestampMixin, models.Model):
         verbose_name=_("Email"),
         help_text=_("Email for notifications and account activation"),
     )
-    name = models.CharField(
-        max_length=255, blank=True, verbose_name=_("Full Name"), help_text=_("Client's name (collected during booking)")
+
+    first_name = models.CharField(max_length=100, blank=True, verbose_name=_("First Name"))
+    last_name = models.CharField(max_length=100, blank=True, verbose_name=_("Last Name"))
+
+    # === Socials ===
+    instagram = models.CharField(
+        max_length=100, blank=True, verbose_name=_("Instagram"), help_text=_("Username or link")
     )
+    telegram = models.CharField(max_length=100, blank=True, verbose_name=_("Telegram"), help_text=_("Username or link"))
 
     # === Django User Link (Optional) ===
     user = models.OneToOneField(
@@ -94,8 +100,9 @@ class Client(TimestampMixin, models.Model):
         constraints = [models.CheckConstraint(check=~models.Q(phone="", email=""), name="client_must_have_contact")]
 
     def __str__(self):
-        if self.name:
-            return f"{self.name} ({self.phone or self.email})"
+        full_name = self.get_full_name()
+        if full_name:
+            return f"{full_name} ({self.phone or self.email})"
         return self.phone or self.email or f"Client #{self.pk}"
 
     def save(self, *args, **kwargs):
@@ -104,9 +111,15 @@ class Client(TimestampMixin, models.Model):
             self.access_token = uuid.uuid4().hex
         super().save(*args, **kwargs)
 
+    def get_full_name(self):
+        """Return full name joined by space"""
+        parts = [p for p in [self.first_name, self.last_name] if p]
+        return " ".join(parts)
+
     def display_name(self):
         """Name for public display (hides contact info if no name)"""
-        return self.name if self.name else _("Guest")
+        name = self.get_full_name()
+        return name if name else _("Guest")
 
     def activate_account(self, user):
         """Link to Django User and activate account"""

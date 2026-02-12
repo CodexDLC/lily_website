@@ -65,14 +65,23 @@ def resolve_imports(css_content: str, base_path: Path) -> str:
     return re.sub(import_pattern, replace_import, css_content)
 
 
+def remove_comments(css_content: str) -> str:
+    """
+    Удаляет все комментарии из CSS.
+    """
+    # Удаляем многострочные комментарии /* ... */
+    css_content = re.sub(r"/\*.*?\*/", "", css_content, flags=re.DOTALL)
+    return css_content
+
+
 def minify_css(css_content: str) -> str:
     """
-    Простая минификация CSS:
+    Полная минификация CSS:
     - Удаляет комментарии
     - Удаляет лишние пробелы и переносы строк
     """
     # Удаляем комментарии
-    css_content = re.sub(r"/\*.*?\*/", "", css_content, flags=re.DOTALL)
+    css_content = remove_comments(css_content)
 
     # Удаляем лишние пробелы и переносы
     css_content = re.sub(r"\s+", " ", css_content)
@@ -81,14 +90,15 @@ def minify_css(css_content: str) -> str:
     return css_content.strip()
 
 
-def compile_css(base_css_path: Path, output_path: Path, minify: bool = False):
+def compile_css(base_css_path: Path, output_path: Path, minify: bool = False, remove_comments_only: bool = False):
     """
     Компилирует base.css в app.css.
 
     Args:
         base_css_path: Путь к base.css
         output_path: Путь для сохранения app.css
-        minify: Минифицировать результат
+        minify: Полная минификация (удаляет комментарии + пробелы)
+        remove_comments_only: Только удалить комментарии, сохранить форматирование
     """
     print("🔧 Компиляция CSS...")
     print(f"   Источник: {base_css_path}")
@@ -104,10 +114,13 @@ def compile_css(base_css_path: Path, output_path: Path, minify: bool = False):
     # Разрешаем все импорты
     compiled_content = resolve_imports(base_content, base_css_path.parent)
 
-    # Минифицируем если нужно
+    # Обработка комментариев и минификация
     if minify:
-        print("   Минификация...")
+        print("   Полная минификация...")
         compiled_content = minify_css(compiled_content)
+    elif remove_comments_only:
+        print("   Удаление комментариев...")
+        compiled_content = remove_comments(compiled_content)
 
     # Добавляем заголовок
     header = f"""/*
@@ -130,8 +143,9 @@ def compile_css(base_css_path: Path, output_path: Path, minify: bool = False):
         compiled_size = len(compiled_content)
         print("✅ Готово!")
         print(f"   Размер: {compiled_size:,} байт")
-        if minify:
-            print(f"   Экономия: {original_size - compiled_size:,} байт")
+        if minify or remove_comments_only:
+            savings = original_size - compiled_size
+            print(f"   Экономия: {savings:,} байт ({savings / original_size * 100:.1f}%)")
 
     except Exception as e:
         print(f"❌ Ошибка записи {output_path}: {e}")
@@ -150,10 +164,10 @@ def main():
         print(f"❌ Файл не найден: {base_css}")
         return
 
-    # Компилируем
-    compile_css(base_css, app_css, minify=False)
+    # Компилируем с удалением комментариев (сохраняя читаемость)
+    compile_css(base_css, app_css, minify=False, remove_comments_only=True)
 
-    # Опционально создаём минифицированную версию
+    # Опционально создаём полностью минифицированную версию
     # app_min_css = css_dir / "app.min.css"
     # compile_css(base_css, app_min_css, minify=True)
 

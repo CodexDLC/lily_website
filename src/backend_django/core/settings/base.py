@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # ── Features ──
+    "core",  # Core app (for AppConfig & Logging)
     "features.main",
     "features.system",
     "features.booking",
@@ -152,3 +153,65 @@ MEDIA_ROOT = BASE_DIR / "media"
 # ═══════════════════════════════════════════
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ═══════════════════════════════════════════
+# Environment
+# ═══════════════════════════════════════════
+
+ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
+
+# ═══════════════════════════════════════════
+# Redis & ARQ (Task Queue)
+# ═══════════════════════════════════════════
+
+REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
+REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", None)
+
+# Автоматически определять хост на основе окружения
+if REDIS_HOST == "localhost" and ENVIRONMENT == "production":
+    REDIS_HOST = "redis"  # Docker service name
+
+# Construct Redis URL
+if REDIS_PASSWORD:
+    REDIS_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0"
+else:
+    REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+
+# Redis Streams settings
+REDIS_STREAM_NAME: str = os.getenv("REDIS_STREAM_NAME", "bot_events")
+REDIS_CONSUMER_GROUP_NAME: str = os.getenv("REDIS_CONSUMER_GROUP_NAME", "backend_group")  # Changed default for Django
+REDIS_CONSUMER_NAME: str = os.getenv("REDIS_CONSUMER_NAME", "backend_instance_1")  # Changed default for Django
+
+# ═══════════════════════════════════════════
+# Cache & Sessions (Redis)
+# ═══════════════════════════════════════════
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": REDIS_URL,
+    }
+}
+
+# Store sessions in Redis
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+# ═══════════════════════════════════════════
+# Telegram Integration
+# ═══════════════════════════════════════════
+
+TELEGRAM_ADMIN_ID = os.environ.get("TELEGRAM_ADMIN_ID", None)
+
+# ═══════════════════════════════════════════
+# Logging (Loguru)
+# ═══════════════════════════════════════════
+
+# Disable Django's default logging configuration
+LOGGING_CONFIG = None
+
+# Loguru Settings
+LOG_LEVEL_CONSOLE = os.environ.get("LOG_LEVEL", "INFO")
+LOG_LEVEL_FILE = "DEBUG"
+LOG_ROTATION = "10 MB"

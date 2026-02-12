@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from features.main.models import Service
 from features.system.models.mixins import TimestampMixin
+from features.system.services.images import optimize_image
 
 from .master import Master
 
@@ -63,3 +64,8 @@ class MasterPortfolio(TimestampMixin, models.Model):
     def __str__(self):
         service_name = self.service.title if self.service else _("General work")
         return f"{self.master.name} - {service_name}"
+
+    def save(self, *args, **kwargs):
+        if self.image:
+            optimize_image(self.image, max_width=1600)
+        super().save(*args, **kwargs)

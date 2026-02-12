@@ -30,7 +30,7 @@
 }
 
 .hero-heading {
-    font-family: var(--font-serif);
+    font-family: var(--font-serif, serif);
     font-size: 68px;
     line-height: 1.1;
     margin-bottom: 30px;
@@ -97,7 +97,7 @@
 }
 
 .section-title {
-    font-family: var(--font-serif);
+    font-family: var(--font-serif, serif);
     font-size: 42px;
     color: white;
     margin-bottom: 10px;

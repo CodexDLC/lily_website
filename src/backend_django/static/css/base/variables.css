@@ -10,6 +10,9 @@
     --color-white: #FFFFFF;
 
     /* Typography */
+    /* NOTE: Always use with fallback to pass linters:
+       font-family: var(--font-serif, serif);
+       font-family: var(--font-sans, sans-serif); */
     --font-serif: 'Playfair Display', serif;
     --font-sans: 'Lato', sans-serif;
 

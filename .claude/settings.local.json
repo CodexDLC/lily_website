@@ -5,7 +5,9 @@
       "Bash(python -c:*)",
       "Bash(python -m tools.init_project:*)",
       "Bash(ls:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(poetry run python:*)",
+      "Bash(dir:*)"
     ]
   }
 }

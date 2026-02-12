@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from features.main.models import Category
 from features.system.models.mixins import SeoMixin, TimestampMixin
+from features.system.services.images import optimize_image
 
 User = get_user_model()
 
@@ -52,14 +53,6 @@ class Master(TimestampMixin, SeoMixin, models.Model):
     )
 
     # === Specializations (What master can do) ===
-    service_groups = models.ManyToManyField(
-        "main.ServiceGroup",
-        related_name="masters",
-        blank=True,
-        verbose_name=_("Service Groups"),
-        help_text=_("Specific service groups this master can perform"),
-    )
-
     categories = models.ManyToManyField(
         Category,
         related_name="masters",
@@ -167,6 +160,9 @@ class Master(TimestampMixin, SeoMixin, models.Model):
         if not self.qr_token:
             self.qr_token = uuid.uuid4().hex[:16].upper()
 
+        if self.photo:
+            optimize_image(self.photo, max_width=800)
+
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -188,11 +184,11 @@ class Master(TimestampMixin, SeoMixin, models.Model):
         """Get all services this master can perform"""
         from features.main.models import Service
 
-        return Service.objects.filter(group__in=self.service_groups.all(), is_active=True).distinct()
+        return Service.objects.filter(category__in=self.categories.all(), is_active=True).distinct()
 
     def can_perform_service(self, service):
         """Check if master can perform specific service"""
-        return self.service_groups.filter(pk=service.group_id).exists()
+        return self.categories.filter(pk=service.category_id).exists()
 
     def active_portfolio_count(self):
         """Count of published portfolio images (future)"""
