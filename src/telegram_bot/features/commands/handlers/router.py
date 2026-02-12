@@ -29,8 +29,7 @@ async def cmd_start(m: Message, state: FSMContext, bot: Bot, container: BotConta
 
     user_id = m.from_user.id
 
-    # 1. Snapshot старых данных
-    old_state_data = await state.get_data()
+    # 1. Snapshot старых данных (больше не передается в ViewSender)
 
     # 2. Полный сброс FSM
     await state.clear()
@@ -44,7 +43,7 @@ async def cmd_start(m: Message, state: FSMContext, bot: Bot, container: BotConta
     view_dto = await orchestrator.handle_entry(user_id, payload=m.from_user)
 
     # 4. Sender → Telegram
-    sender = ViewSender(bot, state, old_state_data, user_id)
+    sender = ViewSender(bot, state, user_id)
     await sender.send(view_dto)
 
 

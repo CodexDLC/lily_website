@@ -5,6 +5,7 @@ from aiogram.fsm.state import State, StatesGroup
 class BotMenuStates(StatesGroup):
     main = State()
 
+
 STATES = BotMenuStates
 
 # 2. Настройки Garbage Collector

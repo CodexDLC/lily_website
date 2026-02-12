@@ -31,8 +31,8 @@ async def handle_refresh(call: CallbackQuery, state: FSMContext, container: BotC
     # Пока просто рендерим дефолт
     view_dto = await orchestrator.render("default")
 
-    state_data = await state.get_data()
-    sender = ViewSender(call.bot, state, state_data, call.from_user.id)
+    # state_data больше не передается в ViewSender, так как он извлекается внутри send()
+    sender = ViewSender(call.bot, state, call.from_user.id)
     await sender.send(view_dto)
 
 

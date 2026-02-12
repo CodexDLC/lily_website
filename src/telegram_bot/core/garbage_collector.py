@@ -9,6 +9,7 @@ class GarbageStateRegistry:
     Реестр состояний, в которых текстовые сообщения считаются мусором и должны удаляться.
     Наполняется динамически при загрузке фич.
     """
+
     _states: set[str] = set()
 
     @classmethod
@@ -16,7 +17,7 @@ class GarbageStateRegistry:
         """
         Регистрирует стейт (объект State, строку или список/группу) как мусорный.
         """
-        if isinstance(state, (list, tuple, set)):
+        if isinstance(state, list | tuple | set):
             for s in state:
                 cls.register(s)
             return
@@ -41,6 +42,7 @@ class IsGarbageStateFilter(Filter):
     """
     Фильтр aiogram, проверяющий наличие текущего стейта в GarbageStateRegistry.
     """
+
     async def __call__(self, message: Message, state: FSMContext) -> bool:
         current_state = await state.get_state()
         return GarbageStateRegistry.is_garbage(current_state)

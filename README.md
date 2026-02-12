@@ -81,10 +81,51 @@ python manage.py runserver
 
 **Telegram Bot:**
 ```bash
-cd src/telegram_bot
-# Ensure DB is running and migrations are applied
-alembic upgrade head
-python -m core
+python -m src.telegram_bot.app_telegram
+```
+
+**Worker ARQ:**
+```bash
+python -m src.worker_arq.bot_worker
+```
+
+### 5. Python Path Configuration (Important!)
+
+For correct module imports, add the project root to PYTHONPATH:
+
+**Linux/macOS:**
+```bash
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:PYTHONPATH = "$env:PYTHONPATH;$PWD"
+```
+
+**PyCharm:**
+1. Settings → Project → Project Structure
+2. Mark the project root (`lily_website`) as "Source Root"
+
+**VSCode:**
+
+Create `.vscode/settings.json`:
+```json
+{
+    "python.analysis.extraPaths": ["${workspaceFolder}"],
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "${workspaceFolder}:${env:PYTHONPATH}"
+    },
+    "terminal.integrated.env.windows": {
+        "PYTHONPATH": "${workspaceFolder};${env:PYTHONPATH}"
+    }
+}
+```
+
+**Running Tests:**
+```bash
+# From project root
+pytest src/
 ```
 
 ---

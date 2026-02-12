@@ -7,12 +7,10 @@ Renamer Action — замена имени проекта в файлах.
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from tools.init_project.config import (
-    InstallContext,
     PROJECT_NAME_MARKER,
     RENAME_TARGETS,
+    InstallContext,
 )
 
 

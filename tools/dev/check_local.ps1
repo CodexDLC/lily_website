@@ -2,22 +2,39 @@ Clear-Host
 $ErrorActionPreference = "Stop"
 Write-Host "🚀 Starting Local Quality Check..." -ForegroundColor Cyan
 
-# 1. Code Style: Ruff
-Write-Host "`n🔍 Checking Style (Ruff)..." -ForegroundColor Yellow
+# Check for pre-commit installation
+Write-Host "`n⚙️ Checking for pre-commit installation..." -ForegroundColor Yellow
 try {
-    # Сначала пытаемся исправить автоматически
-    Write-Host "   Attempting auto-fix..." -ForegroundColor Gray
-    ruff check src/ --fix
-
-    # Потом проверяем оставшиеся ошибки (без --fix!)
-    Write-Host "   Checking for remaining issues..." -ForegroundColor Gray
-    ruff check src/
-    if ($LASTEXITCODE -ne 0) { throw "Ruff found errors" }
-    Write-Host "✅ Ruff passed!" -ForegroundColor Green
+    pre-commit --version | Out-Null
+    Write-Host "✅ pre-commit is installed." -ForegroundColor Green
 } catch {
-    Write-Host "❌ Ruff failed!" -ForegroundColor Red
+    Write-Host "❌ pre-commit is not installed. Please install it: pip install pre-commit" -ForegroundColor Red
     exit 1
 }
+
+# Helper function to run pre-commit hooks
+function Run-PreCommitHook {
+    param (
+        [string]$HookName,
+        [string]$Message
+    )
+    Write-Host "`n🔍 $Message..." -ForegroundColor Yellow
+    try {
+        pre-commit run $HookName --all-files
+        if ($LASTEXITCODE -ne 0) { throw "$HookName failed" }
+        Write-Host "✅ $HookName passed!" -ForegroundColor Green
+    } catch {
+        Write-Host "❌ $HookName failed!" -ForegroundColor Red
+        exit 1
+    }
+}
+
+# 1. Code Style & Formatting (using pre-commit hooks)
+Run-PreCommitHook -HookName "trailing-whitespace" -Message "Checking for trailing whitespace"
+Run-PreCommitHook -HookName "end-of-file-fixer" -Message "Fixing end of files"
+Run-PreCommitHook -HookName "check-yaml" -Message "Checking YAML syntax"
+Run-PreCommitHook -HookName "ruff-format" -Message "Formatting code (Ruff Format)"
+Run-PreCommitHook -HookName "ruff" -Message "Linting code (Ruff)"
 
 # 2. Type Checking: Mypy
 Write-Host "`n🧠 Checking Types (Mypy)..." -ForegroundColor Yellow

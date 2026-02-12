@@ -23,8 +23,8 @@ async def cmd_menu(m: Message, state: FSMContext, container: BotContainer) -> No
     # Передаем user_id для фильтрации кнопок
     view_dto = await orchestrator.render_menu(m.from_user.id)
 
-    state_data = await state.get_data()
-    sender = ViewSender(m.bot, state, state_data, m.from_user.id)
+    # state_data больше не передается в ViewSender, так как он извлекается внутри send()
+    sender = ViewSender(m.bot, state, m.from_user.id)
     await sender.send(view_dto)
 
 
@@ -49,6 +49,6 @@ async def on_menu_nav(
     view_dto = await orchestrator.handle_menu_click(callback_data.target, call.from_user.id)
 
     if view_dto:
-        state_data = await state.get_data()
-        sender = ViewSender(call.bot, state, state_data, call.from_user.id)
+        # state_data больше не передается в ViewSender, так как он извлекается внутри send()
+        sender = ViewSender(call.bot, state, call.from_user.id)
         await sender.send(view_dto)

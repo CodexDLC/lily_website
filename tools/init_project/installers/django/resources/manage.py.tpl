@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Django management script."""
+
 import os
 import sys
 

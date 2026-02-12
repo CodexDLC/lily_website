@@ -31,5 +31,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-- name: Build Bot image
-  run: docker build -f deploy/bot/Dockerfile -t check-bot .
+      - name: Build Bot image
+        run: docker build -f deploy/bot/Dockerfile -t check-bot .

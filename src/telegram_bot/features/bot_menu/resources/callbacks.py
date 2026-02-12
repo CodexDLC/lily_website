@@ -7,5 +7,6 @@ class DashboardCallback(CallbackData, prefix="dash"):
     action: действие (nav - навигация, refresh - обновить)
     target: куда переходим (account, settings, etc.)
     """
+
     action: str
     target: str | None = None

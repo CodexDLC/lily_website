@@ -17,8 +17,8 @@ COPY src/shared /app/src/shared
 RUN mkdir -p /app/staticfiles /app/mediafiles /app/data/logs && chown -R appuser:appuser /app
 USER appuser
 ENV PATH="/app/.venv/bin:$PATH"
-ENV PYTHONPATH="/app/shared:/app/src/backend_django:$PYTHONPATH" # ИЗМЕНЕНО: Добавлено /app/shared в PYTHONPATH
+ENV PYTHONPATH="/app:$PYTHONPATH"
 ENV DJANGO_SETTINGS_MODULE="core.settings.dev"
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl -f http://localhost:8000/health/ || exit 1
-RUN python /app/src/backend_django/manage.py collectstatic --noinput 2>/dev/null || true
+RUN cd /app/src/backend_django && python manage.py collectstatic --noinput 2>/dev/null || true
 CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--chdir", "/app/src/backend_django"]
