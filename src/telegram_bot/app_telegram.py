@@ -55,6 +55,7 @@ async def main() -> None:
 
     # 5. Bot + Dispatcher
     bot, dp = await build_bot(settings.bot_token, redis_client)
+    container.set_bot(bot)  # Устанавливаем объект bot в контейнер
     log.info("Bot and Dispatcher created")
 
     # 6. Middleware (порядок: снаружи → внутрь)
@@ -69,7 +70,11 @@ async def main() -> None:
     dp.include_router(main_router)
     log.info("Routers attached")
 
-    # 8. Polling
+    # 8. Запуск Redis Stream Processor
+    await container.stream_processor.start_listening()
+    log.info("Redis Stream Processor started.")
+
+    # 9. Polling
     log.info("Bot polling started")
     try:
         await dp.start_polling(bot)

@@ -1,0 +1,98 @@
+{% load i18n %}
+
+<form hx-post="{% url 'contacts' %}" hx-swap="outerHTML" class="contact-form extended-form">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger" style="color: #ff6b6b; margin-bottom: 20px;">
+        {{ form.non_field_errors }}
+    </div>
+    {% endif %}
+
+    <!-- Name (First + Last) -->
+    <div class="form-group" style="margin-bottom: 20px;">
+        <!-- Visual Label for the group -->
+        <span style="color: var(--color-gold); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px;">
+            {% trans "Name" %}
+        </span>
+        <div class="contact-input-group" style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+                <!-- Hidden Label for Accessibility -->
+                <label for="{{ form.first_name.id_for_label }}" style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0;">
+                    {{ form.first_name.label }}
+                </label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                <div style="color: #ff6b6b; font-size: 12px;">{{ form.first_name.errors }}</div>
+                {% endif %}
+            </div>
+            <div style="flex: 1;">
+                <label for="{{ form.last_name.id_for_label }}" style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0;">
+                    {{ form.last_name.label }}
+                </label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                <div style="color: #ff6b6b; font-size: 12px;">{{ form.last_name.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact (Type + Value) -->
+    <div class="form-group" style="margin-bottom: 20px;">
+        <span style="color: var(--color-gold); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px;">
+            {% trans "Kontakt" %}
+        </span>
+        <div class="contact-input-group" style="display: flex; gap: 20px;">
+            <div style="width: 140px;">
+                <label for="{{ form.contact_type.id_for_label }}" style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0;">
+                    {{ form.contact_type.label }}
+                </label>
+                {{ form.contact_type }}
+            </div>
+            <div style="flex-grow: 1;">
+                <label for="{{ form.contact_value.id_for_label }}" style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0;">
+                    {{ form.contact_value.label }}
+                </label>
+                {{ form.contact_value }}
+            </div>
+        </div>
+        {% if form.contact_value.errors %}
+        <div style="color: #ff6b6b; font-size: 12px;">{{ form.contact_value.errors }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Topic -->
+    <div class="form-group" style="margin-bottom: 20px;">
+        <label for="{{ form.topic.id_for_label }}" style="color: var(--color-gold); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px;">
+            {{ form.topic.label }}
+        </label>
+        {{ form.topic }}
+        {% if form.topic.errors %}
+        <div style="color: #ff6b6b; font-size: 12px;">{{ form.topic.errors }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Message -->
+    <div class="form-group" style="margin-bottom: 20px;">
+        <label for="{{ form.message.id_for_label }}" style="color: var(--color-gold); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px;">
+            {{ form.message.label }}
+        </label>
+        {{ form.message }}
+        {% if form.message.errors %}
+        <div style="color: #ff6b6b; font-size: 12px;">{{ form.message.errors }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Marketing Consent -->
+    <div class="form-group" style="margin-bottom: 30px; display: flex; align-items: flex-start; gap: 10px;">
+        <div style="position: relative; top: 2px;">
+             {{ form.consent_marketing }}
+        </div>
+        <label for="{{ form.consent_marketing.id_for_label }}" style="color: var(--color-gold); font-size: 14px; cursor: pointer; line-height: 1.4; font-weight: 300;">
+            {{ form.consent_marketing.label }}
+        </label>
+    </div>
+
+    <button type="submit" class="btn-pill btn-submit" style="width: 100%;">{% trans "Absenden" %}</button>
+</form>

@@ -17,6 +17,7 @@ class FeatureDiscoveryService:
     1. Конфигурацию меню (menu.py -> MENU_CONFIG)
     2. Настройки Garbage Collector (feature_setting.py -> GARBAGE_COLLECT / STATES)
     3. Фабрики оркестраторов (feature_setting.py -> create_orchestrator)
+    4. Хендлеры Redis Stream (handlers.py)
     """
 
     def __init__(self) -> None:
@@ -30,6 +31,7 @@ class FeatureDiscoveryService:
         for feature_path in INSTALLED_FEATURES:
             self._discover_menu(feature_path)
             self._discover_garbage_states(feature_path)
+            self._discover_redis_handlers(feature_path)  # Добавляем обнаружение хендлеров Redis Stream
 
     def create_feature_orchestrators(self, container: "BotContainer") -> dict[str, Any]:
         """
@@ -137,3 +139,18 @@ class FeatureDiscoveryService:
                 log.warning(
                     f"FeatureDiscovery | gc_warning feature='{feature_path}' GARBAGE_COLLECT=True but no STATES found"
                 )
+
+    def _discover_redis_handlers(self, feature_path: str) -> None:
+        """
+        Импортирует модуль handlers.py для фичи, чтобы зарегистрировать хендлеры Redis Stream.
+        """
+        module_path = f"src.telegram_bot.{feature_path}.handlers"
+        try:
+            importlib.import_module(module_path)
+            log.debug(f"FeatureDiscovery | Redis Stream handlers loaded for feature='{feature_path}'")
+        except ImportError:
+            log.debug(f"FeatureDiscovery | No Redis Stream handlers found for feature='{feature_path}'")
+        except Exception as e:
+            log.error(
+                f"FeatureDiscovery | Redis Stream handlers error for feature='{feature_path}': {e}", exc_info=True
+            )

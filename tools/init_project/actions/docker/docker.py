@@ -8,7 +8,7 @@ Docker Action — генерация Docker файлов на основе вы�
 from __future__ import annotations
 
 from pathlib import Path
-from textwrap import dedent, indent
+from textwrap import dedent
 
 from tools.init_project.config import InstallContext, safe_rmtree
 
@@ -54,11 +54,11 @@ class DockerAction:
             print("    📄 Generated: deploy/bot/Dockerfile")
 
             self._render_template(
-                RESOURCES / "worker" / "Dockerfile.tpl",
-                deploy / "worker" / "Dockerfile",
+                RESOURCES / "worker_arq" / "Dockerfile.tpl",
+                deploy / "worker_arq" / "Dockerfile",
                 variables,
             )
-            print("    📄 Generated: deploy/worker/Dockerfile")
+            print("    📄 Generated: deploy/worker_arq/Dockerfile")
 
         # ── Nginx (только если есть бэкенд) ──
         if ctx.backend:
@@ -106,9 +106,7 @@ class DockerAction:
     # CI/CD generation
     # ─────────────────────────────────────────
 
-    def _generate_workflows(
-        self, ctx: InstallContext, variables: dict[str, str]
-    ) -> None:
+    def _generate_workflows(self, ctx: InstallContext, variables: dict[str, str]) -> None:
         """Генерирует GitHub Actions workflows."""
         workflows_dir = ctx.project_root / ".github" / "workflows"
 
@@ -162,7 +160,7 @@ class DockerAction:
                       --health-interval 10s
                       --health-timeout 5s
                       --health-retries 5""")
-            test_env += '\n          DATABASE_URL: postgresql+asyncpg://postgres:test_password@localhost:5432/test_db'
+            test_env += "\n          DATABASE_URL: postgresql+asyncpg://postgres:test_password@localhost:5432/test_db"
             build_steps += dedent("""\
                   - name: Build FastAPI image
                     run: docker build -f deploy/fastapi/Dockerfile -t check-backend .""")
@@ -210,7 +208,9 @@ class DockerAction:
                         export DOCKER_IMAGE_BACKEND=ghcr.io/$REPO_LOWER:latest
                         export DOCKER_IMAGE_NGINX=ghcr.io/$REPO_LOWER-nginx:latest""")
             # Run Alembic migrations BEFORE starting services (avoids race condition)
-            migrate_step = "            docker compose -f deploy/docker-compose.prod.yml run --rm -T backend alembic upgrade head"
+            migrate_step = (
+                "            docker compose -f deploy/docker-compose.prod.yml run --rm -T backend alembic upgrade head"
+            )
 
         if ctx.backend == "django":
             # Django: collectstatic + migrate before starting
@@ -233,13 +233,13 @@ class DockerAction:
                     uses: docker/build-push-action@v5
                     with:
                       context: .
-                      file: deploy/worker/Dockerfile
+                      file: deploy/worker_arq/Dockerfile
                       push: true
-                      tags: ghcr.io/${{ env.REPO_LOWER }}-worker:latest""")
+                      tags: ghcr.io/${{ env.REPO_LOWER }}-worker_arq:latest""")
             export_images += dedent("""\
 
                         export DOCKER_IMAGE_BOT=ghcr.io/$REPO_LOWER-bot:latest
-                        export DOCKER_IMAGE_WORKER=ghcr.io/$REPO_LOWER-worker:latest""")
+                        export DOCKER_IMAGE_WORKER=ghcr.io/$REPO_LOWER-worker_arq:latest""")
 
         release_vars = {
             **variables,
@@ -266,9 +266,7 @@ class DockerAction:
     # Compose generation — секционная сборка
     # ─────────────────────────────────────────
 
-    def _generate_compose_dev(
-        self, ctx: InstallContext, deploy: Path, variables: dict[str, str]
-    ) -> None:
+    def _generate_compose_dev(self, ctx: InstallContext, deploy: Path, variables: dict[str, str]) -> None:
         """Генерирует docker-compose.yml для dev."""
         services: list[str] = []
         volumes: list[str] = []
@@ -300,9 +298,7 @@ class DockerAction:
         (deploy / "docker-compose.yml").write_text(compose, encoding="utf-8")
         print("    📄 Generated: deploy/docker-compose.yml")
 
-    def _generate_compose_prod(
-        self, ctx: InstallContext, deploy: Path, variables: dict[str, str]
-    ) -> None:
+    def _generate_compose_prod(self, ctx: InstallContext, deploy: Path, variables: dict[str, str]) -> None:
         """Генерирует docker-compose.prod.yml."""
         services: list[str] = []
         volumes: list[str] = []
@@ -328,9 +324,7 @@ class DockerAction:
         print("    📄 Generated: deploy/docker-compose.prod.yml")
 
     @staticmethod
-    def _assemble_compose(
-        services: list[str], volumes: list[str], network_name: str
-    ) -> str:
+    def _assemble_compose(services: list[str], volumes: list[str], network_name: str) -> str:
         """Собирает docker-compose из блоков."""
         compose = "services:\n"
         compose += "\n\n".join(services)
@@ -396,11 +390,11 @@ class DockerAction:
     @staticmethod
     def _svc_worker_dev(name: str) -> str:
         return dedent(f"""\
-          worker:
+          worker_arq:
             build:
               context: ..
-              dockerfile: deploy/worker/Dockerfile
-            container_name: {name}-worker
+              dockerfile: deploy/worker_arq/Dockerfile
+            container_name: {name}-worker_arq
             env_file: ../.env
             volumes:
               - ../src/telegram_bot:/app/src/telegram_bot:ro
@@ -509,9 +503,9 @@ class DockerAction:
     @staticmethod
     def _svc_worker_prod(name: str) -> str:
         return dedent(f"""\
-          worker:
+          worker_arq:
             image: ${{DOCKER_IMAGE_WORKER}}
-            container_name: {name}-worker
+            container_name: {name}-worker_arq
             env_file: .env
             restart: always
             depends_on:
@@ -548,9 +542,7 @@ class DockerAction:
     # ─────────────────────────────────────────
 
     @staticmethod
-    def _render_template(
-        template_path: Path, output_path: Path, variables: dict[str, str]
-    ) -> None:
+    def _render_template(template_path: Path, output_path: Path, variables: dict[str, str]) -> None:
         """Читает .tpl, подставляет переменные, записывает результат."""
         output_path.parent.mkdir(parents=True, exist_ok=True)
         content = template_path.read_text(encoding="utf-8")

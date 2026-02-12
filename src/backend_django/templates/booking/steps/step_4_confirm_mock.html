@@ -1,0 +1,106 @@
+{% load i18n %}
+<div class="step-content fade-in" x-data="bookingForm()">
+    <div class="step-header-row">
+        <h2 class="step-heading">
+            {% trans "Ihre Daten" %}
+        </h2>
+        <button class="btn-back"
+                hx-get="{% url 'booking_wizard' %}?step=3&service_id={{ selected_service.id }}&master_id={{ selected_master.id }}"
+                hx-target="#wizard-content"
+                hx-swap="innerHTML">
+            ← {% trans "Zurück" %}
+        </button>
+    </div>
+
+    <form class="booking-form"
+          hx-post="{% url 'booking_wizard' %}"
+          hx-target="#wizard-content"
+          hx-swap="innerHTML">
+        {% csrf_token %}
+
+        <div class="form-grid">
+            <!-- First Name -->
+            <div class="form-group">
+                <label>{% trans "Vorname" %} *</label>
+                <input type="text" name="first_name" x-model="form.firstName" @input="saveData" required placeholder="Maria">
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <label>{% trans "Nachname" %} *</label>
+                <input type="text" name="last_name" x-model="form.lastName" @input="saveData" required placeholder="Müller">
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+                <label>{% trans "Telefonnummer" %} *</label>
+                <input type="tel" name="phone" x-model="form.phone" @input="saveData" required placeholder="+49 123 456789">
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label>{% trans "E-Mail" %} *</label>
+                <input type="email" name="email" x-model="form.email" @input="saveData" required placeholder="maria@example.com">
+            </div>
+        </div>
+
+        <!-- Call Request Checkbox -->
+        <div class="form-group checkbox-group">
+            <label class="checkbox-container">
+                <input type="checkbox" name="request_call" x-model="form.requestCall">
+                <span class="checkmark"></span>
+                <span class="checkbox-text" style="color: var(--color-white);">
+                    {% trans "Bitte rufen Sie mich zur Bestätigung an" %}
+                </span>
+            </label>
+        </div>
+
+        <!-- Consent Checkbox -->
+        <div class="form-group checkbox-group">
+            <label class="checkbox-container">
+                <input type="checkbox" name="consent" x-model="form.consent" required>
+                <span class="checkmark"></span>
+                <span class="checkbox-text" style="color: var(--color-gold);">
+                    {% trans "Ich stimme zu, dass meine Daten gespeichert werden und ich Benachrichtigungen (SMS/E-Mail) zu meinem Termin erhalte." %}
+                </span>
+            </label>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+            <button type="submit" class="btn-confirm">
+                {% trans "Termin verbindlich buchen" %}
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<!-- Only include OOB updates for HTMX requests -->
+{% if request.headers.HX_Request %}
+    <!-- Update Sidebar via OOB -->
+    {% include "booking/includes/summary_card.html" %}
+    <!-- Update Stepper via OOB -->
+    {% include "booking/includes/stepper.html" %}
+{% endif %}
+
+<script>
+    function bookingForm() {
+        return {
+            form: {
+                firstName: localStorage.getItem('booking_firstName') || '',
+                lastName: localStorage.getItem('booking_lastName') || '',
+                phone: localStorage.getItem('booking_phone') || '',
+                email: localStorage.getItem('booking_email') || '',
+                consent: true,
+                requestCall: false
+            },
+            saveData() {
+                localStorage.setItem('booking_firstName', this.form.firstName);
+                localStorage.setItem('booking_lastName', this.form.lastName);
+                localStorage.setItem('booking_phone', this.form.phone);
+                localStorage.setItem('booking_email', this.form.email);
+            }
+        }
+    }
+</script>

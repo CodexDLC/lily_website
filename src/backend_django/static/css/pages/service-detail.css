@@ -33,6 +33,33 @@
     max-width: 800px;
     margin: 0 auto;
     color: var(--color-text-muted);
+    text-align: left; /* Ensure readability for long texts */
+}
+
+.service-seo-text p {
+    margin-bottom: 1.5rem;
+}
+
+.service-seo-text ul {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+    list-style-type: disc;
+    color: inherit; /* Inherit muted color from parent */
+}
+
+.service-seo-text li {
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.service-seo-text strong {
+    color: var(--color-gold);
+    font-weight: 600;
+}
+
+.service-seo-text em {
+    font-style: italic;
+    color: var(--color-white); /* Keep emphasis bright if needed, or change to inherit */
 }
 
 /* Masters Block */

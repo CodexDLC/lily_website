@@ -6,7 +6,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from features.main.models import Service
 from features.system.models.mixins import TimestampMixin
 
 from .client import Client
@@ -24,7 +23,7 @@ class Appointment(TimestampMixin, models.Model):
     master = models.ForeignKey(Master, on_delete=models.PROTECT, related_name="appointments", verbose_name=_("Master"))
 
     service = models.ForeignKey(
-        Service, on_delete=models.PROTECT, related_name="appointments", verbose_name=_("Service")
+        "main.Service", on_delete=models.PROTECT, related_name="appointments", verbose_name=_("Service")
     )
 
     # === Scheduling ===
@@ -61,6 +60,27 @@ class Appointment(TimestampMixin, models.Model):
 
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING, db_index=True, verbose_name=_("Status")
+    )
+
+    # === Booking Source ===
+    SOURCE_WEBSITE = "website"
+    SOURCE_TELEGRAM = "telegram"
+    SOURCE_PHONE = "phone"
+    SOURCE_ADMIN = "admin"
+
+    SOURCE_CHOICES = [
+        (SOURCE_WEBSITE, _("Website")),
+        (SOURCE_TELEGRAM, _("Telegram Bot")),
+        (SOURCE_PHONE, _("Phone")),
+        (SOURCE_ADMIN, _("Admin Panel")),
+    ]
+
+    source = models.CharField(
+        max_length=20,
+        choices=SOURCE_CHOICES,
+        default=SOURCE_WEBSITE,
+        verbose_name=_("Booking Source"),
+        help_text=_("Where this appointment was created"),
     )
 
     # === Cancellation Info ===

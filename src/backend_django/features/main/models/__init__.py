@@ -1,9 +1,10 @@
 from .category import Category
-from .service import PortfolioImage, Service, ServiceGroup
+from .contact_request import ContactRequest
+from .service import PortfolioImage, Service
 
 __all__ = [
     "Category",
     "Service",
-    "ServiceGroup",
     "PortfolioImage",
+    "ContactRequest",
 ]

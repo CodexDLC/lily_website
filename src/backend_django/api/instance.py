@@ -1,3 +1,4 @@
 from ninja import NinjaAPI
 
-api = NinjaAPI(title="lily_website API", version="1.0.0", urls_namespace="main_api")
+# Removed urls_namespace to avoid ConfigError on double import
+api = NinjaAPI(title="lily_website API", version="1.0.0")

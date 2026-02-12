@@ -3,12 +3,13 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TranslationAdmin
 
 from .models import Appointment, Client, Master, MasterCertificate, MasterPortfolio
 
 
 @admin.register(Master)
-class MasterAdmin(admin.ModelAdmin):
+class MasterAdmin(TranslationAdmin):
     """Admin interface for Master model."""
 
     list_display = ["name", "status_badge", "is_owner", "is_featured", "years_experience", "order"]
@@ -24,7 +25,7 @@ class MasterAdmin(admin.ModelAdmin):
         ),
         (
             _("Specializations"),
-            {"fields": ("service_groups", "categories", "years_experience")},
+            {"fields": ("categories", "years_experience")},
         ),
         (
             _("Contact"),
@@ -59,7 +60,7 @@ class MasterAdmin(admin.ModelAdmin):
         ),
     )
 
-    filter_horizontal = ["service_groups", "categories"]
+    filter_horizontal = ["categories"]
 
     @admin.display(description=_("Status"))
     def status_badge(self, obj):
@@ -82,15 +83,19 @@ class MasterAdmin(admin.ModelAdmin):
 class ClientAdmin(admin.ModelAdmin):
     """Admin interface for Client model."""
 
-    list_display = ["display_name_admin", "phone", "email", "status_badge", "is_ghost_icon", "created_at"]
+    list_display = ["display_name_admin", "phone", "email", "instagram", "status_badge", "is_ghost_icon", "created_at"]
     list_filter = ["status", "consent_marketing", "created_at"]
-    search_fields = ["name", "phone", "email", "access_token"]
+    search_fields = ["first_name", "last_name", "phone", "email", "instagram", "telegram", "access_token"]
     readonly_fields = ["access_token", "created_at", "updated_at"]
 
     fieldsets = (
         (
             _("Contact Information"),
-            {"fields": ("name", "phone", "email")},
+            {"fields": ("first_name", "last_name", "phone", "email")},
+        ),
+        (
+            _("Socials"),
+            {"fields": ("instagram", "telegram")},
         ),
         (
             _("Account Status"),
@@ -148,7 +153,8 @@ class AppointmentAdmin(admin.ModelAdmin):
     ]
     list_filter = ["status", "master", "datetime_start", "created_at"]
     search_fields = [
-        "client__name",
+        "client__first_name",
+        "client__last_name",
         "client__phone",
         "client__email",
         "master__name",
@@ -221,7 +227,7 @@ class AppointmentAdmin(admin.ModelAdmin):
 
 
 @admin.register(MasterCertificate)
-class MasterCertificateAdmin(admin.ModelAdmin):
+class MasterCertificateAdmin(TranslationAdmin):
     """Admin interface for MasterCertificate model."""
 
     list_display = ["title", "master", "issuer", "issue_date", "order", "is_active"]
@@ -246,7 +252,7 @@ class MasterCertificateAdmin(admin.ModelAdmin):
 
 
 @admin.register(MasterPortfolio)
-class MasterPortfolioAdmin(admin.ModelAdmin):
+class MasterPortfolioAdmin(TranslationAdmin):
     """Admin interface for MasterPortfolio model."""
 
     list_display = ["master", "service", "order", "is_active", "created_at"]

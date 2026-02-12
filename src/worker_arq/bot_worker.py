@@ -6,7 +6,10 @@ from src.shared.core.arq.base import BaseArqSettings, base_shutdown, base_startu
 from src.telegram_bot.core.config import BotSettings
 
 settings = BotSettings()  # type: ignore[call-arg]
-from src.telegram_bot.services.worker.tasks import send_notification_task  # noqa: E402
+from src.worker_arq.tasks import (  # noqa: E402
+    send_booking_notification_task,
+    send_notification_task,
+)
 
 
 async def bot_startup(ctx: dict) -> None:
@@ -54,4 +57,5 @@ class BotArqSettings(BaseArqSettings):
     # Регистрация задач
     functions = [
         send_notification_task,
+        send_booking_notification_task,
     ]

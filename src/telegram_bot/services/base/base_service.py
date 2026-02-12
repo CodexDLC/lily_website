@@ -5,20 +5,15 @@ from src.telegram_bot.resources.constants import FSM_CONTEXT_KEY
 
 class BaseUIService:
     """
-    Базовый сервис доступа к UI-контексту в FSM.
+    Базовый сервис доступа к UI-контекту в FSM.
     Отвечает только за чтение/парсинг структуры данных UI (координаты сообщений).
     """
 
-    def __init__(self, state_data: dict[str, Any], char_id: int | None = None):
+    def __init__(self, state_data: dict[str, Any]):
         """
         :param state_data: Сырой словарь данных из FSM (state.get_data())
-        :param char_id: ID персонажа (для логов и контекста), опционально.
         """
         self.state_data = state_data
-
-        # Пытаемся достать char_id из контекста, если не передали явно
-        session_context = self.state_data.get(FSM_CONTEXT_KEY, {})
-        self.char_id = char_id or session_context.get("char_id")
 
     def get_message_content_data(self) -> tuple[int, int] | None:
         """

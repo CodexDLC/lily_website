@@ -1,29 +1,9 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from features.system.models.mixins import ActiveMixin, SeoMixin, TimestampMixin
+from features.system.services.images import optimize_image
 
 from .category import Category
-
-
-class ServiceGroup(TimestampMixin, ActiveMixin):
-    """
-    Group of services within a category (e.g. 'Manicure', 'Pedicure' inside 'Nails').
-    Used for visual grouping in the price list.
-    """
-
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="groups", verbose_name=_("Category"))
-    title = models.CharField(max_length=255, verbose_name=_("Title"), help_text=_("Group name (e.g. 'Maniküre')."))
-    order = models.PositiveIntegerField(
-        default=0, verbose_name=_("Order"), help_text=_("Sorting order within the category.")
-    )
-
-    class Meta:
-        verbose_name = _("Service Group")
-        verbose_name_plural = _("Service Groups")
-        ordering = ["order", "title"]
-
-    def __str__(self):
-        return f"{self.category.title} -> {self.title}"
 
 
 class Service(TimestampMixin, ActiveMixin, SeoMixin):
@@ -37,15 +17,6 @@ class Service(TimestampMixin, ActiveMixin, SeoMixin):
         related_name="services",
         verbose_name=_("Category"),
         help_text=_("Main category (for filtering)."),
-    )
-    group = models.ForeignKey(
-        ServiceGroup,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="services",
-        verbose_name=_("Group"),
-        help_text=_("Optional grouping within the category."),
     )
     title = models.CharField(
         max_length=255, verbose_name=_("Title"), help_text=_("Service name (e.g. 'Klassische Maniküre').")
@@ -64,6 +35,12 @@ class Service(TimestampMixin, ActiveMixin, SeoMixin):
         help_text=_("Text to display (e.g. 'ab 30€'). If empty, uses Price field."),
     )
     duration = models.PositiveIntegerField(verbose_name=_("Duration (min)"), help_text=_("Duration in minutes."))
+    duration_info = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name=_("Duration Display Text"),
+        help_text=_("Text to display (e.g. 'ca. 45-60 Min'). If empty, uses Duration field."),
+    )
     description = models.TextField(
         blank=True, verbose_name=_("Short Description"), help_text=_("Displayed in the list view.")
     )
@@ -91,6 +68,11 @@ class Service(TimestampMixin, ActiveMixin, SeoMixin):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if self.image:
+            optimize_image(self.image, max_width=1200)
+        super().save(*args, **kwargs)
 
 
 class PortfolioImage(TimestampMixin):
@@ -122,3 +104,8 @@ class PortfolioImage(TimestampMixin):
 
     def __str__(self):
         return f"Image for {self.service.title}"
+
+    def save(self, *args, **kwargs):
+        if self.image:
+            optimize_image(self.image, max_width=1600)
+        super().save(*args, **kwargs)

@@ -12,6 +12,8 @@
 /* Components */
 @import url('components/buttons.css');
 @import url('components/cards.css');
+@import url('components/forms.css');
+@import url('components/wizard.css');
 @import url('components/utils.css');
 
 /* Pages */
@@ -20,6 +22,7 @@
 @import url('pages/service-detail.css');
 @import url('pages/team.css');
 @import url('pages/contacts.css');
+@import url('pages/booking.css'); /* Booking Wizard */
 @import url('pages/errors.css');
 
 /* Adaptive Styles with Media Queries */

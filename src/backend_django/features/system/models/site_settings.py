@@ -1,3 +1,5 @@
+from datetime import time
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -24,10 +26,30 @@ class SiteSettings(models.Model):
     telegram_url = models.URLField(_("Telegram URL"), blank=True)
     whatsapp_url = models.URLField(_("WhatsApp URL"), blank=True)
 
-    # --- Working Hours ---
-    working_hours_weekdays = models.CharField(_("Mo-Fr"), max_length=100, default="09:00 - 18:00")
-    working_hours_saturday = models.CharField(_("Saturday"), max_length=100, default="10:00 - 14:00")
-    working_hours_sunday = models.CharField(_("Sunday"), max_length=100, default="Geschlossen")
+    # --- Working Hours (Display Strings) ---
+    working_hours_weekdays = models.CharField(_("Mo-Fr (Display)"), max_length=100, default="09:00 - 18:00")
+    working_hours_saturday = models.CharField(_("Saturday (Display)"), max_length=100, default="10:00 - 14:00")
+    working_hours_sunday = models.CharField(_("Sunday (Display)"), max_length=100, default="Geschlossen")
+
+    # --- Working Hours (Logic) ---
+    # Mo-Fr
+    work_start_weekdays = models.TimeField(_("Mo-Fr Start"), default=time(9, 0))
+    work_end_weekdays = models.TimeField(_("Mo-Fr End"), default=time(18, 0))
+
+    # Saturday
+    work_start_saturday = models.TimeField(_("Saturday Start"), default=time(10, 0))
+    work_end_saturday = models.TimeField(_("Saturday End"), default=time(14, 0))
+
+    # Sunday is closed by default logic
+
+    # --- Hiring / Vacancies ---
+    hiring_active = models.BooleanField(
+        _("Hiring Active"), default=True, help_text="Show 'We are hiring' block on Team page"
+    )
+    hiring_title = models.CharField(_("Hiring Title"), max_length=255, default="Wir suchen Verstärkung!", blank=True)
+    hiring_text = models.TextField(
+        _("Hiring Text"), blank=True, default="Bist du talentiert und liebst deinen Job? Werde Teil unseres Teams!"
+    )
 
     class Meta:
         verbose_name = _("Site Settings")

@@ -51,7 +51,7 @@ Worker process stops
 ## 🚀 Running the Worker
 
 ```bash
-arq src.telegram_bot.services.worker.bot_worker.BotArqSettings
+arq src.telegram_bot.services.worker_arq.bot_worker.BotArqSettings
 ```
 
 The worker runs independently from the main polling process. It needs its own Bot instance because it is a separate process.

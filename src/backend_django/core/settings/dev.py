@@ -12,6 +12,9 @@ from .base import *  # noqa: F401,F403
 
 DEBUG = True
 
+# Logging Level for Dev
+LOG_LEVEL_CONSOLE = "DEBUG"
+
 # SQLite for dev (already default in base.py)
 # Override DATABASE if needed:
 # DATABASES["default"] = {

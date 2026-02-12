@@ -159,7 +159,7 @@
 
 .mobile-nav-links a {
     display: block;
-    font-family: var(--font-serif);
+    font-family: var(--font-serif, serif);
     font-size: 32px;
     color: var(--color-white);
     margin-bottom: 30px;

@@ -11,7 +11,7 @@ bot:
 
 worker:
   image: ${DOCKER_IMAGE_WORKER}
-  container_name: lily_website-worker
+  container_name: lily_website-worker_arq
   env_file: .env
   restart: always
   depends_on:
@@ -55,7 +55,7 @@ nginx:
     driver: "json-file"
     options:
       max-size: "10m"
-      max-file: "3" 
+      max-file: "3"
 
 volumes:
   redis-data:

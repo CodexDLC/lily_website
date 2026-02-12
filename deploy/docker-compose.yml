@@ -39,7 +39,7 @@ services:
     build:
       context: ..
       dockerfile: deploy/worker/Dockerfile
-    container_name: lily_website-worker
+    container_name: lily_website-worker_arq
     env_file: ../.env
     volumes:
       - ../src/telegram_bot:/app/src/telegram_bot:ro

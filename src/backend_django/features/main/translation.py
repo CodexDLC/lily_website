@@ -1,16 +1,11 @@
 from modeltranslation.translator import TranslationOptions, register
 
-from .models import Category, PortfolioImage, Service, ServiceGroup
+from .models import Category, PortfolioImage, Service
 
 
 @register(Category)
 class CategoryTranslationOptions(TranslationOptions):
     fields = ("title", "description", "content", "seo_title", "seo_description")
-
-
-@register(ServiceGroup)
-class ServiceGroupTranslationOptions(TranslationOptions):
-    fields = ("title",)
 
 
 @register(Service)

@@ -3,32 +3,13 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
-from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
+from modeltranslation.admin import TranslationAdmin
 
-from .models import Category, PortfolioImage, Service, ServiceGroup
+from .models import Category, PortfolioImage, Service
 
 # ══════════════════════════════════════════════════════════════════════════════
 # INLINES
 # ══════════════════════════════════════════════════════════════════════════════
-
-
-class ServiceGroupInline(TranslationTabularInline):
-    """Inline for ServiceGroup inside Category."""
-
-    model = ServiceGroup
-    extra = 0
-    fields = ["title", "order", "is_active"]
-    ordering = ["order"]
-
-
-class ServiceInline(TranslationTabularInline):
-    """Inline for Service inside ServiceGroup."""
-
-    model = Service
-    extra = 0
-    fields = ["title", "price", "duration", "order", "is_active", "is_planned"]
-    ordering = ["order"]
-    show_change_link = True
 
 
 class PortfolioImageInline(admin.TabularInline):
@@ -54,7 +35,6 @@ class CategoryAdmin(TranslationAdmin):
     search_fields = ["title", "slug", "description"]
     prepopulated_fields = {"slug": ("title",)}
     ordering = ["order", "title"]
-    inlines = [ServiceGroupInline]
 
     fieldsets = [
         (
@@ -101,47 +81,6 @@ class CategoryAdmin(TranslationAdmin):
         return format_html("<strong>{}</strong> {}", count, _("services"))
 
 
-@admin.register(ServiceGroup)
-class ServiceGroupAdmin(TranslationAdmin):
-    """Admin interface for ServiceGroup model."""
-
-    list_display = ["title", "category", "order", "active_badge", "service_count"]
-    list_filter = ["category", "is_active"]
-    search_fields = ["title", "category__title"]
-    ordering = ["category", "order"]
-    inlines = [ServiceInline]
-
-    fieldsets = [
-        (
-            _("Status & Display"),
-            {"fields": ("is_active", "order")},
-        ),
-        (
-            _("Content"),
-            {"fields": ("category", "title")},
-        ),
-    ]
-
-    @admin.display(description=_("Status"))
-    def active_badge(self, obj):
-        """Active status badge."""
-        if obj.is_active:
-            return format_html(
-                '<span style="padding:3px 10px;background:green;color:white;border-radius:3px;">✓ {}</span>',
-                _("Active"),
-            )
-        return format_html(
-            '<span style="padding:3px 10px;background:gray;color:white;border-radius:3px;">✗ {}</span>',
-            _("Hidden"),
-        )
-
-    @admin.display(description=_("Services"))
-    def service_count(self, obj):
-        """Count of services in this group."""
-        count = obj.services.count()
-        return format_html("<strong>{}</strong>", count)
-
-
 @admin.register(Service)
 class ServiceAdmin(TranslationAdmin):
     """Admin interface for Service model."""
@@ -149,7 +88,6 @@ class ServiceAdmin(TranslationAdmin):
     list_display = [
         "title",
         "category",
-        "group",
         "price_display",
         "duration",
         "order",
@@ -160,7 +98,7 @@ class ServiceAdmin(TranslationAdmin):
     list_filter = ["category", "is_active", "is_hit", "is_planned", "is_available"]
     search_fields = ["title", "description"]
     prepopulated_fields = {"slug": ("title",)}
-    ordering = ["category", "group", "order"]
+    ordering = ["category", "order"]
     inlines = [PortfolioImageInline]
 
     fieldsets = [
@@ -170,7 +108,7 @@ class ServiceAdmin(TranslationAdmin):
         ),
         (
             _("Relation"),
-            {"fields": ("category", "group")},
+            {"fields": ("category",)},
         ),
         (
             _("Service Info"),
