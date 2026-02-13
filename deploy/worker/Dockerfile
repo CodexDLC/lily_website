@@ -24,5 +24,3 @@ COPY src/shared /app/src/shared
 USER appuser
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONPATH="/app:$PYTHONPATH"
-
-CMD ["bash"]
