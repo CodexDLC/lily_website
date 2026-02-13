@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Häufig gestellte Fragen" %} | LILY Beauty Salon{% endblock %}
+{% block meta_description %}{% trans "Antworten auf Ihre Fragen zu unseren Dienstleistungen, Marken und Terminbuchung." %}{% endblock %}
+
+{% block content %}
+<main class="faq-page">
+    <div class="container">
+        <div class="faq-container">
+            <h1 class="faq-title">{% trans "Häufig gestellte Fragen" %}</h1>
+            <p class="faq-subtitle">{% trans "ALLES, WAS SIE WISSEN MÜSSEN" %}</p>
+
+            <!-- FAQ List -->
+            <div class="faq-list">
+
+                <!-- 1. Services -->
+                <details class="faq-item">
+                    <summary class="faq-summary">
+                        {% trans "Welche Dienstleistungen bieten Sie an?" %}
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>{% trans "Unser Schönheitssalon bietet Leistungen in mehreren Bereichen an:" %}</p>
+                        <ul style="list-style-type: disc; margin-left: 20px; margin-top: 10px; color: rgba(255,255,255,0.8);">
+                            <li>{% trans "Nagelservice" %}</li>
+                            <li>{% trans "Friseurdienstleistungen" %}</li>
+                            <li>{% trans "Gesichtskosmetik" %}</li>
+                            <li>{% trans "Haarentfernung und Körperpflege" %}</li>
+                            <li>{% trans "Massage" %}</li>
+                            <li>{% trans "Wimpernverlängerung" %}</li>
+                        </ul>
+                        <p style="margin-top: 10px;">{% trans "Jeder Bereich umfasst verschiedene Behandlungen und Pflegeoptionen." %}</p>
+                    </div>
+                </details>
+
+                <!-- 2. Brands -->
+                <details class="faq-item">
+                    <summary class="faq-summary">
+                        {% trans "Mit welchen Materialien und Marken arbeiten Sie?" %}
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>{% trans "Wir verwenden professionelle Produkte von bewährten Marken:" %}</p>
+                        <ul style="list-style: none; margin-top: 10px; color: rgba(255,255,255,0.8);">
+                            <li style="margin-bottom: 8px;"><strong>{% trans "Nagelservice:" %}</strong> Ga&Ma, Dark, SAGA Professional, DNKA, Lunamoon, Nogtika, Venalisa, GD COCO</li>
+                            <li style="margin-bottom: 8px;"><strong>{% trans "Haare:" %}</strong> FR OPTIMA, Luxima, VIART</li>
+                            <li style="margin-bottom: 8px;"><strong>{% trans "Kosmetik:" %}</strong> Anubis Barcelona, Christina, Zemits</li>
+                            <li style="margin-bottom: 8px;"><strong>{% trans "Depilation & Körper:" %}</strong> Italwax, Enova, Touch Beauty</li>
+                            <li style="margin-bottom: 8px;"><strong>{% trans "Wimpern:" %}</strong> Platinum</li>
+                        </ul>
+                        <p style="margin-top: 10px;">{% trans "Eine vollständige Übersicht der verwendeten Marken finden Sie auf unserer Website." %}</p>
+                    </div>
+                </details>
+
+                <!-- 3. Sensitive Skin -->
+                <details class="faq-item">
+                    <summary class="faq-summary">
+                        {% trans "Sind Ihre Behandlungen für empfindliche Haut oder Nägel geeignet?" %}
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>{% trans "Ja. Bei der Terminbuchung können individuelle Besonderheiten wie empfindliche Haut oder spezielle Wünsche angegeben werden." %}</p>
+                        <p>{% trans "Der passende Behandlungsablauf und die Materialien werden entsprechend ausgewählt." %}</p>
+                    </div>
+                </details>
+
+                <!-- 4. Problem Skin/Nails -->
+                <details class="faq-item">
+                    <summary class="faq-summary">
+                        {% trans "Arbeiten Sie mit Problemhaut oder geschädigten Nägeln?" %}
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>{% trans "In unserem Salon werden kosmetische Behandlungen sowie stärkende Systeme für Nägel angeboten." %}</p>
+                        <p>{% trans "Bei speziellen Fragen oder Unsicherheiten können Sie uns vorab über das Kontaktformular oder per E‑Mail kontaktieren." %}</p>
+                    </div>
+                </details>
+
+                <!-- 5. Consultation -->
+                <details class="faq-item">
+                    <summary class="faq-summary">
+                        {% trans "Ist eine individuelle Beratung möglich?" %}
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>{% trans "Ja. Wir sind offen für Rücksprache und passen Behandlungen gerne an Ihre Wünsche an." %}</p>
+                    </div>
+                </details>
+
+                <!-- 6. Duration -->
+                <details class="faq-item">
+                    <summary class="faq-summary">
+                        {% trans "Wie lange dauert eine Behandlung?" %}
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>{% trans "Die ungefähre Dauer jeder Behandlung ist auf der Website im Preisbereich angegeben." %}</p>
+                        <p>{% trans "Die tatsächliche Zeit kann je nach gewählter Leistung leicht variieren." %}</p>
+                    </div>
+                </details>
+
+                <!-- 7. Results -->
+                <details class="faq-item">
+                    <summary class="faq-summary">
+                        {% trans "Wie lange hält das Ergebnis an?" %}
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>{% trans "Die Haltbarkeit des Ergebnisses hängt von der jeweiligen Behandlung ab." %}</p>
+                        <p>{% trans "Detaillierte Informationen finden Sie auf der Seite der entsprechenden Dienstleistung." %}</p>
+                    </div>
+                </details>
+
+                <!-- 8. Booking -->
+                <details class="faq-item">
+                    <summary class="faq-summary">
+                        {% trans "Wie kann ich einen Termin buchen?" %}
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>{% trans "Die Terminbuchung ist möglich:" %}</p>
+                        <ul style="list-style-type: disc; margin-left: 20px; margin-top: 10px; color: rgba(255,255,255,0.8);">
+                            <li>{% trans "über die Startseite der Website" %}</li>
+                            <li>{% trans "über die Seite eines bestimmten Mitarbeiters" %}</li>
+                        </ul>
+                        <p style="margin-top: 10px;">{% trans "Sie können entweder einen freien Termin wählen oder gezielt bei einem bestimmten Spezialisten buchen." %}</p>
+                    </div>
+                </details>
+
+                <!-- 9. Contraindications -->
+                <details class="faq-item">
+                    <summary class="faq-summary">
+                        {% trans "Gibt es Kontraindikationen für Behandlungen?" %}
+                        <span class="faq-icon">+</span>
+                    </summary>
+                    <div class="faq-answer">
+                        <p>{% trans "Informationen zu möglichen Kontraindikationen sind auf den jeweiligen Leistungsseiten angegeben." %}</p>
+                        <p>{% trans "Bei Unsicherheiten empfehlen wir, sich vor der Buchung beraten zu lassen." %}</p>
+                    </div>
+                </details>
+
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_head_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "{% trans "Welche Dienstleistungen bieten Sie an?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Unser Schönheitssalon bietet Leistungen in mehreren Bereichen an: Nagelservice, Friseurdienstleistungen, Gesichtskosmetik, Haarentfernung und Körperpflege, Massage, Wimpernverlängerung." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Mit welchen Materialien und Marken arbeiten Sie?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Wir verwenden professionelle Produkte von bewährten Marken. Nagelservice: Ga&Ma, Dark, SAGA, DNKA, Lunamoon. Haare: FR OPTIMA, Luxima, VIART. Kosmetik: Anubis, Christina, Zemits. Depilation: Italwax, Enova. Wimpern: Platinum." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Sind Ihre Behandlungen für empfindliche Haut oder Nägel geeignet?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Ja. Bei der Terminbuchung können individuelle Besonderheiten wie empfindliche Haut oder spezielle Wünsche angegeben werden. Der passende Behandlungsablauf und die Materialien werden entsprechend ausgewählt." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Arbeiten Sie mit Problemhaut oder geschädigten Nägeln?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "In unserem Salon werden kosmetische Behandlungen sowie stärkende Systeme für Nägel angeboten. Bei speziellen Fragen können Sie uns vorab kontaktieren." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Ist eine individuelle Beratung möglich?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Ja. Wir sind offen für Rücksprache und passen Behandlungen gerne an Ihre Wünsche an." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Wie lange dauert eine Behandlung?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Die ungefähre Dauer jeder Behandlung ist auf der Website im Preisbereich angegeben. Die tatsächliche Zeit kann je nach gewählter Leistung leicht variieren." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Wie lange hält das Ergebnis an?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Die Haltbarkeit des Ergebnisses hängt von der jeweiligen Behandlung ab. Detaillierte Informationen finden Sie auf der Seite der entsprechenden Dienstleistung." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Wie kann ich einen Termin buchen?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Die Terminbuchung ist möglich über die Startseite der Website oder über die Seite eines bestimmten Mitarbeiters." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Gibt es Kontraindikationen für Behandlungen?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Informationen zu möglichen Kontraindikationen sind auf den jeweiligen Leistungsseiten angegeben. Bei Unsicherheiten empfehlen wir, sich vor der Buchung beraten zu lassen." %}"
+      }
+    }
+  ]
+}
+</script>
+{% endblock %}

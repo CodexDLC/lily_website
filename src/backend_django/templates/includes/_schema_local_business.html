@@ -1,0 +1,177 @@
+{% load static %}
+<!-- Schema.org JSON-LD for LocalBusiness -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "https://lily-salon.de/#organization", {# Уникальный идентификатор для вашего салона #}
+  "name": "LILY Beauty Salon",
+  "image": "{% static 'img/logo_lily.webp' %}",
+  "url": "https://lily-salon.de/", {# Убедитесь, что это ваш основной домен #}
+  "telephone": "+4917659423704",
+  "email": "info@lily-salon.de",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Lohmannstraße 111",
+    "addressLocality": "Köthen (Anhalt)",
+    "postalCode": "06366",
+    "addressCountry": "DE"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "51.746495",
+    "longitude": "11.9784666"
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "opens": "09:00",
+      "closes": "18:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Saturday",
+      "opens": "10:00",
+      "closes": "16:00"
+    }
+  ],
+  "priceRange": "$$", {# Укажите примерный ценовой диапазон: $, $$, $$$ #}
+  "sameAs": [
+    "https://www.instagram.com/manikure_kothen?igsh=MTRiYmVydnBsN2xzZQ%3D%3D",
+    "https://www.facebook.com/lilybeautysalonkoethen/" {# Осталось без изменений, так как новая ссылка не предоставлена #}
+  ],
+  "potentialAction": {
+    "@type": "ReserveAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "{{ SITE_BASE_URL }}booking/",
+      "inLanguage": "ru",
+      "actionPlatform": [
+        "https://schema.org/DesktopWebPlatform",
+        "https://schema.org/MobileWebPlatform"
+      ]
+    },
+    "name": "Записаться онлайн"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Beauty Services",
+    "itemListElement": [
+      {
+        "@type": "OfferCatalog",
+        "name": "Hair Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Haircuts"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Hair Coloring"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Hair Treatment"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "Nail Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Manicure"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Pedicure"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Nail Extensions"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "Cosmetology",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Facial Treatments"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Skin Cleaning"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "Brows & Lashes",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Brow Shaping"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Lash Extensions"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "Depilation",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Hair Removal"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+</script>
