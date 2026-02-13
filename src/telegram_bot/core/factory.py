@@ -5,22 +5,21 @@ from loguru import logger as log
 from redis.asyncio import Redis
 from redis.exceptions import ConnectionError as RedisConnectionError
 
-# TODO: Import Settings from shared/core/settings when available
-# from shared.core.settings import Settings
+from src.telegram_bot.core.config import BotSettings
 
 
-async def build_bot(token: str, redis_client: Redis) -> tuple[Bot, Dispatcher]:
+async def build_bot(settings: BotSettings, redis_client: Redis) -> tuple[Bot, Dispatcher]:
     """
     Создает и конфигурирует экземпляры Bot и Dispatcher.
     БЕЗ доступа к БД (DbSessionMiddleware удален).
     """
     log.info("BotFactory | status=started")
 
-    if not token:
+    if not settings.bot_token:
         log.critical("BotFactory | status=failed reason='BOT_TOKEN not found'")
         raise RuntimeError("BOT_TOKEN не найден.")
 
-    bot = Bot(token=token, default=DefaultBotProperties(parse_mode="HTML"))
+    bot = Bot(token=settings.bot_token, default=DefaultBotProperties(parse_mode="HTML"))
     log.debug("BotFactory | component=Bot status=created")
 
     log.debug("RedisCheck | status=started")
@@ -36,10 +35,7 @@ async def build_bot(token: str, redis_client: Redis) -> tuple[Bot, Dispatcher]:
     storage = RedisStorage(redis=redis_client)
     log.debug("BotFactory | component=RedisStorage status=created")
 
-    # Контейнер больше не передается в Dispatcher глобально,
-    # зависимости должны внедряться через Middleware или ContextVar при необходимости,
-    # либо использоваться явно в хендлерах (хотя лучше через DI).
-    dp = Dispatcher(storage=storage)
+    dp = Dispatcher(storage=storage, settings=settings)
     log.debug("BotFactory | component=Dispatcher status=created")
 
     log.info("BotFactory | status=finished")

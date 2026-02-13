@@ -1,0 +1,26 @@
+/* =========================================
+   SITE WRAPPER & CONTAINER
+   ========================================= */
+
+/* Site Wrapper (Main Content Box) */
+.site-wrapper {
+    max-width: var(--site-max-width);
+    margin: 0 auto;
+    background-color: var(--color-emerald);
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Section spacing */
+.section {
+    padding: 60px 0;
+}

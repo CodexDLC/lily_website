@@ -1,0 +1,69 @@
+{% load static %}
+{% load i18n %}
+
+<footer class="footer-smart">
+    <div class="container">
+        <div class="footer-bar" onclick="toggleFooter()">
+            <div class="footer-branding">
+                <span class="brand-name">{{ site_settings.company_name }}</span>
+                <span class="copyright">© {% now "Y" %}</span>
+            </div>
+
+            <div class="developer-credit">
+                Developed by <a href="#" class="developer-credit">CodexDLC</a>
+            </div>
+
+            <button class="footer-toggle-btn" id="footerToggleBtn" data-text-open="{% trans 'Kontakt & Leistungen öffnen' %}" data-text-close="{% trans 'Schließen' %}">
+                <span id="footerBtnText">{% trans "Kontakt & Leistungen öffnen" %}</span>
+                <span class="arrow-icon">↓</span>
+            </button>
+        </div>
+        <div class="footer-content" id="footerContent">
+            <div class="footer-grid">
+                <div class="f-col contact-col">
+                    <div class="f-row"><span class="icon">📞</span> <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a></div>
+                    <div class="f-row"><span class="icon">📍</span>
+                        <a href="{{ site_settings.google_maps_link|default:'#' }}" target="_blank" class="link-dashed">
+                            {{ site_settings.address_street }},<br>{{ site_settings.address_city }}
+                        </a>
+                    </div>
+                    {% if site_settings.instagram_url %}
+                    <div class="f-row"><span class="icon">📷</span> <a href="{{ site_settings.instagram_url }}" target="_blank">Instagram</a></div>
+                    {% endif %}
+                    <div class="f-qr"><img src="{% static 'img/qr_code.webp' %}" alt="QR" class="qr-code-img"></div>
+                </div>
+                <div class="f-col">
+                    <h4 class="f-title">{% trans "Frisuren & Haarpflege" %}</h4>
+                    <ul>
+                        <li>{% trans "Haarschnitte" %}</li>
+                        <li>{% trans "Färben" %}</li>
+                        <li>{% trans "Haarbehandlung" %}</li>
+                        <li>{% trans "Styling" %}</li>
+                    </ul>
+                </div>
+                <div class="f-col">
+                    <h4 class="f-title">{% trans "Nagelservice" %}</h4>
+                    <ul>
+                        <li>{% trans "Maniküre" %}</li>
+                        <li>{% trans "Pediküre" %}</li>
+                        <li>{% trans "Verlängerung" %}</li>
+                    </ul>
+                </div>
+                <div class="f-col">
+                    <h4 class="f-title">{% trans "Schönheit & Pflege" %}</h4>
+                    <ul>
+                        <li>{% trans "Epilation" %}</li>
+                        <li>{% trans "Wimpernverlängerung" %}</li>
+                        <li>{% trans "Laminierung" %}</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- LEGAL LINKS -->
+            <div class="footer-legal-links">
+                <a href="{% url 'impressum' %}">{% trans "Impressum" %}</a>
+                <span class="separator-text">|</span>
+                <a href="{% url 'datenschutz' %}">{% trans "Datenschutz" %}</a>
+            </div>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,1529 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-10 23:23+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\src\backend_django\features\booking\admin.py:22
+msgid "Basic Information"
+msgstr "Basic Information"
+
+#: .\src\backend_django\features\booking\admin.py:26
+#, fuzzy
+#| msgid "Epilation"
+msgid "Specializations"
+msgstr "Epilation"
+
+#: .\src\backend_django\features\booking\admin.py:30
+#, fuzzy
+#| msgid "Kontakt"
+msgid "Contact"
+msgstr "Contact"
+
+#: .\src\backend_django\features\booking\admin.py:34
+#: .\src\backend_django\features\main\admin.py:109
+msgid "Status & Flags"
+msgstr "Status & Flags"
+
+#: .\src\backend_django\features\booking\admin.py:38
+msgid "Django User"
+msgstr "Django User"
+
+#: .\src\backend_django\features\booking\admin.py:42
+msgid "Telegram Integration"
+msgstr "Telegram Integration"
+
+#: .\src\backend_django\features\booking\admin.py:49
+msgid "QR System (Future)"
+msgstr "QR System (Future)"
+
+#: .\src\backend_django\features\booking\admin.py:53
+#: .\src\backend_django\features\main\admin.py:50
+#: .\src\backend_django\features\main\admin.py:125
+msgid "SEO"
+msgstr "SEO"
+
+#: .\src\backend_django\features\booking\admin.py:57
+#: .\src\backend_django\features\booking\admin.py:178
+#: .\src\backend_django\features\booking\admin.py:242
+#: .\src\backend_django\features\booking\admin.py:271
+msgid "Timestamps"
+msgstr "Timestamps"
+
+#: .\src\backend_django\features\booking\admin.py:64
+#: .\src\backend_django\features\booking\admin.py:119
+#: .\src\backend_django\features\booking\admin.py:166
+#: .\src\backend_django\features\booking\admin.py:190
+#: .\src\backend_django\features\booking\models\appointment.py:63
+#: .\src\backend_django\features\booking\models\client.py:70
+#: .\src\backend_django\features\main\admin.py:55
+#: .\src\backend_django\features\main\admin.py:137
+msgid "Status"
+msgstr "Status"
+
+#: .\src\backend_django\features\booking\admin.py:92
+msgid "Contact Information"
+msgstr "Contact Information"
+
+#: .\src\backend_django\features\booking\admin.py:96
+msgid "Account Status"
+msgstr "Account Status"
+
+#: .\src\backend_django\features\booking\admin.py:100
+msgid "Marketing"
+msgstr "Marketing"
+
+#: .\src\backend_django\features\booking\admin.py:104
+msgid "Internal"
+msgstr "Internal"
+
+#: .\src\backend_django\features\booking\admin.py:109
+msgid "Name"
+msgstr "Name"
+
+#: .\src\backend_django\features\booking\admin.py:114
+msgid "Ghost"
+msgstr "Ghost"
+
+#: .\src\backend_django\features\booking\admin.py:162
+msgid "Booking Details"
+msgstr "Booking Details"
+
+#: .\src\backend_django\features\booking\admin.py:170
+msgid "Notes"
+msgstr "Notes"
+
+#: .\src\backend_django\features\booking\admin.py:174
+msgid "Notifications"
+msgstr "Notifications"
+
+#: .\src\backend_django\features\booking\admin.py:185
+#: .\src\backend_django\features\booking\models\appointment.py:22
+#: .\src\backend_django\features\booking\models\client.py:87
+msgid "Client"
+msgstr "Client"
+
+#: .\src\backend_django\features\booking\admin.py:207
+msgid "Mark as Confirmed"
+msgstr "Mark as Confirmed"
+
+#: .\src\backend_django\features\booking\admin.py:212
+msgid "Mark as Completed"
+msgstr "Mark as Completed"
+
+#: .\src\backend_django\features\booking\admin.py:217
+msgid "Cancel Selected"
+msgstr "Cancel Selected"
+
+#: .\src\backend_django\features\booking\admin.py:234
+msgid "Certificate Info"
+msgstr "Certificate Info"
+
+#: .\src\backend_django\features\booking\admin.py:238
+#: .\src\backend_django\features\booking\admin.py:263
+msgid "Display"
+msgstr "Display"
+
+#: .\src\backend_django\features\booking\admin.py:259
+#: .\src\backend_django\features\booking\models\master_portfolio.py:60
+#, fuzzy
+#| msgid "Portfolio Image"
+msgid "Portfolio Item"
+msgstr "Portfolio Image"
+
+#: .\src\backend_django\features\booking\admin.py:267
+#: .\src\backend_django\templates\team\team.html:44
+#, fuzzy
+#| msgid "Instagram URL"
+msgid "Instagram"
+msgstr "Instagram URL"
+
+#: .\src\backend_django\features\booking\models\appointment.py:24
+#: .\src\backend_django\features\booking\models\master.py:146
+#: .\src\backend_django\features\booking\models\master_certificate.py:17
+#: .\src\backend_django\features\booking\models\master_portfolio.py:19
+msgid "Master"
+msgstr "Master"
+
+#: .\src\backend_django\features\booking\models\appointment.py:27
+#: .\src\backend_django\features\main\models\service.py:59
+#: .\src\backend_django\features\main\models\service.py:79
+msgid "Service"
+msgstr "Service"
+
+#: .\src\backend_django\features\booking\models\appointment.py:32
+msgid "Start Date & Time"
+msgstr "Start Date & Time"
+
+#: .\src\backend_django\features\booking\models\appointment.py:32
+msgid "Appointment start time"
+msgstr "Appointment start time"
+
+#: .\src\backend_django\features\booking\models\appointment.py:36
+#, fuzzy
+#| msgid "Duration (min)"
+msgid "Duration (minutes)"
+msgstr "Duration (min)"
+
+#: .\src\backend_django\features\booking\models\appointment.py:36
+msgid "Service duration (auto-filled from Service model)"
+msgstr "Service duration (auto-filled from Service model)"
+
+#: .\src\backend_django\features\booking\models\appointment.py:43
+#: .\src\backend_django\features\main\models\service.py:28
+msgid "Price (€)"
+msgstr "Price (€)"
+
+#: .\src\backend_django\features\booking\models\appointment.py:44
+msgid "Price at booking time (snapshot)"
+msgstr "Price at booking time (snapshot)"
+
+#: .\src\backend_django\features\booking\models\appointment.py:55
+msgid "Pending Confirmation"
+msgstr "Pending Confirmation"
+
+#: .\src\backend_django\features\booking\models\appointment.py:56
+msgid "Confirmed"
+msgstr "Confirmed"
+
+#: .\src\backend_django\features\booking\models\appointment.py:57
+msgid "Completed"
+msgstr "Completed"
+
+#: .\src\backend_django\features\booking\models\appointment.py:58
+msgid "Cancelled"
+msgstr "Cancelled"
+
+#: .\src\backend_django\features\booking\models\appointment.py:59
+msgid "No Show"
+msgstr "No Show"
+
+#: .\src\backend_django\features\booking\models\appointment.py:67
+msgid "Cancelled At"
+msgstr "Cancelled At"
+
+#: .\src\backend_django\features\booking\models\appointment.py:75
+msgid "Cancelled by Client"
+msgstr "Cancelled by Client"
+
+#: .\src\backend_django\features\booking\models\appointment.py:76
+msgid "Cancelled by Master"
+msgstr "Cancelled by Master"
+
+#: .\src\backend_django\features\booking\models\appointment.py:77
+msgid "Rescheduled"
+msgstr "Rescheduled"
+
+#: .\src\backend_django\features\booking\models\appointment.py:78
+msgid "Other"
+msgstr "Other"
+
+#: .\src\backend_django\features\booking\models\appointment.py:82
+msgid "Cancellation Reason"
+msgstr "Cancellation Reason"
+
+#: .\src\backend_django\features\booking\models\appointment.py:86
+msgid "Cancellation Note"
+msgstr "Cancellation Note"
+
+#: .\src\backend_django\features\booking\models\appointment.py:86
+msgid "Additional details about cancellation"
+msgstr "Additional details about cancellation"
+
+#: .\src\backend_django\features\booking\models\appointment.py:92
+msgid "Client Notes"
+msgstr "Client Notes"
+
+#: .\src\backend_django\features\booking\models\appointment.py:93
+msgid "Special requests from client (e.g. allergies, preferences)"
+msgstr "Special requests from client (e.g. allergies, preferences)"
+
+#: .\src\backend_django\features\booking\models\appointment.py:98
+msgid "Admin Notes"
+msgstr "Admin Notes"
+
+#: .\src\backend_django\features\booking\models\appointment.py:98
+msgid "Internal notes (not visible to client)"
+msgstr "Internal notes (not visible to client)"
+
+#: .\src\backend_django\features\booking\models\appointment.py:103
+msgid "Reminder Sent"
+msgstr "Reminder Sent"
+
+#: .\src\backend_django\features\booking\models\appointment.py:103
+msgid "SMS/Email reminder was sent"
+msgstr "SMS/Email reminder was sent"
+
+#: .\src\backend_django\features\booking\models\appointment.py:106
+msgid "Reminder Sent At"
+msgstr "Reminder Sent At"
+
+#: .\src\backend_django\features\booking\models\appointment.py:109
+msgid "Appointment"
+msgstr "Appointment"
+
+#: .\src\backend_django\features\booking\models\appointment.py:110
+msgid "Appointments"
+msgstr "Appointments"
+
+#: .\src\backend_django\features\booking\models\appointment.py:140
+msgid "This time slot is already booked."
+msgstr "This time slot is already booked."
+
+#: .\src\backend_django\features\booking\models\appointment.py:174
+msgid "This appointment cannot be cancelled."
+msgstr "This appointment cannot be cancelled."
+
+#: .\src\backend_django\features\booking\models\appointment.py:185
+msgid "Only confirmed appointments can be marked as completed."
+msgstr "Only confirmed appointments can be marked as completed."
+
+#: .\src\backend_django\features\booking\models\client.py:24
+msgid "Phone Number"
+msgstr "Phone Number"
+
+#: .\src\backend_django\features\booking\models\client.py:25
+msgid "Primary contact method"
+msgstr "Primary contact method"
+
+#: .\src\backend_django\features\booking\models\client.py:30
+#: .\src\backend_django\features\system\models\site_settings.py:17
+msgid "Email"
+msgstr "Email"
+
+#: .\src\backend_django\features\booking\models\client.py:31
+msgid "Email for notifications and account activation"
+msgstr "Email for notifications and account activation"
+
+#: .\src\backend_django\features\booking\models\client.py:34
+#: .\src\backend_django\features\booking\models\master.py:23
+msgid "Full Name"
+msgstr "Full Name"
+
+#: .\src\backend_django\features\booking\models\client.py:34
+msgid "Client's name (collected during booking)"
+msgstr "Client's name (collected during booking)"
+
+#: .\src\backend_django\features\booking\models\client.py:44
+#: .\src\backend_django\features\booking\models\master.py:118
+msgid "Django User Account"
+msgstr "Django User Account"
+
+#: .\src\backend_django\features\booking\models\client.py:45
+msgid "Linked when client activates account"
+msgstr "Linked when client activates account"
+
+#: .\src\backend_django\features\booking\models\client.py:54
+msgid "Access Token"
+msgstr "Access Token"
+
+#: .\src\backend_django\features\booking\models\client.py:55
+msgid "Used in SMS/Email links for appointment management"
+msgstr "Used in SMS/Email links for appointment management"
+
+#: .\src\backend_django\features\booking\models\client.py:64
+msgid "Guest (Temporary)"
+msgstr "Guest (Temporary)"
+
+#: .\src\backend_django\features\booking\models\client.py:65
+msgid "Active (Registered)"
+msgstr "Active (Registered)"
+
+#: .\src\backend_django\features\booking\models\client.py:66
+msgid "Blocked"
+msgstr "Blocked"
+
+#: .\src\backend_django\features\booking\models\client.py:76
+msgid "Marketing Consent"
+msgstr "Marketing Consent"
+
+#: .\src\backend_django\features\booking\models\client.py:77
+msgid "Client agreed to receive promotional materials"
+msgstr "Client agreed to receive promotional materials"
+
+#: .\src\backend_django\features\booking\models\client.py:79
+msgid "Consent Given Date"
+msgstr "Consent Given Date"
+
+#: .\src\backend_django\features\booking\models\client.py:83
+msgid "Internal Notes"
+msgstr "Internal Notes"
+
+#: .\src\backend_django\features\booking\models\client.py:83
+msgid "Admin-only notes about the client"
+msgstr "Admin-only notes about the client"
+
+#: .\src\backend_django\features\booking\models\client.py:88
+msgid "Clients"
+msgstr "Clients"
+
+#: .\src\backend_django\features\booking\models\client.py:109
+msgid "Guest"
+msgstr "Guest"
+
+#: .\src\backend_django\features\booking\models\master.py:23
+msgid "Master's full name (e.g. 'Maria Ivanova')"
+msgstr "Master's full name (e.g. 'Maria Ivanova')"
+
+#: .\src\backend_django\features\booking\models\master.py:26
+#: .\src\backend_django\features\main\models\category.py:23
+#: .\src\backend_django\features\main\models\service.py:24
+msgid "Slug"
+msgstr "Slug"
+
+#: .\src\backend_django\features\booking\models\master.py:26
+#, fuzzy
+#| msgid "URL part (e.g. 'manicure')."
+msgid "URL part (e.g. 'maria-ivanova')"
+msgstr "URL part (e.g. 'manicure')."
+
+#: .\src\backend_django\features\booking\models\master.py:32
+#, fuzzy
+#| msgid "Profil"
+msgid "Profile Photo"
+msgstr "Profile"
+
+#: .\src\backend_django\features\booking\models\master.py:33
+msgid "Professional portrait (recommended: 800x1000px)"
+msgstr "Professional portrait (recommended: 800x1000px)"
+
+#: .\src\backend_django\features\booking\models\master.py:40
+msgid "Professional Title"
+msgstr "Professional Title"
+
+#: .\src\backend_django\features\booking\models\master.py:41
+msgid "e.g. 'Top Colorist', 'Lead Nail Artist'"
+msgstr "e.g. 'Top Colorist', 'Lead Nail Artist'"
+
+#: .\src\backend_django\features\booking\models\master.py:45
+msgid "Biography"
+msgstr "Biography"
+
+#: .\src\backend_django\features\booking\models\master.py:45
+msgid "Full biography and work philosophy (HTML allowed)"
+msgstr "Full biography and work philosophy (HTML allowed)"
+
+#: .\src\backend_django\features\booking\models\master.py:51
+#: .\src\backend_django\features\main\models\category.py:37
+#: .\src\backend_django\features\main\models\service.py:39
+msgid "Short Description"
+msgstr "Short Description"
+
+#: .\src\backend_django\features\booking\models\master.py:52
+msgid "Brief intro for Team page (1-2 sentences)"
+msgstr "Brief intro for Team page (1-2 sentences)"
+
+#: .\src\backend_django\features\booking\models\master.py:60
+#: .\src\backend_django\features\main\models\category.py:57
+msgid "Categories"
+msgstr "Categories"
+
+#: .\src\backend_django\features\booking\models\master.py:61
+#, fuzzy
+#| msgid "Main category (for filtering)."
+msgid "High-level categories for filtering"
+msgstr "Main category (for filtering)."
+
+#: .\src\backend_django\features\booking\models\master.py:65
+msgid "Years of Experience"
+msgstr "Years of Experience"
+
+#: .\src\backend_django\features\booking\models\master.py:71
+#, fuzzy
+#| msgid "Instagram URL"
+msgid "Instagram Handle"
+msgstr "Instagram URL"
+
+#: .\src\backend_django\features\booking\models\master.py:72
+msgid "Username only (e.g. 'maria.beauty')"
+msgstr "Username only (e.g. 'maria.beauty')"
+
+#: .\src\backend_django\features\booking\models\master.py:75
+msgid "Direct Phone"
+msgstr "Direct Phone"
+
+#: .\src\backend_django\features\booking\models\master.py:84
+msgid "Active (Working)"
+msgstr "Active (Working)"
+
+#: .\src\backend_django\features\booking\models\master.py:85
+msgid "On Vacation"
+msgstr "On Vacation"
+
+#: .\src\backend_django\features\booking\models\master.py:86
+msgid "Fired/Left"
+msgstr "Fired/Left"
+
+#: .\src\backend_django\features\booking\models\master.py:87
+msgid "In Training"
+msgstr "In Training"
+
+#: .\src\backend_django\features\booking\models\master.py:95
+msgid "Employment Status"
+msgstr "Employment Status"
+
+#: .\src\backend_django\features\booking\models\master.py:96
+msgid "We never delete masters, only change status"
+msgstr "We never delete masters, only change status"
+
+#: .\src\backend_django\features\booking\models\master.py:101
+msgid "Is Owner"
+msgstr "Is Owner"
+
+#: .\src\backend_django\features\booking\models\master.py:101
+msgid "Display as salon owner with special styling"
+msgstr "Display as salon owner with special styling"
+
+#: .\src\backend_django\features\booking\models\master.py:104
+msgid "Featured Master"
+msgstr "Featured Master"
+
+#: .\src\backend_django\features\booking\models\master.py:108
+#: .\src\backend_django\features\booking\models\master_certificate.py:39
+#: .\src\backend_django\features\booking\models\master_portfolio.py:49
+msgid "Display Order"
+msgstr "Display Order"
+
+#: .\src\backend_django\features\booking\models\master.py:108
+#: .\src\backend_django\features\booking\models\master_certificate.py:39
+#: .\src\backend_django\features\booking\models\master_portfolio.py:49
+msgid "Lower numbers appear first"
+msgstr "Lower numbers appear first"
+
+#: .\src\backend_django\features\booking\models\master.py:119
+msgid "Linked when master needs personal cabinet access"
+msgstr "Linked when master needs personal cabinet access"
+
+#: .\src\backend_django\features\booking\models\master.py:128
+#, fuzzy
+#| msgid "Telegram URL"
+msgid "Telegram ID"
+msgstr "Telegram URL"
+
+#: .\src\backend_django\features\booking\models\master.py:129
+msgid "For 02_telegram_bot authentication and notifications"
+msgstr "For 02_telegram_bot authentication and notifications"
+
+#: .\src\backend_django\features\booking\models\master.py:132
+#, fuzzy
+#| msgid "Telegram URL"
+msgid "Telegram Username"
+msgstr "Telegram URL"
+
+#: .\src\backend_django\features\booking\models\master.py:138
+msgid "Bot Access Code"
+msgstr "Bot Access Code"
+
+#: .\src\backend_django\features\booking\models\master.py:139
+msgid "One-time code for master registration in 02_telegram_bot"
+msgstr "One-time code for master registration in 02_telegram_bot"
+
+#: .\src\backend_django\features\booking\models\master.py:143
+msgid "QR Token"
+msgstr "QR Token"
+
+#: .\src\backend_django\features\booking\models\master.py:147
+msgid "Masters"
+msgstr "Masters"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:21
+msgid "Certificate Title"
+msgstr "Certificate Title"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:21
+msgid "e.g. 'Advanced Nail Art Course'"
+msgstr "e.g. 'Advanced Nail Art Course'"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:25
+msgid "Issuing Organization"
+msgstr "Issuing Organization"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:25
+msgid "e.g. 'German Beauty Academy'"
+msgstr "e.g. 'German Beauty Academy'"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:28
+msgid "Issue Date"
+msgstr "Issue Date"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:33
+#, fuzzy
+#| msgid "Portfolio Image"
+msgid "Certificate Image"
+msgstr "Portfolio Image"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:34
+msgid "Scan or photo of certificate (recommended: 1200x900px)"
+msgstr "Scan or photo of certificate (recommended: 1200x900px)"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:42
+#: .\src\backend_django\features\booking\models\master_portfolio.py:52
+#: .\src\backend_django\features\main\admin.py:61
+#: .\src\backend_django\features\main\admin.py:152
+#: .\src\backend_django\features\system\models\mixins.py:35
+msgid "Active"
+msgstr "Active"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:42
+#: .\src\backend_django\features\booking\models\master_portfolio.py:52
+msgid "Show on master page"
+msgstr "Show on master page"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:45
+msgid "Master Certificate"
+msgstr "Master Certificate"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:46
+msgid "Master Certificates"
+msgstr "Master Certificates"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:25
+#: .\src\backend_django\features\main\models\service.py:95
+msgid "Portfolio Image"
+msgstr "Portfolio Image"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:26
+msgid "Example of master's work (recommended: 1200x1200px)"
+msgstr "Example of master's work (recommended: 1200x1200px)"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:32
+#: .\src\backend_django\features\main\admin.py:121
+#: .\src\backend_django\features\system\admin.py:51
+#, fuzzy
+#| msgid "SEO Description"
+msgid "Description"
+msgstr "SEO Description"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:33
+msgid "Brief description of the work (technique, products used, etc.)"
+msgstr "Brief description of the work (technique, products used, etc.)"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:43
+#, fuzzy
+#| msgid "Service"
+msgid "Related Service"
+msgstr "Service"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:44
+msgid "Link to service this example demonstrates"
+msgstr "Link to service this example demonstrates"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:56
+#, fuzzy
+#| msgid "Instagram URL"
+msgid "Instagram Post URL"
+msgstr "Instagram URL"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:56
+msgid "Link to original Instagram post"
+msgstr "Link to original Instagram post"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:61
+#, fuzzy
+#| msgid "Portfolio Images"
+msgid "Portfolio Items"
+msgstr "Portfolio Images"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:65
+msgid "General work"
+msgstr "General work"
+
+#: .\src\backend_django\features\main\admin.py:42
+msgid "Status & Display"
+msgstr "Status & Display"
+
+#: .\src\backend_django\features\main\admin.py:46
+#, fuzzy
+#| msgid "Full Content"
+msgid "Content"
+msgstr "Full Content"
+
+#: .\src\backend_django\features\main\admin.py:65
+#: .\src\backend_django\features\main\admin.py:143
+msgid "Hidden"
+msgstr "Hidden"
+
+#: .\src\backend_django\features\main\admin.py:68
+#: .\src\backend_django\features\main\admin.py:165
+msgid "Planned"
+msgstr "Planned"
+
+#: .\src\backend_django\features\main\admin.py:74
+#, fuzzy
+#| msgid "Planned / Coming Soon"
+msgid "Coming Soon"
+msgstr "Planned / Coming Soon"
+
+#: .\src\backend_django\features\main\admin.py:78
+#: .\src\backend_django\features\main\models\service.py:60
+msgid "Services"
+msgstr "Services"
+
+#: .\src\backend_django\features\main\admin.py:82
+#, fuzzy
+#| msgid "Services"
+msgid "services"
+msgstr "Services"
+
+#: .\src\backend_django\features\main\admin.py:113
+#, fuzzy
+#| msgid "Depilation"
+msgid "Relation"
+msgstr "Depilation"
+
+#: .\src\backend_django\features\main\admin.py:117
+#, fuzzy
+#| msgid "Service"
+msgid "Service Info"
+msgstr "Service"
+
+#: .\src\backend_django\features\main\admin.py:132
+#, fuzzy
+#| msgid "Price (€)"
+msgid "Price"
+msgstr "Price (€)"
+
+#: .\src\backend_django\features\main\admin.py:148
+msgid "Unavailable"
+msgstr "Unavailable"
+
+#: .\src\backend_django\features\main\admin.py:155
+msgid "Hit"
+msgstr "Hit"
+
+#: .\src\backend_django\features\main\admin.py:161
+msgid "HIT"
+msgstr "HIT"
+
+#: .\src\backend_django\features\main\admin.py:171
+msgid "Soon"
+msgstr "Soon"
+
+#: .\src\backend_django\features\main\admin.py:175
+msgid "✓ Mark as HIT"
+msgstr "✓ Mark as HIT"
+
+#: .\src\backend_django\features\main\admin.py:180
+msgid "✗ Remove HIT"
+msgstr "✗ Remove HIT"
+
+#: .\src\backend_django\features\main\admin.py:185
+msgid "✓ Mark as Available"
+msgstr "✓ Mark as Available"
+
+#: .\src\backend_django\features\main\admin.py:190
+msgid "⚠ Mark as Unavailable"
+msgstr "⚠ Mark as Unavailable"
+
+#: .\src\backend_django\features\main\admin.py:207
+#: .\src\backend_django\features\main\models\category.py:33
+#: .\src\backend_django\features\main\models\service.py:50
+#: .\src\backend_django\features\main\models\service.py:82
+msgid "Image"
+msgstr "Image"
+
+#: .\src\backend_django\features\main\admin.py:212
+msgid "Preview"
+msgstr "Preview"
+
+#: .\src\backend_django\features\main\models\category.py:14
+msgid "Friseur & Styling"
+msgstr "Hair & Styling"
+
+#: .\src\backend_django\features\main\models\category.py:15
+#: .\src\backend_django\templates\contacts\contacts.html:45
+#: .\src\backend_django\templates\includes\_footer.html:45
+msgid "Nagelservice"
+msgstr "Nail Service"
+
+#: .\src\backend_django\features\main\models\category.py:16
+#: .\src\backend_django\templates\contacts\contacts.html:46
+msgid "Kosmetologie"
+msgstr "Cosmetology"
+
+#: .\src\backend_django\features\main\models\category.py:17
+msgid "Brows & Lashes"
+msgstr "Brows & Lashes"
+
+#: .\src\backend_django\features\main\models\category.py:18
+msgid "Massage & Relax"
+msgstr "Massage & Relax"
+
+#: .\src\backend_django\features\main\models\category.py:19
+#: .\src\backend_django\templates\contacts\contacts.html:48
+msgid "Depilation"
+msgstr "Depilation"
+
+#: .\src\backend_django\features\main\models\category.py:22
+#: .\src\backend_django\features\main\models\service.py:22
+msgid "Title"
+msgstr "Title"
+
+#: .\src\backend_django\features\main\models\category.py:22
+msgid "Category name (e.g. 'Maniküre')."
+msgstr "Category name (e.g. 'Manicure')."
+
+#: .\src\backend_django\features\main\models\category.py:23
+msgid "URL part (e.g. 'manicure')."
+msgstr "URL part (e.g. 'manicure')."
+
+#: .\src\backend_django\features\main\models\category.py:28
+msgid "Bento Group"
+msgstr "Bento Group"
+
+#: .\src\backend_django\features\main\models\category.py:29
+msgid ""
+"Group for the main page grid (e.g. 'Nails' combines Manicure & Pedicure)."
+msgstr ""
+"Group for the main page grid (e.g. 'Nails' combines Manicure & Pedicure)."
+
+#: .\src\backend_django\features\main\models\category.py:34
+msgid "Background image for Hero section and Bento card."
+msgstr "Background image for Hero section and Bento card."
+
+#: .\src\backend_django\features\main\models\category.py:37
+msgid "Short description displayed in the Hero section."
+msgstr "Short description displayed in the Hero section."
+
+#: .\src\backend_django\features\main\models\category.py:41
+msgid "SEO Text / Content"
+msgstr "SEO Text / Content"
+
+#: .\src\backend_django\features\main\models\category.py:42
+msgid "Detailed text displayed at the bottom of the category page."
+msgstr "Detailed text displayed at the bottom of the category page."
+
+#: .\src\backend_django\features\main\models\category.py:48
+msgid "Icon"
+msgstr "Icon"
+
+#: .\src\backend_django\features\main\models\category.py:49
+msgid "SVG icon for menu or footer (optional)."
+msgstr "SVG icon for menu or footer (optional)."
+
+#: .\src\backend_django\features\main\models\category.py:52
+#: .\src\backend_django\features\main\models\service.py:56
+#: .\src\backend_django\features\main\models\service.py:91
+msgid "Order"
+msgstr "Order"
+
+#: .\src\backend_django\features\main\models\category.py:52
+msgid "Sorting order (lower numbers come first)."
+msgstr "Sorting order (lower numbers come first)."
+
+#: .\src\backend_django\features\main\models\category.py:56
+#: .\src\backend_django\features\main\models\service.py:18
+msgid "Category"
+msgstr "Category"
+
+#: .\src\backend_django\features\main\models\service.py:19
+msgid "Main category (for filtering)."
+msgstr "Main category (for filtering)."
+
+#: .\src\backend_django\features\main\models\service.py:22
+msgid "Service name (e.g. 'Klassische Maniküre')."
+msgstr "Service name (e.g. 'Classic Manicure')."
+
+#: .\src\backend_django\features\main\models\service.py:24
+msgid "URL part (e.g. 'classic-manicure')."
+msgstr "URL part (e.g. 'classic-manicure')."
+
+#: .\src\backend_django\features\main\models\service.py:29
+msgid "Base price for sorting and calculation."
+msgstr "Base price for sorting and calculation."
+
+#: .\src\backend_django\features\main\models\service.py:34
+msgid "Price Display Text"
+msgstr "Price Display Text"
+
+#: .\src\backend_django\features\main\models\service.py:35
+msgid "Text to display (e.g. 'ab 30€'). If empty, uses Price field."
+msgstr "Text to display (e.g. 'from 30€'). If empty, uses Price field."
+
+#: .\src\backend_django\features\main\models\service.py:37
+msgid "Duration (min)"
+msgstr "Duration (min)"
+
+#: .\src\backend_django\features\main\models\service.py:37
+msgid "Duration in minutes."
+msgstr "Duration in minutes."
+
+#: .\src\backend_django\features\main\models\service.py:39
+msgid "Displayed in the list view."
+msgstr "Displayed in the list view."
+
+#: .\src\backend_django\features\main\models\service.py:43
+msgid "Full Content"
+msgstr "Full Content"
+
+#: .\src\backend_django\features\main\models\service.py:44
+msgid "Detailed description/article about the service (HTML/Markdown)."
+msgstr "Detailed description/article about the service (HTML/Markdown)."
+
+#: .\src\backend_django\features\main\models\service.py:51
+msgid "Photo of the specific service."
+msgstr "Photo of the specific service."
+
+#: .\src\backend_django\features\main\models\service.py:54
+msgid "Hit / Popular"
+msgstr "Hit / Popular"
+
+#: .\src\backend_django\features\main\models\service.py:54
+msgid "Highlight this service as popular."
+msgstr "Highlight this service as popular."
+
+#: .\src\backend_django\features\main\models\service.py:56
+msgid "Sorting order."
+msgstr "Sorting order."
+
+#: .\src\backend_django\features\main\models\service.py:82
+msgid "High quality photo. Will be resized by CSS."
+msgstr "High quality photo. Will be resized by CSS."
+
+#: .\src\backend_django\features\main\models\service.py:87
+msgid "Title / Description"
+msgstr "Title / Description"
+
+#: .\src\backend_django\features\main\models\service.py:88
+msgid "Optional caption for the image."
+msgstr "Optional caption for the image."
+
+#: .\src\backend_django\features\main\models\service.py:91
+msgid "Sorting order in the gallery."
+msgstr "Sorting order in the gallery."
+
+#: .\src\backend_django\features\main\models\service.py:96
+msgid "Portfolio Images"
+msgstr "Portfolio Images"
+
+#: .\src\backend_django\features\system\admin.py:25
+msgid "Page Identification"
+msgstr "Page Identification"
+
+#: .\src\backend_django\features\system\admin.py:29
+msgid "SEO Meta Tags"
+msgstr "SEO Meta Tags"
+
+#: .\src\backend_django\features\system\admin.py:33
+#, fuzzy
+#| msgid "OG Image"
+msgid "Open Graph Image"
+msgstr "OG Image"
+
+#: .\src\backend_django\features\system\admin.py:38
+#: .\src\backend_django\features\system\models\mixins.py:57
+msgid "SEO Title"
+msgstr "SEO Title"
+
+#: .\src\backend_django\features\system\admin.py:64
+#, fuzzy
+#| msgid "Short Description"
+msgid "No description"
+msgstr "Short Description"
+
+#: .\src\backend_django\features\system\admin.py:67
+#: .\src\backend_django\features\system\models\mixins.py:67
+msgid "OG Image"
+msgstr "OG Image"
+
+#: .\src\backend_django\features\system\admin.py:73
+msgid "Yes"
+msgstr "Yes"
+
+#: .\src\backend_django\features\system\admin.py:77
+msgid "No"
+msgstr "No"
+
+#: .\src\backend_django\features\system\admin.py:92
+msgid "General Information"
+msgstr "General Information"
+
+#: .\src\backend_django\features\system\admin.py:96
+#, fuzzy
+#| msgid "Contacts Page"
+msgid "Contact Details"
+msgstr "Contacts Page"
+
+#: .\src\backend_django\features\system\admin.py:108
+#: .\src\backend_django\features\system\admin.py:131
+msgid "Social Media"
+msgstr "Social Media"
+
+#: .\src\backend_django\features\system\admin.py:112
+msgid "Working Hours"
+msgstr "Working Hours"
+
+#: .\src\backend_django\features\system\models\mixins.py:18
+msgid "Created at"
+msgstr "Created at"
+
+#: .\src\backend_django\features\system\models\mixins.py:19
+msgid "Updated at"
+msgstr "Updated at"
+
+#: .\src\backend_django\features\system\models\mixins.py:36
+msgid "If unchecked, this item will be completely hidden from the site."
+msgstr "If unchecked, this item will be completely hidden from the site."
+
+#: .\src\backend_django\features\system\models\mixins.py:40
+msgid "Available for Booking"
+msgstr "Available for Booking"
+
+#: .\src\backend_django\features\system\models\mixins.py:41
+msgid "If unchecked, shows 'Temporarily Unavailable' (e.g. no masters)."
+msgstr "If unchecked, shows 'Temporarily Unavailable' (e.g. no masters)."
+
+#: .\src\backend_django\features\system\models\mixins.py:44
+msgid "Planned / Coming Soon"
+msgstr "Planned / Coming Soon"
+
+#: .\src\backend_django\features\system\models\mixins.py:44
+msgid "If checked, shows 'Coming Soon' badge."
+msgstr "If checked, shows 'Coming Soon' badge."
+
+#: .\src\backend_django\features\system\models\mixins.py:58
+msgid "Browser tab title. Defaults to object title if empty."
+msgstr "Browser tab title. Defaults to object title if empty."
+
+#: .\src\backend_django\features\system\models\mixins.py:61
+msgid "SEO Description"
+msgstr "SEO Description"
+
+#: .\src\backend_django\features\system\models\mixins.py:61
+msgid "Meta description for search engines."
+msgstr "Meta description for search engines."
+
+#: .\src\backend_django\features\system\models\mixins.py:68
+msgid "Image for social media sharing (1200x630px recommended)."
+msgstr "Image for social media sharing (1200x630px recommended)."
+
+#: .\src\backend_django\features\system\models\seo.py:20
+msgid "Home Page"
+msgstr "Home Page"
+
+#: .\src\backend_django\features\system\models\seo.py:21
+msgid "Contacts Page"
+msgstr "Contacts Page"
+
+#: .\src\backend_django\features\system\models\seo.py:22
+msgid "Team Page"
+msgstr "Team Page"
+
+#: .\src\backend_django\features\system\models\seo.py:23
+msgid "Services List Page"
+msgstr "Services List Page"
+
+#: .\src\backend_django\features\system\models\seo.py:24
+#: .\src\backend_django\templates\includes\_footer.html:63
+msgid "Impressum"
+msgstr "Imprint"
+
+#: .\src\backend_django\features\system\models\seo.py:25
+#: .\src\backend_django\templates\includes\_footer.html:65
+msgid "Datenschutz"
+msgstr "Privacy Policy"
+
+#: .\src\backend_django\features\system\models\seo.py:32
+msgid "Page Key"
+msgstr "Page Key"
+
+#: .\src\backend_django\features\system\models\seo.py:33
+msgid "Unique identifier for the static page."
+msgstr "Unique identifier for the static page."
+
+#: .\src\backend_django\features\system\models\seo.py:37
+msgid "Static Page SEO"
+msgstr "Static Page SEO"
+
+#: .\src\backend_django\features\system\models\seo.py:38
+msgid "Static Pages SEO"
+msgstr "Static Pages SEO"
+
+#: .\src\backend_django\features\system\models\site_settings.py:11
+msgid "Company Name"
+msgstr "Company Name"
+
+#: .\src\backend_django\features\system\models\site_settings.py:12
+msgid "Owner Name"
+msgstr "Owner Name"
+
+#: .\src\backend_django\features\system\models\site_settings.py:13
+msgid "Tax Number (Steuernummer)"
+msgstr "Tax Number"
+
+#: .\src\backend_django\features\system\models\site_settings.py:16
+msgid "Phone"
+msgstr "Phone"
+
+#: .\src\backend_django\features\system\models\site_settings.py:18
+msgid "Street"
+msgstr "Street"
+
+#: .\src\backend_django\features\system\models\site_settings.py:19
+msgid "City & ZIP"
+msgstr "City & ZIP"
+
+#: .\src\backend_django\features\system\models\site_settings.py:20
+msgid "Google Maps Link"
+msgstr "Google Maps Link"
+
+#: .\src\backend_django\features\system\models\site_settings.py:23
+msgid "Instagram URL"
+msgstr "Instagram URL"
+
+#: .\src\backend_django\features\system\models\site_settings.py:24
+msgid "Telegram URL"
+msgstr "Telegram URL"
+
+#: .\src\backend_django\features\system\models\site_settings.py:25
+msgid "WhatsApp URL"
+msgstr "WhatsApp URL"
+
+#: .\src\backend_django\features\system\models\site_settings.py:28
+msgid "Mo-Fr"
+msgstr "Mo-Fr"
+
+#: .\src\backend_django\features\system\models\site_settings.py:29
+msgid "Saturday"
+msgstr "Saturday"
+
+#: .\src\backend_django\features\system\models\site_settings.py:30
+msgid "Sunday"
+msgstr "Sunday"
+
+#: .\src\backend_django\features\system\models\site_settings.py:33
+#, fuzzy
+#| msgid "Active"
+msgid "Hiring Active"
+msgstr "Active"
+
+#: .\src\backend_django\features\system\models\site_settings.py:34
+msgid "Hiring Title"
+msgstr "Hiring Title"
+
+#: .\src\backend_django\features\system\models\site_settings.py:35
+msgid "Hiring Text"
+msgstr "Hiring Text"
+
+#: .\src\backend_django\features\system\models\site_settings.py:38
+#: .\src\backend_django\features\system\models\site_settings.py:39
+msgid "Site Settings"
+msgstr "Site Settings"
+
+#: .\src\backend_django\templates\400.html:5
+#: .\src\backend_django\templates\400.html:11
+msgid "Ungültige Anfrage"
+msgstr "Invalid Request"
+
+#: .\src\backend_django\templates\400.html:13
+msgid "Der Server konnte Ihre Anfrage nicht verarbeiten."
+msgstr "The server could not process your request."
+
+#: .\src\backend_django\templates\400.html:15
+#: .\src\backend_django\templates\403.html:15
+#: .\src\backend_django\templates\404.html:15
+#: .\src\backend_django\templates\500.html:15
+msgid "Zur Startseite"
+msgstr "To Homepage"
+
+#: .\src\backend_django\templates\403.html:5
+#: .\src\backend_django\templates\403.html:11
+msgid "Zugriff verweigert"
+msgstr "Access Denied"
+
+#: .\src\backend_django\templates\403.html:13
+msgid "Sie haben keine Berechtigung, diese Seite aufzurufen."
+msgstr "You do not have permission to access this page."
+
+#: .\src\backend_django\templates\404.html:5
+#: .\src\backend_django\templates\404.html:11
+msgid "Seite nicht gefunden"
+msgstr "Page Not Found"
+
+#: .\src\backend_django\templates\404.html:13
+msgid ""
+"Die von Ihnen gesuchte Seite existiert leider nicht oder wurde verschoben."
+msgstr "The page you are looking for does not exist or has been moved."
+
+#: .\src\backend_django\templates\500.html:5
+msgid "Serverfehler"
+msgstr "Server Error"
+
+#: .\src\backend_django\templates\500.html:11
+msgid "Interner Serverfehler"
+msgstr "Internal Server Error"
+
+#: .\src\backend_django\templates\500.html:13
+msgid "Es ist ein Fehler aufgetreten. Wir arbeiten bereits daran."
+msgstr "An error occurred. We are already working on it."
+
+#: .\src\backend_django\templates\contacts\contacts.html:5
+msgid "Kontakt & Über uns"
+msgstr "Contact & About Us"
+
+#: .\src\backend_django\templates\contacts\contacts.html:12
+msgid "Kontaktieren Sie uns"
+msgstr "Contact Us"
+
+#: .\src\backend_django\templates\contacts\contacts.html:13
+msgid "ÜBER UNS & KONTAKT"
+msgstr "ABOUT US & CONTACT"
+
+#: .\src\backend_django\templates\contacts\contacts.html:19
+msgid "Willkommen bei LILY"
+msgstr "Welcome to LILY"
+
+#: .\src\backend_django\templates\contacts\contacts.html:21
+msgid ""
+"LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellen "
+"Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern "
+"auch ein innerer Zustand des Selbstvertrauens."
+msgstr ""
+"LILY Beauty Salon is a place where German quality meets individual approach. "
+"We believe that beauty is not just the exterior, but also an inner state of "
+"confidence."
+
+#: .\src\backend_django\templates\contacts\contacts.html:24
+msgid ""
+"Unsere Meister verwenden nur Premium-Materialien (Wella, L'Oreal, Luxio) und "
+"moderne Techniken, um Ihre natürliche Einzigartigkeit zu unterstreichen."
+msgstr ""
+"Our masters use only premium materials (Wella, L'Oreal, Luxio) and modern "
+"techniques to highlight your natural uniqueness."
+
+#: .\src\backend_django\templates\contacts\contacts.html:27
+msgid "Ihre Schönheit ist unsere Kunst."
+msgstr "Your beauty is our art."
+
+#: .\src\backend_django\templates\contacts\contacts.html:35
+msgid "Vorname *"
+msgstr "First Name *"
+
+#: .\src\backend_django\templates\contacts\contacts.html:36
+msgid "Nachname"
+msgstr "Last Name"
+
+#: .\src\backend_django\templates\contacts\contacts.html:38
+msgid "Adresse / Stadt"
+msgstr "Address / City"
+
+#: .\src\backend_django\templates\contacts\contacts.html:39
+msgid "Telefon *"
+msgstr "Phone *"
+
+#: .\src\backend_django\templates\contacts\contacts.html:43
+msgid "Wählen Sie eine Dienstleistung..."
+msgstr "Select a service..."
+
+#: .\src\backend_django\templates\contacts\contacts.html:44
+msgid "Friseur"
+msgstr "Hairdresser"
+
+#: .\src\backend_django\templates\contacts\contacts.html:47
+msgid "Augenbrauen & Wimpern"
+msgstr "Brows & Lashes"
+
+#: .\src\backend_django\templates\contacts\contacts.html:49
+msgid "Massage"
+msgstr "Massage"
+
+#: .\src\backend_django\templates\contacts\contacts.html:50
+msgid "Andere Frage"
+msgstr "Other Question"
+
+#: .\src\backend_django\templates\contacts\contacts.html:54
+msgid "Ihre Frage oder Kommentar..."
+msgstr "Your question or comment..."
+
+#: .\src\backend_django\templates\contacts\contacts.html:57
+msgid "Anfrage senden"
+msgstr "Send Request"
+
+#: .\src\backend_django\templates\contacts\contacts.html:67
+msgid "Unsere Adresse"
+msgstr "Our Address"
+
+#: .\src\backend_django\templates\contacts\contacts.html:74
+msgid "Telefon"
+msgstr "Phone"
+
+#: .\src\backend_django\templates\contacts\contacts.html:77
+msgid "E-Mail"
+msgstr "Email"
+
+#: .\src\backend_django\templates\contacts\contacts.html:80
+msgid "Öffnungszeiten"
+msgstr "Opening Hours"
+
+#: .\src\backend_django\templates\contacts\contacts.html:92
+msgid "Klicken Sie unten, um Google Maps zu öffnen"
+msgstr "Click below to open Google Maps"
+
+#: .\src\backend_django\templates\contacts\contacts.html:97
+msgid "📍 Route planen"
+msgstr "📍 Plan Route"
+
+#: .\src\backend_django\templates\home\home.html:13
+msgid "Premium Beauty Salon"
+msgstr "Premium Beauty Salon"
+
+#: .\src\backend_django\templates\home\home.html:14
+msgid "Die Kunst"
+msgstr "The Art"
+
+#: .\src\backend_django\templates\home\home.html:14
+msgid "Ihrer Schönheit"
+msgstr "of Your Beauty"
+
+#: .\src\backend_django\templates\home\home.html:15
+msgid ""
+"Deutsche Qualitätsstandards treffen auf ukrainische Servicekunst. Wir "
+"kreieren Looks, die inspirieren."
+msgstr ""
+"German quality standards meet Ukrainian service art. We create looks that "
+"inspire."
+
+#: .\src\backend_django\templates\home\home.html:16
+#: .\src\backend_django\templates\services\detail.html:82
+msgid "Termin buchen"
+msgstr "Book Appointment"
+
+#: .\src\backend_django\templates\home\home.html:29
+msgid "Unsere Leistungen"
+msgstr "Our Services"
+
+#: .\src\backend_django\templates\home\home.html:30
+msgid "Wählen Sie eine Richtung"
+msgstr "Choose a Direction"
+
+#: .\src\backend_django\templates\home\home.html:44
+msgid "Demnächst"
+msgstr "Coming Soon"
+
+#: .\src\backend_django\templates\includes\_footer.html:16
+#: .\src\backend_django\templates\includes\_footer.html:17
+msgid "Kontakt & Leistungen öffnen"
+msgstr "Open Contact & Services"
+
+#: .\src\backend_django\templates\includes\_footer.html:16
+msgid "Schließen"
+msgstr "Close"
+
+#: .\src\backend_django\templates\includes\_footer.html:36
+msgid "Frisuren & Haarpflege"
+msgstr "Hairstyles & Hair Care"
+
+#: .\src\backend_django\templates\includes\_footer.html:38
+msgid "Haarschnitte"
+msgstr "Haircuts"
+
+#: .\src\backend_django\templates\includes\_footer.html:39
+msgid "Färben"
+msgstr "Coloring"
+
+#: .\src\backend_django\templates\includes\_footer.html:40
+msgid "Haarbehandlung"
+msgstr "Hair Treatment"
+
+#: .\src\backend_django\templates\includes\_footer.html:41
+msgid "Styling"
+msgstr "Styling"
+
+#: .\src\backend_django\templates\includes\_footer.html:47
+msgid "Maniküre"
+msgstr "Manicure"
+
+#: .\src\backend_django\templates\includes\_footer.html:48
+msgid "Pediküre"
+msgstr "Pedicure"
+
+#: .\src\backend_django\templates\includes\_footer.html:49
+msgid "Verlängerung"
+msgstr "Extension"
+
+#: .\src\backend_django\templates\includes\_footer.html:53
+msgid "Schönheit & Pflege"
+msgstr "Beauty & Care"
+
+#: .\src\backend_django\templates\includes\_footer.html:55
+msgid "Epilation"
+msgstr "Epilation"
+
+#: .\src\backend_django\templates\includes\_footer.html:56
+msgid "Wimpernverlängerung"
+msgstr "Eyelash Extension"
+
+#: .\src\backend_django\templates\includes\_footer.html:57
+msgid "Laminierung"
+msgstr "Lamination"
+
+#: .\src\backend_django\templates\includes\_header.html:27
+#: .\src\backend_django\templates\includes\_header.html:63
+msgid "Startseite"
+msgstr "Home"
+
+#: .\src\backend_django\templates\includes\_header.html:28
+#: .\src\backend_django\templates\includes\_header.html:64
+msgid "Leistungen"
+msgstr "Services"
+
+#: .\src\backend_django\templates\includes\_header.html:29
+#: .\src\backend_django\templates\includes\_header.html:65
+msgid "Team"
+msgstr "Team"
+
+#: .\src\backend_django\templates\includes\_header.html:30
+#: .\src\backend_django\templates\includes\_header.html:66
+msgid "Kontakt"
+msgstr "Contact"
+
+#: .\src\backend_django\templates\services\detail.html:5
+msgid "Leistung"
+msgstr "Service"
+
+#: .\src\backend_django\templates\services\detail.html:13
+msgid "LILY BEAUTY SALON"
+msgstr "LILY BEAUTY SALON"
+
+#: .\src\backend_django\templates\services\detail.html:33
+#, fuzzy
+#| msgid "Preisliste"
+msgid "Preise"
+msgstr "Price List"
+
+#: .\src\backend_django\templates\services\detail.html:57
+#, fuzzy
+#| msgid "Mehr über Dienstleistungen und Meister"
+msgid "Keine Dienstleistungen gefunden."
+msgstr "More about services and masters"
+
+#: .\src\backend_django\templates\services\detail.html:66
+msgid "Ihre Experten"
+msgstr "Your Experts"
+
+#: .\src\backend_django\templates\services\services.html:11
+msgid "Preisliste"
+msgstr "Price List"
+
+#: .\src\backend_django\templates\services\services.html:12
+msgid "AKTUELLE PREISE"
+msgstr "CURRENT PRICES"
+
+#: .\src\backend_django\templates\services\services.html:56
+msgid "Mehr über"
+msgstr "More about"
+
+#: .\src\backend_django\templates\team\team.html:12
+msgid "Unser Team"
+msgstr "Our Team"
+
+#: .\src\backend_django\templates\team\team.html:13
+msgid "SCHÖNHEITSEXPERTEN"
+msgstr "BEAUTY EXPERTS"
+
+#: .\src\backend_django\templates\team\team.html:55
+#, fuzzy
+#| msgid "Unsere Leistungen"
+msgid "Unsere Meister"
+msgstr "Our Services"
+
+#: .\src\backend_django\templates\team\team.html:85
+msgid "Bewerben"
+msgstr "Apply"
+
+#~ msgid "Group name (e.g. 'Maniküre')."
+#~ msgstr "Group name (e.g. 'Manicure')."
+
+#~ msgid "Sorting order within the category."
+#~ msgstr "Sorting order within the category."
+
+#~ msgid "Service Group"
+#~ msgstr "Service Group"
+
+#~ msgid "Service Groups"
+#~ msgstr "Service Groups"
+
+#~ msgid "Group"
+#~ msgstr "Group"
+
+#~ msgid "Optional grouping within the category."
+#~ msgstr "Optional grouping within the category."
+
+#~ msgid "Perfekte Maniküre & Pediküre"
+#~ msgstr "Perfect Manicure & Pedicure"
+
+#~ msgid "NAGELSERVICE"
+#~ msgstr "NAIL SERVICE"
+
+#~ msgid ""
+#~ "Bei LILY verwandeln wir die Nagelpflege in ein echtes Schönheitsritual. "
+#~ "Wir sind spezialisiert auf kombinierte Maniküre, perfekte Ausrichtung der "
+#~ "Nagelplatte und die Verwendung von Premium-Materialien wie Luxio. Unsere "
+#~ "Meister beherrschen Smart-Pediküre-Techniken für perfekt glatte Füße. Wir "
+#~ "legen besonderen Wert auf Sicherheit und Sterilität, damit Sie sich "
+#~ "vollkommen entspannen und den Prozess der Schaffung Ihres perfekten Looks "
+#~ "bis in die Fingerspitzen genießen können."
+#~ msgstr ""
+#~ "At LILY, we turn nail care into a true beauty ritual. We specialize in "
+#~ "combined manicure, perfect alignment of the nail plate, and the use of "
+#~ "premium materials like Luxio. Our masters master Smart pedicure "
+#~ "techniques for perfectly smooth feet. We place special emphasis on safety "
+#~ "and sterility so you can completely relax and enjoy the process of "
+#~ "creating your perfect look down to your fingertips."
+
+#~ msgid "Maniküre & Pediküre"
+#~ msgstr "Manicure & Pedicure"
+
+#~ msgid "Damenmaniküre"
+#~ msgstr "Women's Manicure"
+
+#~ msgid "Maniküre + Gellack"
+#~ msgstr "Manicure + Gel Polish"
+
+#~ msgid "Maniküre + normaler Nagellack"
+#~ msgstr "Manicure + Regular Polish"
+
+#~ msgid "Nageldesignerin"
+#~ msgstr "Nail Designer"
+
+#~ msgid "Gründerin & Art Director"
+#~ msgstr "Founder & Art Director"
+
+#~ msgid ""
+#~ "Willkommen im LILY Beauty Space. Hier kreieren wir nicht nur Looks, "
+#~ "sondern Stimmungen. Meine Mission ist es, Ihnen Selbstvertrauen und "
+#~ "höchste Servicequalität in einer gemütlichen Atmosphäre zu schenken."
+#~ msgstr ""
+#~ "Welcome to LILY Beauty Space. Here we create not just looks, but moods. "
+#~ "My mission is to give you self-confidence and the highest quality of "
+#~ "service in a cozy atmosphere."
+
+#~ msgid ""
+#~ "(Hier kann Liliia ihre Geschichte oder Begrüßung für Kunden schreiben)"
+#~ msgstr "(Here Liliia can write her story or greeting for customers)"
+
+#~ msgid "Liliia schreiben"
+#~ msgstr "Write to Liliia"
+
+#~ msgid "Top-Meister"
+#~ msgstr "Top Master"
+
+#~ msgid "Top-Colorist"
+#~ msgstr "Top Colorist"
+
+#~ msgid "Kosmetikerin"
+#~ msgstr "Cosmetologist"

@@ -10,9 +10,12 @@ ENV_FILE_PATH = ROOT_DIR / ".env"
 
 class CommonSettings(BaseSettings):
     """
-    Базовые настройки, общие для всех сервисов (Backend, Bot).
+    Базовые настройки, общие для всех сервисов (Backend, Bot, Worker).
     Включает Redis, Логирование и общие пути.
     """
+
+    # --- Environment ---
+    environment: str = "development"  # development, production
 
     # --- Redis ---
     redis_host: str = "localhost"
@@ -32,9 +35,24 @@ class CommonSettings(BaseSettings):
 
     @property
     def redis_url(self) -> str:
+        # Автоматически определять хост на основе окружения
+        host = (
+            self.redis_host
+            if self.redis_host != "localhost"
+            else ("redis" if self.environment == "production" else "localhost")
+        )
+
         if self.redis_password:
-            return f"redis://:{self.redis_password}@{self.redis_host}:{self.redis_port}"
-        return f"redis://{self.redis_host}:{self.redis_port}"
+            return f"redis://:{self.redis_password}@{host}:{self.redis_port}"
+        return f"redis://{host}:{self.redis_port}"
+
+    @property
+    def is_production(self) -> bool:
+        return self.environment.lower() in ("production", "prod")
+
+    @property
+    def is_development(self) -> bool:
+        return self.environment.lower() in ("development", "dev")
 
     # Логи
     @property

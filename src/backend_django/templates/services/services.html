@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ seo.seo_title|default:"Leistungen | LILY Beauty Salon" }}{% endblock %}
+{% block meta_description %}{{ seo.seo_description|default:"Unsere Leistungen und Preise." }}{% endblock %}
+
+{% block content %}
+<section class="hero-text-block">
+    <div class="container">
+        <h1 class="hero-title">{% trans "Preisliste" %}</h1>
+        <p class="hero-subtitle">{% trans "AKTUELLE PREISE" %}</p>
+    </div>
+</section>
+
+<main class="section">
+    <div class="container price-menu-container">
+
+        {% for category in islands %}
+        <!-- CATEGORY BLOCK -->
+        <div class="price-block" data-bento="{{ category.bento_group }}">
+
+            <!-- Category Title -->
+            <div class="category-header">
+                <h2 class="category-title">{{ category.title }}</h2>
+                {% if category.description %}
+                <p class="category-desc" style="opacity: 0.7; margin-top: 5px;">{{ category.description }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Services List -->
+            {% for service in category.services.all %}
+            <div class="service-row">
+                <div class="service-names">
+                    <span class="name-de">{{ service.title }}</span>
+                    {% if service.description %}
+                    <span class="service-desc-small">{{ service.description|truncatechars:60 }}</span>
+                    {% endif %}
+                </div>
+                <div class="service-meta">
+                    <span class="meta-price">
+                        {% if service.price_info %}
+                            {{ service.price_info }}
+                        {% else %}
+                            ab {{ service.price }} €
+                        {% endif %}
+                    </span>
+                    <span class="meta-time">
+                        ⏱
+                        {% if service.duration_info %}
+                            {{ service.duration_info }}
+                        {% else %}
+                            {{ service.duration }} min
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Link to Detail Page -->
+            <div class="service-link-wrapper">
+                <a href="{% url 'service_detail' slug=category.slug %}" class="more-link">
+                    {% trans "Mehr über" %} {{ category.title }} →
+                </a>
+            </div>
+
+        </div>
+        <!-- END CATEGORY BLOCK -->
+        {% endfor %}
+
+    </div>
+</main>
+{% endblock %}

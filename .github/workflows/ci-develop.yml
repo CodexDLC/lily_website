@@ -16,9 +16,9 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Install dependencies
+      - name: Install Linting Tools
         run: |
-          pip install ".[dev,bot]"
+          pip install ruff mypy
 
       - name: Run Ruff
         run: ruff check src/telegram_bot/ src/shared/

@@ -19,7 +19,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install ".[dev,bot]"
+          pip install pytest pytest-asyncio
+          pip install -e .
 
       - name: Run Pytest
         env:
@@ -31,5 +32,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-- name: Build Bot image
-  run: docker build -f deploy/bot/Dockerfile -t check-bot .
+      - name: Build Bot image
+        run: docker build -f deploy/bot/Dockerfile -t check-bot .

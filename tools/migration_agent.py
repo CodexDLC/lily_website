@@ -64,7 +64,7 @@ TRANSFERABLE_MODULES: dict[str, str] = {
     "src/shared": "Shared utilities (config, logging, redis)",
     "src/telegram_bot": "Telegram Bot (aiogram)",
     "src/backend-fastapi": "FastAPI Backend",
-    "src/backend-django": "Django Backend",
+    "src/backend_django": "Django Backend",
 }
 
 # Инфраструктурные папки — переносятся всегда если нет
@@ -88,6 +88,7 @@ CONFIG_FILES: list[str] = [
 # ══════════════════════════════════════════════
 # Clone
 # ══════════════════════════════════════════════
+
 
 def _clone_template(target_dir: Path, repo_url: str) -> Path:
     """Клонирует шаблон во временную папку."""
@@ -118,6 +119,7 @@ def _clone_template(target_dir: Path, repo_url: str) -> Path:
 # Analyze — что есть в проекте
 # ══════════════════════════════════════════════
 
+
 def _analyze_project(target_dir: Path) -> dict[str, bool]:
     """Сканирует проект и возвращает карту: путь → существует (и не пустой)."""
     result: dict[str, bool] = {}
@@ -125,16 +127,12 @@ def _analyze_project(target_dir: Path) -> dict[str, bool]:
     # Проверяем модули
     for rel_path in TRANSFERABLE_MODULES:
         full = target_dir / rel_path
-        result[rel_path] = full.exists() and (
-            full.is_file() or any(full.iterdir())
-        )
+        result[rel_path] = full.exists() and (full.is_file() or any(full.iterdir()))
 
     # Проверяем инфраструктуру
     for rel_path in INFRA_DIRS:
         full = target_dir / rel_path
-        result[rel_path] = full.exists() and (
-            full.is_file() or any(full.iterdir())
-        )
+        result[rel_path] = full.exists() and (full.is_file() or any(full.iterdir()))
 
     # Проверяем конфиги
     for rel_path in CONFIG_FILES:
@@ -166,6 +164,7 @@ def _print_analysis(analysis: dict[str, bool]) -> None:
 # Safe copy — перенос с проверкой
 # ══════════════════════════════════════════════
 
+
 def _safe_copy(src: Path, dst: Path, label: str) -> bool:
     """Копирует только если dst не существует или пустая. Возвращает True если скопировал."""
     if dst.exists():
@@ -191,6 +190,7 @@ def _safe_copy(src: Path, dst: Path, label: str) -> bool:
 # ══════════════════════════════════════════════
 # Transfer — перенос файлов
 # ══════════════════════════════════════════════
+
 
 def _transfer_modules(temp_dir: Path, target_dir: Path, analysis: dict[str, bool]) -> list[str]:
     """Переносит src/ модули которых нет в проекте. Возвращает список перенесённых."""
@@ -259,6 +259,7 @@ def _transfer_configs(temp_dir: Path, target_dir: Path, analysis: dict[str, bool
 # Ensure standard dirs — создание недостающих папок
 # ══════════════════════════════════════════════
 
+
 def _ensure_standard_dirs(target_dir: Path) -> list[str]:
     """Создаёт стандартные папки если их нет. Возвращает список созданных."""
     created: list[str] = []
@@ -281,6 +282,7 @@ def _ensure_standard_dirs(target_dir: Path) -> list[str]:
 # Compare — что осталось в temp и отличается
 # ══════════════════════════════════════════════
 
+
 def _build_manual_report(
     temp_dir: Path,
     target_dir: Path,
@@ -292,25 +294,20 @@ def _build_manual_report(
     manual_tasks: list[str] = []
 
     # Проверяем src/ модули которые УЖЕ были (не перенесены)
-    for rel_path, desc in TRANSFERABLE_MODULES.items():
+    for rel_path, _ in TRANSFERABLE_MODULES.items():
         if rel_path not in transferred_modules:
             src = temp_dir / rel_path
             dst = target_dir / rel_path
             if dst.exists() and src.exists():
-                manual_tasks.append(
-                    f"Compare {rel_path}/ with template version "
-                    f"(.temp_template/{rel_path}/)"
-                )
+                manual_tasks.append(f"Compare {rel_path}/ with template version (.temp_template/{rel_path}/)")
 
     # Проверяем инфраструктуру которая уже была
-    for rel_path, desc in INFRA_DIRS.items():
+    for rel_path, _ in INFRA_DIRS.items():
         if rel_path not in transferred_infra:
             src = temp_dir / rel_path
             dst = target_dir / rel_path
             if dst.exists() and src.exists():
-                manual_tasks.append(
-                    f"Review {rel_path}/ — merge with template version if needed"
-                )
+                manual_tasks.append(f"Review {rel_path}/ — merge with template version if needed")
 
     # Конфиги которые уже были
     for rel_path in CONFIG_FILES:
@@ -318,17 +315,17 @@ def _build_manual_report(
             src = temp_dir / rel_path
             dst = target_dir / rel_path
             if dst.exists() and src.exists():
-                manual_tasks.append(
-                    f"Compare {rel_path} with template version"
-                )
+                manual_tasks.append(f"Compare {rel_path} with template version")
 
     # Всегда добавляем общие задачи
-    manual_tasks.extend([
-        "Adapt imports in your existing code to match template structure",
-        "Update pyproject.toml dependencies (add missing groups)",
-        "Configure .env variables for your environment",
-        "Review and merge documentation if docs/ existed before",
-    ])
+    manual_tasks.extend(
+        [
+            "Adapt imports in your existing code to match template structure",
+            "Update pyproject.toml dependencies (add missing groups)",
+            "Configure .env variables for your environment",
+            "Review and merge documentation if docs/ existed before",
+        ]
+    )
 
     return manual_tasks
 
@@ -336,6 +333,7 @@ def _build_manual_report(
 # ══════════════════════════════════════════════
 # Main
 # ══════════════════════════════════════════════
+
 
 def main() -> None:
     print()
@@ -390,8 +388,11 @@ def main() -> None:
 
     # ── Manual tasks report ──
     manual_tasks = _build_manual_report(
-        temp_dir, target_dir,
-        transferred_modules, transferred_infra, transferred_configs,
+        temp_dir,
+        target_dir,
+        transferred_modules,
+        transferred_infra,
+        transferred_configs,
     )
 
     if manual_tasks:

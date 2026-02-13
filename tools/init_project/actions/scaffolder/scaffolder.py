@@ -25,7 +25,10 @@ TODO (для Django Installer):
 
 from __future__ import annotations
 
-from tools.init_project.config import InstallContext
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from tools.init_project.config import InstallContext
 
 
 class ScaffolderAction:

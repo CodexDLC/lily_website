@@ -22,9 +22,9 @@ Task definitions for the ARQ background worker.
 4. Export it from `tasks/__init__.py`
 
 ```python
-# services/worker/tasks/my_task.py
+# services/worker_arq/tasks/my_task.py
 async def my_task(ctx: dict, user_id: int, data: str):
-    bot = ctx["bot"]
+    bot = ctx["02_telegram_bot"]
     await bot.send_message(user_id, data)
 ```
 

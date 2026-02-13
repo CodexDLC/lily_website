@@ -1,0 +1,104 @@
+[
+  {
+    "model": "system.staticpageseo",
+    "pk": 1,
+    "fields": {
+      "page_key": "home",
+      "seo_title_de": "LILY Beauty Salon | Köthen",
+      "seo_title_ru": "Салон красоты LILY | Кётен",
+      "seo_title_uk": "Салон краси LILY | Кетен",
+      "seo_title_en": "LILY Beauty Salon | Koethen",
+      "seo_description_de": "Ukrainische Schönheitsexperten in Köthen. Hochwertige Maniküre, Kosmetik und Haarpflege. Qualität mit ukrainischer Gastfreundschaft.",
+      "seo_description_ru": "Украинские эксперты красоты в Кётене. Качественный маникюр, косметология и уход за волосами. Качество с украинским гостеприимством.",
+      "seo_description_uk": "Українські експерти краси в Кетені. Якісний манікюр, косметологія та догляд за волоссям. Якість з українською гостинністю.",
+      "seo_description_en": "Ukrainian beauty experts in Köthen. High-end manicure, cosmetology, and hair care. Quality aesthetics with Ukrainian hospitality.",
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "system.staticpageseo",
+    "pk": 2,
+    "fields": {
+      "page_key": "contacts",
+      "seo_title_de": "Kontakt & Über uns | LILY Beauty Salon",
+      "seo_title_ru": "Контакты и О нас | LILY Beauty Salon",
+      "seo_title_uk": "Контакти та Про нас | LILY Beauty Salon",
+      "seo_title_en": "Contact & About Us | LILY Beauty Salon",
+      "seo_description_de": "Kontaktieren Sie LILY Beauty Salon in Köthen. Adresse: Lohmannstraße 111. Telefon: +49 176 59423704. Ukrainische Gastfreundschaft.",
+      "seo_description_ru": "Свяжитесь с салоном красоты LILY в Кётене. Адрес: Lohmannstraße 111. Телефон: +49 176 59423704. Украинское гостеприимство.",
+      "seo_description_uk": "Зв'яжіться з салоном краси LILY в Кетені. Адреса: Lohmannstraße 111. Телефон: +49 176 59423704. Українська гостинність.",
+      "seo_description_en": "Contact LILY Beauty Salon in Köthen. Address: Lohmannstraße 111. Phone: +49 176 59423704. Ukrainian hospitality.",
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "system.staticpageseo",
+    "pk": 3,
+    "fields": {
+      "page_key": "team",
+      "seo_title_de": "Unser Team | LILY Beauty Salon",
+      "seo_title_ru": "Наша команда | LILY Beauty Salon",
+      "seo_title_uk": "Наша команда | LILY Beauty Salon",
+      "seo_title_en": "Our Team | LILY Beauty Salon",
+      "seo_description_de": "Treffen Sie unsere ukrainischen Schönheitsexperten. Top-Coloristen, Nageldesigner und Kosmetikerinnen in Köthen.",
+      "seo_description_ru": "Познакомьтесь с нашими украинскими экспертами красоты. Топ-колористы, мастера маникюра и косметологи в Кётене.",
+      "seo_description_uk": "Познайомтеся з нашими українськими експертами краси. Топ-колористи, майстри манікюру та косметологи в Кетені.",
+      "seo_description_en": "Meet our Ukrainian beauty experts. Top-Colorists, Nail Designers, and Cosmetologists in Köthen.",
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "system.staticpageseo",
+    "pk": 4,
+    "fields": {
+      "page_key": "services_index",
+      "seo_title_de": "Leistungen | LILY Beauty Salon",
+      "seo_title_ru": "Услуги | LILY Beauty Salon",
+      "seo_title_uk": "Послуги | LILY Beauty Salon",
+      "seo_title_en": "Services | LILY Beauty Salon",
+      "seo_description_de": "Vollständige Liste der Schönheitsdienstleistungen: Haare, Nägel, Augenbrauen, Massage, Depilation. High-End-Qualität in Köthen.",
+      "seo_description_ru": "Полный список услуг красоты: Волосы, Ногти, Брови, Массаж, Депиляция. Качество High-End в Кётене.",
+      "seo_description_uk": "Повний список послуг краси: Волосся, Нігті, Брови, Масаж, Депіляція. Якість High-End в Кетені.",
+      "seo_description_en": "Full list of beauty services: Hair, Nails, Brows, Massage, Depilation. High-end quality in Köthen.",
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "system.staticpageseo",
+    "pk": 5,
+    "fields": {
+      "page_key": "impressum",
+      "seo_title_de": "Impressum | LILY Beauty Salon",
+      "seo_title_ru": "Импрессум | LILY Beauty Salon",
+      "seo_title_uk": "Імпресум | LILY Beauty Salon",
+      "seo_title_en": "Impressum | LILY Beauty Salon",
+      "seo_description_de": "Rechtliche Hinweise (Impressum) für LILY Beauty Salon.",
+      "seo_description_ru": "Юридическая информация (Impressum) для LILY Beauty Salon.",
+      "seo_description_uk": "Юридична інформація (Impressum) для LILY Beauty Salon.",
+      "seo_description_en": "Legal Notice (Impressum) for LILY Beauty Salon.",
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "system.staticpageseo",
+    "pk": 6,
+    "fields": {
+      "page_key": "datenschutz",
+      "seo_title_de": "Datenschutz | LILY Beauty Salon",
+      "seo_title_ru": "Конфиденциальность | LILY Beauty Salon",
+      "seo_title_uk": "Конфіденційність | LILY Beauty Salon",
+      "seo_title_en": "Privacy Policy | LILY Beauty Salon",
+      "seo_description_de": "Datenschutzerklärung für LILY Beauty Salon.",
+      "seo_description_ru": "Политика конфиденциальности для LILY Beauty Salon.",
+      "seo_description_uk": "Політика конфіденційності для LILY Beauty Salon.",
+      "seo_description_en": "Privacy Policy for LILY Beauty Salon.",
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-01-01T00:00:00Z"
+    }
+  }
+]

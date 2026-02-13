@@ -1,0 +1,76 @@
+/* =========================================
+   BUTTONS
+   ========================================= */
+
+/* Pill Button (Primary CTA) */
+.btn-pill {
+    display: inline-block;
+    padding: 16px 45px;
+    border: 1px solid var(--color-gold);
+    color: var(--color-gold);
+    border-radius: 50px;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    transition: 0.3s;
+}
+
+.btn-pill:hover {
+    background: var(--color-gold);
+    color: var(--color-emerald);
+}
+
+/* Submit Button */
+.btn-submit {
+    width: 100%;
+    padding: 15px;
+    background: var(--color-gold);
+    color: #003831;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 20px;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.btn-submit:hover {
+    background: white;
+}
+
+/* Book Button (for team cards) */
+.btn-book {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    border-bottom: 1px solid var(--color-gold);
+    padding-bottom: 2px;
+    transition: 0.3s;
+}
+
+.btn-book:hover {
+    color: var(--color-white);
+    border-bottom-color: var(--color-white);
+}
+
+/* Navigate Button */
+.btn-navigate {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 15px;
+    background-color: var(--color-gold);
+    color: #003831;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.btn-navigate:hover {
+    background-color: white;
+}

@@ -1,0 +1,1538 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-10 23:23+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: .\src\backend_django\features\booking\admin.py:22
+msgid "Basic Information"
+msgstr "Основна інформація"
+
+#: .\src\backend_django\features\booking\admin.py:26
+#, fuzzy
+#| msgid "Epilation"
+msgid "Specializations"
+msgstr "Епіляція"
+
+#: .\src\backend_django\features\booking\admin.py:30
+#, fuzzy
+#| msgid "Kontakt"
+msgid "Contact"
+msgstr "Контакти"
+
+#: .\src\backend_django\features\booking\admin.py:34
+#: .\src\backend_django\features\main\admin.py:109
+msgid "Status & Flags"
+msgstr "Статус та прапорці"
+
+#: .\src\backend_django\features\booking\admin.py:38
+msgid "Django User"
+msgstr "Користувач Django"
+
+#: .\src\backend_django\features\booking\admin.py:42
+msgid "Telegram Integration"
+msgstr "Інтеграція з Telegram"
+
+#: .\src\backend_django\features\booking\admin.py:49
+msgid "QR System (Future)"
+msgstr "Система QR (в майбутньому)"
+
+#: .\src\backend_django\features\booking\admin.py:53
+#: .\src\backend_django\features\main\admin.py:50
+#: .\src\backend_django\features\main\admin.py:125
+msgid "SEO"
+msgstr "SEO"
+
+#: .\src\backend_django\features\booking\admin.py:57
+#: .\src\backend_django\features\booking\admin.py:178
+#: .\src\backend_django\features\booking\admin.py:242
+#: .\src\backend_django\features\booking\admin.py:271
+msgid "Timestamps"
+msgstr "Часові мітки"
+
+#: .\src\backend_django\features\booking\admin.py:64
+#: .\src\backend_django\features\booking\admin.py:119
+#: .\src\backend_django\features\booking\admin.py:166
+#: .\src\backend_django\features\booking\admin.py:190
+#: .\src\backend_django\features\booking\models\appointment.py:63
+#: .\src\backend_django\features\booking\models\client.py:70
+#: .\src\backend_django\features\main\admin.py:55
+#: .\src\backend_django\features\main\admin.py:137
+msgid "Status"
+msgstr "Статус"
+
+#: .\src\backend_django\features\booking\admin.py:92
+msgid "Contact Information"
+msgstr "Контактна інформація"
+
+#: .\src\backend_django\features\booking\admin.py:96
+msgid "Account Status"
+msgstr "Статус акаунту"
+
+#: .\src\backend_django\features\booking\admin.py:100
+msgid "Marketing"
+msgstr "Маркетинг"
+
+#: .\src\backend_django\features\booking\admin.py:104
+msgid "Internal"
+msgstr "Внутрішні"
+
+#: .\src\backend_django\features\booking\admin.py:109
+msgid "Name"
+msgstr "Ім'я"
+
+#: .\src\backend_django\features\booking\admin.py:114
+msgid "Ghost"
+msgstr "Привид"
+
+#: .\src\backend_django\features\booking\admin.py:162
+msgid "Booking Details"
+msgstr "Деталі бронювання"
+
+#: .\src\backend_django\features\booking\admin.py:170
+msgid "Notes"
+msgstr "Примітки"
+
+#: .\src\backend_django\features\booking\admin.py:174
+msgid "Notifications"
+msgstr "Сповіщення"
+
+#: .\src\backend_django\features\booking\admin.py:185
+#: .\src\backend_django\features\booking\models\appointment.py:22
+#: .\src\backend_django\features\booking\models\client.py:87
+msgid "Client"
+msgstr "Клієнт"
+
+#: .\src\backend_django\features\booking\admin.py:207
+msgid "Mark as Confirmed"
+msgstr "Відмітити як підтверджені"
+
+#: .\src\backend_django\features\booking\admin.py:212
+msgid "Mark as Completed"
+msgstr "Відмітити як завершені"
+
+#: .\src\backend_django\features\booking\admin.py:217
+msgid "Cancel Selected"
+msgstr "Скасувати вибрані"
+
+#: .\src\backend_django\features\booking\admin.py:234
+msgid "Certificate Info"
+msgstr "Інформація про сертифікат"
+
+#: .\src\backend_django\features\booking\admin.py:238
+#: .\src\backend_django\features\booking\admin.py:263
+msgid "Display"
+msgstr "Відображення"
+
+#: .\src\backend_django\features\booking\admin.py:259
+#: .\src\backend_django\features\booking\models\master_portfolio.py:60
+#, fuzzy
+#| msgid "Portfolio Image"
+msgid "Portfolio Item"
+msgstr "Зображення портфоліо"
+
+#: .\src\backend_django\features\booking\admin.py:267
+#: .\src\backend_django\templates\team\team.html:44
+#, fuzzy
+#| msgid "Instagram URL"
+msgid "Instagram"
+msgstr "Instagram URL"
+
+#: .\src\backend_django\features\booking\models\appointment.py:24
+#: .\src\backend_django\features\booking\models\master.py:146
+#: .\src\backend_django\features\booking\models\master_certificate.py:17
+#: .\src\backend_django\features\booking\models\master_portfolio.py:19
+msgid "Master"
+msgstr "Майстер"
+
+#: .\src\backend_django\features\booking\models\appointment.py:27
+#: .\src\backend_django\features\main\models\service.py:59
+#: .\src\backend_django\features\main\models\service.py:79
+msgid "Service"
+msgstr "Послуга"
+
+#: .\src\backend_django\features\booking\models\appointment.py:32
+msgid "Start Date & Time"
+msgstr "Дата та час початку"
+
+#: .\src\backend_django\features\booking\models\appointment.py:32
+msgid "Appointment start time"
+msgstr "Час початку запису"
+
+#: .\src\backend_django\features\booking\models\appointment.py:36
+#, fuzzy
+#| msgid "Duration (min)"
+msgid "Duration (minutes)"
+msgstr "Тривалість (хв)"
+
+#: .\src\backend_django\features\booking\models\appointment.py:36
+msgid "Service duration (auto-filled from Service model)"
+msgstr "Тривалість послуги (автоматично з моделі послуги)"
+
+#: .\src\backend_django\features\booking\models\appointment.py:43
+#: .\src\backend_django\features\main\models\service.py:28
+msgid "Price (€)"
+msgstr "Ціна (€)"
+
+#: .\src\backend_django\features\booking\models\appointment.py:44
+msgid "Price at booking time (snapshot)"
+msgstr "Ціна на момент бронювання (знімок)"
+
+#: .\src\backend_django\features\booking\models\appointment.py:55
+msgid "Pending Confirmation"
+msgstr "Очікує підтвердження"
+
+#: .\src\backend_django\features\booking\models\appointment.py:56
+msgid "Confirmed"
+msgstr "Підтверджено"
+
+#: .\src\backend_django\features\booking\models\appointment.py:57
+msgid "Completed"
+msgstr "Завершено"
+
+#: .\src\backend_django\features\booking\models\appointment.py:58
+msgid "Cancelled"
+msgstr "Скасовано"
+
+#: .\src\backend_django\features\booking\models\appointment.py:59
+msgid "No Show"
+msgstr "Не з'явився"
+
+#: .\src\backend_django\features\booking\models\appointment.py:67
+msgid "Cancelled At"
+msgstr "Скасовано о"
+
+#: .\src\backend_django\features\booking\models\appointment.py:75
+msgid "Cancelled by Client"
+msgstr "Скасовано клієнтом"
+
+#: .\src\backend_django\features\booking\models\appointment.py:76
+msgid "Cancelled by Master"
+msgstr "Скасовано майстром"
+
+#: .\src\backend_django\features\booking\models\appointment.py:77
+msgid "Rescheduled"
+msgstr "Перенесено"
+
+#: .\src\backend_django\features\booking\models\appointment.py:78
+msgid "Other"
+msgstr "Інше"
+
+#: .\src\backend_django\features\booking\models\appointment.py:82
+msgid "Cancellation Reason"
+msgstr "Причина скасування"
+
+#: .\src\backend_django\features\booking\models\appointment.py:86
+msgid "Cancellation Note"
+msgstr "Примітка про скасування"
+
+#: .\src\backend_django\features\booking\models\appointment.py:86
+msgid "Additional details about cancellation"
+msgstr "Додаткові деталі про скасування"
+
+#: .\src\backend_django\features\booking\models\appointment.py:92
+msgid "Client Notes"
+msgstr "Примітки клієнта"
+
+#: .\src\backend_django\features\booking\models\appointment.py:93
+msgid "Special requests from client (e.g. allergies, preferences)"
+msgstr "Особливі побажання клієнта (наприклад, алергії, вподобання)"
+
+#: .\src\backend_django\features\booking\models\appointment.py:98
+msgid "Admin Notes"
+msgstr "Адміністративні примітки"
+
+#: .\src\backend_django\features\booking\models\appointment.py:98
+msgid "Internal notes (not visible to client)"
+msgstr "Внутрішні примітки (не видимі клієнту)"
+
+#: .\src\backend_django\features\booking\models\appointment.py:103
+msgid "Reminder Sent"
+msgstr "Нагадування відправлено"
+
+#: .\src\backend_django\features\booking\models\appointment.py:103
+msgid "SMS/Email reminder was sent"
+msgstr "СМС/Email нагадування було відправлено"
+
+#: .\src\backend_django\features\booking\models\appointment.py:106
+msgid "Reminder Sent At"
+msgstr "Нагадування відправлено о"
+
+#: .\src\backend_django\features\booking\models\appointment.py:109
+msgid "Appointment"
+msgstr "Запис"
+
+#: .\src\backend_django\features\booking\models\appointment.py:110
+msgid "Appointments"
+msgstr "Записи"
+
+#: .\src\backend_django\features\booking\models\appointment.py:140
+msgid "This time slot is already booked."
+msgstr "Цей часовий слот вже зайнятий."
+
+#: .\src\backend_django\features\booking\models\appointment.py:174
+msgid "This appointment cannot be cancelled."
+msgstr "Цей запис не може бути скасований."
+
+#: .\src\backend_django\features\booking\models\appointment.py:185
+msgid "Only confirmed appointments can be marked as completed."
+msgstr "Тільки підтверджені записи можуть бути відмічені як завершені."
+
+#: .\src\backend_django\features\booking\models\client.py:24
+msgid "Phone Number"
+msgstr "Номер телефону"
+
+#: .\src\backend_django\features\booking\models\client.py:25
+msgid "Primary contact method"
+msgstr "Основний спосіб зв'язку"
+
+#: .\src\backend_django\features\booking\models\client.py:30
+#: .\src\backend_django\features\system\models\site_settings.py:17
+msgid "Email"
+msgstr "Email"
+
+#: .\src\backend_django\features\booking\models\client.py:31
+msgid "Email for notifications and account activation"
+msgstr "Email для сповіщень та активації акаунту"
+
+#: .\src\backend_django\features\booking\models\client.py:34
+#: .\src\backend_django\features\booking\models\master.py:23
+msgid "Full Name"
+msgstr "Повне ім'я"
+
+#: .\src\backend_django\features\booking\models\client.py:34
+msgid "Client's name (collected during booking)"
+msgstr "Ім'я клієнта (збирається при бронюванні)"
+
+#: .\src\backend_django\features\booking\models\client.py:44
+#: .\src\backend_django\features\booking\models\master.py:118
+msgid "Django User Account"
+msgstr "Акаунт користувача Django"
+
+#: .\src\backend_django\features\booking\models\client.py:45
+msgid "Linked when client activates account"
+msgstr "Зв'язується коли клієнт активує акаунт"
+
+#: .\src\backend_django\features\booking\models\client.py:54
+msgid "Access Token"
+msgstr "Токен доступу"
+
+#: .\src\backend_django\features\booking\models\client.py:55
+msgid "Used in SMS/Email links for appointment management"
+msgstr "Використовується в SMS/Email посиланнях для управління записами"
+
+#: .\src\backend_django\features\booking\models\client.py:64
+msgid "Guest (Temporary)"
+msgstr "Гість (тимчасовий)"
+
+#: .\src\backend_django\features\booking\models\client.py:65
+msgid "Active (Registered)"
+msgstr "Активний (зареєстрований)"
+
+#: .\src\backend_django\features\booking\models\client.py:66
+msgid "Blocked"
+msgstr "Заблокований"
+
+#: .\src\backend_django\features\booking\models\client.py:76
+msgid "Marketing Consent"
+msgstr "Згода на маркетинг"
+
+#: .\src\backend_django\features\booking\models\client.py:77
+msgid "Client agreed to receive promotional materials"
+msgstr "Клієнт погодився отримувати рекламні матеріали"
+
+#: .\src\backend_django\features\booking\models\client.py:79
+msgid "Consent Given Date"
+msgstr "Дата згоди"
+
+#: .\src\backend_django\features\booking\models\client.py:83
+msgid "Internal Notes"
+msgstr "Внутрішні примітки"
+
+#: .\src\backend_django\features\booking\models\client.py:83
+msgid "Admin-only notes about the client"
+msgstr "Примітки тільки для адміністратора про клієнта"
+
+#: .\src\backend_django\features\booking\models\client.py:88
+msgid "Clients"
+msgstr "Клієнти"
+
+#: .\src\backend_django\features\booking\models\client.py:109
+msgid "Guest"
+msgstr "Гість"
+
+#: .\src\backend_django\features\booking\models\master.py:23
+msgid "Master's full name (e.g. 'Maria Ivanova')"
+msgstr "Повне ім'я майстра (наприклад, 'Марія Іванова')"
+
+#: .\src\backend_django\features\booking\models\master.py:26
+#: .\src\backend_django\features\main\models\category.py:23
+#: .\src\backend_django\features\main\models\service.py:24
+msgid "Slug"
+msgstr "Slug"
+
+#: .\src\backend_django\features\booking\models\master.py:26
+#, fuzzy
+#| msgid "URL part (e.g. 'manicure')."
+msgid "URL part (e.g. 'maria-ivanova')"
+msgstr "Частина URL (наприклад, 'manicure')."
+
+#: .\src\backend_django\features\booking\models\master.py:32
+#, fuzzy
+#| msgid "Profil"
+msgid "Profile Photo"
+msgstr "Профіль"
+
+#: .\src\backend_django\features\booking\models\master.py:33
+msgid "Professional portrait (recommended: 800x1000px)"
+msgstr "Професійне портретне фото (рекомендується: 800x1000px)"
+
+#: .\src\backend_django\features\booking\models\master.py:40
+msgid "Professional Title"
+msgstr "Професійне звання"
+
+#: .\src\backend_django\features\booking\models\master.py:41
+msgid "e.g. 'Top Colorist', 'Lead Nail Artist'"
+msgstr "наприклад, 'Топ-колорист', 'Провідний майстер манікюру'"
+
+#: .\src\backend_django\features\booking\models\master.py:45
+msgid "Biography"
+msgstr "Біографія"
+
+#: .\src\backend_django\features\booking\models\master.py:45
+msgid "Full biography and work philosophy (HTML allowed)"
+msgstr "Повна біографія та філософія роботи (HTML дозволений)"
+
+#: .\src\backend_django\features\booking\models\master.py:51
+#: .\src\backend_django\features\main\models\category.py:37
+#: .\src\backend_django\features\main\models\service.py:39
+msgid "Short Description"
+msgstr "Короткий опис"
+
+#: .\src\backend_django\features\booking\models\master.py:52
+msgid "Brief intro for Team page (1-2 sentences)"
+msgstr "Коротке представлення для сторінки Команда (1-2 речення)"
+
+#: .\src\backend_django\features\booking\models\master.py:60
+#: .\src\backend_django\features\main\models\category.py:57
+msgid "Categories"
+msgstr "Категорії"
+
+#: .\src\backend_django\features\booking\models\master.py:61
+#, fuzzy
+#| msgid "Main category (for filtering)."
+msgid "High-level categories for filtering"
+msgstr "Основна категорія (для фільтрації)."
+
+#: .\src\backend_django\features\booking\models\master.py:65
+msgid "Years of Experience"
+msgstr "Років досвіду"
+
+#: .\src\backend_django\features\booking\models\master.py:71
+#, fuzzy
+#| msgid "Instagram URL"
+msgid "Instagram Handle"
+msgstr "Instagram URL"
+
+#: .\src\backend_django\features\booking\models\master.py:72
+msgid "Username only (e.g. 'maria.beauty')"
+msgstr "Тільки ім'я користувача (наприклад, 'maria.beauty')"
+
+#: .\src\backend_django\features\booking\models\master.py:75
+msgid "Direct Phone"
+msgstr "Прямий телефон"
+
+#: .\src\backend_django\features\booking\models\master.py:84
+msgid "Active (Working)"
+msgstr "Активний (працює)"
+
+#: .\src\backend_django\features\booking\models\master.py:85
+msgid "On Vacation"
+msgstr "У відпустці"
+
+#: .\src\backend_django\features\booking\models\master.py:86
+msgid "Fired/Left"
+msgstr "Звільнений/пішов"
+
+#: .\src\backend_django\features\booking\models\master.py:87
+msgid "In Training"
+msgstr "На навчанні"
+
+#: .\src\backend_django\features\booking\models\master.py:95
+msgid "Employment Status"
+msgstr "Статус зайнятості"
+
+#: .\src\backend_django\features\booking\models\master.py:96
+msgid "We never delete masters, only change status"
+msgstr "Ми ніколи не видаляємо майстрів, тільки змінюємо статус"
+
+#: .\src\backend_django\features\booking\models\master.py:101
+msgid "Is Owner"
+msgstr "Власник"
+
+#: .\src\backend_django\features\booking\models\master.py:101
+msgid "Display as salon owner with special styling"
+msgstr "Відображати як власника салону зі спеціальним стилем"
+
+#: .\src\backend_django\features\booking\models\master.py:104
+msgid "Featured Master"
+msgstr "Обраний майстер"
+
+#: .\src\backend_django\features\booking\models\master.py:108
+#: .\src\backend_django\features\booking\models\master_certificate.py:39
+#: .\src\backend_django\features\booking\models\master_portfolio.py:49
+msgid "Display Order"
+msgstr "Порядок відображення"
+
+#: .\src\backend_django\features\booking\models\master.py:108
+#: .\src\backend_django\features\booking\models\master_certificate.py:39
+#: .\src\backend_django\features\booking\models\master_portfolio.py:49
+msgid "Lower numbers appear first"
+msgstr "Менші числа відображаються першими"
+
+#: .\src\backend_django\features\booking\models\master.py:119
+msgid "Linked when master needs personal cabinet access"
+msgstr "Зв'язується коли майстру потрібен доступ в особистий кабінет"
+
+#: .\src\backend_django\features\booking\models\master.py:128
+#, fuzzy
+#| msgid "Telegram URL"
+msgid "Telegram ID"
+msgstr "Telegram URL"
+
+#: .\src\backend_django\features\booking\models\master.py:129
+msgid "For 02_telegram_bot authentication and notifications"
+msgstr "Для аутентифікації бота та сповіщень"
+
+#: .\src\backend_django\features\booking\models\master.py:132
+#, fuzzy
+#| msgid "Telegram URL"
+msgid "Telegram Username"
+msgstr "Telegram URL"
+
+#: .\src\backend_django\features\booking\models\master.py:138
+msgid "Bot Access Code"
+msgstr "Код доступу до бота"
+
+#: .\src\backend_django\features\booking\models\master.py:139
+msgid "One-time code for master registration in 02_telegram_bot"
+msgstr "Одноразовий код для реєстрації майстра в боті"
+
+#: .\src\backend_django\features\booking\models\master.py:143
+msgid "QR Token"
+msgstr "QR токен"
+
+#: .\src\backend_django\features\booking\models\master.py:147
+msgid "Masters"
+msgstr "Майстри"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:21
+msgid "Certificate Title"
+msgstr "Назва сертифікату"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:21
+msgid "e.g. 'Advanced Nail Art Course'"
+msgstr "наприклад, 'Просунутий курс дизайну нігтів'"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:25
+msgid "Issuing Organization"
+msgstr "Організація-емітент"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:25
+msgid "e.g. 'German Beauty Academy'"
+msgstr "наприклад, 'Німецька Академія Краси'"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:28
+msgid "Issue Date"
+msgstr "Дата видачі"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:33
+#, fuzzy
+#| msgid "Portfolio Image"
+msgid "Certificate Image"
+msgstr "Зображення портфоліо"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:34
+msgid "Scan or photo of certificate (recommended: 1200x900px)"
+msgstr "Скан або фото сертифікату (рекомендується: 1200x900px)"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:42
+#: .\src\backend_django\features\booking\models\master_portfolio.py:52
+#: .\src\backend_django\features\main\admin.py:61
+#: .\src\backend_django\features\main\admin.py:152
+#: .\src\backend_django\features\system\models\mixins.py:35
+msgid "Active"
+msgstr "Активно"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:42
+#: .\src\backend_django\features\booking\models\master_portfolio.py:52
+msgid "Show on master page"
+msgstr "Показувати на сторінці майстра"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:45
+msgid "Master Certificate"
+msgstr "Сертифікат майстра"
+
+#: .\src\backend_django\features\booking\models\master_certificate.py:46
+msgid "Master Certificates"
+msgstr "Сертифікати майстра"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:25
+#: .\src\backend_django\features\main\models\service.py:95
+msgid "Portfolio Image"
+msgstr "Зображення портфоліо"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:26
+msgid "Example of master's work (recommended: 1200x1200px)"
+msgstr "Приклад роботи майстра (рекомендується: 1200x1200px)"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:32
+#: .\src\backend_django\features\main\admin.py:121
+#: .\src\backend_django\features\system\admin.py:51
+#, fuzzy
+#| msgid "SEO Description"
+msgid "Description"
+msgstr "SEO Опис"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:33
+msgid "Brief description of the work (technique, products used, etc.)"
+msgstr "Короткий опис роботи (техніка, використані продукти тощо)"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:43
+#, fuzzy
+#| msgid "Service"
+msgid "Related Service"
+msgstr "Послуга"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:44
+msgid "Link to service this example demonstrates"
+msgstr "Посилання на послугу, яку демонструє цей приклад"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:56
+#, fuzzy
+#| msgid "Instagram URL"
+msgid "Instagram Post URL"
+msgstr "Instagram URL"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:56
+msgid "Link to original Instagram post"
+msgstr "Посилання на оригінальний пост в Instagram"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:61
+#, fuzzy
+#| msgid "Portfolio Images"
+msgid "Portfolio Items"
+msgstr "Зображення портфоліо"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:65
+msgid "General work"
+msgstr "Загальні роботи"
+
+#: .\src\backend_django\features\main\admin.py:42
+msgid "Status & Display"
+msgstr "Статус та відображення"
+
+#: .\src\backend_django\features\main\admin.py:46
+#, fuzzy
+#| msgid "Full Content"
+msgid "Content"
+msgstr "Повний контент"
+
+#: .\src\backend_django\features\main\admin.py:65
+#: .\src\backend_django\features\main\admin.py:143
+msgid "Hidden"
+msgstr "Приховано"
+
+#: .\src\backend_django\features\main\admin.py:68
+#: .\src\backend_django\features\main\admin.py:165
+msgid "Planned"
+msgstr "Заплановано"
+
+#: .\src\backend_django\features\main\admin.py:74
+#, fuzzy
+#| msgid "Planned / Coming Soon"
+msgid "Coming Soon"
+msgstr "Планується / Скоро"
+
+#: .\src\backend_django\features\main\admin.py:78
+#: .\src\backend_django\features\main\models\service.py:60
+msgid "Services"
+msgstr "Послуги"
+
+#: .\src\backend_django\features\main\admin.py:82
+#, fuzzy
+#| msgid "Services"
+msgid "services"
+msgstr "Послуги"
+
+#: .\src\backend_django\features\main\admin.py:113
+#, fuzzy
+#| msgid "Depilation"
+msgid "Relation"
+msgstr "Депіляція"
+
+#: .\src\backend_django\features\main\admin.py:117
+#, fuzzy
+#| msgid "Service"
+msgid "Service Info"
+msgstr "Послуга"
+
+#: .\src\backend_django\features\main\admin.py:132
+#, fuzzy
+#| msgid "Price (€)"
+msgid "Price"
+msgstr "Ціна (€)"
+
+#: .\src\backend_django\features\main\admin.py:148
+msgid "Unavailable"
+msgstr "Недоступно"
+
+#: .\src\backend_django\features\main\admin.py:155
+msgid "Hit"
+msgstr "Хіт"
+
+#: .\src\backend_django\features\main\admin.py:161
+msgid "HIT"
+msgstr "ХІТ"
+
+#: .\src\backend_django\features\main\admin.py:171
+msgid "Soon"
+msgstr "Незабаром"
+
+#: .\src\backend_django\features\main\admin.py:175
+msgid "✓ Mark as HIT"
+msgstr "✓ Відмітити як ХІТ"
+
+#: .\src\backend_django\features\main\admin.py:180
+msgid "✗ Remove HIT"
+msgstr "✗ Прибрати ХІТ"
+
+#: .\src\backend_django\features\main\admin.py:185
+msgid "✓ Mark as Available"
+msgstr "✓ Відмітити як доступно"
+
+#: .\src\backend_django\features\main\admin.py:190
+msgid "⚠ Mark as Unavailable"
+msgstr "⚠ Відмітити як недоступно"
+
+#: .\src\backend_django\features\main\admin.py:207
+#: .\src\backend_django\features\main\models\category.py:33
+#: .\src\backend_django\features\main\models\service.py:50
+#: .\src\backend_django\features\main\models\service.py:82
+msgid "Image"
+msgstr "Зображення"
+
+#: .\src\backend_django\features\main\admin.py:212
+msgid "Preview"
+msgstr "Попередній перегляд"
+
+#: .\src\backend_django\features\main\models\category.py:14
+msgid "Friseur & Styling"
+msgstr "Перукарські послуги"
+
+#: .\src\backend_django\features\main\models\category.py:15
+#: .\src\backend_django\templates\contacts\contacts.html:45
+#: .\src\backend_django\templates\includes\_footer.html:45
+msgid "Nagelservice"
+msgstr "Нігтьовий сервіс"
+
+#: .\src\backend_django\features\main\models\category.py:16
+#: .\src\backend_django\templates\contacts\contacts.html:46
+msgid "Kosmetologie"
+msgstr "Косметологія"
+
+#: .\src\backend_django\features\main\models\category.py:17
+msgid "Brows & Lashes"
+msgstr "Брови та Вії"
+
+#: .\src\backend_django\features\main\models\category.py:18
+msgid "Massage & Relax"
+msgstr "Масаж та Релакс"
+
+#: .\src\backend_django\features\main\models\category.py:19
+#: .\src\backend_django\templates\contacts\contacts.html:48
+msgid "Depilation"
+msgstr "Депіляція"
+
+#: .\src\backend_django\features\main\models\category.py:22
+#: .\src\backend_django\features\main\models\service.py:22
+msgid "Title"
+msgstr "Назва"
+
+#: .\src\backend_django\features\main\models\category.py:22
+msgid "Category name (e.g. 'Maniküre')."
+msgstr "Назва категорії (наприклад, 'Манікюр')."
+
+#: .\src\backend_django\features\main\models\category.py:23
+msgid "URL part (e.g. 'manicure')."
+msgstr "Частина URL (наприклад, 'manicure')."
+
+#: .\src\backend_django\features\main\models\category.py:28
+msgid "Bento Group"
+msgstr "Група Bento"
+
+#: .\src\backend_django\features\main\models\category.py:29
+msgid ""
+"Group for the main page grid (e.g. 'Nails' combines Manicure & Pedicure)."
+msgstr ""
+"Група для сітки головної сторінки (наприклад, 'Nails' об'єднує Манікюр та "
+"Педикюр)."
+
+#: .\src\backend_django\features\main\models\category.py:34
+msgid "Background image for Hero section and Bento card."
+msgstr "Фонове зображення для секції Hero та картки Bento."
+
+#: .\src\backend_django\features\main\models\category.py:37
+msgid "Short description displayed in the Hero section."
+msgstr "Короткий опис, що відображається в секції Hero."
+
+#: .\src\backend_django\features\main\models\category.py:41
+msgid "SEO Text / Content"
+msgstr "SEO Текст / Контент"
+
+#: .\src\backend_django\features\main\models\category.py:42
+msgid "Detailed text displayed at the bottom of the category page."
+msgstr "Детальний текст, що відображається внизу сторінки категорії."
+
+#: .\src\backend_django\features\main\models\category.py:48
+msgid "Icon"
+msgstr "Іконка"
+
+#: .\src\backend_django\features\main\models\category.py:49
+msgid "SVG icon for menu or footer (optional)."
+msgstr "SVG іконка для меню або футера (опціонально)."
+
+#: .\src\backend_django\features\main\models\category.py:52
+#: .\src\backend_django\features\main\models\service.py:56
+#: .\src\backend_django\features\main\models\service.py:91
+msgid "Order"
+msgstr "Порядок"
+
+#: .\src\backend_django\features\main\models\category.py:52
+msgid "Sorting order (lower numbers come first)."
+msgstr "Порядок сортування (менші числа йдуть першими)."
+
+#: .\src\backend_django\features\main\models\category.py:56
+#: .\src\backend_django\features\main\models\service.py:18
+msgid "Category"
+msgstr "Категорія"
+
+#: .\src\backend_django\features\main\models\service.py:19
+msgid "Main category (for filtering)."
+msgstr "Основна категорія (для фільтрації)."
+
+#: .\src\backend_django\features\main\models\service.py:22
+msgid "Service name (e.g. 'Klassische Maniküre')."
+msgstr "Назва послуги (наприклад, 'Класичний манікюр')."
+
+#: .\src\backend_django\features\main\models\service.py:24
+msgid "URL part (e.g. 'classic-manicure')."
+msgstr "Частина URL (наприклад, 'classic-manicure')."
+
+#: .\src\backend_django\features\main\models\service.py:29
+msgid "Base price for sorting and calculation."
+msgstr "Базова ціна для сортування та розрахунків."
+
+#: .\src\backend_django\features\main\models\service.py:34
+msgid "Price Display Text"
+msgstr "Текст ціни для відображення"
+
+#: .\src\backend_django\features\main\models\service.py:35
+msgid "Text to display (e.g. 'ab 30€'). If empty, uses Price field."
+msgstr ""
+"Текст для відображення (наприклад, 'від 30€'). Якщо порожньо, "
+"використовується поле Ціна."
+
+#: .\src\backend_django\features\main\models\service.py:37
+msgid "Duration (min)"
+msgstr "Тривалість (хв)"
+
+#: .\src\backend_django\features\main\models\service.py:37
+msgid "Duration in minutes."
+msgstr "Тривалість у хвилинах."
+
+#: .\src\backend_django\features\main\models\service.py:39
+msgid "Displayed in the list view."
+msgstr "Відображається у списку."
+
+#: .\src\backend_django\features\main\models\service.py:43
+msgid "Full Content"
+msgstr "Повний контент"
+
+#: .\src\backend_django\features\main\models\service.py:44
+msgid "Detailed description/article about the service (HTML/Markdown)."
+msgstr "Детальний опис/стаття про послугу (HTML/Markdown)."
+
+#: .\src\backend_django\features\main\models\service.py:51
+msgid "Photo of the specific service."
+msgstr "Фото конкретної послуги."
+
+#: .\src\backend_django\features\main\models\service.py:54
+msgid "Hit / Popular"
+msgstr "Хіт / Популярне"
+
+#: .\src\backend_django\features\main\models\service.py:54
+msgid "Highlight this service as popular."
+msgstr "Виділити цю послугу як популярну."
+
+#: .\src\backend_django\features\main\models\service.py:56
+msgid "Sorting order."
+msgstr "Порядок сортування."
+
+#: .\src\backend_django\features\main\models\service.py:82
+msgid "High quality photo. Will be resized by CSS."
+msgstr "Фото високої якості. Буде змінено через CSS."
+
+#: .\src\backend_django\features\main\models\service.py:87
+msgid "Title / Description"
+msgstr "Заголовок / Опис"
+
+#: .\src\backend_django\features\main\models\service.py:88
+msgid "Optional caption for the image."
+msgstr "Опціональний підпис до зображення."
+
+#: .\src\backend_django\features\main\models\service.py:91
+msgid "Sorting order in the gallery."
+msgstr "Порядок сортування в галереї."
+
+#: .\src\backend_django\features\main\models\service.py:96
+msgid "Portfolio Images"
+msgstr "Зображення портфоліо"
+
+#: .\src\backend_django\features\system\admin.py:25
+msgid "Page Identification"
+msgstr "Ідентифікація сторінки"
+
+#: .\src\backend_django\features\system\admin.py:29
+msgid "SEO Meta Tags"
+msgstr "SEO мета-теги"
+
+#: .\src\backend_django\features\system\admin.py:33
+#, fuzzy
+#| msgid "OG Image"
+msgid "Open Graph Image"
+msgstr "OG Зображення"
+
+#: .\src\backend_django\features\system\admin.py:38
+#: .\src\backend_django\features\system\models\mixins.py:57
+msgid "SEO Title"
+msgstr "SEO Заголовок"
+
+#: .\src\backend_django\features\system\admin.py:64
+#, fuzzy
+#| msgid "Short Description"
+msgid "No description"
+msgstr "Короткий опис"
+
+#: .\src\backend_django\features\system\admin.py:67
+#: .\src\backend_django\features\system\models\mixins.py:67
+msgid "OG Image"
+msgstr "OG Зображення"
+
+#: .\src\backend_django\features\system\admin.py:73
+msgid "Yes"
+msgstr "Так"
+
+#: .\src\backend_django\features\system\admin.py:77
+msgid "No"
+msgstr "Ні"
+
+#: .\src\backend_django\features\system\admin.py:92
+msgid "General Information"
+msgstr "Загальна інформація"
+
+#: .\src\backend_django\features\system\admin.py:96
+#, fuzzy
+#| msgid "Contacts Page"
+msgid "Contact Details"
+msgstr "Сторінка контактів"
+
+#: .\src\backend_django\features\system\admin.py:108
+#: .\src\backend_django\features\system\admin.py:131
+msgid "Social Media"
+msgstr "Соціальні мережі"
+
+#: .\src\backend_django\features\system\admin.py:112
+msgid "Working Hours"
+msgstr "Години роботи"
+
+#: .\src\backend_django\features\system\models\mixins.py:18
+msgid "Created at"
+msgstr "Створено"
+
+#: .\src\backend_django\features\system\models\mixins.py:19
+msgid "Updated at"
+msgstr "Оновлено"
+
+#: .\src\backend_django\features\system\models\mixins.py:36
+msgid "If unchecked, this item will be completely hidden from the site."
+msgstr "Якщо не позначено, цей елемент буде повністю приховано з сайту."
+
+#: .\src\backend_django\features\system\models\mixins.py:40
+msgid "Available for Booking"
+msgstr "Доступно для бронювання"
+
+#: .\src\backend_django\features\system\models\mixins.py:41
+msgid "If unchecked, shows 'Temporarily Unavailable' (e.g. no masters)."
+msgstr ""
+"Якщо не позначено, показує 'Тимчасово недоступно' (наприклад, немає "
+"майстрів)."
+
+#: .\src\backend_django\features\system\models\mixins.py:44
+msgid "Planned / Coming Soon"
+msgstr "Планується / Скоро"
+
+#: .\src\backend_django\features\system\models\mixins.py:44
+msgid "If checked, shows 'Coming Soon' badge."
+msgstr "Якщо позначено, показує значок 'Скоро'."
+
+#: .\src\backend_django\features\system\models\mixins.py:58
+msgid "Browser tab title. Defaults to object title if empty."
+msgstr ""
+"Заголовок вкладки браузера. За замовчуванням заголовок об'єкта, якщо "
+"порожньо."
+
+#: .\src\backend_django\features\system\models\mixins.py:61
+msgid "SEO Description"
+msgstr "SEO Опис"
+
+#: .\src\backend_django\features\system\models\mixins.py:61
+msgid "Meta description for search engines."
+msgstr "Мета-опис для пошукових систем."
+
+#: .\src\backend_django\features\system\models\mixins.py:68
+msgid "Image for social media sharing (1200x630px recommended)."
+msgstr "Зображення для соцмереж (рекомендовано 1200x630px)."
+
+#: .\src\backend_django\features\system\models\seo.py:20
+msgid "Home Page"
+msgstr "Головна сторінка"
+
+#: .\src\backend_django\features\system\models\seo.py:21
+msgid "Contacts Page"
+msgstr "Сторінка контактів"
+
+#: .\src\backend_django\features\system\models\seo.py:22
+msgid "Team Page"
+msgstr "Сторінка команди"
+
+#: .\src\backend_django\features\system\models\seo.py:23
+msgid "Services List Page"
+msgstr "Сторінка списку послуг"
+
+#: .\src\backend_django\features\system\models\seo.py:24
+#: .\src\backend_django\templates\includes\_footer.html:63
+msgid "Impressum"
+msgstr "Імпресум"
+
+#: .\src\backend_django\features\system\models\seo.py:25
+#: .\src\backend_django\templates\includes\_footer.html:65
+msgid "Datenschutz"
+msgstr "Політика конфіденційності"
+
+#: .\src\backend_django\features\system\models\seo.py:32
+msgid "Page Key"
+msgstr "Ключ сторінки"
+
+#: .\src\backend_django\features\system\models\seo.py:33
+msgid "Unique identifier for the static page."
+msgstr "Унікальний ідентифікатор для статичної сторінки."
+
+#: .\src\backend_django\features\system\models\seo.py:37
+msgid "Static Page SEO"
+msgstr "SEO статичної сторінки"
+
+#: .\src\backend_django\features\system\models\seo.py:38
+msgid "Static Pages SEO"
+msgstr "SEO статичних сторінок"
+
+#: .\src\backend_django\features\system\models\site_settings.py:11
+msgid "Company Name"
+msgstr "Назва компанії"
+
+#: .\src\backend_django\features\system\models\site_settings.py:12
+msgid "Owner Name"
+msgstr "Ім'я власника"
+
+#: .\src\backend_django\features\system\models\site_settings.py:13
+msgid "Tax Number (Steuernummer)"
+msgstr "Податковий номер"
+
+#: .\src\backend_django\features\system\models\site_settings.py:16
+msgid "Phone"
+msgstr "Телефон"
+
+#: .\src\backend_django\features\system\models\site_settings.py:18
+msgid "Street"
+msgstr "Вулиця"
+
+#: .\src\backend_django\features\system\models\site_settings.py:19
+msgid "City & ZIP"
+msgstr "Місто та індекс"
+
+#: .\src\backend_django\features\system\models\site_settings.py:20
+msgid "Google Maps Link"
+msgstr "Посилання на Google Maps"
+
+#: .\src\backend_django\features\system\models\site_settings.py:23
+msgid "Instagram URL"
+msgstr "Instagram URL"
+
+#: .\src\backend_django\features\system\models\site_settings.py:24
+msgid "Telegram URL"
+msgstr "Telegram URL"
+
+#: .\src\backend_django\features\system\models\site_settings.py:25
+msgid "WhatsApp URL"
+msgstr "WhatsApp URL"
+
+#: .\src\backend_django\features\system\models\site_settings.py:28
+msgid "Mo-Fr"
+msgstr "Пн-Пт"
+
+#: .\src\backend_django\features\system\models\site_settings.py:29
+msgid "Saturday"
+msgstr "Субота"
+
+#: .\src\backend_django\features\system\models\site_settings.py:30
+msgid "Sunday"
+msgstr "Неділя"
+
+#: .\src\backend_django\features\system\models\site_settings.py:33
+#, fuzzy
+#| msgid "Active"
+msgid "Hiring Active"
+msgstr "Активно"
+
+#: .\src\backend_django\features\system\models\site_settings.py:34
+msgid "Hiring Title"
+msgstr "Заголовок набору"
+
+#: .\src\backend_django\features\system\models\site_settings.py:35
+msgid "Hiring Text"
+msgstr "Текст набору"
+
+#: .\src\backend_django\features\system\models\site_settings.py:38
+#: .\src\backend_django\features\system\models\site_settings.py:39
+msgid "Site Settings"
+msgstr "Налаштування сайту"
+
+#: .\src\backend_django\templates\400.html:5
+#: .\src\backend_django\templates\400.html:11
+msgid "Ungültige Anfrage"
+msgstr "Невірний запит"
+
+#: .\src\backend_django\templates\400.html:13
+msgid "Der Server konnte Ihre Anfrage nicht verarbeiten."
+msgstr "Сервер не зміг обробити ваш запит."
+
+#: .\src\backend_django\templates\400.html:15
+#: .\src\backend_django\templates\403.html:15
+#: .\src\backend_django\templates\404.html:15
+#: .\src\backend_django\templates\500.html:15
+msgid "Zur Startseite"
+msgstr "На головну"
+
+#: .\src\backend_django\templates\403.html:5
+#: .\src\backend_django\templates\403.html:11
+msgid "Zugriff verweigert"
+msgstr "Доступ заборонено"
+
+#: .\src\backend_django\templates\403.html:13
+msgid "Sie haben keine Berechtigung, diese Seite aufzurufen."
+msgstr "У вас немає прав для перегляду цієї сторінки."
+
+#: .\src\backend_django\templates\404.html:5
+#: .\src\backend_django\templates\404.html:11
+msgid "Seite nicht gefunden"
+msgstr "Сторінка не знайдена"
+
+#: .\src\backend_django\templates\404.html:13
+msgid ""
+"Die von Ihnen gesuchte Seite existiert leider nicht oder wurde verschoben."
+msgstr "Запитувана сторінка не існує або була переміщена."
+
+#: .\src\backend_django\templates\500.html:5
+msgid "Serverfehler"
+msgstr "Помилка сервера"
+
+#: .\src\backend_django\templates\500.html:11
+msgid "Interner Serverfehler"
+msgstr "Внутрішня помилка сервера"
+
+#: .\src\backend_django\templates\500.html:13
+msgid "Es ist ein Fehler aufgetreten. Wir arbeiten bereits daran."
+msgstr "Сталася помилка. Ми вже працюємо над цим."
+
+#: .\src\backend_django\templates\contacts\contacts.html:5
+msgid "Kontakt & Über uns"
+msgstr "Контакти та Про нас"
+
+#: .\src\backend_django\templates\contacts\contacts.html:12
+msgid "Kontaktieren Sie uns"
+msgstr "Зв'яжіться з нами"
+
+#: .\src\backend_django\templates\contacts\contacts.html:13
+msgid "ÜBER UNS & KONTAKT"
+msgstr "ПРО НАС ТА КОНТАКТИ"
+
+#: .\src\backend_django\templates\contacts\contacts.html:19
+msgid "Willkommen bei LILY"
+msgstr "Ласкаво просимо в LILY"
+
+#: .\src\backend_django\templates\contacts\contacts.html:21
+msgid ""
+"LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellen "
+"Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern "
+"auch ein innerer Zustand des Selbstvertrauens."
+msgstr ""
+"Салон краси LILY — це місце, де німецька якість зустрічається з "
+"індивідуальним підходом. Ми віримо, що краса — це не тільки зовнішність, а й "
+"внутрішній стан впевненості."
+
+#: .\src\backend_django\templates\contacts\contacts.html:24
+msgid ""
+"Unsere Meister verwenden nur Premium-Materialien (Wella, L'Oreal, Luxio) und "
+"moderne Techniken, um Ihre natürliche Einzigartigkeit zu unterstreichen."
+msgstr ""
+"Наші майстри використовують тільки преміальні матеріали (Wella, L'Oreal, "
+"Luxio) та сучасні техніки, щоб підкреслити вашу природну унікальність."
+
+#: .\src\backend_django\templates\contacts\contacts.html:27
+msgid "Ihre Schönheit ist unsere Kunst."
+msgstr "Ваша краса — наше мистецтво."
+
+#: .\src\backend_django\templates\contacts\contacts.html:35
+msgid "Vorname *"
+msgstr "Ім'я *"
+
+#: .\src\backend_django\templates\contacts\contacts.html:36
+msgid "Nachname"
+msgstr "Прізвище"
+
+#: .\src\backend_django\templates\contacts\contacts.html:38
+msgid "Adresse / Stadt"
+msgstr "Адреса / Місто"
+
+#: .\src\backend_django\templates\contacts\contacts.html:39
+msgid "Telefon *"
+msgstr "Телефон *"
+
+#: .\src\backend_django\templates\contacts\contacts.html:43
+msgid "Wählen Sie eine Dienstleistung..."
+msgstr "Виберіть послугу..."
+
+#: .\src\backend_django\templates\contacts\contacts.html:44
+msgid "Friseur"
+msgstr "Перукар"
+
+#: .\src\backend_django\templates\contacts\contacts.html:47
+msgid "Augenbrauen & Wimpern"
+msgstr "Брови та Вії"
+
+#: .\src\backend_django\templates\contacts\contacts.html:49
+msgid "Massage"
+msgstr "Масаж"
+
+#: .\src\backend_django\templates\contacts\contacts.html:50
+msgid "Andere Frage"
+msgstr "Інше питання"
+
+#: .\src\backend_django\templates\contacts\contacts.html:54
+msgid "Ihre Frage oder Kommentar..."
+msgstr "Ваше питання або коментар..."
+
+#: .\src\backend_django\templates\contacts\contacts.html:57
+msgid "Anfrage senden"
+msgstr "Надіслати запит"
+
+#: .\src\backend_django\templates\contacts\contacts.html:67
+msgid "Unsere Adresse"
+msgstr "Наша адреса"
+
+#: .\src\backend_django\templates\contacts\contacts.html:74
+msgid "Telefon"
+msgstr "Телефон"
+
+#: .\src\backend_django\templates\contacts\contacts.html:77
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: .\src\backend_django\templates\contacts\contacts.html:80
+msgid "Öffnungszeiten"
+msgstr "Години роботи"
+
+#: .\src\backend_django\templates\contacts\contacts.html:92
+msgid "Klicken Sie unten, um Google Maps zu öffnen"
+msgstr "Натисніть нижче, щоб відкрити Google Maps"
+
+#: .\src\backend_django\templates\contacts\contacts.html:97
+msgid "📍 Route planen"
+msgstr "📍 Прокласти маршрут"
+
+#: .\src\backend_django\templates\home\home.html:13
+msgid "Premium Beauty Salon"
+msgstr "Преміум Салон Краси"
+
+#: .\src\backend_django\templates\home\home.html:14
+msgid "Die Kunst"
+msgstr "Мистецтво"
+
+#: .\src\backend_django\templates\home\home.html:14
+msgid "Ihrer Schönheit"
+msgstr "Вашої Краси"
+
+#: .\src\backend_django\templates\home\home.html:15
+msgid ""
+"Deutsche Qualitätsstandards treffen auf ukrainische Servicekunst. Wir "
+"kreieren Looks, die inspirieren."
+msgstr ""
+"Німецькі стандарти якості зустрічаються з українським мистецтвом сервісу. Ми "
+"створюємо образи, які надихають."
+
+#: .\src\backend_django\templates\home\home.html:16
+#: .\src\backend_django\templates\services\detail.html:82
+msgid "Termin buchen"
+msgstr "Записатися"
+
+#: .\src\backend_django\templates\home\home.html:29
+msgid "Unsere Leistungen"
+msgstr "Наші послуги"
+
+#: .\src\backend_django\templates\home\home.html:30
+msgid "Wählen Sie eine Richtung"
+msgstr "Виберіть напрямок"
+
+#: .\src\backend_django\templates\home\home.html:44
+msgid "Demnächst"
+msgstr "Незабаром"
+
+#: .\src\backend_django\templates\includes\_footer.html:16
+#: .\src\backend_django\templates\includes\_footer.html:17
+msgid "Kontakt & Leistungen öffnen"
+msgstr "Відкрити Контакти та Послуги"
+
+#: .\src\backend_django\templates\includes\_footer.html:16
+msgid "Schließen"
+msgstr "Закрити"
+
+#: .\src\backend_django\templates\includes\_footer.html:36
+msgid "Frisuren & Haarpflege"
+msgstr "Зачіски та Догляд за волоссям"
+
+#: .\src\backend_django\templates\includes\_footer.html:38
+msgid "Haarschnitte"
+msgstr "Стрижки"
+
+#: .\src\backend_django\templates\includes\_footer.html:39
+msgid "Färben"
+msgstr "Фарбування"
+
+#: .\src\backend_django\templates\includes\_footer.html:40
+msgid "Haarbehandlung"
+msgstr "Лікування волосся"
+
+#: .\src\backend_django\templates\includes\_footer.html:41
+msgid "Styling"
+msgstr "Укладка"
+
+#: .\src\backend_django\templates\includes\_footer.html:47
+msgid "Maniküre"
+msgstr "Манікюр"
+
+#: .\src\backend_django\templates\includes\_footer.html:48
+msgid "Pediküre"
+msgstr "Педикюр"
+
+#: .\src\backend_django\templates\includes\_footer.html:49
+msgid "Verlängerung"
+msgstr "Нарощування"
+
+#: .\src\backend_django\templates\includes\_footer.html:53
+msgid "Schönheit & Pflege"
+msgstr "Краса та Догляд"
+
+#: .\src\backend_django\templates\includes\_footer.html:55
+msgid "Epilation"
+msgstr "Епіляція"
+
+#: .\src\backend_django\templates\includes\_footer.html:56
+msgid "Wimpernverlängerung"
+msgstr "Нарощування вій"
+
+#: .\src\backend_django\templates\includes\_footer.html:57
+msgid "Laminierung"
+msgstr "Ламінування"
+
+#: .\src\backend_django\templates\includes\_header.html:27
+#: .\src\backend_django\templates\includes\_header.html:63
+msgid "Startseite"
+msgstr "Головна"
+
+#: .\src\backend_django\templates\includes\_header.html:28
+#: .\src\backend_django\templates\includes\_header.html:64
+msgid "Leistungen"
+msgstr "Послуги"
+
+#: .\src\backend_django\templates\includes\_header.html:29
+#: .\src\backend_django\templates\includes\_header.html:65
+msgid "Team"
+msgstr "Команда"
+
+#: .\src\backend_django\templates\includes\_header.html:30
+#: .\src\backend_django\templates\includes\_header.html:66
+msgid "Kontakt"
+msgstr "Контакти"
+
+#: .\src\backend_django\templates\services\detail.html:5
+msgid "Leistung"
+msgstr "Послуга"
+
+#: .\src\backend_django\templates\services\detail.html:13
+msgid "LILY BEAUTY SALON"
+msgstr "LILY BEAUTY SALON"
+
+#: .\src\backend_django\templates\services\detail.html:33
+#, fuzzy
+#| msgid "Preisliste"
+msgid "Preise"
+msgstr "Прайс-лист"
+
+#: .\src\backend_django\templates\services\detail.html:57
+#, fuzzy
+#| msgid "Mehr über Dienstleistungen und Meister"
+msgid "Keine Dienstleistungen gefunden."
+msgstr "Детальніше про послуги та майстрів"
+
+#: .\src\backend_django\templates\services\detail.html:66
+msgid "Ihre Experten"
+msgstr "Ваші експерти"
+
+#: .\src\backend_django\templates\services\services.html:11
+msgid "Preisliste"
+msgstr "Прайс-лист"
+
+#: .\src\backend_django\templates\services\services.html:12
+msgid "AKTUELLE PREISE"
+msgstr "АКТУАЛЬНІ ЦІНИ"
+
+#: .\src\backend_django\templates\services\services.html:56
+msgid "Mehr über"
+msgstr "Детальніше про"
+
+#: .\src\backend_django\templates\team\team.html:12
+msgid "Unser Team"
+msgstr "Наша команда"
+
+#: .\src\backend_django\templates\team\team.html:13
+msgid "SCHÖNHEITSEXPERTEN"
+msgstr "ЕКСПЕРТИ КРАСИ"
+
+#: .\src\backend_django\templates\team\team.html:55
+#, fuzzy
+#| msgid "Unsere Leistungen"
+msgid "Unsere Meister"
+msgstr "Наші послуги"
+
+#: .\src\backend_django\templates\team\team.html:85
+msgid "Bewerben"
+msgstr "Подати заявку"
+
+#~ msgid "Group name (e.g. 'Maniküre')."
+#~ msgstr "Назва групи (наприклад, 'Манікюр')."
+
+#~ msgid "Sorting order within the category."
+#~ msgstr "Порядок сортування всередині категорії."
+
+#~ msgid "Service Group"
+#~ msgstr "Група послуг"
+
+#~ msgid "Service Groups"
+#~ msgstr "Групи послуг"
+
+#~ msgid "Group"
+#~ msgstr "Група"
+
+#~ msgid "Optional grouping within the category."
+#~ msgstr "Опціональне групування всередині категорії."
+
+#~ msgid "Perfekte Maniküre & Pediküre"
+#~ msgstr "Ідеальний Манікюр та Педикюр"
+
+#~ msgid "NAGELSERVICE"
+#~ msgstr "НІГТЬОВИЙ СЕРВІС"
+
+#~ msgid ""
+#~ "Bei LILY verwandeln wir die Nagelpflege in ein echtes Schönheitsritual. "
+#~ "Wir sind spezialisiert auf kombinierte Maniküre, perfekte Ausrichtung der "
+#~ "Nagelplatte und die Verwendung von Premium-Materialien wie Luxio. Unsere "
+#~ "Meister beherrschen Smart-Pediküre-Techniken für perfekt glatte Füße. Wir "
+#~ "legen besonderen Wert auf Sicherheit und Sterilität, damit Sie sich "
+#~ "vollkommen entspannen und den Prozess der Schaffung Ihres perfekten Looks "
+#~ "bis in die Fingerspitzen genießen können."
+#~ msgstr ""
+#~ "У LILY ми перетворюємо догляд за нігтями на справжній ритуал краси. Ми "
+#~ "спеціалізуємося на комбінованому манікюрі, ідеальному вирівнюванні "
+#~ "нігтьової пластини та використанні преміальних матеріалів, таких як "
+#~ "Luxio. Наші майстри володіють техніками Smart-педикюру для ідеально "
+#~ "гладких стоп. Ми приділяємо особливу увагу безпеці та стерильності, щоб "
+#~ "ви могли повністю розслабитися та насолодитися процесом створення вашого "
+#~ "ідеального образу до кінчиків пальців."
+
+#~ msgid "Maniküre & Pediküre"
+#~ msgstr "Манікюр та Педикюр"
+
+#~ msgid "Damenmaniküre"
+#~ msgstr "Жіночий манікюр"
+
+#~ msgid "Maniküre + Gellack"
+#~ msgstr "Манікюр + Гель-лак"
+
+#~ msgid "Maniküre + normaler Nagellack"
+#~ msgstr "Манікюр + Звичайний лак"
+
+#~ msgid "Nageldesignerin"
+#~ msgstr "Майстер манікюру"
+
+#~ msgid "Gründerin & Art Director"
+#~ msgstr "Засновник та Арт-директор"
+
+#~ msgid ""
+#~ "Willkommen im LILY Beauty Space. Hier kreieren wir nicht nur Looks, "
+#~ "sondern Stimmungen. Meine Mission ist es, Ihnen Selbstvertrauen und "
+#~ "höchste Servicequalität in einer gemütlichen Atmosphäre zu schenken."
+#~ msgstr ""
+#~ "Ласкаво просимо в LILY Beauty Space. Тут ми створюємо не просто образи, а "
+#~ "настрій. Моя місія — подарувати вам впевненість у собі та найвищу якість "
+#~ "сервісу в затишній атмосфері."
+
+#~ msgid ""
+#~ "(Hier kann Liliia ihre Geschichte oder Begrüßung für Kunden schreiben)"
+#~ msgstr "(Тут Лілія може написати свою історію або привітання для клієнтів)"
+
+#~ msgid "Liliia schreiben"
+#~ msgstr "Написати Лілії"
+
+#~ msgid "Top-Meister"
+#~ msgstr "Топ-майстер"
+
+#~ msgid "Top-Colorist"
+#~ msgstr "Топ-колорист"
+
+#~ msgid "Kosmetikerin"
+#~ msgstr "Косметолог"

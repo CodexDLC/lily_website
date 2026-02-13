@@ -34,6 +34,12 @@ class UnifiedViewDTO(BaseModel):
     clean_history: bool = False
     alert_text: str | None = None  # Для всплывающих уведомлений (answer_callback_query)
 
+    # --- Routing & Session ---
+    chat_id: int | str | None = None  # ID чата/канала
+    session_key: int | str | None = None  # Ключ сессии для Redis (user_id или session_id)
+    mode: str | None = None  # "channel", "topic" или None (private)
+    message_thread_id: int | None = None  # ID топика (для mode="topic")
+
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 

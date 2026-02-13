@@ -2,18 +2,17 @@
 import asyncio
 from logging.config import fileConfig
 
-# ✨ Import all models
-import src.telegram_bot.database.models  # noqa: F401
-
-from src.telegram_bot.core.config import BotSettings
+from alembic import context
 from sqlalchemy import MetaData, pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-from alembic import context
+# ✨ Import all models
+import src.telegram_bot.database.models  # noqa: F401
+from src.telegram_bot.core.config import BotSettings
 
 # Settings
-settings = BotSettings()
+settings = BotSettings()  # type: ignore[call-arg]
 
 # Alembic Config
 config = context.config
@@ -28,6 +27,7 @@ if settings.DATABASE_URL:
 # Import Base from models (create it if not exists yet)
 try:
     from src.telegram_bot.database.models.base import Base
+
     target_metadata = Base.metadata
 except ImportError:
     target_metadata = MetaData()

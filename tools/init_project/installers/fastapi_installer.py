@@ -7,12 +7,14 @@ FastAPI уже готов в шаблоне. Installer просто оставл
 
 from __future__ import annotations
 
-from tools.init_project.config import InstallContext
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from tools.init_project.config import InstallContext
 from tools.init_project.installers.base import BaseInstaller
 
 
 class FastAPIInstaller(BaseInstaller):
-
     name = "FastAPI"
 
     def install(self, ctx: InstallContext) -> None:
