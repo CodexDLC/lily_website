@@ -1,0 +1,36 @@
+[
+  {
+    "model": "booking.master",
+    "pk": 1,
+    "fields": {
+      "name": "Liliia Yakina",
+      "slug": "liliia-yakina",
+      "photo": "masters/lily.webp",
+      "title_de": "Gründerin & Art Director",
+      "title_en": "Founder & Art Director",
+      "title_ru": "Основатель и Арт-директор",
+      "title_uk": "Засновник і Арт-директор",
+      "bio_de": "Willkommen im LILY Beauty Space. Hier kreieren wir nicht nur Looks, sondern Stimmungen. Meine Mission ist es, Ihnen Selbstvertrauen und höchste Servicequalität in einer gemütlichen Atmosphäre zu schenken.",
+      "bio_en": "Welcome to LILY Beauty Space. Here we create not just looks, but moods. My mission is to give you confidence and the highest quality of service in a cozy atmosphere.",
+      "bio_ru": "Добро пожаловать в LILY Beauty Space. Здесь мы создаем не просто образы, а настроение. Моя миссия — подарить вам уверенность в себе и высочайшее качество сервиса в уютной атмосфере.",
+      "bio_uk": "Ласкаво просимо до LILY Beauty Space. Тут ми створюємо не просто образи, а настрій. Моя місія — подарувати вам впевненість у собі та найвищу якість сервісу в затишній атмосфері.",
+      "short_description_de": "Inhaberin und führende Meisterin des LILY Beauty Space",
+      "short_description_en": "Owner and leading master of LILY Beauty Space",
+      "short_description_ru": "Владелица и ведущий мастер LILY Beauty Space",
+      "short_description_uk": "Власниця та провідний майстер LILY Beauty Space",
+      "years_experience": 10,
+      "instagram": "manikure_kothen",
+      "phone": "+49 176 59423704",
+      "status": "active",
+      "is_owner": true,
+      "is_featured": true,
+      "order": 0,
+      "telegram_id": 1015694494,
+      "telegram_username": "Lily_prekrasnay",
+      "bot_access_code": "LILY0001",
+      "qr_token": "OWNER001",
+      "created_at": "2023-01-01T00:00:00Z",
+      "updated_at": "2023-01-01T00:00:00Z"
+    }
+  }
+]

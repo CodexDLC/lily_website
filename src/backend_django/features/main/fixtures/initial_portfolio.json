@@ -1,0 +1,170 @@
+[
+  {
+    "model": "main.portfolioimage",
+    "pk": 1,
+    "fields": {
+      "service": 2,
+      "image": "portfolio/nails/nude_gama_01.jpg",
+      "title": "Nude Manicure (Ga&Ma Cover Pink)",
+      "order": 1,
+      "created_at": "2023-10-28T10:00:00Z",
+      "updated_at": "2023-10-28T10:00:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 2,
+    "fields": {
+      "service": 2,
+      "image": "portfolio/nails/dark_french_02.jpg",
+      "title": "Minimalist French (Dark Builder Gel)",
+      "order": 2,
+      "created_at": "2023-10-28T10:05:00Z",
+      "updated_at": "2023-10-28T10:05:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 3,
+    "fields": {
+      "service": 2,
+      "image": "portfolio/nails/red_classic_03.jpg",
+      "title": "Klassisches Rot / Идеальный красный",
+      "order": 3,
+      "created_at": "2023-10-28T10:10:00Z",
+      "updated_at": "2023-10-28T10:10:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 4,
+    "fields": {
+      "service": 4,
+      "image": "portfolio/pedicure/smart_heels_before_after.jpg",
+      "title": "Smart Pedicure: Vorher & Nachher / До и После",
+      "order": 1,
+      "created_at": "2023-10-28T10:15:00Z",
+      "updated_at": "2023-10-28T10:15:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 5,
+    "fields": {
+      "service": 4,
+      "image": "portfolio/pedicure/smart_toes_coating.jpg",
+      "title": "Ästhetik & Hygiene / Эстетика пальчиков",
+      "order": 2,
+      "created_at": "2023-10-28T10:20:00Z",
+      "updated_at": "2023-10-28T10:20:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 6,
+    "fields": {
+      "service": 6,
+      "image": "portfolio/hair/airtouch_ice_blonde.jpg",
+      "title": "Airtouch: Ice Blonde Transformation",
+      "order": 1,
+      "created_at": "2023-10-28T10:25:00Z",
+      "updated_at": "2023-10-28T10:25:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 7,
+    "fields": {
+      "service": 6,
+      "image": "portfolio/hair/balayage_honey.jpg",
+      "title": "Honey Balayage / Медовый балаяж",
+      "order": 2,
+      "created_at": "2023-10-28T10:30:00Z",
+      "updated_at": "2023-10-28T10:30:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 8,
+    "fields": {
+      "service": 6,
+      "image": "portfolio/hair/shatush_brunette.jpg",
+      "title": "Shatush für Brünette / Шатуш для брюнеток",
+      "order": 3,
+      "created_at": "2023-10-28T10:35:00Z",
+      "updated_at": "2023-10-28T10:35:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 9,
+    "fields": {
+      "service": 8,
+      "image": "portfolio/face/hydrafacial_process.jpg",
+      "title": "HydraFacial: Tiefenreinigung / Глубокое очищение",
+      "order": 1,
+      "created_at": "2023-10-28T10:40:00Z",
+      "updated_at": "2023-10-28T10:40:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 10,
+    "fields": {
+      "service": 8,
+      "image": "portfolio/face/glow_result.jpg",
+      "title": "Der 'Hollywood Glow' Effekt",
+      "order": 2,
+      "created_at": "2023-10-28T10:45:00Z",
+      "updated_at": "2023-10-28T10:45:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 11,
+    "fields": {
+      "service": 12,
+      "image": "portfolio/brows/lamination_fluffy.jpg",
+      "title": "Brow Lift: Fluffy & Natural",
+      "order": 1,
+      "created_at": "2023-10-28T10:50:00Z",
+      "updated_at": "2023-10-28T10:50:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 12,
+    "fields": {
+      "service": 12,
+      "image": "portfolio/brows/lamination_defined.jpg",
+      "title": "Brow Lift: Defined Shape / Четкая форма",
+      "order": 2,
+      "created_at": "2023-10-28T10:55:00Z",
+      "updated_at": "2023-10-28T10:55:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 13,
+    "fields": {
+      "service": 13,
+      "image": "portfolio/lashes/volume_2d.jpg",
+      "title": "2D Volume Lashes / 2D Объем",
+      "order": 1,
+      "created_at": "2023-10-28T11:00:00Z",
+      "updated_at": "2023-10-28T11:00:00Z"
+    }
+  },
+  {
+    "model": "main.portfolioimage",
+    "pk": 14,
+    "fields": {
+      "service": 13,
+      "image": "portfolio/lashes/volume_3d_fox.jpg",
+      "title": "3D 'Foxy Eye' Effekt / Лисий эффект",
+      "order": 2,
+      "created_at": "2023-10-28T11:05:00Z",
+      "updated_at": "2023-10-28T11:05:00Z"
+    }
+  }
+]

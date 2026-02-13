@@ -1,0 +1,120 @@
+{% load i18n %}
+<div class="step-content fade-in" x-data="bookingForm()">
+    <div class="step-header-row">
+        <h2 class="step-heading">
+            {% trans "Ihre Daten" %}
+        </h2>
+        <button class="btn-back"
+                hx-get="{% url 'booking_wizard' %}?step=3&service_id={{ selected_service.id }}&master_id={{ selected_master.id }}"
+                hx-target="#wizard-content"
+                hx-swap="innerHTML">
+            ← {% trans "Zurück" %}
+        </button>
+    </div>
+
+    <form class="booking-form"
+          hx-post="{% url 'booking_wizard' %}"
+          hx-target="#wizard-content"
+          hx-swap="innerHTML">
+        {% csrf_token %}
+
+        <div class="form-grid">
+            <!-- First Name -->
+            <div class="form-group">
+                <label for="first_name">{% trans "Vorname" %} *</label>
+                <input type="text" id="first_name" name="first_name" x-model="form.firstName" @input="saveData" required placeholder="Maria">
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <label for="last_name">{% trans "Nachname" %} *</label>
+                <input type="text" id="last_name" name="last_name" x-model="form.lastName" @input="saveData" required placeholder="Müller">
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+                <label for="phone">{% trans "Telefonnummer" %} *</label>
+                <input type="tel" id="phone" name="phone" x-model="form.phone" @input="saveData" required placeholder="+49 123 456789">
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">{% trans "E-Mail" %} *</label>
+                <input type="email" id="email" name="email" x-model="form.email" @input="saveData" required placeholder="maria@example.com">
+            </div>
+
+            <!-- Client Notes (Full Width) -->
+            <div class="form-group full-width" style="grid-column: 1 / -1;">
+                <label for="client_notes">{% trans "Anmerkungen (Optional)" %}</label>
+                <textarea id="client_notes"
+                          name="client_notes"
+                          x-model="form.clientNotes"
+                          @input="saveData"
+                          placeholder="{% trans 'Bitte teilen Sie uns Ihre Wünsche, Besonderheiten oder Allergien mit...' %}"
+                          rows="3"
+                          style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(198,168,124,0.3); color: #fff; padding: 12px; border-radius: 4px; font-family: inherit; resize: vertical; outline: none; transition: border-color 0.3s;"></textarea>
+            </div>
+        </div>
+
+        <!-- Call Request Checkbox -->
+        <div class="form-group checkbox-group">
+            <label class="checkbox-container">
+                <input type="checkbox" name="request_call" x-model="form.requestCall">
+                <span class="checkmark"></span>
+                <span class="checkbox-text" style="color: var(--color-white);">
+                    {% trans "Bitte rufen Sie mich zur Bestätigung an" %}
+                </span>
+            </label>
+        </div>
+
+        <!-- Consent Checkbox -->
+        <div class="form-group checkbox-group">
+            <label class="checkbox-container">
+                <input type="checkbox" name="consent" x-model="form.consent" required>
+                <span class="checkmark"></span>
+                <span class="checkbox-text" style="color: var(--color-gold);">
+                    {% trans "Ich stimme zu, dass meine Daten gespeichert werden und ich Benachrichtigungen (SMS/E-Mail) zu meinem Termin erhalte." %}
+                </span>
+            </label>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+            <button type="submit" class="btn-confirm">
+                {% trans "Termin verbindlich buchen" %}
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<!-- Only include OOB updates for HTMX requests -->
+{% if request.headers.HX_Request %}
+    <!-- Update Sidebar via OOB -->
+    {% include "booking/includes/summary_card.html" %}
+    <!-- Update Stepper via OOB -->
+    {% include "booking/includes/stepper.html" %}
+{% endif %}
+
+<script>
+    function bookingForm() {
+        return {
+            form: {
+                firstName: localStorage.getItem('booking_firstName') || '',
+                lastName: localStorage.getItem('booking_lastName') || '',
+                phone: localStorage.getItem('booking_phone') || '',
+                email: localStorage.getItem('booking_email') || '',
+                clientNotes: localStorage.getItem('booking_clientNotes') || '',
+                consent: true,
+                requestCall: false
+            },
+            saveData() {
+                localStorage.setItem('booking_firstName', this.form.firstName);
+                localStorage.setItem('booking_lastName', this.form.lastName);
+                localStorage.setItem('booking_phone', this.form.phone);
+                localStorage.setItem('booking_email', this.form.email);
+                localStorage.setItem('booking_clientNotes', this.form.clientNotes);
+            }
+        }
+    }
+</script>

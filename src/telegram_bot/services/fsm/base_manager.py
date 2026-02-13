@@ -1,4 +1,4 @@
-from typing import Any, TypeVar, Generic
+from typing import Any, TypeVar, cast
 
 from aiogram.fsm.context import FSMContext
 
@@ -19,16 +19,16 @@ class BaseStateManager:
     async def get_payload(self) -> dict[str, Any]:
         """Возвращает все данные черновика."""
         data = await self.state.get_data()
-        return data.get(self.storage_key, {})
+        return cast("dict[str, Any]", data.get(self.storage_key, {}))
 
-    async def update(self, **kwargs) -> dict[str, Any]:
+    async def update(self, **kwargs: Any) -> dict[str, Any]:
         """
         Обновляет черновик переданными полями.
         Возвращает обновленный словарь.
         """
         current = await self.get_payload()
         current.update(kwargs)
-        
+
         await self.state.update_data({self.storage_key: current})
         return current
 

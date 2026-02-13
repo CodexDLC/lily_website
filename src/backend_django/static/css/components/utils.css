@@ -1,0 +1,111 @@
+/* =========================================
+   UTILITY CLASSES
+   ========================================= */
+
+/* Text Utilities */
+.text-center {
+    text-align: center;
+}
+
+.text-gold-italic {
+    color: var(--color-gold);
+    font-style: italic;
+}
+
+.text-small-muted {
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+}
+
+/* Link Utilities */
+.link-dashed {
+    border-bottom: 1px dashed rgba(255,255,255,0.3);
+}
+
+.link-dashed:hover {
+    border-bottom-color: var(--color-gold);
+}
+
+/* Separator */
+.separator-text {
+    opacity: 0.3;
+    margin: 0 5px;
+}
+
+.golden-separator {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--color-gold), transparent);
+    margin: 0 0 60px 0;
+    opacity: 0.5;
+}
+
+/* Developer Credit */
+.developer-credit {
+    font-size: 10px;
+    opacity: 0.4;
+    letter-spacing: 1px;
+}
+
+/* Footer Mobile Brand */
+.footer-mobile-brand {
+    color: var(--color-gold);
+    font-size: 12px;
+    letter-spacing: 2px;
+}
+
+/* QR Code */
+.qr-code-img {
+    width: 80px;
+    opacity: 0.8;
+}
+
+/* Bento Card Description */
+.bento-card-desc {
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* Service Description */
+.service-desc-small {
+    display: block;
+    font-size: 0.8em;
+    color: #888;
+    margin-top: 4px;
+}
+
+/* Price Info Text */
+.price-info-text {
+    font-size: 0.8em;
+    font-weight: normal;
+    margin-right: 4px;
+}
+
+/* More Link */
+.more-link {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-gold);
+    border-bottom: 1px solid rgba(237, 208, 113, 0.3);
+    padding-bottom: 5px;
+    transition: 0.3s;
+}
+
+.more-link:hover {
+    border-bottom-color: var(--color-gold);
+    padding-right: 10px;
+}
+
+/* Map Placeholder */
+.map-placeholder {
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+}
+
+.map-placeholder-icon {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 10px;
+}

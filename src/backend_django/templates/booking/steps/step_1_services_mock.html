@@ -1,0 +1,69 @@
+{% load i18n %}
+<div class="step-content fade-in">
+    <h3 class="step-heading">
+        {% trans "Wählen Sie eine Leistung" %}
+    </h3>
+
+    <!-- Category Filter (Tabs) -->
+    <div class="category-tabs">
+        {% for cat in categories %}
+        <button class="tab-btn {% if cat.slug == selected_category_slug %}active{% endif %}"
+                hx-get="{% url 'booking_wizard' %}?step=1&category={{ cat.slug }}"
+                hx-target="#wizard-content"
+                hx-swap="innerHTML">
+            {{ cat.title }}
+        </button>
+        {% endfor %}
+    </div>
+
+    <!-- Services List -->
+    <div class="services-list-wizard">
+
+        {% for service in services %}
+        <div class="service-card-wizard">
+            <div class="sc-info">
+                <h4 class="sc-title">{{ service.title }}</h4>
+                {% if service.description %}
+                <p class="sc-desc">{{ service.description }}</p>
+                {% endif %}
+                <div class="sc-meta">
+                    <span>⏱
+                        {% if service.duration_info %}
+                            {{ service.duration_info }}
+                        {% else %}
+                            {{ service.duration }} min
+                        {% endif %}
+                    </span>
+                    <span>•</span>
+                    <span>
+                        {% if service.price_info %}
+                            {{ service.price_info }}
+                        {% else %}
+                            ab {{ service.price }} €
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="sc-action">
+                <button class="btn-select"
+                        hx-get="{% url 'booking_wizard' %}?step=2&service_id={{ service.id }}"
+                        hx-target="#wizard-content"
+                        hx-swap="innerHTML">
+                    {% trans "Auswählen" %}
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <div style="text-align: center; color: var(--color-text-muted); padding: 40px;">
+            {% trans "Keine Leistungen in dieser Kategorie gefunden." %}
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+<!-- Only include OOB updates for HTMX requests -->
+{% if request.headers.HX_Request %}
+    <!-- Update Stepper via OOB -->
+    {% include "booking/includes/stepper.html" %}
+{% endif %}

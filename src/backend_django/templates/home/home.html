@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ seo.seo_title|default:"LILY Beauty Salon | Köthen" }}{% endblock %}
+{% block meta_description %}{{ seo.seo_description|default:"Premium Beauty Salon in Köthen." }}{% endblock %}
+
+{% block content %}
+<!-- HERO SPLIT SECTION -->
+<section class="hero-split">
+    <div class="container hero-grid">
+        <div class="hero-text-col">
+            <div class="hero-uptitle">{% trans "Premium Beauty Salon" %}</div>
+            <h1 class="hero-heading">{% trans "Die Kunst" %} <br><span class="text-gold">{% trans "Ihrer Schönheit" %}</span></h1>
+            <p class="hero-desc">{% trans "Deutsche Qualitätsstandards treffen auf ukrainische Servicekunst. Wir kreieren Looks, die inspirieren." %}</p>
+            <a href="{% url 'booking_wizard' %}" class="btn-pill">{% trans "Termin buchen" %}</a>
+        </div>
+        <div class="hero-visual-col">
+            <!-- Local Model PNG -->
+            <img src="{% static 'img/5.webp' %}" class="hero-model-png" alt="Model">
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORIES (BENTO GRID) -->
+<section class="categories-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">{% trans "Unsere Leistungen" %}</h2>
+            <p class="section-desc">{% trans "Wählen Sie eine Richtung" %}</p>
+        </div>
+
+        <div class="bento-grid">
+
+            <!-- Hair (Large) -->
+            {% if bento.hair %}
+            <a href="{% url 'service_detail' slug=bento.hair.slug %}" class="bento-card card-large"
+               style="background-image: url('{% if bento.hair.image %}{{ bento.hair.image.url }}{% else %}https://pinlite.dev/media/storage/ad/d7/add7f82bb943e397c29a69807cc84560f435509d3843252c790157012164feae.jpg{% endif %}'); background-position: center top;">
+                <div class="card-overlay">
+                    <h3>{{ bento.hair.title }}</h3>
+                    <p class="bento-card-desc">{{ bento.hair.description|truncatechars:50 }}</p>
+                    <span class="arrow">→</span>
+                    {% if bento.hair.is_planned %}
+                        <span class="badge-coming-soon">{% trans "Demnächst" %}</span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endif %}
+
+            <!-- Nails -->
+            {% if bento.nails %}
+            <a href="{% url 'service_detail' slug=bento.nails.slug %}" class="bento-card"
+               style="background-image: url('{% if bento.nails.image %}{{ bento.nails.image.url }}{% else %}https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600{% endif %}');">
+                <div class="card-overlay">
+                    <h3>{{ bento.nails.title }}</h3>
+                    <p class="bento-card-desc">{{ bento.nails.description|truncatechars:40 }}</p>
+                </div>
+            </a>
+            {% endif %}
+
+            <!-- Cosmetology (Face) -->
+            {% if bento.face %}
+            <a href="{% url 'service_detail' slug=bento.face.slug %}" class="bento-card"
+               style="background-image: url('{% if bento.face.image %}{{ bento.face.image.url }}{% else %}https://pinlite.dev/media/storage/f0/7e/f07e00cf2d3cb8c9daad9273d78923516ce2c11828faa8080df847dea1eb7c4a.jpg{% endif %}');">
+                <div class="card-overlay">
+                    <h3>{{ bento.face.title }}</h3>
+                    <p class="bento-card-desc">{{ bento.face.description|truncatechars:40 }}</p>
+                </div>
+            </a>
+            {% endif %}
+
+            <!-- Brows & Lashes (Eyes) -->
+            {% if bento.eyes %}
+            <a href="{% url 'service_detail' slug=bento.eyes.slug %}" class="bento-card"
+               style="background-image: url('{% if bento.eyes.image %}{{ bento.eyes.image.url }}{% else %}https://images.unsplash.com/photo-1587776100527-86f34351a668?auto=format&fit=crop&w=600{% endif %}');">
+                <div class="card-overlay">
+                    <h3>{{ bento.eyes.title }}</h3>
+                    <p class="bento-card-desc">{{ bento.eyes.description|truncatechars:40 }}</p>
+                </div>
+            </a>
+            {% endif %}
+
+            <!-- Massage (Body) -->
+            {% if bento.body %}
+            <a href="{% url 'service_detail' slug=bento.body.slug %}" class="bento-card"
+               style="background-image: url('{% if bento.body.image %}{{ bento.body.image.url }}{% else %}https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=600{% endif %}');">
+                <div class="card-overlay">
+                    <h3>{{ bento.body.title }}</h3>
+                    <p class="bento-card-desc">{{ bento.body.description|truncatechars:40 }}</p>
+                </div>
+            </a>
+            {% endif %}
+
+            <!-- Depilation (Hair Removal) -->
+            {% if bento.hair_removal %}
+            <a href="{% url 'service_detail' slug=bento.hair_removal.slug %}" class="bento-card"
+               style="background-image: url('{% if bento.hair_removal.image %}{{ bento.hair_removal.image.url }}{% else %}https://images.unsplash.com/photo-1552693673-1bf958298935?auto=format&fit=crop&w=600{% endif %}');">
+                <div class="card-overlay">
+                    <h3>{{ bento.hair_removal.title }}</h3>
+                    <p class="bento-card-desc">{{ bento.hair_removal.description|truncatechars:40 }}</p>
+                </div>
+            </a>
+            {% endif %}
+
+        </div>
+    </div>
+</section>
+{% endblock %}
