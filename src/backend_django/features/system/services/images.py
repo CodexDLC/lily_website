@@ -25,9 +25,6 @@ def optimize_image(image_field, max_width=1920, quality=85):
     except Exception:
         return  # Not an image or error opening
 
-    # Check if optimization is needed (e.g. already WebP and small enough)
-    # But for simplicity, we process everything to ensure consistency.
-
     # Convert to RGB (if RGBA/P/CMYK)
     if img.mode in ("RGBA", "P", "CMYK"):
         img = img.convert("RGB")
@@ -41,15 +38,21 @@ def optimize_image(image_field, max_width=1920, quality=85):
     # Save to buffer as WebP
     buffer = io.BytesIO()
     img.save(buffer, format="WEBP", quality=quality, optimize=True)
+    new_content = ContentFile(buffer.getvalue())
 
     # Update filename
     filename = os.path.splitext(image_field.name)[0]
     if not filename.lower().endswith(".webp"):
         filename += ".webp"
+    new_name = os.path.basename(filename)
 
     # Save back to field
-    image_field.save(
-        os.path.basename(filename),
-        ContentFile(buffer.getvalue()),
-        save=False,  # Don't save model yet, wait for super().save()
-    )
+    # If it's a Django FieldFile (has .save() method)
+    if hasattr(image_field, "save"):
+        image_field.save(new_name, new_content, save=False)
+    else:
+        # For SimpleUploadedFile (in tests) or other file-like objects
+        image_field.name = new_name
+        image_field.file = buffer
+        if hasattr(image_field, "seek"):
+            image_field.seek(0)

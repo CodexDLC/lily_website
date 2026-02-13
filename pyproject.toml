@@ -85,4 +85,8 @@ testpaths = ["src"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-pythonpath = ["."]
+pythonpath = [".", "src/backend_django"]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+]
