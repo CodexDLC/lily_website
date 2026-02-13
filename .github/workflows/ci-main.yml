@@ -19,7 +19,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install ".[dev,bot]"
+          pip install pytest pytest-asyncio
+          pip install -e .
 
       - name: Run Pytest
         env:
