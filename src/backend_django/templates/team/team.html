@@ -6,6 +6,7 @@
 {% block meta_description %}{{ seo.seo_description|default:'Lernen Sie unsere Experten kennen.' }}{% endblock %}
 
 {% block content %}
+{% include "team/_schema_person.html" %}
 <!-- HERO -->
 <section class="hero-text-block">
     <div class="container">
@@ -21,7 +22,7 @@
     {% if owner %}
     <section class="team-section-block">
         <div class="container">
-            <div class="owner-block">
+            <article class="owner-block"> {# Изменено с div на article #}
                 <!-- Owner Photo -->
                 <div class="owner-photo" style="background-image: url('{% if owner.photo %}{{ owner.photo.url }}{% else %}{% static 'img/lily.webp' %}{% endif %}');"></div>
 
@@ -39,12 +40,11 @@
                     </p>
                     {% endif %}
 
-                    <br>
                     {% if owner.instagram %}
                     <a href="https://instagram.com/{{ owner.instagram }}" target="_blank" class="btn-pill">{% trans "Instagram" %}</a>
                     {% endif %}
                 </div>
-            </div>
+            </article>
         </div>
     </section>
     {% endif %}
@@ -57,7 +57,7 @@
             <div class="team-grid">
                 <!-- Masters Loop -->
                 {% for master in team %}
-                <div class="master-card">
+                <article class="master-card"> {# Изменено с div на article #}
                     <div class="master-photo" style="background-image: url('{% if master.photo %}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}');"></div>
                     <div class="master-info">
                         <h3 class="master-name">{{ master.name }}</h3>
@@ -68,12 +68,12 @@
                         <span class="btn-book" style="opacity:0.5; cursor:default;">Profil</span>
                         {% endif %}
                     </div>
-                </div>
+                </article>
                 {% endfor %}
 
                 <!-- HIRING BLOCK (If enabled) -->
                 {% if settings.hiring_active %}
-                <div class="master-card hiring-card" style="border: 1px dashed var(--color-gold); background: rgba(237, 208, 113, 0.05);">
+                <article class="master-card hiring-card" style="border: 1px dashed var(--color-gold); background: rgba(237, 208, 113, 0.05);"> {# Изменено с div на article #}
                     <div class="master-photo" style="background-color: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;">
                         <span style="font-size: 40px; color: var(--color-gold);">+</span>
                     </div>
@@ -84,7 +84,7 @@
                         </p>
                         <a href="{% url 'contacts' %}" class="btn-book">{% trans "Bewerben" %}</a>
                     </div>
-                </div>
+                </article>
                 {% endif %}
 
             </div>
