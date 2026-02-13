@@ -1,0 +1,83 @@
+{% load static %}
+{% load i18n %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "{% block title %}{% firstof seo.seo_title "LILY Beauty Salon | Köthen" %}{% endblock %}",
+  "description": "{% block meta_description %}{% firstof seo.seo_description "Premium Beauty Salon in Köthen." %}{% endblock %}",
+  "url": "{{ request.build_absolute_uri }}",
+  "mainEntity": {
+    "@type": "ItemList",
+    "itemListElement": [
+      {% if bento.hair %}
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "item": {
+          "@type": "Service",
+          "name": "{{ bento.hair.title }}",
+          "url": "{{ request.build_absolute_uri }}{% url 'service_detail' slug=bento.hair.slug %}"
+        }
+      }{% if bento.nails or bento.face or bento.eyes or bento.body or bento.hair_removal %},{% endif %}
+      {% endif %}
+      {% if bento.nails %}
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "item": {
+          "@type": "Service",
+          "name": "{{ bento.nails.title }}",
+          "url": "{{ request.build_absolute_uri }}{% url 'service_detail' slug=bento.nails.slug %}"
+        }
+      }{% if bento.face or bento.eyes or bento.body or bento.hair_removal %},{% endif %}
+      {% endif %}
+      {% if bento.face %}
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "item": {
+          "@type": "Service",
+          "name": "{{ bento.face.title }}",
+          "url": "{{ request.build_absolute_uri }}{% url 'service_detail' slug=bento.face.slug %}"
+        }
+      }{% if bento.eyes or bento.body or bento.hair_removal %},{% endif %}
+      {% endif %}
+      {% if bento.eyes %}
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "item": {
+          "@type": "Service",
+          "name": "{{ bento.eyes.title }}",
+          "url": "{{ request.build_absolute_uri }}{% url 'service_detail' slug=bento.eyes.slug %}"
+        }
+      }{% if bento.body or bento.hair_removal %},{% endif %}
+      {% endif %}
+      {% if bento.body %}
+      {
+        "@type": "ListItem",
+        "position": 5,
+        "item": {
+          "@type": "Service",
+          "name": "{{ bento.body.title }}",
+          "url": "{{ request.build_absolute_uri }}{% url 'service_detail' slug=bento.body.slug %}"
+        }
+      }{% if bento.hair_removal %},{% endif %}
+      {% endif %}
+      {% if bento.hair_removal %}
+      {
+        "@type": "ListItem",
+        "position": 6,
+        "item": {
+          "@type": "Service",
+          "name": "{{ bento.hair_removal.title }}",
+          "url": "{{ request.build_absolute_uri }}{% url 'service_detail' slug=bento.hair_removal.slug %}"
+        }
+      }
+      {% endif %}
+    ]
+  }
+}
+</script>

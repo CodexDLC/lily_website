@@ -9,7 +9,9 @@
 <meta name="generator" content="Django">
 
 <!-- 2. Robots & AI Control (2026 Standard) -->
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+{% block meta_robots %}<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">{% endblock %}
+
+{% include "includes/_hreflang_tags.html" %}
 
 <!-- 3. Open Graph / Facebook / Telegram (Social Previews) -->
 <meta property="og:type" content="website">
@@ -36,6 +38,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+{% include "includes/_schema_local_business.html" %}
 
 <!-- CSS -->
 <link rel="stylesheet" href="{% static 'css/app.css' %}">

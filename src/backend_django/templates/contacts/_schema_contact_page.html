@@ -1,0 +1,51 @@
+{% load static %}
+{% load i18n %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "{% block title %}{% firstof seo.seo_title "Kontakt | LILY Beauty Salon" %}{% endblock %}",
+  "description": "{% block meta_description %}{% firstof seo.seo_description "Kontaktieren Sie uns." %}{% endblock %}",
+  "url": "{{ request.build_absolute_uri }}",
+  "mainEntity": {
+    "@type": "LocalBusiness",
+    "@id": "https://lily-salon.de/#organization",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "{{ settings.phone }}",
+      "contactType": "customer service",
+      "email": "{{ settings.email }}",
+      "areaServed": "DE",
+      "availableLanguage": ["de", "en", "uk", "ru"]
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "{{ settings.address_street }}",
+      "addressLocality": "{{ settings.address_city }}",
+      "postalCode": "06366", {# Предполагаем, что почтовый индекс всегда 06366 для Кётена #}
+      "addressCountry": "DE"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "{{ settings.working_hours_weekdays|slice:":5" }}", {# Предполагаем формат HH:MM-HH:MM #}
+        "closes": "{{ settings.working_hours_weekdays|slice:"6:" }}"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": "Saturday",
+        "opens": "{{ settings.working_hours_saturday|slice:":5" }}",
+        "closes": "{{ settings.working_hours_saturday|slice:"6:" }}"
+      }
+    ]
+  }
+}
+</script>
