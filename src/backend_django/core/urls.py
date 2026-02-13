@@ -26,16 +26,19 @@ sitemaps = {
     "categories": CategorySitemap,  # Добавляем Sitemap для категорий
 }
 
-# Оборачиваем основные URL-паттерны в i18n_patterns
-urlpatterns = i18n_patterns(
-    path("admin/", admin.site.urls),
+# Non-i18n patterns (technical URLs, API, etc.)
+urlpatterns = [
+    path("i18n/", include("django.conf.urls.i18n")),  # For set_language view
     path("api/", api.urls),
-    # path("i18n/", include("django.conf.urls.i18n")), # i18n_patterns уже обрабатывает префикс языка
-    # SEO & AI Files
-    path("llms.txt", LLMSTextView.as_view()),  # Используем LLMSTextView для динамического выбора llms_<lang>.txt
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
-    # Sitemap
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sitemaps.views.sitemap"),
+]
+
+# i18n patterns (URLs with language prefix)
+urlpatterns += i18n_patterns(
+    path("admin/", admin.site.urls),
+    # SEO & AI Files (localized versions if needed, or handled by view logic)
+    path("llms.txt", LLMSTextView.as_view()),
     # Features
     path("", include("features.booking.urls")),  # Booking Wizard
     path("", include("features.main.urls")),  # Main Site
