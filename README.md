@@ -86,7 +86,7 @@ python -m src.telegram_bot.app_telegram
 
 **Worker ARQ:**
 ```bash
-python -m src.worker_arq.bot_worker
+arq src.workers.notification_worker.worker.WorkerSettings
 ```
 
 ### 5. Python Path Configuration (Important!)
