@@ -21,26 +21,38 @@
         <div class="form-grid">
             <!-- First Name -->
             <div class="form-group">
-                <label>{% trans "Vorname" %} *</label>
-                <input type="text" name="first_name" x-model="form.firstName" @input="saveData" required placeholder="Maria">
+                <label for="first_name">{% trans "Vorname" %} *</label>
+                <input type="text" id="first_name" name="first_name" x-model="form.firstName" @input="saveData" required placeholder="Maria">
             </div>
 
             <!-- Last Name -->
             <div class="form-group">
-                <label>{% trans "Nachname" %} *</label>
-                <input type="text" name="last_name" x-model="form.lastName" @input="saveData" required placeholder="Müller">
+                <label for="last_name">{% trans "Nachname" %} *</label>
+                <input type="text" id="last_name" name="last_name" x-model="form.lastName" @input="saveData" required placeholder="Müller">
             </div>
 
             <!-- Phone -->
             <div class="form-group">
-                <label>{% trans "Telefonnummer" %} *</label>
-                <input type="tel" name="phone" x-model="form.phone" @input="saveData" required placeholder="+49 123 456789">
+                <label for="phone">{% trans "Telefonnummer" %} *</label>
+                <input type="tel" id="phone" name="phone" x-model="form.phone" @input="saveData" required placeholder="+49 123 456789">
             </div>
 
             <!-- Email -->
             <div class="form-group">
-                <label>{% trans "E-Mail" %} *</label>
-                <input type="email" name="email" x-model="form.email" @input="saveData" required placeholder="maria@example.com">
+                <label for="email">{% trans "E-Mail" %} *</label>
+                <input type="email" id="email" name="email" x-model="form.email" @input="saveData" required placeholder="maria@example.com">
+            </div>
+
+            <!-- Client Notes (Full Width) -->
+            <div class="form-group full-width" style="grid-column: 1 / -1;">
+                <label for="client_notes">{% trans "Anmerkungen (Optional)" %}</label>
+                <textarea id="client_notes"
+                          name="client_notes"
+                          x-model="form.clientNotes"
+                          @input="saveData"
+                          placeholder="{% trans 'Bitte teilen Sie uns Ihre Wünsche, Besonderheiten oder Allergien mit...' %}"
+                          rows="3"
+                          style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(198,168,124,0.3); color: #fff; padding: 12px; border-radius: 4px; font-family: inherit; resize: vertical; outline: none; transition: border-color 0.3s;"></textarea>
             </div>
         </div>
 
@@ -92,6 +104,7 @@
                 lastName: localStorage.getItem('booking_lastName') || '',
                 phone: localStorage.getItem('booking_phone') || '',
                 email: localStorage.getItem('booking_email') || '',
+                clientNotes: localStorage.getItem('booking_clientNotes') || '',
                 consent: true,
                 requestCall: false
             },
@@ -100,6 +113,7 @@
                 localStorage.setItem('booking_lastName', this.form.lastName);
                 localStorage.setItem('booking_phone', this.form.phone);
                 localStorage.setItem('booking_email', this.form.email);
+                localStorage.setItem('booking_clientNotes', this.form.clientNotes);
             }
         }
     }

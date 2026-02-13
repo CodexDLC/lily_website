@@ -24,7 +24,7 @@ Task definitions for the ARQ background worker.
 ```python
 # services/worker_arq/tasks/my_task.py
 async def my_task(ctx: dict, user_id: int, data: str):
-    bot = ctx["bot"]
+    bot = ctx["02_telegram_bot"]
     await bot.send_message(user_id, data)
 ```
 

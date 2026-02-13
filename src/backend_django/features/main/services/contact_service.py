@@ -52,7 +52,7 @@ class ContactService:
                 f"💬 {message}"
             )
 
-            # We pass request_id so the bot can attach Inline Buttons (Confirm/Cancel)
+            # We pass request_id so the 02_telegram_bot can attach Inline Buttons (Confirm/Cancel)
             DjangoArqClient.enqueue_job(
                 "send_notification_task",
                 user_id=int(admin_chat_id),

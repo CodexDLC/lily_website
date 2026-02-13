@@ -1,20 +1,49 @@
 services:
+  db:
+    image: postgres:16-alpine
+    container_name: lily_website-db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../scripts/init_db_schemas.sql:/docker-entrypoint-initdb.d/init_db_schemas.sql:ro
+    environment:
+      - POSTGRES_DB=lily_db
+      - POSTGRES_USER=lily_user
+      - POSTGRES_PASSWORD=lily_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lily_user -d lily_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lily_website-network
+
   backend:
     build:
       context: ..
       dockerfile: deploy/backend/Dockerfile
     container_name: lily_website-backend
-    command: python src/backend_django/manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - REDIS_HOST=redis
+      - DB_ENGINE=django.db.backends.postgresql
+      - DB_NAME=lily_db
+      - DB_USER=lily_user
+      - DB_PASSWORD=lily_password
+      - DB_HOST=db
+      - DB_PORT=5432
     env_file:
       - ../src/backend_django/.env
     volumes:
-      - ../src/backend_django:/app/src/backend_django
-      - ../src/shared:/app/src/shared:ro
+      - ../src/backend_django:/app
       - uploads:/app/media
+      - static_volume:/app/staticfiles
     depends_on:
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - lily_website-network
@@ -23,7 +52,10 @@ services:
     build:
       context: ..
       dockerfile: deploy/bot/Dockerfile
-    container_name: lily_website-bot
+    container_name: lily_website-telegram_bot
+    environment:
+      - ENVIRONMENT=production
+      - REDIS_HOST=redis
     env_file: ../.env
     volumes:
       - ../src/telegram_bot:/app/src/telegram_bot:ro
@@ -39,11 +71,14 @@ services:
     build:
       context: ..
       dockerfile: deploy/worker/Dockerfile
-    container_name: lily_website-worker_arq
+    container_name: lily_website-notification_worker
+    command: arq src.workers.notification_worker.worker.WorkerSettings
+    environment:
+      - ENVIRONMENT=production
+      - REDIS_HOST=redis
     env_file: ../.env
     volumes:
-      - ../src/telegram_bot:/app/src/telegram_bot:ro
-      - ../src/worker_arq:/app/src/worker_arq:ro
+      - ../src/workers:/app/src/workers:ro
       - ../src/shared:/app/src/shared:ro
     restart: unless-stopped
     depends_on:
@@ -57,8 +92,6 @@ services:
     command: redis-server --appendonly yes
     volumes:
       - redis-data:/data
-    expose:
-      - "6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -75,20 +108,20 @@ services:
       - "80:80"
     volumes:
       - ./nginx/nginx-main.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/site-local.conf:/etc/nginx/conf.d/site.conf:ro
+      - ./nginx/site-local.conf:/etc/nginx/conf.d/default.conf:ro
       - uploads:/app/media:ro
+      - static_volume:/app/staticfiles:ro
     depends_on:
       - backend
-      - bot
     restart: unless-stopped
     networks:
       - lily_website-network
 
 volumes:
+  postgres_data:
   redis-data:
-    driver: local
   uploads:
-    driver: local
+  static_volume:
 
 networks:
   lily_website-network:

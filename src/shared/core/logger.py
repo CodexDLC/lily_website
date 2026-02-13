@@ -41,12 +41,12 @@ def setup_logging(settings: CommonSettings, service_name: str) -> None:
 
     Args:
         settings: Объект настроек (CommonSettings или наследник).
-        service_name: Имя сервиса ('backend' или 'bot').
+        service_name: Имя сервиса ('backend' или '02_telegram_bot').
                       Используется для создания подпапки в логах.
     """
     logger.remove()
 
-    # Формируем пути к логам: logs/backend/debug.log или logs/bot/debug.log
+    # Формируем пути к логам: logs/backend/debug.log или logs/02_telegram_bot/debug.log
     # settings.log_dir обычно просто "logs"
     base_log_dir = Path(settings.log_dir) / service_name
 

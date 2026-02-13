@@ -3,7 +3,6 @@ from datetime import date
 from typing import Any, TypedDict
 
 from django.db.models import Count, Q
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from features.booking.dto import BookingState
@@ -51,7 +50,10 @@ def get_step_2_context(state: BookingState) -> dict[str, Any] | None:
     if not state.service_id:
         return None
 
-    service = get_object_or_404(Service, id=state.service_id)
+    try:
+        service = Service.objects.get(id=state.service_id)
+    except Service.DoesNotExist:
+        return None
 
     masters = Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE).order_by("order")
 
@@ -66,26 +68,38 @@ def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[s
     """Context for Step 3: Calendar & Slots."""
     context = {}
 
-    # 1. Get Objects
+    # 1. Get Objects (Safe retrieval)
     service = None
     if state.service_id:
-        service = get_object_or_404(Service, id=state.service_id)
-        context["selected_service"] = service
+        try:
+            service = Service.objects.get(id=state.service_id)
+            context["selected_service"] = service
+        except Service.DoesNotExist:
+            return None
+    else:
+        return None  # Cannot proceed without service
 
     masters_list = []
     if state.master_id:
         if state.master_id == "any":
-            if service:
-                masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
+            masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
         else:
-            master = get_object_or_404(Master, id=state.master_id)
-            context["selected_master"] = master
-            masters_list = [master]
+            try:
+                master = Master.objects.get(id=state.master_id)
+                context["selected_master"] = master
+                masters_list = [master]
+            except (Master.DoesNotExist, ValueError):
+                return None
+    else:
+        return None  # Cannot proceed without master
 
     # 2. Calendar Grid
     today = timezone.now().date()
-    year = int(view_data.get("year", today.year))
-    month = int(view_data.get("month", today.month))
+    try:
+        year = int(view_data.get("year", today.year))
+        month = int(view_data.get("month", today.month))
+    except (ValueError, TypeError):
+        year, month = today.year, today.month
 
     context.update(_get_calendar_grid(year, month))
 
@@ -98,24 +112,28 @@ def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[s
             masters=masters_list, date_obj=state.selected_date, duration_minutes=service.duration
         )
         context["available_slots"] = slots
+        # Add flag if no slots available for selected date
+        context["no_slots_available"] = len(slots) == 0
 
     return context
 
 
 def get_step_4_context(state: BookingState) -> dict[str, Any] | None:
     """Context for Step 4: Confirmation."""
+    if not state.service_id or not state.selected_date or not state.selected_time:
+        return None
+
     context = {}
+    try:
+        context["selected_service"] = Service.objects.get(id=state.service_id)
+        if state.master_id and state.master_id != "any":
+            context["selected_master"] = Master.objects.get(id=state.master_id)
 
-    if state.service_id:
-        context["selected_service"] = get_object_or_404(Service, id=state.service_id)
-
-    if state.master_id and state.master_id != "any":
-        context["selected_master"] = get_object_or_404(Master, id=state.master_id)
-
-    if state.selected_date:
         context["selected_date"] = state.selected_date
+        context["selected_time"] = state.selected_time
+    except (Service.DoesNotExist, Master.DoesNotExist):
+        return None
 
-    context["selected_time"] = state.selected_time
     return context
 
 
@@ -123,7 +141,7 @@ def get_stepper_context(current_step: int) -> list[StepperStep]:
     """Returns stepper state."""
     steps: list[StepperStep] = [
         {"number": "1", "title": _("Leistung"), "active": False, "completed": False},
-        {"number": "2", "title": _("Experte"), "active": False, "completed": False},
+        {"number": "2", "title": _("Experте"), "active": False, "completed": False},
         {"number": "3", "title": _("Termin"), "active": False, "completed": False},
         {"number": "4", "title": _("Bestätigung"), "active": False, "completed": False},
     ]
@@ -161,6 +179,7 @@ def _get_calendar_grid(year: int, month: int) -> dict[str, Any]:
 
             days_list.append({"num": str(day_num), "status": status, "title": title, "date": current_date.isoformat()})
 
+    # Fix for month name translation if needed, but keeping it simple for now
     month_name = date(year, month, 1).strftime("%B %Y")
 
     return {"calendar_days": days_list, "month_label": month_name, "current_year": year, "current_month": month}

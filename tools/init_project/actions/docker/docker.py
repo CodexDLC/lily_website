@@ -47,11 +47,11 @@ class DockerAction:
 
         if ctx.include_bot:
             self._render_template(
-                RESOURCES / "bot" / "Dockerfile.tpl",
-                deploy / "bot" / "Dockerfile",
+                RESOURCES / "02_telegram_bot" / "Dockerfile.tpl",
+                deploy / "02_telegram_bot" / "Dockerfile",
                 variables,
             )
-            print("    📄 Generated: deploy/bot/Dockerfile")
+            print("    📄 Generated: deploy/02_telegram_bot/Dockerfile")
 
             self._render_template(
                 RESOURCES / "worker_arq" / "Dockerfile.tpl",
@@ -122,7 +122,7 @@ class DockerAction:
             extras.append("fastapi")
             lint_paths.append("src/backend-fastapi/")
         if ctx.include_bot:
-            extras.append("bot")
+            extras.append("02_telegram_bot")
             lint_paths.append("src/telegram_bot/")
         lint_paths.append("src/shared/")
 
@@ -168,7 +168,7 @@ class DockerAction:
         if ctx.include_bot:
             build_steps += dedent("""\
                   - name: Build Bot image
-                    run: docker build -f deploy/bot/Dockerfile -t check-bot .""")
+                    run: docker build -f deploy/02_telegram_bot/Dockerfile -t check-02_telegram_bot .""")
 
         main_vars = {
             **ci_vars,
@@ -225,9 +225,9 @@ class DockerAction:
                     uses: docker/build-push-action@v5
                     with:
                       context: .
-                      file: deploy/bot/Dockerfile
+                      file: deploy/02_telegram_bot/Dockerfile
                       push: true
-                      tags: ghcr.io/${{ env.REPO_LOWER }}-bot:latest
+                      tags: ghcr.io/${{ env.REPO_LOWER }}-02_telegram_bot:latest
 
                   - name: Build and Push Worker
                     uses: docker/build-push-action@v5
@@ -238,7 +238,7 @@ class DockerAction:
                       tags: ghcr.io/${{ env.REPO_LOWER }}-worker_arq:latest""")
             export_images += dedent("""\
 
-                        export DOCKER_IMAGE_BOT=ghcr.io/$REPO_LOWER-bot:latest
+                        export DOCKER_IMAGE_BOT=ghcr.io/$REPO_LOWER-02_telegram_bot:latest
                         export DOCKER_IMAGE_WORKER=ghcr.io/$REPO_LOWER-worker_arq:latest""")
 
         release_vars = {
@@ -372,11 +372,11 @@ class DockerAction:
     @staticmethod
     def _svc_bot_dev(name: str) -> str:
         return dedent(f"""\
-          bot:
+          02_telegram_bot:
             build:
               context: ..
-              dockerfile: deploy/bot/Dockerfile
-            container_name: {name}-bot
+              dockerfile: deploy/02_telegram_bot/Dockerfile
+            container_name: {name}-02_telegram_bot
             env_file: ../.env
             volumes:
               - ../src/telegram_bot:/app/src/telegram_bot:ro
@@ -490,9 +490,9 @@ class DockerAction:
     @staticmethod
     def _svc_bot_prod(name: str) -> str:
         return dedent(f"""\
-          bot:
+          02_telegram_bot:
             image: ${{DOCKER_IMAGE_BOT}}
-            container_name: {name}-bot
+            container_name: {name}-02_telegram_bot
             env_file: .env
             restart: always
             depends_on:

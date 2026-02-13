@@ -126,7 +126,7 @@ class Master(TimestampMixin, SeoMixin, models.Model):
         unique=True,
         db_index=True,
         verbose_name=_("Telegram ID"),
-        help_text=_("For bot authentication and notifications"),
+        help_text=_("For 02_telegram_bot authentication and notifications"),
     )
 
     telegram_username = models.CharField(max_length=100, blank=True, verbose_name=_("Telegram Username"))
@@ -136,7 +136,7 @@ class Master(TimestampMixin, SeoMixin, models.Model):
         unique=True,
         editable=False,
         verbose_name=_("Bot Access Code"),
-        help_text=_("One-time code for master registration in bot"),
+        help_text=_("One-time code for master registration in 02_telegram_bot"),
     )
 
     # === QR Token (Future - for finalization) ===

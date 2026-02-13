@@ -189,3 +189,34 @@ class Client(models.Model):
 *   To implement galleries, a JavaScript library (e.g., `Swiper.js` or `Splide`) or native CSS Scroll Snap will be required.
 *   Photos must be optimized (WebP) and have Lazy Loading.
 *   Ghost User system requires careful phone/email validation and GDPR compliance documentation.
+
+---
+
+## 9. Advanced CRM Features (Client Notes History)
+
+**Concept:**
+Move client notes from a single text field in the `Client` model to a separate `ClientNote` table to track history and context.
+
+### Database Structure:
+
+```python
+class ClientNote(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="notes")
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # Admin/Master who wrote the note
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    # Optional: Link to specific appointment context
+    appointment = models.ForeignKey(Appointment, on_delete=models.SET_NULL, null=True, blank=True)
+```
+
+### Why (Value):
+
+*   **History:** Track evolution of client preferences over time.
+*   **Context:** Know exactly *when* and *why* a note was added (e.g., "Complained about coffee on 10.10.2023").
+*   **Accountability:** See which admin added the note.
+*   **API Integration:** Easily expose notes list to Telegram Bot for admins.
+
+### Implementation Notes:
+*   Keep `Appointment.client_notes` for user-submitted comments (one-time context).
+*   Use `ClientNote` for internal admin knowledge base.

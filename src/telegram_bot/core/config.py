@@ -14,8 +14,15 @@ class BotSettings(CommonSettings):
     # --- Bot ---
     bot_token: str
 
-    # --- Channels ---
-    bug_report_channel_id: int | None = None
+    # --- Channels & Topics ---
+    telegram_admin_channel_id: int | None = None  # Основной канал для уведомлений
+
+    # ID дефолтного топика (General/System)
+    telegram_notification_topic_id: int = 1
+
+    # Словарь топиков для разных категорий услуг (JSON string или префиксы)
+    # Пример: {"hair": 2, "nails": 4}
+    telegram_topics: dict[str, int] = {}
 
     # --- Roles (ENV) ---
     # ID суперпользователей (разработчиков), через запятую
@@ -25,8 +32,8 @@ class BotSettings(CommonSettings):
     owner_ids: str = ""
 
     # --- Data mode ---
-    # "api"    — bot talks to FastAPI/Django backend via REST (no direct DB)
-    # "direct" — bot has its own database (uses SQLAlchemy + Alembic)
+    # "api"    — 02_telegram_bot talks to FastAPI/Django backend via REST (no direct DB)
+    # "direct" — 02_telegram_bot has its own database (uses SQLAlchemy + Alembic)
     BOT_DATA_MODE: str = "api"
 
     # --- Database (only when BOT_DATA_MODE=direct) ---

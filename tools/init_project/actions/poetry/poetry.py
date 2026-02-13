@@ -2,7 +2,7 @@
 Poetry Action — управление зависимостями в pyproject.toml.
 
 Удаляет optional-dependency группы для невыбранных модулей.
-Например, если нет бота — удаляет секцию [project.optional-dependencies].bot.
+Например, если нет бота — удаляет секцию [project.optional-dependencies].02_telegram_bot.
 """
 
 from __future__ import annotations
@@ -31,7 +31,7 @@ class PoetryAction:
         if ctx.backend != "django":
             groups_to_remove.append("django")
         if not ctx.include_bot:
-            groups_to_remove.append("bot")
+            groups_to_remove.append("02_telegram_bot")
 
         if not groups_to_remove:
             print("    ⏭️  All dependency groups needed — skipping")

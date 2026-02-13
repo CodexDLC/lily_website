@@ -10,7 +10,7 @@ class CategoryTranslationOptions(TranslationOptions):
 
 @register(Service)
 class ServiceTranslationOptions(TranslationOptions):
-    fields = ("title", "price_info", "description", "content", "seo_title", "seo_description")
+    fields = ("title", "price_info", "duration_info", "description", "content", "seo_title", "seo_description")
 
 
 @register(PortfolioImage)

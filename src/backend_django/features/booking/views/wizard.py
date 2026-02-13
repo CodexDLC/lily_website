@@ -45,11 +45,17 @@ class BookingWizardView(TemplateView):
             step_context = step_obj.get_context()
         except Exception as e:
             log.error(f"Error getting context for step {current_step}: {e}", exc_info=True)
-            session_service.clear()
+            # Don't clear session, just fallback to step 1
             return redirect("booking_wizard")
 
         if step_context is None:
-            log.warning(f"Missing data for step {current_step}, redirecting to start")
+            log.warning(f"Missing data for step {current_step}, falling back to previous step")
+            # If step 3 (Calendar) fails, go to step 2 (Masters)
+            if state.step > 1:
+                state.step -= 1
+                session_service.save_state(state)
+                return redirect("booking_wizard")
+
             session_service.clear()
             return redirect("booking_wizard")
 
@@ -77,15 +83,14 @@ class BookingWizardView(TemplateView):
             "phone": request.POST.get("phone"),
             "email": request.POST.get("email"),
             "request_call": request.POST.get("request_call") == "on",
+            "client_notes": request.POST.get("client_notes", ""),
         }
 
         # 2. Create Appointment
         appointment = BookingService.create_appointment(state, form_data)
 
         if not appointment:
-            # Maybe render the confirmation step again with an error message
             log.error(f"Failed to create appointment for state: {state}")
-            # For now, redirecting to start is a safe fallback
             return redirect("booking_wizard")
 
         # 3. Clear Session
