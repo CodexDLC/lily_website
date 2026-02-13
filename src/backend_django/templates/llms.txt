@@ -3,7 +3,7 @@
 ## Project Overview
 LILY Beauty Salon is a premium beauty salon located in Köthen, Germany.
 We offer high-quality beauty services including Hair, Nails, Cosmetology, Brows & Lashes, Massage, and Depilation.
-Our focus is on individual approach, German quality, and premium materials (Wella, L'Oreal, Luxio).
+Our focus is on individual approach, German quality, and premium materials.
 
 ## Core Pages & Navigation
 
