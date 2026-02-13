@@ -54,7 +54,7 @@ async def main() -> None:
     log.debug("BotContainer initialized")
 
     # 5. Bot + Dispatcher
-    bot, dp = await build_bot(settings.bot_token, redis_client)
+    bot, dp = await build_bot(settings, redis_client)
     container.set_bot(bot)  # Устанавливаем объект 02_telegram_bot в контейнер
     log.info("Bot and Dispatcher created")
 

@@ -206,10 +206,3 @@ class Appointment(TimestampMixin, models.Model):
 
         self.status = self.STATUS_COMPLETED
         self.save(update_fields=["status", "updated_at"])
-
-    def send_reminder(self):
-        """Send reminder notification (to be implemented)"""
-        # TODO: Implement SMS/Email sending
-        self.reminder_sent = True
-        self.reminder_sent_at = timezone.now()
-        self.save(update_fields=["reminder_sent", "reminder_sent_at"])
