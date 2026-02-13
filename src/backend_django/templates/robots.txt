@@ -11,4 +11,4 @@ Disallow: /search/
 Allow: /llms.txt
 
 # Sitemap (Uncomment when sitemap is generated)
-# Sitemap: https://lily-salon.de/sitemap.xml
+Sitemap: https://lily-salon.de/sitemap.xml

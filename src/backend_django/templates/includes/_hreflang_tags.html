@@ -1,0 +1,19 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% get_available_languages as LANGUAGES %}
+
+{% comment %}
+    This template generates hreflang tags for multilingual SEO.
+    It assumes that i18n_patterns are used in urls.py and that
+    the current URL path includes the language prefix (e.g., /de/page/).
+    It also assumes the default language code is 'de' for x-default.
+{% endcomment %}
+
+{% comment %} Extract the base path without the current language prefix {% endcomment %}
+{% with request.path|slice:"3:" as base_path %}
+    {% for lang_code, lang_name in LANGUAGES %}
+        <link rel="alternate" hreflang="{{ lang_code }}" href="{{ request.scheme }}://{{ request.get_host }}/{{ lang_code }}{{ base_path }}" />
+    {% endfor %}
+    {% comment %} x-default should point to the default language version. Assuming 'de' is the default. {% endcomment %}
+    <link rel="alternate" hreflang="x-default" href="{{ request.scheme }}://{{ request.get_host }}/de{{ base_path }}" />
+{% endwith %}

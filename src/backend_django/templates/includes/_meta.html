@@ -9,14 +9,16 @@
 <meta name="generator" content="Django">
 
 <!-- 2. Robots & AI Control (2026 Standard) -->
-<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+{% block meta_robots %}<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">{% endblock %}
+
+{% include "includes/_hreflang_tags.html" %}
 
 <!-- 3. Open Graph / Facebook / Telegram (Social Previews) -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
 <meta property="og:title" content="{% block og_title %}{% firstof seo.seo_title "LILY Beauty Salon | Köthen" %}{% endblock %}">
 <meta property="og:description" content="{% block og_description %}{% firstof seo.seo_description "Ukrainian beauty experts in Köthen. High-end manicure, cosmetology, and hair care." %}{% endblock %}">
-<meta property="og:image" content="{% block og_image %}{% if seo.seo_image %}{{ seo.seo_image.url }}{% else %}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock %}">
+<meta property="og:image" content="{% block og_image %}{% if seo.seo_image %}{{ seo.seo_image.url }}{% else %}{% static 'img/logo_lily.webp' %{% endif %}{% endblock %}">
 <meta property="og:site_name" content="LILY Beauty Salon">
 <meta property="og:locale" content="{{ LANGUAGE_CODE }}">
 
@@ -24,7 +26,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{% block twitter_title %}{% firstof seo.seo_title "LILY Beauty Salon" %}{% endblock %}">
 <meta name="twitter:description" content="{% block twitter_description %}{% firstof seo.seo_description "Ukrainian beauty experts in Köthen." %}{% endblock %}">
-<meta name="twitter:image" content="{% block twitter_image %}{% if seo.seo_image %}{{ seo.seo_image.url }}{% else %}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock %}">
+<meta name="twitter:image" content="{% block twitter_image %}{% if seo.seo_image %}{{ seo.seo_image.url }}{% else %}{% static 'img/logo_lily.webp' %{% endif %}{% endblock %}">
 
 <!-- 5. Technical & Freshness (EEAT) -->
 {% if object.updated_at %}
@@ -36,6 +38,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+{% include "includes/_schema_local_business.html" %}
 
 <!-- CSS -->
 <link rel="stylesheet" href="{% static 'css/app.css' %}">

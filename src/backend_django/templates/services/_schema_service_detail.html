@@ -1,0 +1,33 @@
+{% load static %}
+{% load i18n %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "{{ category.title }}",
+  "name": "{{ category.title }}",
+  "description": "{{ category.description|striptags|truncatechars:200 }}",
+  "image": "{{ request.build_absolute_uri }}{% if category.image %}{{ category.image.url }}{% else %}{% static 'img/default_service.webp' %}{% endif %}",
+  "url": "{{ request.build_absolute_uri }}",
+  "provider": {
+    "@type": "LocalBusiness",
+    "@id": "https://lily-salon.de/#organization"
+  },
+  "hasOffer": [
+    {% for service in category.services.all %}
+    {
+      "@type": "Offer",
+      "name": "{{ service.title }}",
+      "description": "{{ service.description|striptags|truncatechars:100 }}",
+      "priceSpecification": {
+        "@type": "PriceSpecification",
+        "price": "{{ service.price|default:'0' }}",
+        "priceCurrency": "EUR"
+      },
+      "url": "{{ request.build_absolute_uri }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
