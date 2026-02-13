@@ -32,4 +32,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build Bot image
-        run: docker build -f deploy/02_telegram_bot/Dockerfile -t check-02_telegram_bot .
+        run: docker build -f deploy/bot/Dockerfile -t check-bot .
