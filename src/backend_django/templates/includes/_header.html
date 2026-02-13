@@ -28,22 +28,6 @@
             <a href="{% url 'services' %}" {% if 'services' in request.path %}class="active"{% endif %}>{% trans "Leistungen" %}</a>
             <a href="{% url 'team' %}" {% if 'team' in request.path %}class="active"{% endif %}>{% trans "Team" %}</a>
             <a href="{% url 'contacts' %}" {% if 'contacts' in request.path %}class="active"{% endif %}>{% trans "Kontakt" %}</a>
-
-            <!-- Language Switcher -->
-            <form action="{% url 'set_language' %}" method="post" class="language-switcher">
-                {% csrf_token %}
-                <input name="next" type="hidden" value="{{ redirect_to }}">
-                <select name="language" onchange="this.form.submit()" class="language-select">
-                    {% get_current_language as LANGUAGE_CODE %}
-                    {% get_available_languages as LANGUAGES %}
-                    {% get_language_info_list for LANGUAGES as languages %}
-                    {% for language in languages %}
-                        <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
-                            {% if language.code == 'uk' %}UA{% else %}{{ language.code|upper }}{% endif %}
-                        </option>
-                    {% endfor %}
-                </select>
-            </form>
         </nav>
 
         <!-- Burger Button (Visible on Mobile) -->
