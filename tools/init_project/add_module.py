@@ -4,7 +4,7 @@ Add Module — восстановление модулей из git истори
 После установки первый коммит "Install" содержит ВСЕ файлы шаблона.
 Эта команда достаёт нужный модуль обратно:
 
-  python -m tools.init_project.add_module bot
+  python -m tools.init_project.add_module telegram_bot
   python -m tools.init_project.add_module fastapi
   python -m tools.init_project.add_module shared
 
@@ -22,7 +22,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # Маппинг модулей на пути в шаблоне
 MODULE_PATHS: dict[str, list[str]] = {
-    "bot": [
+    "02_telegram_bot": [
         "src/telegram_bot",
     ],
     "fastapi": [

@@ -5,6 +5,7 @@ Inherits from base.py. Postgres, DEBUG=False, security hardened.
 """
 
 import os
+from typing import Any
 
 from .base import *  # noqa: F401,F403
 
@@ -26,7 +27,8 @@ CSRF_COOKIE_SECURE = True
 # Database — PostgreSQL
 # ═══════════════════════════════════════════
 
-DATABASES = {
+# Using type ignore for redefinition of DATABASES which is standard in Django settings
+DATABASES: dict[str, dict[str, Any]] = {  # type: ignore[no-redef]
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.environ.get("DB_NAME", "lily_website"),
@@ -35,17 +37,13 @@ DATABASES = {
         "HOST": os.environ.get("DB_HOST", "postgres"),
         "PORT": os.environ.get("DB_PORT", "5432"),
         "OPTIONS": {
-            # Schema isolation: Django only sees django_app + public schemas.
-            # Migrations create tables in django_app schema.
-            # This allows sharing one DB (e.g. Neon) with FastAPI/Bot
-            # without table name conflicts.
             "options": f"-c search_path={os.environ.get('DB_SCHEMA', 'django_app')},public",
         },
     }
 }
 
 # ═══════════════════════════════════════════
-# Static files — collected by collectstatic
+# Static files
 # ═══════════════════════════════════════════
 
 STATIC_ROOT = BASE_DIR / "staticfiles"  # noqa: F405

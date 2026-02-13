@@ -1,6 +1,6 @@
 """
 SQLAlchemy models for Telegram Bot (Direct mode).
-Place your models here when the bot works directly with the database.
+Place your models here when the 02_telegram_bot works directly with the database.
 
 Import all models here so Alembic can discover them for autogenerate.
 """

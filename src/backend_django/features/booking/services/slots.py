@@ -8,121 +8,107 @@ from features.system.models.site_settings import SiteSettings
 class SlotService:
     """
     Service for calculating available time slots for booking.
+    Optimized to maximize the number of appointments (no small gaps).
     """
 
     def __init__(self, step_minutes: int = 30):
+        # step_minutes is used as a fallback or for grid alignment
         self.step_minutes = step_minutes
 
     def get_available_slots(self, masters: Master | list[Master], date_obj: date, duration_minutes: int) -> list[str]:
-        """
-        Returns a list of available start times (e.g. ["10:00", "10:30"])
-        for given master(s), date, and service duration.
-
-        If multiple masters are provided (e.g. 'Any Master'), returns the UNION of their slots.
-        """
         if isinstance(masters, Master):
             masters = [masters]
 
         if not masters:
             return []
 
-        # Set of all unique available slots across all masters
         all_slots = set()
-
         for master in masters:
             master_slots = self._get_slots_for_single_master(master, date_obj, duration_minutes)
             all_slots.update(master_slots)
 
-        # Return sorted list
         return sorted(list(all_slots))
 
     def _get_slots_for_single_master(self, master: Master, date_obj: date, duration_minutes: int) -> list[str]:
-        """Calculates slots for one specific master."""
+        """Calculates slots using 'tight packing' logic."""
 
-        # 1. Get working hours for this day
+        # 1. Get working hours
         working_hours = self._get_working_hours(date_obj)
         if not working_hours:
-            return []  # Day off
+            return []
 
         start_work, end_work = working_hours
 
-        # 2. Get existing appointments
+        # Helper to combine date and time into aware datetime
+        def to_dt(t):
+            return timezone.make_aware(datetime.combine(date_obj, t))
+
+        # 2. Get busy intervals
         appointments = Appointment.objects.filter(
             master=master,
             datetime_start__date=date_obj,
             status__in=[Appointment.STATUS_PENDING, Appointment.STATUS_CONFIRMED],
         ).order_by("datetime_start")
 
-        busy_intervals = []
+        # Create a list of busy intervals [start, end] as datetimes
+        busy_dts = []
         for app in appointments:
-            start = app.datetime_start.time()
-            # Calculate end time based on duration
-            end_dt = app.datetime_start + timedelta(minutes=app.duration_minutes)
-            end = end_dt.time()
-            busy_intervals.append((start, end))
+            s = timezone.localtime(app.datetime_start)
+            e = s + timedelta(minutes=app.duration_minutes)
+            busy_dts.append((s, e))
 
-        # 3. Generate slots
+        # 3. Identify free windows (gaps)
+        # We start from start_work and jump through busy intervals to end_work
+        free_windows = []
+        current_ptr = to_dt(start_work)
+        end_limit = to_dt(end_work)
+
+        for b_start, b_end in busy_dts:
+            if b_start > current_ptr:
+                free_windows.append((current_ptr, b_start))
+            current_ptr = max(current_ptr, b_end)
+
+        if current_ptr < end_limit:
+            free_windows.append((current_ptr, end_limit))
+
+        # 4. Generate slots for each window
         available_slots = []
-        current_time = start_work
+        now = timezone.localtime()
+        # Small technical buffer (15 min) to prevent booking in the past
+        min_allowed_start = now + timedelta(minutes=15)
 
-        # Convert duration to timedelta
         service_delta = timedelta(minutes=duration_minutes)
 
-        # Helper to combine date and time
-        def to_dt(t):
-            return datetime.combine(date_obj, t)
+        for w_start, w_end in free_windows:
+            # A window must be at least as long as the service
+            if (w_end - w_start) < service_delta:
+                continue
 
-        while current_time < end_work:
-            slot_start = current_time
-            # Calculate when this service would end
-            slot_end_dt = to_dt(slot_start) + service_delta
-            slot_end = slot_end_dt.time()
+            # Tight packing: offer slots starting from the beginning of the window
+            # and also from the end of the window (backwards) to ensure no gaps.
 
-            # Check if slot fits in working hours
-            if slot_end > end_work and slot_end_dt.date() == date_obj:
-                # If it goes past end_work on the same day
-                break
-            if slot_end_dt.date() > date_obj:
-                # If it goes to next day (should not happen usually)
-                break
+            # Forward packing (from start of gap)
+            temp_start = w_start
+            while temp_start + service_delta <= w_end:
+                if temp_start >= min_allowed_start:
+                    available_slots.append(temp_start.strftime("%H:%M"))
+                temp_start += service_delta  # Jump by duration to keep packing tight
 
-            # Check collisions
-            is_busy = False
-            for busy_start, busy_end in busy_intervals:
-                # Overlap logic:
-                # (StartA < EndB) and (EndA > StartB)
-                if slot_start < busy_end and slot_end > busy_start:
-                    is_busy = True
-                    break
+            # Backward packing (from end of gap)
+            # This ensures we offer the "final" possible slot in this window
+            final_slot_start = w_end - service_delta
+            if final_slot_start >= min_allowed_start and final_slot_start > w_start:
+                available_slots.append(final_slot_start.strftime("%H:%M"))
 
-            # Check if slot is in the past (for today)
-            now = timezone.now()
-            if date_obj == now.date():
-                # Add a small buffer (e.g. 15 minutes) so user can't book immediately
-                min_booking_time = now + timedelta(minutes=15)
-                if to_dt(slot_start) < min_booking_time:
-                    is_busy = True
-
-            if not is_busy:
-                available_slots.append(slot_start.strftime("%H:%M"))
-
-            # Increment time
-            next_dt = to_dt(current_time) + timedelta(minutes=self.step_minutes)
-            current_time = next_dt.time()
-
-        return available_slots
+        # Remove duplicates and sort
+        return sorted(list(set(available_slots)))
 
     def _get_working_hours(self, date_obj: date) -> tuple[time, time] | None:
-        """
-        Parses working hours from SiteSettings based on weekday.
-        Returns (start_time, end_time) or None if closed.
-        """
         settings = SiteSettings.load()
-        weekday = date_obj.weekday()  # 0=Mon, 6=Sun
-
-        if weekday < 5:  # Mon-Fri
+        weekday = date_obj.weekday()
+        if weekday < 5:
             return settings.work_start_weekdays, settings.work_end_weekdays
-        elif weekday == 5:  # Sat
+        elif weekday == 5:
             return settings.work_start_saturday, settings.work_end_saturday
-        else:  # Sun
-            return None  # Closed
+        else:
+            return None

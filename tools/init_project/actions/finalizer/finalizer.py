@@ -7,7 +7,7 @@ Flow:
                         + создание веток develop/release
 
 Фишка: Первый коммит содержит ВСЕ модули шаблона.
-Команда `add bot` может восстановить их из git истории:
+Команда `add 02_telegram_bot` может восстановить их из git истории:
   git checkout <install-hash> -- src/telegram_bot
 """
 

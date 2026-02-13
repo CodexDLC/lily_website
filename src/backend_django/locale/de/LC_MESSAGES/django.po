@@ -515,7 +515,7 @@ msgid "Telegram ID"
 msgstr "Telegram URL"
 
 #: .\src\backend_django\features\booking\models\master.py:129
-msgid "For bot authentication and notifications"
+msgid "For 02_telegram_bot authentication and notifications"
 msgstr "Für Bot-Authentifizierung und Benachrichtigungen"
 
 #: .\src\backend_django\features\booking\models\master.py:132
@@ -529,7 +529,7 @@ msgid "Bot Access Code"
 msgstr "Bot-Zugangscode"
 
 #: .\src\backend_django\features\booking\models\master.py:139
-msgid "One-time code for master registration in bot"
+msgid "One-time code for master registration in 02_telegram_bot"
 msgstr "Einmalcode für Meister-Registrierung im Bot"
 
 #: .\src\backend_django\features\booking\models\master.py:143

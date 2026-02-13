@@ -55,7 +55,7 @@ async def main() -> None:
 
     # 5. Bot + Dispatcher
     bot, dp = await build_bot(settings.bot_token, redis_client)
-    container.set_bot(bot)  # Устанавливаем объект bot в контейнер
+    container.set_bot(bot)  # Устанавливаем объект 02_telegram_bot в контейнер
     log.info("Bot and Dispatcher created")
 
     # 6. Middleware (порядок: снаружи → внутрь)

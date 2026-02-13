@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 # Paths
 # ═══════════════════════════════════════════
 
-# src/backend_django/
+# In container: /app. Locally: src/backend_django
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Load .env from backend root
@@ -90,11 +90,15 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # ═══════════════════════════════════════════
 
-# Default: SQLite (overridden in prod.py for Postgres)
+# Supports both SQLite (dev) and PostgreSQL (prod/docker)
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("DB_NAME", str(BASE_DIR / "db.sqlite3")),
+        "USER": os.environ.get("DB_USER", ""),
+        "PASSWORD": os.environ.get("DB_PASSWORD", ""),
+        "HOST": os.environ.get("DB_HOST", ""),
+        "PORT": os.environ.get("DB_PORT", ""),
     }
 }
 
@@ -177,11 +181,6 @@ if REDIS_PASSWORD:
     REDIS_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0"
 else:
     REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
-
-# Redis Streams settings
-REDIS_STREAM_NAME: str = os.getenv("REDIS_STREAM_NAME", "bot_events")
-REDIS_CONSUMER_GROUP_NAME: str = os.getenv("REDIS_CONSUMER_GROUP_NAME", "backend_group")  # Changed default for Django
-REDIS_CONSUMER_NAME: str = os.getenv("REDIS_CONSUMER_NAME", "backend_instance_1")  # Changed default for Django
 
 # ═══════════════════════════════════════════
 # Cache & Sessions (Redis)

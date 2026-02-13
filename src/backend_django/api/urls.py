@@ -5,9 +5,8 @@ Versioned API routers. Bot and external clients use these endpoints.
 Docs: /api/docs
 """
 
+from api.instance import api
 from ninja import Router
-
-from .instance import api
 
 # from .stream_publisher import router as stream_publisher_router # ВРЕМЕННО ОТКЛЮЧЕНО
 

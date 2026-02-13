@@ -9,7 +9,7 @@ Flow с двумя коммитами:
 5. finalizer → commit "Activate" (чистый проект)
 
 Фишка: первый коммит хранит ВСЕ модули.
-Команда `add bot` потом может достать их из git истории.
+Команда `add telegram_bot` потом может достать их из git истории.
 """
 
 from __future__ import annotations

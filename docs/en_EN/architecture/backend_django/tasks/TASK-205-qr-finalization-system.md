@@ -188,7 +188,7 @@ def generate_appointment_qr(appointment):
                 return;
             }
 
-            // Send to bot
+            // Send to 02_telegram_bot
             tg.sendData(JSON.stringify({
                 action: 'finalize_appointment',
                 token: token
@@ -260,7 +260,7 @@ async def handle_qr_scan(message: Message):
     # Validate with Django API
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"{DJANGO_API_URL}/api/bot/appointment/scan/",
+            f"{DJANGO_API_URL}/api/02_telegram_bot/appointment/scan/",
             params={
                 "finalize_token": finalize_token,
                 "master_telegram_id": master_telegram_id,
@@ -333,7 +333,7 @@ async def finalize_appointment(callback: CallbackQuery):
 
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"{DJANGO_API_URL}/api/bot/appointment/finalize/",
+            f"{DJANGO_API_URL}/api/02_telegram_bot/appointment/finalize/",
             json={
                 "finalize_token": finalize_token,
                 "actual_price": float(price),

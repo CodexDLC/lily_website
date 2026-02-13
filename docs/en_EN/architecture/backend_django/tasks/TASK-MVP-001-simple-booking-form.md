@@ -270,7 +270,7 @@ def send_approval_to_client(booking_request):
 
     # Telegram (if available)
     if booking_request.client_telegram_id:
-        # TODO: send via bot
+        # TODO: send via 02_telegram_bot
 
 
 def send_rejection_to_client(booking_request):
@@ -286,7 +286,7 @@ def send_rejection_to_client(booking_request):
 
     # Telegram (if available)
     if booking_request.client_telegram_id:
-        # TODO: send via bot
+        # TODO: send via 02_telegram_bot
 ```
 
 ### 4. Telegram Bot Handler (Owner Actions)
@@ -307,7 +307,7 @@ async def approve_booking(callback: CallbackQuery):
     # Call Django API
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"{DJANGO_API_URL}/api/bot/booking/approve/",
+            f"{DJANGO_API_URL}/api/02_telegram_bot/booking/approve/",
             json={"booking_id": booking_id}
         )
 
@@ -365,7 +365,7 @@ async def reject_with_reason(callback: CallbackQuery):
     # Call Django API
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            f"{DJANGO_API_URL}/api/bot/booking/reject/",
+            f"{DJANGO_API_URL}/api/02_telegram_bot/booking/reject/",
             json={
                 "booking_id": booking_id,
                 "reason": reason

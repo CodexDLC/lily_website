@@ -31,9 +31,9 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: deploy/bot/Dockerfile
+          file: deploy/02_telegram_bot/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.REPO_LOWER }}-bot:latest
+          tags: ghcr.io/${{ env.REPO_LOWER }}-02_telegram_bot:latest
 
       - name: Build and Push Worker
         uses: docker/build-push-action@v5

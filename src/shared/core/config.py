@@ -10,7 +10,7 @@ ENV_FILE_PATH = ROOT_DIR / ".env"
 
 class CommonSettings(BaseSettings):
     """
-    Базовые настройки, общие для всех сервисов (Backend, Bot).
+    Базовые настройки, общие для всех сервисов (Backend, Bot, Worker).
     Включает Redis, Логирование и общие пути.
     """
 
