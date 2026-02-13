@@ -18,7 +18,7 @@
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
 <meta property="og:title" content="{% block og_title %}{% firstof seo.seo_title "LILY Beauty Salon | Köthen" %}{% endblock %}">
 <meta property="og:description" content="{% block og_description %}{% firstof seo.seo_description "Ukrainian beauty experts in Köthen. High-end manicure, cosmetology, and hair care." %}{% endblock %}">
-<meta property="og:image" content="{% block og_image %}{% if seo.seo_image %}{{ seo.seo_image.url }}{% else %}{% static 'img/logo_lily.webp' %{% endif %}{% endblock %}">
+<meta property="og:image" content="{% block og_image %}{% if seo.seo_image %}{{ seo.seo_image.url }}{% else %}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock %}">
 <meta property="og:site_name" content="LILY Beauty Salon">
 <meta property="og:locale" content="{{ LANGUAGE_CODE }}">
 
@@ -26,7 +26,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{% block twitter_title %}{% firstof seo.seo_title "LILY Beauty Salon" %}{% endblock %}">
 <meta name="twitter:description" content="{% block twitter_description %}{% firstof seo.seo_description "Ukrainian beauty experts in Köthen." %}{% endblock %}">
-<meta name="twitter:image" content="{% block twitter_image %}{% if seo.seo_image %}{{ seo.seo_image.url }}{% else %}{% static 'img/logo_lily.webp' %{% endif %}{% endblock %}">
+<meta name="twitter:image" content="{% block twitter_image %}{% if seo.seo_image %}{{ seo.seo_image.url }}{% else %}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock %}">
 
 <!-- 5. Technical & Freshness (EEAT) -->
 {% if object.updated_at %}
