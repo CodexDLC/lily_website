@@ -6,6 +6,7 @@
 {% block meta_description %}{{ seo.seo_description|default:"Kontaktieren Sie uns." }}{% endblock %}
 
 {% block content %}
+{% include "contacts/_schema_contact_page.html" %}
 <!-- HERO -->
 <section class="hero-text-block">
     <div class="container">
@@ -24,7 +25,7 @@
             <div class="about-content">
                 <h2>{% trans "Willkommen bei LILY" %}</h2>
                 <p class="about-text">
-                    {% trans "LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellen Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern auch ein innerer Zustand des Selbstvertrauens." %}
+                    {% trans "LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellem Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern auch ein innerer Zustand des Selbstvertrauens." %}
                 </p>
                 <p class="about-text">
                     {% trans "Unsere Meister verwenden nur Premium-Materialien (Wella, L'Oreal, Luxio) und moderne Techniken, um Ihre natürliche Einzigartigkeit zu unterstreichen." %}
@@ -48,7 +49,7 @@
         <div class="bottom-section">
 
             <!-- Left: Details -->
-            <div class="contacts-details">
+            <address class="contacts-details"> {# Изменено с div на address #}
 
                 <div style="margin-bottom: 30px;">
                     <span class="label">{% trans "Unsere Adresse" %}</span>
@@ -83,7 +84,7 @@
                     </span>
                 </div>
 
-            </div>
+            </address>
 
             <!-- Right: Map + Button -->
             <div class="map-container-block">

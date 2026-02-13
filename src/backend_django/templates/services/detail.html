@@ -5,6 +5,7 @@
 {% block title %}{{ category.title|default:_("Leistung") }} | LILY Beauty Salon{% endblock %}
 
 {% block content %}
+{% include "services/_schema_service_detail.html" %}
 <!-- HERO SERVICE -->
 <section class="hero-text-block hero-service-bg" style="background-image: url('{% if category.image %}{{ category.image.url }}{% else %}https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=1200{% endif %}');">
     <div class="hero-service-overlay"></div>
@@ -19,11 +20,11 @@
 
         <!-- SEO TEXT -->
         {% if category.content %}
-        <div class="service-seo-section">
+        <article class="service-seo-section"> {# Изменено с div на article #}
             <div class="service-seo-text">
                 {{ category.content|safe }}
             </div>
-        </div>
+        </article>
         {% endif %}
 
         <!-- PRICE LIST -->
