@@ -7,3 +7,7 @@ class ImpressumView(TemplateView):
 
 class DatenschutzView(TemplateView):
     template_name = "legal/datenschutz.html"
+
+
+class FaqView(TemplateView):
+    template_name = "legal/faq.html"

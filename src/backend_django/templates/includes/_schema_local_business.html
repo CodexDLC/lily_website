@@ -1,3 +1,4 @@
+{% load static %}
 <!-- Schema.org JSON-LD for LocalBusiness -->
 <script type="application/ld+json">
 {
@@ -18,8 +19,8 @@
   },
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": "51.7583", {# Замените на точные координаты вашего салона #}
-    "longitude": "11.9708" {# Замените на точные координаты вашего салона #}
+    "latitude": "51.746495",
+    "longitude": "11.9784666"
   },
   "openingHoursSpecification": [
     {
@@ -43,9 +44,22 @@
   ],
   "priceRange": "$$", {# Укажите примерный ценовой диапазон: $, $$, $$$ #}
   "sameAs": [
-    "{{ site_settings.instagram_url|default:'https://www.instagram.com/lily_beauty_salon_koethen/' }}", {# Замените на актуальные ссылки #}
-    "https://www.facebook.com/lilybeautysalonkoethen/" {# Замените на актуальные ссылки #}
+    "https://www.instagram.com/manikure_kothen?igsh=MTRiYmVydnBsN2xzZQ%3D%3D",
+    "https://www.facebook.com/lilybeautysalonkoethen/" {# Осталось без изменений, так как новая ссылка не предоставлена #}
   ],
+  "potentialAction": {
+    "@type": "ReserveAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "{{ SITE_BASE_URL }}booking/",
+      "inLanguage": "ru",
+      "actionPlatform": [
+        "https://schema.org/DesktopWebPlatform",
+        "https://schema.org/MobileWebPlatform"
+      ]
+    },
+    "name": "Записаться онлайн"
+  },
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
     "name": "Beauty Services",

@@ -1,7 +1,6 @@
 from django.urls import path
-from django.views.generic import TemplateView
 
-from .views import contacts, home, services, team
+from .views import contacts, home, legal, services, team
 
 urlpatterns = [
     # Home
@@ -15,6 +14,7 @@ urlpatterns = [
     # Contacts
     path("contacts/", contacts.ContactsView.as_view(), name="contacts"),
     # Legal
-    path("impressum/", TemplateView.as_view(template_name="legal/impressum.html"), name="impressum"),
-    path("datenschutz/", TemplateView.as_view(template_name="legal/datenschutz.html"), name="datenschutz"),
+    path("impressum/", legal.ImpressumView.as_view(), name="impressum"),
+    path("datenschutz/", legal.DatenschutzView.as_view(), name="datenschutz"),
+    path("faq/", legal.FaqView.as_view(), name="faq"),
 ]

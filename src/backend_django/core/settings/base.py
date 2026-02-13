@@ -31,6 +31,14 @@ DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1", "yes")
 ALLOWED_HOSTS = [h.strip() for h in os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
 
 # ═══════════════════════════════════════════
+# Site Base URL
+# ═══════════════════════════════════════════
+
+SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "http://127.0.0.1:8000/")
+if not SITE_BASE_URL.endswith("/"):
+    SITE_BASE_URL += "/"
+
+# ═══════════════════════════════════════════
 # Application definition
 # ═══════════════════════════════════════════
 
@@ -79,6 +87,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.i18n",  # Added for i18n
                 "features.system.context_processors.site_settings",  # Global Site Settings
+                "core.context_processors.site_base_url",  # Custom context processor for SITE_BASE_URL
             ],
         },
     },

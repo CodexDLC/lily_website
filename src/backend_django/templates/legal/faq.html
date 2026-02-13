@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Häufig gestellte Fragen" %} | LILY Beauty Salon{% endblock %}
+{% block meta_description %}{% trans "Antworten auf Ihre Fragen zu unseren Dienstleistungen und Produkten." %}{% endblock %}
+
+{% block content %}
+<section class="hero-text-block">
+    <div class="container">
+        <h1 class="hero-title">{% trans "Häufig gestellte Fragen" %}</h1>
+        <p class="hero-subtitle">{% trans "ALLES, WAS SIE WISSEN MÜSSEN" %}</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="faq-list">
+            <article class="faq-item">
+                <h2>{% trans "Welche Gel-Marken verwenden Sie für Nagelmodellage?" %}</h2>
+                <p>{% trans "Wir verwenden hochwertige Gele von Ga&Ma (Strong Gel), Dark und SAGA Professional (Builder Gel) für Architektur und Stabilität Ihrer Nägel." %}</p>
+            </article>
+
+            <article class="faq-item">
+                <h2>{% trans "Bieten Sie spezielle Behandlungen für brüchige Nägel an?" %}</h2>
+                <p>{% trans "Ja, für brüchige Nägel setzen wir die Nogtika Fiber Base mit Glasfaser ein, um die Nägel zu stärken und ihre Widerstandsfähigkeit zu verbessern." %}</p>
+            </article>
+
+            <article class="faq-item">
+                <h2>{% trans "Welche Marken von Haarfärbemitteln verwenden Sie?" %}</h2>
+                <p>{% trans "Für unsere professionelle Koloristik arbeiten wir mit FR OPTIMA und der exquisiten Farbpalette von Luxima, einschließlich Farbtönen wie Espresso, Smoky Rose und Ice Coffee." %}</p>
+            </article>
+
+            <article class="faq-item">
+                <h2>{% trans "Bieten Sie Haarrekonstruktionsbehandlungen an?" %}</h2>
+                <p>{% trans "Ja, wir bieten eine dreistufige Rekonstruktion von VIART an (Lipidic, Amino Spray, Keratin Recovery), um die natürliche Elastizität und Gesundheit des Haares wiederherzustellen." %}</p>
+            </article>
+
+            <article class="faq-item">
+                <h2>{% trans "Welche Produkte verwenden Sie für die Behandlung von Problemhaut?" %}</h2>
+                <p>{% trans "Für Problemhaut setzen wir auf die Comodex-Linie von Christina. Für strahlende Haut verwenden wir Line Repair." %}</p>
+            </article>
+
+            <article class="faq-item">
+                <h2>{% trans "Welche Marken kommen bei Hydropiling und RF-Lifting zum Einsatz?" %}</h2>
+                <p>{% trans "Bei Hydropiling und RF-Lifting verwenden wir hochwirksame Konzentrate von Zemits, wie HyaTight und Hydroclear, für optimale Ergebnisse." %}</p>
+            </article>
+
+            <article class="faq-item">
+                <h2>{% trans "Welche Wachsmarken verwenden Sie für die Haarentfernung?" %}</h2>
+                <p>{% trans "Für eine sanfte und effektive Depilation verwenden wir Premium-Wachse von Italwax (Top Formula und Nirvana) sowie hochwertige Zuckerpaste von Enova." %}</p>
+            </article>
+
+            <article class="faq-item">
+                <h2>{% trans "Welche Wimpernmarken verwenden Sie für Wimpernverlängerungen?" %}</h2>
+                <p>{% trans "Für Wimpernverlängerungen verwenden wir ausschließlich hypoallergene Wimpern von Platinum in den beliebtesten Biegungen wie C und CC, um einen natürlichen oder voluminösen Look zu erzielen." %}</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_head_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "{% trans "Welche Gel-Marken verwenden Sie für Nagelmodellage?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Wir verwenden hochwertige Gele von Ga&Ma (Strong Gel), Dark und SAGA Professional (Builder Gel) für Architektur und Stabilität Ihrer Nägel." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Bieten Sie spezielle Behandlungen für brüchige Nägel an?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Ja, für brüchige Nägel setzen wir die Nogtika Fiber Base mit Glasfaser ein, um die Nägel zu stärken und ihre Widerstandsfähigkeit zu verbessern." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Welche Marken von Haarfärbemitteln verwenden Sie?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Für unsere professionelle Koloristik arbeiten wir mit FR OPTIMA und der exquisiten Farbpalette von Luxima, einschließlich Farbtönen wie Espresso, Smoky Rose und Ice Coffee." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Bieten Sie Haarrekonstruktionsbehandlungen an?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Ja, wir bieten eine dreistufige Rekonstruktion von VIART an (Lipidic, Amino Spray, Keratin Recovery), um die natürliche Elastizität und Gesundheit des Haares wiederherzustellen." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Welche Produkte verwenden Sie für die Behandlung von Problemhaut?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Für Problemhaut setzen wir auf die Comodex-Linie von Christina. Für strahlende Haut verwenden wir Line Repair." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Welche Marken kommen bei Hydropiling und RF-Lifting zum Einsatz?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Bei Hydropiling und RF-Lifting verwenden wir hochwirksame Konzentrate von Zemits, wie HyaTight und Hydroclear, für optimale Ergebnisse." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Welche Wachsmarken verwenden Sie für die Haarentfernung?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Für eine sanfte und effektive Depilation verwenden wir Premium-Wachse von Italwax (Top Formula und Nirvana) sowie hochwertige Zuckerpaste von Enova." %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans "Welche Wimpernmarken verwenden Sie für Wimpernverlängerungen?" %}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans "Für Wimpernverlängerungen verwenden wir ausschließlich hypoallergene Wimpern von Platinum in den beliebtesten Biegungen wie C und CC, um einen natürlichen oder voluminösen Look zu erzielen." %}"
+      }
+    }
+  ]
+}
+</script>
+{% endblock %}
