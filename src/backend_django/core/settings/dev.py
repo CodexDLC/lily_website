@@ -7,25 +7,33 @@ Inherits from base.py. SQLite, DEBUG=True, verbose logging.
 from .base import *  # noqa: F401,F403
 
 # ═══════════════════════════════════════════
-# Development overrides
+# Debug
 # ═══════════════════════════════════════════
 
 DEBUG = True
 
-# Logging Level for Dev
-LOG_LEVEL_CONSOLE = "DEBUG"
-
-# SQLite for dev (already default in base.py)
-# Override DATABASE if needed:
-# DATABASES["default"] = {
-#     "ENGINE": "django.db.backends.sqlite3",
-#     "NAME": BASE_DIR / "db.sqlite3",
-# }
-
 # ═══════════════════════════════════════════
-# Debug tools (add django-debug-toolbar here)
+# Database — SQLite
 # ═══════════════════════════════════════════
 
-INSTALLED_APPS += ["debug_toolbar"]  # noqa: F405
-MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")  # noqa: F405
-INTERNAL_IPS = ["127.0.0.1"]
+# SQLite is already configured in base.py as default.
+# No changes needed here unless you want to override.
+
+# ═══════════════════════════════════════════
+# Logging
+# ═══════════════════════════════════════════
+
+# In dev, we might want more verbose logging to console
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+}

@@ -1,6 +1,7 @@
 from arq.connections import RedisSettings
 from loguru import logger as log
 
+from src.shared.core.logger import setup_logging
 from src.workers.core.base import BaseArqSettings, base_shutdown, base_startup
 from src.workers.core.config import WorkerSettings as CoreWorkerSettings
 
@@ -15,6 +16,9 @@ async def worker_startup(ctx: dict) -> None:
     """
     Инициализация воркера уведомлений.
     """
+    # Инициализируем логирование для этого воркера
+    setup_logging(settings, "notification_worker")
+
     await base_startup(ctx)
 
     log.info("NotificationWorkerStartup | Initializing dependencies.")
@@ -40,9 +44,9 @@ class WorkerSettings(BaseArqSettings):
     Настройки ARQ воркера для уведомлений.
     """
 
-    # Используем настройки из WorkerSettings для конфигурации Redis
+    # Используем умное определение хоста Redis
     redis_settings = RedisSettings(
-        host=settings.redis_host,
+        host=settings.effective_redis_host,
         port=settings.redis_port,
         password=settings.redis_password,
         database=0,

@@ -1,0 +1,85 @@
+/* =========================================
+   LEGAL PAGES (Impressum, Datenschutz)
+   ========================================= */
+
+.legal-page {
+    padding: 80px 0;
+    background-color: var(--color-emerald); /* Match site background */
+    min-height: 100vh;
+}
+
+.legal-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.03); /* Subtle background */
+    border: 1px solid rgba(237, 208, 113, 0.1); /* Thin gold border */
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.legal-title {
+    font-family: var(--font-serif, serif);
+    color: var(--color-gold);
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 40px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(237, 208, 113, 0.2);
+    padding-bottom: 20px;
+}
+
+.legal-section {
+    margin-bottom: 30px;
+}
+
+.legal-section h2,
+.legal-section h3 {
+    font-family: var(--font-serif, serif);
+    color: var(--color-gold);
+    font-size: 20px;
+    margin-bottom: 15px;
+    margin-top: 30px;
+    border-left: 3px solid var(--color-gold); /* Gold line on left */
+    padding-left: 15px;
+    line-height: 1.4;
+}
+
+.legal-section p {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.8;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.legal-section strong {
+    color: white;
+    font-weight: 600;
+}
+
+.legal-section a {
+    color: var(--color-gold);
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(237, 208, 113, 0.5);
+    transition: 0.3s;
+}
+
+.legal-section a:hover {
+    border-bottom-style: solid;
+    color: white;
+    border-color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .legal-container {
+        padding: 20px;
+        border: none;
+        background: none;
+    }
+
+    .legal-title {
+        font-size: 24px;
+    }
+}

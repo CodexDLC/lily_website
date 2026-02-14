@@ -24,6 +24,8 @@
 @import url('pages/contacts.css');
 @import url('pages/booking.css'); /* Booking Wizard */
 @import url('pages/errors.css');
+@import url('pages/legal.css'); /* Legal Pages (Impressum, Datenschutz) */
+@import url('pages/faq.css');   /* FAQ Page */
 
 /* Adaptive Styles with Media Queries */
 @import url('adaptive/mobile.css') screen and (max-width: 767px);

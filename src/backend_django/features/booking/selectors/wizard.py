@@ -2,6 +2,7 @@ import calendar
 from datetime import date
 from typing import Any, TypedDict
 
+from core.cache import get_cached_data
 from django.db.models import Count, Q
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -21,22 +22,28 @@ class StepperStep(TypedDict):
 
 
 def get_step_1_context(state: BookingState) -> dict[str, Any]:
-    """Context for Step 1: Services & Categories."""
+    """Context for Step 1: Services & Categories. Cached."""
     selected_category_slug = state.category_slug
 
-    categories = (
-        Category.objects.filter(is_active=True)
-        .annotate(active_masters_count=Count("masters", filter=Q(masters__status=Master.STATUS_ACTIVE)))
-        .filter(active_masters_count__gt=0)
-        .order_by("order")
-    )
+    def fetch_categories():
+        return list(
+            Category.objects.filter(is_active=True)
+            .annotate(active_masters_count=Count("masters", filter=Q(masters__status=Master.STATUS_ACTIVE)))
+            .filter(active_masters_count__gt=0)
+            .order_by("order")
+        )
 
-    if not selected_category_slug and categories.exists():
-        selected_category_slug = categories.first().slug
+    categories = get_cached_data("wizard_categories_cache", fetch_categories)
 
-    services = []
-    if selected_category_slug:
-        services = Service.objects.filter(category__slug=selected_category_slug, is_active=True).order_by("order")
+    if not selected_category_slug and categories:
+        selected_category_slug = categories[0].slug
+
+    def fetch_services():
+        if not selected_category_slug:
+            return []
+        return list(Service.objects.filter(category__slug=selected_category_slug, is_active=True).order_by("order"))
+
+    services = get_cached_data(f"wizard_services_cache_{selected_category_slug}", fetch_services)
 
     return {
         "categories": categories,
@@ -46,26 +53,25 @@ def get_step_1_context(state: BookingState) -> dict[str, Any]:
 
 
 def get_step_2_context(state: BookingState) -> dict[str, Any] | None:
-    """Context for Step 2: Masters."""
+    """Context for Step 2: Masters. Cached."""
     if not state.service_id:
         return None
 
-    try:
-        service = Service.objects.get(id=state.service_id)
-    except Service.DoesNotExist:
-        return None
+    def fetch():
+        try:
+            service = Service.objects.get(id=state.service_id)
+            masters = list(
+                Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE).order_by("order")
+            )
+            return {"selected_service": service, "masters": masters, "service_id": state.service_id}
+        except Service.DoesNotExist:
+            return None
 
-    masters = Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE).order_by("order")
-
-    return {
-        "selected_service": service,
-        "masters": masters,
-        "service_id": state.service_id,
-    }
+    return get_cached_data(f"wizard_step_2_cache_{state.service_id}", fetch)
 
 
 def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[str, Any] | None:
-    """Context for Step 3: Calendar & Slots."""
+    """Context for Step 3: Calendar & Slots. Calendar grid is cached, slots are dynamic."""
     context = {}
 
     # 1. Get Objects (Safe retrieval)
@@ -77,7 +83,7 @@ def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[s
         except Service.DoesNotExist:
             return None
     else:
-        return None  # Cannot proceed without service
+        return None
 
     masters_list = []
     if state.master_id:
@@ -91,9 +97,9 @@ def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[s
             except (Master.DoesNotExist, ValueError):
                 return None
     else:
-        return None  # Cannot proceed without master
+        return None
 
-    # 2. Calendar Grid
+    # 2. Calendar Grid (Cached)
     today = timezone.now().date()
     try:
         year = int(view_data.get("year", today.year))
@@ -101,9 +107,12 @@ def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[s
     except (ValueError, TypeError):
         year, month = today.year, today.month
 
-    context.update(_get_calendar_grid(year, month))
+    def fetch_calendar():
+        return _get_calendar_grid(year, month)
 
-    # 3. Slots (if date selected)
+    context.update(get_cached_data(f"calendar_grid_cache_{year}_{month}", fetch_calendar))
+
+    # 3. Slots (DYNAMIC - NEVER CACHE)
     if state.selected_date and service and masters_list:
         context["selected_date_obj"] = state.selected_date
 
@@ -112,14 +121,13 @@ def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[s
             masters=masters_list, date_obj=state.selected_date, duration_minutes=service.duration
         )
         context["available_slots"] = slots
-        # Add flag if no slots available for selected date
         context["no_slots_available"] = len(slots) == 0
 
     return context
 
 
 def get_step_4_context(state: BookingState) -> dict[str, Any] | None:
-    """Context for Step 4: Confirmation."""
+    """Context for Step 4: Confirmation. Dynamic."""
     if not state.service_id or not state.selected_date or not state.selected_time:
         return None
 
@@ -141,7 +149,7 @@ def get_stepper_context(current_step: int) -> list[StepperStep]:
     """Returns stepper state."""
     steps: list[StepperStep] = [
         {"number": "1", "title": _("Leistung"), "active": False, "completed": False},
-        {"number": "2", "title": _("Experте"), "active": False, "completed": False},
+        {"number": "2", "title": _("Experte"), "active": False, "completed": False},
         {"number": "3", "title": _("Termin"), "active": False, "completed": False},
         {"number": "4", "title": _("Bestätigung"), "active": False, "completed": False},
     ]
@@ -179,7 +187,6 @@ def _get_calendar_grid(year: int, month: int) -> dict[str, Any]:
 
             days_list.append({"num": str(day_num), "status": status, "title": title, "date": current_date.isoformat()})
 
-    # Fix for month name translation if needed, but keeping it simple for now
     month_name = date(year, month, 1).strftime("%B %Y")
 
     return {"calendar_days": days_list, "month_label": month_name, "current_year": year, "current_month": month}

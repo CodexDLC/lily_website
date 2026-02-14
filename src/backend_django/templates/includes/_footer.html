@@ -3,58 +3,121 @@
 
 <footer class="footer-smart">
     <div class="container">
-        <div class="footer-bar" onclick="toggleFooter()">
+        <!-- Footer Bar (Always Visible) -->
+        <div class="footer-bar" id="footerBar">
+
+            <!-- 1. Left: Branding -->
             <div class="footer-branding">
                 <span class="brand-name">{{ site_settings.company_name }}</span>
                 <span class="copyright">© {% now "Y" %}</span>
             </div>
 
-            <div class="developer-credit">
-                Developed by <a href="#" class="developer-credit">CodexDLC</a>
+            <!-- 2. Center: Developer Credit -->
+            <div class="developer-credit-center" id="footerCredits">
+                <span class="dev-text">Developed by</span>
+                <a href="#" class="dev-link">CodexDLC</a>
             </div>
 
-            <button class="footer-toggle-btn" id="footerToggleBtn" data-text-open="{% trans 'Kontakt & Leistungen öffnen' %}" data-text-close="{% trans 'Schließen' %}">
-                <span id="footerBtnText">{% trans "Kontakt & Leistungen öffnen" %}</span>
-                <span class="arrow-icon">↓</span>
-            </button>
+            <!-- 3. Right: Controls (Lang + Toggle) -->
+            <div class="footer-controls" id="footerControls">
+
+                <!-- Language Switcher -->
+                <div class="footer-lang-container">
+                    {% get_current_language as LANGUAGE_CODE %}
+                    {% get_available_languages as LANGUAGES %}
+                    {% get_language_info_list for LANGUAGES as languages %}
+
+                    <div class="lang-current">
+                        {% if LANGUAGE_CODE == 'uk' %}UA{% else %}{{ LANGUAGE_CODE|upper }}{% endif %}
+                    </div>
+
+                    <div class="lang-dropdown">
+                        {% for language in languages %}
+                            {% if language.code != LANGUAGE_CODE %}
+                            <form action="{% url 'set_language' %}" method="post" class="lang-form">
+                                {% csrf_token %}
+                                <input name="next" type="hidden" value="{{ request.path }}">
+                                <input name="language" type="hidden" value="{{ language.code }}">
+                                <button type="submit" class="lang-option">
+                                    {% if language.code == 'uk' %}UA{% else %}{{ language.code|upper }}{% endif %}
+                                </button>
+                            </form>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Toggle Button -->
+                <button class="footer-toggle-btn" id="footerToggleBtn">
+                    <span class="arrow-icon">↑</span>
+                </button>
+            </div>
         </div>
+
+        <!-- Footer Content (Collapsible) -->
         <div class="footer-content" id="footerContent">
             <div class="footer-grid">
+                <!-- Column 1: Contacts & CTA -->
                 <div class="f-col contact-col">
+                    <!-- Phone -->
                     <div class="f-row"><span class="icon">📞</span> <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a></div>
+
+                    <!-- Address -->
                     <div class="f-row"><span class="icon">📍</span>
                         <a href="{{ site_settings.google_maps_link|default:'#' }}" target="_blank" class="link-dashed">
                             {{ site_settings.address_street }},<br>{{ site_settings.address_city }}
                         </a>
                     </div>
-                    {% if site_settings.instagram_url %}
-                    <div class="f-row"><span class="icon">📷</span> <a href="{{ site_settings.instagram_url }}" target="_blank">Instagram</a></div>
-                    {% endif %}
-                    <div class="f-qr"><img src="{% static 'img/qr_code.webp' %}" alt="QR" class="qr-code-img"></div>
+
+                    <!-- Link to Contacts Page -->
+                    <div class="f-row" style="margin-top: 15px;">
+                        <span class="icon">✉️</span>
+                        <a href="{% url 'contacts' %}" class="more-link">{% trans "Alle Kontakte" %} →</a>
+                    </div>
+
+                    <!-- CTA Button -->
+                    <div style="margin-top: 25px;">
+                        <a href="{% url 'booking_wizard' %}" class="btn-pill btn-gold-outline" style="font-size: 14px; padding: 10px 25px;">
+                            {% trans "Termin buchen" %}
+                        </a>
+                    </div>
                 </div>
+
+                <!-- Column 2: Hair -->
                 <div class="f-col">
-                    <h4 class="f-title">{% trans "Frisuren & Haarpflege" %}</h4>
+                    <h4 class="f-title">
+                        <a href="{% url 'service_detail' slug='hair' %}">{% trans "Frisuren & Haarpflege" %}</a>
+                    </h4>
                     <ul>
-                        <li>{% trans "Haarschnitte" %}</li>
-                        <li>{% trans "Färben" %}</li>
-                        <li>{% trans "Haarbehandlung" %}</li>
-                        <li>{% trans "Styling" %}</li>
+                        <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "Haarschnitte" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "Färben" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "Haarbehandlung" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "Styling" %}</a></li>
                     </ul>
                 </div>
+
+                <!-- Column 3: Nails -->
                 <div class="f-col">
-                    <h4 class="f-title">{% trans "Nagelservice" %}</h4>
+                    <h4 class="f-title">
+                        <a href="{% url 'service_detail' slug='nails' %}">{% trans "Nagelservice" %}</a>
+                    </h4>
                     <ul>
-                        <li>{% trans "Maniküre" %}</li>
-                        <li>{% trans "Pediküre" %}</li>
-                        <li>{% trans "Verlängerung" %}</li>
+                        <li><a href="{% url 'service_detail' slug='nails' %}">{% trans "Maniküre" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='nails' %}">{% trans "Pediküre" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='nails' %}">{% trans "Verlängerung" %}</a></li>
                     </ul>
                 </div>
+
+                <!-- Column 4: Beauty & Care -->
                 <div class="f-col">
-                    <h4 class="f-title">{% trans "Schönheit & Pflege" %}</h4>
+                    <h4 class="f-title">
+                        <a href="{% url 'services' %}">{% trans "Schönheit & Pflege" %}</a>
+                    </h4>
                     <ul>
-                        <li>{% trans "Epilation" %}</li>
-                        <li>{% trans "Wimpernverlängerung" %}</li>
-                        <li>{% trans "Laminierung" %}</li>
+                        <li><a href="{% url 'service_detail' slug='depilation' %}">{% trans "Epilation" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='eyes' %}">{% trans "Wimpernverlängerung" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='eyes' %}">{% trans "Laminierung" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='body' %}">{% trans "Massage" %}</a></li>
                     </ul>
                 </div>
             </div>
@@ -63,6 +126,8 @@
                 <a href="{% url 'impressum' %}">{% trans "Impressum" %}</a>
                 <span class="separator-text">|</span>
                 <a href="{% url 'datenschutz' %}">{% trans "Datenschutz" %}</a>
+                <span class="separator-text">|</span>
+                <a href="{% url 'faq' %}" style="color: var(--color-gold); font-weight: bold;">FAQ</a>
             </div>
         </div>
     </div>
