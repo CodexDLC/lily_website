@@ -47,7 +47,6 @@ def setup_logging(settings: CommonSettings, service_name: str) -> None:
     logger.remove()
 
     # Формируем пути к логам: logs/backend/debug.log или logs/02_telegram_bot/debug.log
-    # settings.log_dir обычно просто "logs"
     base_log_dir = Path(settings.log_dir) / service_name
 
     log_file_debug = base_log_dir / "debug.log"
@@ -61,7 +60,7 @@ def setup_logging(settings: CommonSettings, service_name: str) -> None:
         format=(
             "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
             "<level>{level: <8}</level> | "
-            f"<magenta>{service_name}</magenta> | "  # Добавили метку сервиса
+            f"<magenta>{service_name}</magenta> | "
             "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
             "<level>{message}</level>"
         ),
@@ -88,14 +87,17 @@ def setup_logging(settings: CommonSettings, service_name: str) -> None:
     # Перехват стандартного logging
     logging.basicConfig(handlers=[InterceptHandler()], level=0)
 
-    # Перехват логов Uvicorn (для FastAPI)
+    # Перехват логов библиотек
     logging.getLogger("uvicorn.access").handlers = [InterceptHandler()]
     logging.getLogger("uvicorn.error").handlers = [InterceptHandler()]
+    logging.getLogger("arq").handlers = [InterceptHandler()]
+    logging.getLogger("arq.worker").handlers = [InterceptHandler()]
 
     # Настройка уровней для библиотек
     logging.getLogger("aiogram").setLevel(logging.INFO)
     logging.getLogger("sqlalchemy").setLevel(logging.WARNING)
     logging.getLogger("httpx").setLevel(logging.WARNING)
     logging.getLogger("aiosqlite").setLevel(logging.INFO)
+    logging.getLogger("arq").setLevel(logging.INFO)
 
     logger.info(f"LoggerSetup | service={service_name} status=success path='{base_log_dir}'")

@@ -11,7 +11,7 @@ Flow:
 Не использует django-admin startproject / startapp напрямую,
 потому что наша структура сильно отличается от стандартной Django:
   - core/ вместо project_name/
-  - settings/ папка (base/dev/prod) вместо settings.py
+  - settings/ папка (base_module/dev/prod) вместо settings.py
   - features/ вместо apps в корне
   - views/ и models/ как папки, не файлы
   - selectors/ слой для чтения данных
@@ -82,11 +82,11 @@ class DjangoInstaller(BaseInstaller):
         # Settings
         tpl_settings = tpl_core / "settings"
         self._render(tpl_settings / "__init__.py.tpl", settings_dir / "__init__.py", project_name)
-        self._render(tpl_settings / "base.py.tpl", settings_dir / "base.py", project_name)
+        self._render(tpl_settings / "base_module.py.tpl", settings_dir / "base_module.py", project_name)
         self._render(tpl_settings / "dev.py.tpl", settings_dir / "dev.py", project_name)
         self._render(tpl_settings / "prod.py.tpl", settings_dir / "prod.py", project_name)
 
-        print("    ✅ core/ (settings split: base/dev/prod)")
+        print("    ✅ core/ (settings split: base_module/dev/prod)")
 
     # ─────────────────────────────────────────
     # Features
@@ -192,8 +192,8 @@ class DjangoInstaller(BaseInstaller):
             d = backend_dir / "static" / sub
             d.mkdir(parents=True, exist_ok=True)
 
-        # Минимальный base.css
-        css_file = backend_dir / "static" / "css" / "base.css"
+        # Минимальный base_module.css
+        css_file = backend_dir / "static" / "css" / "base_module.css"
         if not css_file.exists():
             css_file.write_text(
                 "/* Base styles for the project */\n"
@@ -205,15 +205,15 @@ class DjangoInstaller(BaseInstaller):
         print("    ✅ static/ (css/, js/, img/)")
 
     def _create_templates(self, backend_dir: Path, project_name: str) -> None:
-        """Создаёт templates/base.html и templates/home/home.html."""
+        """Создаёт templates/base_module.html и templates/home/home.html."""
         templates_dir = backend_dir / "templates"
         home_dir = templates_dir / "home"
         home_dir.mkdir(parents=True, exist_ok=True)
 
-        self._render(RESOURCES_DIR / "base.html.tpl", templates_dir / "base.html", project_name)
+        self._render(RESOURCES_DIR / "base_module.html.tpl", templates_dir / "base_module.html", project_name)
         self._render(RESOURCES_DIR / "home.html.tpl", home_dir / "home.html", project_name)
 
-        print("    ✅ templates/ (base.html, home/home.html)")
+        print("    ✅ templates/ (base_module.html, home/home.html)")
 
     def _create_locale(self, backend_dir: Path) -> None:
         """Создаёт пустую locale/ структуру для i18n."""

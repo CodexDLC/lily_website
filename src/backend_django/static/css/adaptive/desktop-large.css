@@ -6,7 +6,7 @@
 /* Maximum site width applied, full design as intended */
 
 .site-wrapper {
-    /* Max width already set in base layout (1440px) */
+    /* Max width already set in base_module layout (1440px) */
     box-shadow: 0 0 50px rgba(0,0,0,0.5);
 }
 

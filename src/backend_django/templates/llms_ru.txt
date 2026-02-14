@@ -1,0 +1,48 @@
+# LILY Beauty Salon - Website Context for AI Agents
+
+## Project Overview
+LILY Beauty Salon is a premium beauty salon located in Köthen, Germany.
+We offer high-quality beauty services including Hair, Nails, Cosmetology, Brows & Lashes, Massage, and Depilation.
+Our focus is on individual approach, German quality, and premium materials.
+
+## Core Pages & Navigation
+
+- [Home](/) - Main landing page with overview of services and salon philosophy.
+- [Services](/services/) - Full list of beauty services offered.
+  - [Hair](/services/hair/) - Haircuts, coloring (Airtouch, Balayage), and hair care.
+  - [Nails](/services/nails/) - Manicure, pedicure, nail extensions, and design.
+  - [Cosmetology](/services/cosmetology/) - Facial treatments, cleaning, and skincare.
+  - [Brows & Lashes](/services/brows/) - Brow shaping, tinting, lamination, and lash extensions.
+  - [Massage](/services/massage/) - Relaxing and therapeutic massages.
+  - [Depilation](/services/depilation/) - Hair removal services.
+- [Team](/team/) - Information about our beauty experts and masters.
+- [Contacts](/contacts/) - Address, phone number, opening hours, and contact form.
+- [Impressum](/impressum/) - Legal notice (Imprint).
+- [Datenschutz](/datenschutz/) - Privacy Policy.
+- [FAQ](/faq/) - Часто задаваемые вопросы.
+
+## Contact Information
+- **Address:** Lohmannstraße 111, 06366 Köthen (Anhalt), Germany
+- **Phone:** +49 176 59423704
+- **Email:** info@lily-salon.de
+
+## Technical Context
+- This site is built with Django.
+- Content is available in German (default), Russian, Ukrainian, and English.
+
+## Frequently Asked Questions (FAQ)
+
+- **Как я могу записаться на прием?**
+  Вы можете легко записаться на прием онлайн через наш веб-сайт или связаться с нами по телефону.
+
+- **Есть ли парковка возле салона?**
+  Да, возле салона имеется достаточно парковочных мест.
+
+- **Какие способы оплаты принимаются?**
+  Мы принимаем наличные, EC-карты и распространенные кредитные карты.
+
+- **Предлагаете ли вы подарочные сертификаты?**
+  Да, подарочные сертификаты на все наши услуги доступны непосредственно в салоне.
+
+- **Могу ли я изменить или отменить свою запись онлайн?**
+  Пожалуйста, свяжитесь с нами по телефону, чтобы внести изменения или отменить запись.

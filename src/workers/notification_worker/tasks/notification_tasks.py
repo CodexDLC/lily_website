@@ -5,7 +5,7 @@ from loguru import logger as log
 from src.shared.core.constants import RedisStreams
 
 if TYPE_CHECKING:
-    from src.shared.core.stream.manager import StreamManager
+    from src.shared.core.manager_redis.manager import StreamManager
 
 
 async def send_booking_notification_task(ctx: dict[str, Any], admin_id: int, appointment_data: dict[str, Any]) -> None:

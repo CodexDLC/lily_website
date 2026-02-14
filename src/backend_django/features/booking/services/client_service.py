@@ -76,7 +76,7 @@ class ClientService:
             return None
 
         # Return the first match found. This is a performance trade-off.
-        # The database's default ordering will determine which client is returned
+        # The infrastructure's default ordering will determine which client is returned
         # if multiple clients match the OR condition.
         return cast("Client | None", Client.objects.filter(query).first())
 

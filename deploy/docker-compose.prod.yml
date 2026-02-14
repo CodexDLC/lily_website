@@ -2,47 +2,57 @@ services:
   backend:
     image: ${DOCKER_IMAGE_BACKEND}
     container_name: lily_website-backend
-    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 90
     env_file: .env
     volumes:
       - uploads:/app/media
+      - static_volume:/app/staticfiles
+      - logs_volume:/app/logs
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     restart: always
     networks:
       - lily_website-network
 
   bot:
     image: ${DOCKER_IMAGE_BOT}
-    container_name: lily_website-02_telegram_bot
+    container_name: lily_website-telegram_bot
     env_file: .env
+    volumes:
+      - logs_volume:/app/logs
     restart: always
     depends_on:
-      - redis
-      - backend
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
     networks:
       - lily_website-network
 
   worker:
     image: ${DOCKER_IMAGE_WORKER}
     container_name: lily_website-worker_arq
+    command: arq src.workers.notification_worker.worker.WorkerSettings
     env_file: .env
+    volumes:
+      - logs_volume:/app/logs
     restart: always
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
     networks:
       - lily_website-network
 
   redis:
     image: redis:7-alpine
     container_name: lily_website-redis
-    command: redis-server --appendonly yes
+    command: >
+      sh -c "redis-server --requirepass $${REDIS_PASSWORD} --appendonly yes"
     volumes:
       - redis-data:/data
-    expose:
-      - "6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "sh", "-c", "REDISCLI_AUTH=${REDIS_PASSWORD} redis-cli ping"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -56,13 +66,17 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - ./nginx/nginx-main.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/site.conf:/etc/nginx/conf.d/site.conf:ro
       - uploads:/app/media:ro
+      - static_volume:/app/staticfiles:ro
+      - certs_volume:/etc/letsencrypt:ro
+      - certbot_challenge_volume:/var/www/certbot:ro
     depends_on:
       - backend
-      - bot
     restart: always
     networks:
       - lily_website-network
@@ -72,11 +86,23 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  certbot:
+    image: certbot/certbot
+    container_name: lily_website-certbot
+    volumes:
+      - certs_volume:/etc/letsencrypt
+      - certbot_challenge_volume:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - lily_website-network
+
 volumes:
   redis-data:
-    driver: local
   uploads:
-    driver: local
+  static_volume:
+  logs_volume:
+  certs_volume:
+  certbot_challenge_volume:
 
 networks:
   lily_website-network:

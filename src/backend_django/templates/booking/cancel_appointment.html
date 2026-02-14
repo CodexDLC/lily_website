@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Termin stornieren" %}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 text-danger">{% translate "Termin stornieren" %}</h1>
+            <p class="lead">{% translate "Möchten Sie diesen Termin wirklich stornieren?" %}</p>
+            <p>{% translate "Diese Aktion kann nicht rückgängig gemacht werden." %}</p>
+            <form method="post" action="{% url 'booking_cancel_action' token=token %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-lg mt-4">{% translate "Ja, Termin stornieren" %}</button>
+            </form>
+            <p class="mt-3">
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary">{% translate "Nein, zurück zur Startseite" %}</a>
+            </p>
+            <div class="mt-5 p-3 bg-light border rounded">
+                <p class="mb-0 text-muted">{% translate "Debug-Information: Token" %}: <code>{{ token }}</code></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

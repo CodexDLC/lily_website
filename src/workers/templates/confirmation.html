@@ -1,0 +1,46 @@
+{% extends "base_email.html" %}
+
+{% block title %}Terminbestätigung{% endblock %}
+
+{% block content %}
+    <!-- ТЭГ -->
+    <tr>
+        <td align="center" style="padding-bottom: 20px;">
+            <span style="font-family: 'Lato', sans-serif; color: #003831; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; border-bottom: 1px solid #EDD071; padding-bottom: 5px;">
+                TERMINBESTÄTIGUNG
+            </span>
+        </td>
+    </tr>
+
+    <!-- ПРИВЕТСТВИЕ -->
+    <tr>
+        <td style="color: #333333; font-family: 'Lato', sans-serif; font-size: 18px; line-height: 1.5; padding-bottom: 20px; text-align: center;">
+            <b>{{ greeting }}</b>
+        </td>
+    </tr>
+    <tr>
+        <td style="color: #555555; font-family: 'Lato', sans-serif; font-size: 16px; line-height: 1.6; padding-bottom: 30px; text-align: center;">
+            Vielen Dank für Ihre Buchung. Ihr Termin wurde erfolgreich bestätigt. Wir freuen uns darauf, Sie bei uns begrüßen zu dürfen.
+        </td>
+    </tr>
+
+    <!-- ДЕТАЛИ -->
+    <tr>
+        <td bgcolor="#f9f9f9" style="padding: 20px; border-left: 4px solid #003831; border-radius: 4px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <td width="30%" style="color: #003831; font-family: 'Lato', sans-serif; font-size: 14px; font-weight: bold; padding-bottom: 10px;">Behandlung:</td>
+                    <td style="color: #333333; font-family: 'Lato', sans-serif; font-size: 14px; padding-bottom: 10px;">{{ service_name }}</td>
+                </tr>
+                <tr>
+                    <td style="color: #003831; font-family: 'Lato', sans-serif; font-size: 14px; font-weight: bold; padding-bottom: 10px;">Datum:</td>
+                    <td style="color: #333333; font-family: 'Lato', sans-serif; font-size: 14px; padding-bottom: 10px;">{{ date }}</td>
+                </tr>
+                <tr>
+                    <td style="color: #003831; font-family: 'Lato', sans-serif; font-size: 14px; font-weight: bold;">Uhrzeit:</td>
+                    <td style="color: #333333; font-family: 'Lato', sans-serif; font-size: 14px;">{{ time }}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+{% endblock %}

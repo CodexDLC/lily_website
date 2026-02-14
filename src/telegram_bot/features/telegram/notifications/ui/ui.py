@@ -1,7 +1,7 @@
 from typing import Any
 
-from src.telegram_bot.features.notifications.resources.formatters import NotificationsFormatter
-from src.telegram_bot.features.notifications.resources.keyboards import build_main_kb
+from src.telegram_bot.features.telegram.notifications.resources.formatters import NotificationsFormatter
+from src.telegram_bot.features.telegram.notifications.resources.keyboards import build_main_kb
 from src.telegram_bot.services.base.view_dto import ViewResultDTO
 
 

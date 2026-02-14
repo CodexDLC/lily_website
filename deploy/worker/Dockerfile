@@ -21,6 +21,9 @@ COPY --from=builder /app/.venv /app/.venv
 COPY src/workers /app/src/workers
 COPY src/shared /app/src/shared
 
+# Создаем папку для логов и устанавливаем права
+RUN mkdir -p /app/logs && chown -R appuser:appuser /app
+
 USER appuser
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONPATH="/app:$PYTHONPATH"

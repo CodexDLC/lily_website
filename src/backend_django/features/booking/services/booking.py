@@ -120,7 +120,7 @@ class BookingService:
     def _create_appointment_record(
         client: Client, master: Master, service: Service, start_dt: datetime, form_data: dict[str, Any]
     ) -> Appointment:
-        """Creates the Appointment database record."""
+        """Creates the Appointment infrastructure record."""
         appointment = Appointment.objects.create(
             client=client,
             master=master,
