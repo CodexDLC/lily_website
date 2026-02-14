@@ -2,7 +2,7 @@ name: CD Release (Deploy)
 
 on:
   push:
-    branches: [ release ]
+    branches: [ release, develop ]
   workflow_dispatch:
 
 jobs:
@@ -16,7 +16,6 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          fingerprint: ${{ secrets.SSH_FINGERPRINT }} # Опционально
           script: echo "SSH Connection Successful!"
 
   deploy:
@@ -81,28 +80,45 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           source: "deploy/docker-compose.prod.yml,deploy/nginx/,deploy/monitoring/"
-          target: "/opt/lily_website/"
+          target: "/opt/lily_website"
           rm: true
 
       - name: SSH Deploy
         uses: appleboy/ssh-action@master
+        env:
+          DOCKER_IMAGE_BACKEND: ghcr.io/${{ env.REPO_LOWER }}-backend:latest
+          DOCKER_IMAGE_BOT: ghcr.io/${{ env.REPO_LOWER }}-bot:latest
+          DOCKER_IMAGE_WORKER: ghcr.io/${{ env.REPO_LOWER }}-worker:latest
+          DOCKER_IMAGE_NGINX: ghcr.io/${{ env.REPO_LOWER }}-nginx:latest
+          DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: REPO_LOWER
+          envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_BOT,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DOMAIN_NAME,REDIS_PASSWORD
           script: |
             cd /opt/lily_website
 
+            # Создаем .env из секрета
             echo "${{ secrets.ENV_FILE }}" > .env
-            echo "DOCKER_IMAGE_BACKEND=ghcr.io/$REPO_LOWER-backend:latest" >> .env
-            echo "DOCKER_IMAGE_BOT=ghcr.io/$REPO_LOWER-bot:latest" >> .env
-            echo "DOCKER_IMAGE_WORKER=ghcr.io/$REPO_LOWER-worker:latest" >> .env
-            echo "DOCKER_IMAGE_NGINX=ghcr.io/$REPO_LOWER-nginx:latest" >> .env
+
+            # Функция для безопасного обновления переменных
+            update_var() {
+              grep -q "^$1=" .env && sed -i "s|^$1=.*|$1=$2|" .env || echo "$1=$2" >> .env
+            }
+
+            update_var "DOCKER_IMAGE_BACKEND" "$DOCKER_IMAGE_BACKEND"
+            update_var "DOCKER_IMAGE_BOT" "$DOCKER_IMAGE_BOT"
+            update_var "DOCKER_IMAGE_WORKER" "$DOCKER_IMAGE_WORKER"
+            update_var "DOCKER_IMAGE_NGINX" "$DOCKER_IMAGE_NGINX"
+
+            [ ! -z "$DOMAIN_NAME" ] && update_var "DOMAIN_NAME" "$DOMAIN_NAME"
+            [ ! -z "$REDIS_PASSWORD" ] && update_var "REDIS_PASSWORD" "$REDIS_PASSWORD"
 
             if ! grep -q "DOMAIN_NAME" .env; then
               DOMAIN=$(grep "SITE_BASE_URL" .env | cut -d'/' -f3 | cut -d':' -f1)
-              echo "DOMAIN_NAME=$DOMAIN" >> .env
+              [ ! -z "$DOMAIN" ] && echo "DOMAIN_NAME=$DOMAIN" >> .env
             fi
 
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
