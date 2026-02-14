@@ -53,6 +53,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: lily_website-redis
+    env_file: .env
     command: >
       sh -c "redis-server --requirepass $${REDIS_PASSWORD} --appendonly yes"
     volumes:
