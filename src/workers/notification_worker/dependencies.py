@@ -38,7 +38,8 @@ async def init_notification_service(ctx: dict, settings: WorkerSettings) -> None
     log.info("Initializing NotificationService...")
     try:
         # Получаем объект настроек с типизацией
-        site_settings = cast(SiteSettingsSchema | None, ctx.get("site_settings"))
+        # TC006: Используем кавычки для предотвращения проблем с циклическими импортами в cast
+        site_settings = cast("SiteSettingsSchema | None", ctx.get("site_settings"))
 
         if not site_settings:
             log.warning("Site settings object not found in context, using schema defaults.")
