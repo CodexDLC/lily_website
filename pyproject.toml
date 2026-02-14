@@ -51,6 +51,7 @@ ruff = "*"
 mypy = "*"
 pytest = "*"
 pytest-asyncio = "*"
+pytest-django = "*"
 pre-commit = "*"
 qrcode = ">=7.0,<8.0"
 
@@ -91,6 +92,7 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 pythonpath = [".", "src/backend_django"]
+DJANGO_SETTINGS_MODULE = "core.settings.dev"
 markers = [
     "unit: Unit tests",
     "integration: Integration tests",
