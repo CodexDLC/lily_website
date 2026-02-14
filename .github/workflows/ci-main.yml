@@ -1,12 +1,12 @@
-name: CI Main (Testing & Build Check)
+name: CI Main (Quality & Testing)
 
 on:
   pull_request:
     branches: [ main ]
 
 jobs:
-  tests:
-    name: Full Test Suite
+  quality-and-tests:
+    name: Linting, Types & Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -17,19 +17,47 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Install dependencies
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+
+      - name: Configure Poetry
         run: |
-          pip install ".[dev,bot]"
+          poetry config virtualenvs.create true
+          poetry config virtualenvs.in-project true
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+
+      - name: Run Ruff
+        run: poetry run ruff check src/
+
+      - name: Run Mypy
+        run: poetry run mypy src/
 
       - name: Run Pytest
         env:
           SECRET_KEY: "test_secret_key_for_ci"
-        run: pytest
+          ENVIRONMENT: "testing"
+        run: poetry run pytest
 
   build-check:
-    name: Docker Build Check
+    name: Docker Build Verification
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-- name: Build Bot image
-  run: docker build -f deploy/bot/Dockerfile -t check-bot .
+
+      - name: Build Backend image (Check)
+        run: docker build -f deploy/backend/Dockerfile -t check-backend .
+
+      - name: Build Bot image (Check)
+        run: docker build -f deploy/bot/Dockerfile -t check-bot .

@@ -1,10 +1,12 @@
 from collections.abc import Awaitable, Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from aiogram import BaseMiddleware
-from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, TelegramObject
 from loguru import logger as log
+
+if TYPE_CHECKING:
+    from aiogram.fsm.context import FSMContext
 
 
 class SecurityMiddleware(BaseMiddleware):

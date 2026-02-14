@@ -1,6 +1,5 @@
 """
 Централизованный реестр роутеров для Telegram Bot.
-Автоматически подключает фичи из INSTALLED_FEATURES (core/settings.py).
 """
 
 import importlib
@@ -14,8 +13,7 @@ from src.telegram_bot.services.fsm.common_fsm_handlers import router as common_f
 
 def collect_feature_routers() -> list[Router]:
     """
-    Читает INSTALLED_FEATURES и импортирует router из каждой фичи.
-    Ожидает что каждая фича экспортирует `router` из handlers/__init__.py.
+    Сканирует только интерфейсные фичи (INSTALLED_FEATURES) на наличие Aiogram роутеров.
     """
     routers: list[Router] = []
 
@@ -27,26 +25,18 @@ def collect_feature_routers() -> list[Router]:
             if feature_router and isinstance(feature_router, Router):
                 routers.append(feature_router)
                 log.info(f"RouterCollector | feature='{feature_path}' status=loaded")
-            else:
-                log.warning(f"RouterCollector | feature='{feature_path}' status=no_router")
-        except ImportError as e:
-            log.error(f"RouterCollector | feature='{feature_path}' status=import_error error='{e}'")
+        except ImportError:
+            log.debug(f"RouterCollector | feature='{feature_path}' status=no_handlers")
+        except Exception as e:
+            log.error(f"RouterCollector | feature='{feature_path}' error='{e}'")
 
     return routers
 
 
 def build_main_router() -> Router:
-    """
-    Собирает главный роутер приложения.
-    Порядок: фичи из INSTALLED_FEATURES, затем garbage collector (последний).
-    """
+    """Собирает главный роутер приложения."""
     main_router = Router(name="main_router")
-
     feature_routers = collect_feature_routers()
-    main_router.include_routers(
-        *feature_routers,
-        common_fsm_router,  # Garbage collector — всегда последний
-    )
-
-    log.info(f"MainRouter | features_loaded={len(feature_routers)}")
+    main_router.include_routers(*feature_routers, common_fsm_router)
+    log.info(f"MainRouter | UI features loaded={len(feature_routers)}")
     return main_router

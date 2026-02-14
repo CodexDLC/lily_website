@@ -1,0 +1,66 @@
+{% load i18n %}
+<div class="step-content fade-in">
+    <div class="step-header-row">
+        <h3 class="step-heading">
+            {% trans "Wählen Sie einen Experten" %}
+        </h3>
+        <button class="btn-back"
+                hx-get="{% url 'booking_wizard' %}?step=1"
+                hx-target="#wizard-content"
+                hx-swap="innerHTML">
+            ← {% trans "Zurück" %}
+        </button>
+    </div>
+
+    <div class="masters-grid-wizard">
+
+        <!-- Option: Any Master -->
+        <div class="master-card-wizard special-any">
+            <div class="mc-avatar-placeholder">
+                <span>?</span>
+            </div>
+            <div class="mc-info">
+                <h4 class="mc-name">{% trans "Beliebiger Experte" %}</h4>
+                <p class="mc-role">{% trans "Frühestmöglicher Termin" %}</p>
+            </div>
+            <button class="btn-select-master"
+                    hx-get="{% url 'booking_wizard' %}?step=3&master_id=any&service_id={{ service_id }}"
+                    hx-target="#wizard-content"
+                    hx-swap="innerHTML">
+                {% trans "Auswählen" %}
+            </button>
+        </div>
+
+        <!-- Real Masters Loop -->
+        {% for master in masters %}
+        <div class="master-card-wizard">
+            <div class="mc-avatar" style="background-image: url('{% if master.photo %}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}');"></div>
+            <div class="mc-info">
+                <h4 class="mc-name">{{ master.name }}</h4>
+                <p class="mc-role">{{ master.title }}</p>
+                <!-- Rating placeholder (can be real later) -->
+                <div class="mc-rating">★★★★★</div>
+            </div>
+            <button class="btn-select-master"
+                    hx-get="{% url 'booking_wizard' %}?step=3&master_id={{ master.id }}&service_id={{ service_id }}"
+                    hx-target="#wizard-content"
+                    hx-swap="innerHTML">
+                {% trans "Auswählen" %}
+            </button>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted);">
+            {% trans "Leider sind für diese Leistung aktuell keine Experten verfügbar." %}
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+<!-- Only include OOB updates for HTMX requests -->
+{% if request.headers.HX_Request %}
+    <!-- Update Sidebar via OOB -->
+    {% include "booking/includes/summary_card.html" %}
+    <!-- Update Stepper via OOB -->
+    {% include "booking/includes/stepper.html" %}
+{% endif %}

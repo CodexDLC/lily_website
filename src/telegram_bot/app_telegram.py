@@ -8,22 +8,22 @@ import asyncio
 from loguru import logger as log
 from redis.asyncio import Redis
 
+from src.shared.core.logger import setup_logging
 from src.telegram_bot.core.config import BotSettings
 from src.telegram_bot.core.container import BotContainer
 from src.telegram_bot.core.factory import build_bot
 from src.telegram_bot.core.routers import build_main_router
-from src.telegram_bot.middlewares.user_validation import UserValidationMiddleware
-from src.telegram_bot.middlewares.throttling import ThrottlingMiddleware
-from src.telegram_bot.middlewares.security import SecurityMiddleware
 from src.telegram_bot.middlewares.container import ContainerMiddleware
-from src.shared.core.logger import setup_logging
+from src.telegram_bot.middlewares.security import SecurityMiddleware
+from src.telegram_bot.middlewares.throttling import ThrottlingMiddleware
+from src.telegram_bot.middlewares.user_validation import UserValidationMiddleware
 
 
 async def startup(settings: BotSettings) -> None:
     """Инициализация логирования при запуске бота."""
     setup_logging(settings, service_name="telegram_bot")
     log.info("Telegram Bot starting...")
-    log.info(f"Backend API: {settings.backend_api_url}")
+    log.info(f"Backend API: {settings.api_url}")
 
 
 async def shutdown(container: BotContainer) -> None:
@@ -54,7 +54,8 @@ async def main() -> None:
     log.debug("BotContainer initialized")
 
     # 5. Bot + Dispatcher
-    bot, dp = await build_bot(settings.bot_token, redis_client)
+    bot, dp = await build_bot(settings, redis_client)
+    container.set_bot(bot)  # Устанавливаем объект 02_telegram_bot в контейнер
     log.info("Bot and Dispatcher created")
 
     # 6. Middleware (порядок: снаружи → внутрь)
@@ -69,7 +70,11 @@ async def main() -> None:
     dp.include_router(main_router)
     log.info("Routers attached")
 
-    # 8. Polling
+    # 8. Запуск Redis Stream Processor
+    await container.stream_processor.start_listening()
+    log.info("Redis Stream Processor started.")
+
+    # 9. Polling
     log.info("Bot polling started")
     try:
         await dp.start_polling(bot)

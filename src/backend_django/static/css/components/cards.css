@@ -1,0 +1,251 @@
+/* =========================================
+   CARDS & GRID LAYOUTS
+   ========================================= */
+
+/* Bento Grid (Home Page Categories) */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 250px;
+    gap: 20px;
+}
+
+.bento-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.3s;
+    display: block;
+}
+
+.card-large {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0,56,49, 0.9), transparent);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+}
+
+.card-overlay h3 {
+    color: white;
+    font-family: var(--font-serif), serif;
+    font-size: 24px;
+    margin: 0;
+    font-weight: 400;
+}
+
+.card-overlay .arrow {
+    color: var(--color-gold);
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+.bento-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-gold);
+}
+
+/* Badge (Ribbon Style) */
+.badge-coming-soon {
+    position: absolute;
+    top: 20px;
+    right: -35px;
+    background-color: var(--color-gold);
+    color: var(--color-emerald);
+    font-family: var(--font-sans), sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 40px;
+    transform: rotate(45deg);
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.2);
+    text-align: center;
+    width: 150px; /* Fixed width to ensure it spans the corner */
+}
+
+/* Price Block (Floating Card) */
+.price-block {
+    padding: 50px 60px;
+    border-radius: 20px;
+    transition: 0.3s;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.price-block:hover {
+    transform: translateY(-5px);
+    border-color: rgba(237, 208, 113, 0.3);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Master Cards */
+.master-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.master-card:hover {
+    border-color: var(--color-gold);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+
+.master-photo {
+    height: 380px;
+    background-color: #222;
+    background-size: cover;
+    background-position: top center;
+    transition: transform 0.5s;
+}
+
+.master-card:hover .master-photo {
+    transform: scale(1.05);
+}
+
+.master-info {
+    padding: 25px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    background-color: #003831;
+}
+
+.master-name {
+    font-family: var(--font-serif), serif;
+    font-size: 24px;
+    margin-bottom: 5px;
+    color: var(--color-white);
+    font-weight: 400;
+}
+
+.master-role {
+    color: var(--color-text-muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+/* Mini Master Card */
+.mini-master {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255,255,255,0.05);
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.1);
+    transition: 0.3s;
+}
+
+.mini-master:hover {
+    border-color: var(--color-gold);
+    background: rgba(255,255,255,0.1);
+}
+
+.mini-master img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.mini-master-avatar {
+    width: 40px;
+    height: 40px;
+    background: #ccc;
+    border-radius: 50%;
+}
+
+.mini-master-name {
+    display: block;
+    color: var(--color-gold);
+}
+
+.mini-master-role {
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+/* Owner Block */
+.owner-block {
+    display: flex;
+    gap: 50px;
+    margin-bottom: 100px;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+}
+
+.owner-block:hover {
+    transform: translateY(-5px);
+    border-color: rgba(237, 208, 113, 0.3);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+}
+
+.owner-photo {
+    flex: 1;
+    height: 450px;
+    background-color: #ccc;
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+}
+
+.owner-info {
+    flex: 1;
+}
+
+.owner-role {
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    display: block;
+}
+
+.owner-name {
+    font-family: var(--font-serif), serif;
+    font-size: 36px;
+    color: var(--color-white);
+    margin-bottom: 10px;
+}
+
+.owner-description {
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.owner-note {
+    font-size: 12px;
+    opacity: 0.5;
+    font-style: italic;
+    color: var(--color-text-muted);
+}

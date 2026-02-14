@@ -9,24 +9,27 @@ Flow с двумя коммитами:
 5. finalizer → commit "Activate" (чистый проект)
 
 Фишка: первый коммит хранит ВСЕ модули.
-Команда `add bot` потом может достать их из git истории.
+Команда `add telegram_bot` потом может достать их из git истории.
 """
 
 from __future__ import annotations
 
-from tools.init_project.config import InstallContext
-from tools.init_project.installers.base import BaseInstaller
-from tools.init_project.installers.fastapi_installer import FastAPIInstaller
-from tools.init_project.installers.django_installer import DjangoInstaller
-from tools.init_project.installers.bot_installer import BotInstaller
-from tools.init_project.installers.shared_installer import SharedInstaller
+from typing import TYPE_CHECKING
 
 from tools.init_project.actions.cleaner.cleaner import CleanerAction
-from tools.init_project.actions.renamer.renamer import RenamerAction
 from tools.init_project.actions.docker.docker import DockerAction
-from tools.init_project.actions.poetry.poetry import PoetryAction
-from tools.init_project.actions.scaffolder.scaffolder import ScaffolderAction
 from tools.init_project.actions.finalizer.finalizer import FinalizerAction
+from tools.init_project.actions.poetry.poetry import PoetryAction
+from tools.init_project.actions.renamer.renamer import RenamerAction
+from tools.init_project.actions.scaffolder.scaffolder import ScaffolderAction
+from tools.init_project.installers.bot_installer import BotInstaller
+from tools.init_project.installers.django_installer import DjangoInstaller
+from tools.init_project.installers.fastapi_installer import FastAPIInstaller
+from tools.init_project.installers.shared_installer import SharedInstaller
+
+if TYPE_CHECKING:
+    from tools.init_project.config import InstallContext
+    from tools.init_project.installers.base import BaseInstaller
 
 
 def _get_installers(ctx: InstallContext) -> list[BaseInstaller]:

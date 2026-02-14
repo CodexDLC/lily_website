@@ -42,7 +42,7 @@ When a feature has multi-step forms (e.g., create profile → enter name → ent
 Data is stored under `draft:{feature_key}` in FSM state:
 
 ```python
-# FSM state_data after manager.update(name="John", age=25):
+# FSM state_data after managers.update(name="John", age=25):
 {
     "draft:my_feature": {
         "name": "John",

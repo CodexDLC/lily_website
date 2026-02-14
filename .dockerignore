@@ -36,3 +36,6 @@ logs/
 .pre-commit-config.yaml
 tools/
 scripts/
+
+# Exceptions (files needed for build)
+!README.md
