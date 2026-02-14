@@ -19,6 +19,7 @@ venv/
 # Environment Variables
 # ═══════════════════════════════════════════
 .env
+.env.production
 !.env.example
 !src/backend_django/.env.example
 
