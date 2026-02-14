@@ -16,11 +16,12 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          fingerprint: ${{ secrets.SSH_FINGERPRINT }} # Опционально
           script: echo "SSH Connection Successful!"
 
   deploy:
     name: Build & Deploy to VPS
-    needs: pre-deploy-check  # Сборка начнется только если SSH проверка прошла
+    needs: pre-deploy-check
     runs-on: ubuntu-latest
 
     permissions:
@@ -81,6 +82,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: "deploy/docker-compose.prod.yml,deploy/nginx/,deploy/monitoring/"
           target: "/opt/lily_website/"
+          rm: true
 
       - name: SSH Deploy
         uses: appleboy/ssh-action@master
@@ -92,16 +94,12 @@ jobs:
           script: |
             cd /opt/lily_website
 
-            # Создаем .env из секретов
             echo "${{ secrets.ENV_FILE }}" > .env
-
-            # Добавляем технические переменные для Docker Compose в .env
             echo "DOCKER_IMAGE_BACKEND=ghcr.io/$REPO_LOWER-backend:latest" >> .env
             echo "DOCKER_IMAGE_BOT=ghcr.io/$REPO_LOWER-bot:latest" >> .env
             echo "DOCKER_IMAGE_WORKER=ghcr.io/$REPO_LOWER-worker:latest" >> .env
             echo "DOCKER_IMAGE_NGINX=ghcr.io/$REPO_LOWER-nginx:latest" >> .env
 
-            # Авто-определение DOMAIN_NAME из SITE_BASE_URL, если он не задан явно в секретах
             if ! grep -q "DOMAIN_NAME" .env; then
               DOMAIN=$(grep "SITE_BASE_URL" .env | cut -d'/' -f3 | cut -d':' -f1)
               echo "DOMAIN_NAME=$DOMAIN" >> .env
@@ -110,11 +108,8 @@ jobs:
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
             docker compose -f deploy/docker-compose.prod.yml pull
-
-            # Run migrations and collectstatic
             docker compose -f deploy/docker-compose.prod.yml run --rm -T backend python manage.py migrate --noinput
             docker compose -f deploy/docker-compose.prod.yml run --rm -T backend python manage.py collectstatic --noinput
-
             docker compose -f deploy/docker-compose.prod.yml up -d --remove-orphans --wait
 
             docker image prune -f
