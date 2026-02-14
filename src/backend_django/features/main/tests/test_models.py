@@ -6,7 +6,7 @@ import pytest
 from features.main.models import Category, Service
 
 
-@pytest.mark.django_db
+@pytest.mark.unit
 class TestCategoryModel:
     """Tests for Category model."""
 
@@ -35,7 +35,7 @@ class TestCategoryModel:
         assert "Manicure" in result
 
 
-@pytest.mark.django_db
+@pytest.mark.unit
 class TestServiceModel:
     """Tests for Service model."""
 
