@@ -160,11 +160,12 @@ class BookingService:
             "category_slug": appointment.service.category.slug if appointment.service.category else None,
         }
 
-        if settings.TELEGRAM_ADMIN_ID:
+        admin_id = getattr(settings, "TELEGRAM_ADMIN_ID", None)
+        if admin_id:
             try:
                 DjangoArqClient.enqueue_job(
                     "send_booking_notification_task",
-                    admin_id=int(settings.TELEGRAM_ADMIN_ID),
+                    admin_id=int(admin_id),
                     appointment_data=appointment_data,
                 )
                 log.info(f"Queued booking notification for appointment {appointment.id}")
