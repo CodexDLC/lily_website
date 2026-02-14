@@ -1,10 +1,13 @@
 """
 Test settings - используется только для pytest.
 
-Наследуется от dev settings, но использует SQLite in-memory для скорости.
+Наследуется от base settings, но использует SQLite in-memory для скорости.
 """
 
-from .dev import *  # noqa: F403
+from .base import *  # noqa: F403
+
+# Включаем режим отладки для тестов, чтобы получать более подробные страницы с ошибками
+DEBUG = True
 
 # SQLite in-memory database для быстрых тестов
 DATABASES = {

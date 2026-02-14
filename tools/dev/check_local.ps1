@@ -58,15 +58,10 @@ try {
     # Установка переменных окружения для тестов
     $env:SECRET_KEY = "local_test_key"
 
-    # Проверяем наличие тестов
-    if (Test-Path "src/backend_django/features/main/tests") {
-        # Запуск тестов (используется SQLite in-memory из core.settings.test)
-        pytest src/backend_django/features/main/tests/ -v
-        if ($LASTEXITCODE -ne 0) { throw "Tests failed" }
-        Write-Host "✅ Tests passed!" -ForegroundColor Green
-    } else {
-        Write-Host "⚠️  No tests found - skipping" -ForegroundColor Yellow
-    }
+    # Запуск тестов по маркеру unit
+    pytest src -m "unit" -v
+    if ($LASTEXITCODE -ne 0) { throw "Tests failed" }
+    Write-Host "✅ Tests passed!" -ForegroundColor Green
 } catch {
     Write-Host "❌ Tests failed!" -ForegroundColor Red
     exit 1
