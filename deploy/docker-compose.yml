@@ -29,7 +29,7 @@ services:
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      test: ["CMD", "sh", "-c", "REDISCLI_AUTH=${REDIS_PASSWORD} redis-cli ping"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -62,8 +62,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
-    links:
-      - redis
     restart: unless-stopped
     networks:
       - lily_website-network
@@ -73,8 +71,7 @@ services:
       context: ..
       dockerfile: deploy/bot/Dockerfile
     container_name: lily_website-telegram_bot
-    env_file:
-      - ../.env
+    env_file: .env
     volumes:
       - ../src/telegram_bot:/app/src/telegram_bot:ro
       - ../src/shared:/app/src/shared:ro

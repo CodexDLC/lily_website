@@ -165,8 +165,8 @@ class Master(TimestampMixin, SeoMixin, models.Model):
             optimize_image(self.photo, max_width=800)
 
         super().save(*args, **kwargs)
-        # Clear cache to reflect changes on the site
-        cache.clear()
+        # Targeted cache invalidation
+        cache.delete_many(["active_masters_cache", "salon_owner_cache", "team_members_cache"])
 
     def get_absolute_url(self):
         return reverse("master_detail", kwargs={"slug": self.slug})
