@@ -1,0 +1,178 @@
+{% load static %}
+{% load i18n %}
+<!-- Schema.org JSON-LD for LocalBusiness -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "{{ settings.site_base_url }}#organization", {# Dynamic ID from SiteSettings #}
+  "name": "{{ settings.company_name }}",
+  "image": "{% static 'img/logo_lily.webp' %}", {# Keeping static for now, assuming no dynamic logo field #}
+  "url": "{{ settings.site_base_url }}", {# Dynamic URL from SiteSettings #}
+  "telephone": "{{ settings.phone }}",
+  "email": "{{ settings.email }}",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{ settings.address_street }}",
+    "addressLocality": "{{ settings.address_locality }}",
+    "postalCode": "{{ settings.address_postal_code }}",
+    "addressCountry": "DE" {# Keeping hardcoded, assuming constant #}
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "{{ settings.latitude }}",
+    "longitude": "{{ settings.longitude }}"
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "opens": "{{ settings.work_start_weekdays|date:"H:i" }}",
+      "closes": "{{ settings.work_end_weekdays|date:"H:i" }}"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Saturday",
+      "opens": "{{ settings.work_start_saturday|date:"H:i" }}",
+      "closes": "{{ settings.work_end_saturday|date:"H:i" }}"
+    }
+  ],
+  "priceRange": "{{ settings.price_range }}",
+  "sameAs": [
+    "{{ settings.instagram_url }}",
+    "https://www.facebook.com/lilybeautysalonkoethen/" {# Keeping hardcoded Facebook as no field in SiteSettings #}
+  ],
+  "potentialAction": {
+    "@type": "ReserveAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "{% url 'booking_wizard' %}", {# Using Django's url tag #}
+      "inLanguage": "ru", {# Keeping hardcoded, assuming constant #}
+      "actionPlatform": [
+        "https://schema.org/DesktopWebPlatform",
+        "https://schema.org/MobileWebPlatform"
+      ]
+    },
+    "name": "Записаться онлайн"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Beauty Services",
+    "itemListElement": [
+      {
+        "@type": "OfferCatalog",
+        "name": "Hair Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Haircuts"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Hair Coloring"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Hair Treatment"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "Nail Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Manicure"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Pedicure"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Nail Extensions"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "Cosmetology",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Facial Treatments"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Skin Cleaning"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "Brows & Lashes",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Brow Shaping"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Lash Extensions"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": "Depilation",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Hair Removal"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+</script>

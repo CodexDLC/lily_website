@@ -23,7 +23,13 @@ class BaseApiClient:
         # Таймаут передается извне (из конфига)
         self.timeout = httpx.Timeout(timeout, connect=5.0)
 
-    async def _request(self, method: str, endpoint: str, json: dict = None, params: dict = None) -> dict | Any:
+    async def _request(
+        self,
+        method: str,
+        endpoint: str,
+        json: dict[str, Any] | None = None,
+        params: dict[str, Any] | None = None,
+    ) -> dict[str, Any] | Any:
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
 
         async with httpx.AsyncClient(timeout=self.timeout) as client:

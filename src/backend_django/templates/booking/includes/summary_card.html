@@ -1,0 +1,53 @@
+{% load i18n %}
+<div class="summary-card" id="summary-card" hx-swap-oob="true">
+    <h3 class="summary-title">{% trans "Ihr Termin" %}</h3>
+
+    {% if not selected_service %}
+        <!-- Empty State -->
+        <div class="summary-row empty">
+            <span class="icon">✨</span>
+            <span class="text">{% trans "Bitte wählen Sie zuerst eine Leistung aus." %}</span>
+        </div>
+    {% else %}
+        <!-- Service -->
+        <div class="summary-item">
+            <span class="s-label">{% trans "Leistung" %}</span>
+            <strong class="s-value">{{ selected_service.title }}</strong>
+            <span class="s-price">{{ selected_service.price }} €</span>
+        </div>
+        <hr class="summary-divider">
+    {% endif %}
+
+    {% if selected_master %}
+        <!-- Master -->
+        <div class="summary-item">
+            <span class="s-label">{% trans "Experte" %}</span>
+            <div class="s-master-row">
+                {% if selected_master.photo %}
+                <img src="{{ selected_master.photo.url }}" alt="{{ selected_master.name }}" class="s-avatar">
+                {% endif %}
+                <strong class="s-value">{{ selected_master.name }}</strong>
+            </div>
+        </div>
+        <hr class="summary-divider">
+    {% endif %}
+
+    {% if selected_date %}
+        <!-- Date & Time -->
+        <div class="summary-item">
+            <span class="s-label">{% trans "Zeit" %}</span>
+            <strong class="s-value">{{ selected_date|date:"d. F Y" }}</strong>
+            {% if selected_time %}
+            <strong class="s-value">{{ selected_time }}</strong>
+            {% endif %}
+        </div>
+        <hr class="summary-divider">
+    {% endif %}
+
+    {% if selected_service %}
+        <div class="summary-total">
+            <span>{% trans "Gesamt" %}</span>
+            <span class="total-price">{{ selected_service.price }} €</span>
+        </div>
+    {% endif %}
+</div>

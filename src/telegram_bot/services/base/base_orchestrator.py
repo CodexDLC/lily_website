@@ -1,7 +1,7 @@
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
-from src.telegram_bot.services.base.view_dto import UnifiedViewDTO
 from src.shared.schemas.response import CoreResponseDTO
+from src.telegram_bot.services.base.view_dto import UnifiedViewDTO
 
 if TYPE_CHECKING:
     from src.telegram_bot.services.director.director import Director
@@ -19,7 +19,7 @@ class BaseBotOrchestrator:
         self.expected_state = expected_state
         self._director: Director | None = None
 
-    def set_director(self, director: "Director"):
+    def set_director(self, director: "Director") -> None:
         self._director = director
 
     @property
@@ -51,7 +51,7 @@ class BaseBotOrchestrator:
         """
         if isinstance(payload, CoreResponseDTO):
             return await self.process_response(payload)
-        
+
         # Если пришел просто payload, рендерим контент
         content_view = await self.render_content(payload)
         return UnifiedViewDTO(content=content_view, menu=None)
@@ -62,14 +62,12 @@ class BaseBotOrchestrator:
         """
         # 1. Проверка навигации
         if response.header.next_state and response.header.next_state != self.expected_state:
-            return await self.director.set_scene(
-                feature=response.header.next_state, 
-                payload=response.payload
-            )
+            result = await self.director.set_scene(feature=response.header.next_state, payload=response.payload)
+            return cast("UnifiedViewDTO", result)
 
         # 2. Рендер контента
         content_view = None
         if response.payload is not None:
             content_view = await self.render_content(response.payload)
-            
+
         return UnifiedViewDTO(content=content_view, menu=None)

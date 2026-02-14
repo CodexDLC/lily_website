@@ -1,0 +1,55 @@
+{% load static %}
+{% load i18n %}
+
+<!-- TOP BAR -->
+<div class="header-top-bar">
+    <div class="container top-bar-row">
+        <div class="top-bar-item">
+            <span>📍 {{ site_settings.address_street }}, {{ site_settings.address_city }}</span>
+        </div>
+        <div class="top-bar-item">
+            <span>📞 </span>
+            <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a>
+        </div>
+    </div>
+</div>
+
+<!-- HEADER (Split + Burger) -->
+<header class="header-split">
+    <div class="container header-row">
+
+        <a href="{% url 'home' %}" class="logo-link">
+            <img src="{% static 'img/logo_lily.webp' %}" alt="{{ site_settings.company_name }}" class="logo-img" width="100" height="100">
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="nav-desktop">
+            <a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>{% trans "Startseite" %}</a>
+            <a href="{% url 'services' %}" {% if 'services' in request.path %}class="active"{% endif %}>{% trans "Leistungen" %}</a>
+            <a href="{% url 'team' %}" {% if 'team' in request.path %}class="active"{% endif %}>{% trans "Team" %}</a>
+            <a href="{% url 'contacts' %}" {% if 'contacts' in request.path %}class="active"{% endif %}>{% trans "Kontakt" %}</a>
+        </nav>
+
+        <!-- Burger Button (Visible on Mobile) -->
+        <button class="burger-btn" onclick="toggleMenu()" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+    </div>
+</header>
+
+<!-- MOBILE MENU OVERLAY -->
+<div class="mobile-menu-overlay" id="mobileMenu">
+    <button class="close-btn" onclick="toggleMenu()" aria-label="Close menu">×</button>
+    <nav class="mobile-nav-links">
+        <a href="{% url 'home' %}" onclick="toggleMenu()">{% trans "Startseite" %}</a>
+        <a href="{% url 'services' %}" onclick="toggleMenu()">{% trans "Leistungen" %}</a>
+        <a href="{% url 'team' %}" onclick="toggleMenu()">{% trans "Team" %}</a>
+        <a href="{% url 'contacts' %}" onclick="toggleMenu()">{% trans "Kontakt" %}</a>
+    </nav>
+    <div class="mobile-menu-footer">
+        <span class="footer-mobile-brand">{{ site_settings.company_name }}</span>
+    </div>
+</div>

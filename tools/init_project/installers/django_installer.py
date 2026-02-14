@@ -11,7 +11,7 @@ Flow:
 Не использует django-admin startproject / startapp напрямую,
 потому что наша структура сильно отличается от стандартной Django:
   - core/ вместо project_name/
-  - settings/ папка (base/dev/prod) вместо settings.py
+  - settings/ папка (base_module/dev/prod) вместо settings.py
   - features/ вместо apps в корне
   - views/ и models/ как папки, не файлы
   - selectors/ слой для чтения данных
@@ -19,11 +19,9 @@ Flow:
 
 from __future__ import annotations
 
-import shutil
 from pathlib import Path
 
-from tools.init_project.config import InstallContext
-
+from tools.init_project.config import InstallContext  # noqa: TC001
 from tools.init_project.installers.base import BaseInstaller
 
 # Путь к ресурсам Django
@@ -31,7 +29,6 @@ RESOURCES_DIR = Path(__file__).parent / "django" / "resources"
 
 
 class DjangoInstaller(BaseInstaller):
-
     name = "Django"
 
     def pre_install(self, ctx: InstallContext) -> None:
@@ -39,7 +36,7 @@ class DjangoInstaller(BaseInstaller):
 
     def install(self, ctx: InstallContext) -> None:
         """Создаёт полную Django структуру из шаблонов."""
-        backend_dir = ctx.project_root / "src" / "backend-django"
+        backend_dir = ctx.project_root / "src" / "backend_django"
 
         # ── 1. Core (settings, urls, wsgi, asgi) ──
         self._create_core(backend_dir, ctx.project_name)
@@ -59,7 +56,7 @@ class DjangoInstaller(BaseInstaller):
         print("    ✅ Django structure created")
 
     def post_install(self, ctx: InstallContext) -> None:
-        manage = ctx.project_root / "src" / "backend-django" / "manage.py"
+        manage = ctx.project_root / "src" / "backend_django" / "manage.py"
         if manage.exists():
             print("    ✅ manage.py verified")
         else:
@@ -85,11 +82,11 @@ class DjangoInstaller(BaseInstaller):
         # Settings
         tpl_settings = tpl_core / "settings"
         self._render(tpl_settings / "__init__.py.tpl", settings_dir / "__init__.py", project_name)
-        self._render(tpl_settings / "base.py.tpl", settings_dir / "base.py", project_name)
+        self._render(tpl_settings / "base_module.py.tpl", settings_dir / "base_module.py", project_name)
         self._render(tpl_settings / "dev.py.tpl", settings_dir / "dev.py", project_name)
         self._render(tpl_settings / "prod.py.tpl", settings_dir / "prod.py", project_name)
 
-        print("    ✅ core/ (settings split: base/dev/prod)")
+        print("    ✅ core/ (settings split: base_module/dev/prod)")
 
     # ─────────────────────────────────────────
     # Features
@@ -112,8 +109,11 @@ class DjangoInstaller(BaseInstaller):
 
         # apps.py
         self._render_feature_apps(
-            tpl / "apps.py.tpl", feat_dir / "apps.py",
-            app_name="main", app_class="Main", app_verbose="Main",
+            tpl / "apps.py.tpl",
+            feat_dir / "apps.py",
+            app_name="main",
+            app_class="Main",
+            app_verbose="Main",
         )
 
         # admin.py, tests.py
@@ -121,8 +121,7 @@ class DjangoInstaller(BaseInstaller):
         self._render(tpl / "tests.py.tpl", feat_dir / "tests.py", project_name)
 
         # urls.py
-        self._render(tpl / "urls.py.tpl", feat_dir / "urls.py", project_name,
-                     extra={"{{APP_NAME}}": "main"})
+        self._render(tpl / "urls.py.tpl", feat_dir / "urls.py", project_name, extra={"{{APP_NAME}}": "main"})
 
         # models.py (пустой, можно потом сделать папку)
         (feat_dir / "models.py").write_text("# from django.db import models\n", encoding="utf-8")
@@ -155,8 +154,11 @@ class DjangoInstaller(BaseInstaller):
 
         # apps.py
         self._render_feature_apps(
-            tpl / "apps.py.tpl", feat_dir / "apps.py",
-            app_name="system", app_class="System", app_verbose="System",
+            tpl / "apps.py.tpl",
+            feat_dir / "apps.py",
+            app_name="system",
+            app_class="System",
+            app_verbose="System",
         )
 
         # admin.py, tests.py
@@ -190,8 +192,8 @@ class DjangoInstaller(BaseInstaller):
             d = backend_dir / "static" / sub
             d.mkdir(parents=True, exist_ok=True)
 
-        # Минимальный base.css
-        css_file = backend_dir / "static" / "css" / "base.css"
+        # Минимальный base_module.css
+        css_file = backend_dir / "static" / "css" / "base_module.css"
         if not css_file.exists():
             css_file.write_text(
                 "/* Base styles for the project */\n"
@@ -203,15 +205,15 @@ class DjangoInstaller(BaseInstaller):
         print("    ✅ static/ (css/, js/, img/)")
 
     def _create_templates(self, backend_dir: Path, project_name: str) -> None:
-        """Создаёт templates/base.html и templates/home/home.html."""
+        """Создаёт templates/base_module.html и templates/home/home.html."""
         templates_dir = backend_dir / "templates"
         home_dir = templates_dir / "home"
         home_dir.mkdir(parents=True, exist_ok=True)
 
-        self._render(RESOURCES_DIR / "base.html.tpl", templates_dir / "base.html", project_name)
+        self._render(RESOURCES_DIR / "base_module.html.tpl", templates_dir / "base_module.html", project_name)
         self._render(RESOURCES_DIR / "home.html.tpl", home_dir / "home.html", project_name)
 
-        print("    ✅ templates/ (base.html, home/home.html)")
+        print("    ✅ templates/ (base_module.html, home/home.html)")
 
     def _create_locale(self, backend_dir: Path) -> None:
         """Создаёт пустую locale/ структуру для i18n."""
