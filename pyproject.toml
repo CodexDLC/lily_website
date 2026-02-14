@@ -92,7 +92,7 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 pythonpath = [".", "src/backend_django"]
-DJANGO_SETTINGS_MODULE = "core.settings.dev"
+DJANGO_SETTINGS_MODULE = "core.settings.test"
 markers = [
     "unit: Unit tests",
     "integration: Integration tests",

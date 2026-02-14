@@ -81,3 +81,4 @@ deploy/.env
 # Template installer artifacts
 # ═══════════════════════════════════════════
 .template_install_hash
+.env.test
