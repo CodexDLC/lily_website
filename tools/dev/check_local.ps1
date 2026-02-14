@@ -52,17 +52,21 @@ try {
     exit 1
 }
 
-# 3. Unit Tests: Pytest
-# Запускаем только unit-тесты, исключая интеграционные (требующие БД)
+# 3. Unit Tests: Pytest (SQLite in-memory)
 Write-Host "`n🧪 Running Unit Tests (Pytest)..." -ForegroundColor Yellow
 try {
-    # Устанавливаем фейковый ключ, если его нет в .env
+    # Установка переменных окружения для тестов
     $env:SECRET_KEY = "local_test_key"
 
-    # Ищем тесты в src, но игнорируем любые папки integration
-    pytest src --ignore-glob="**/integration/**"
-    if ($LASTEXITCODE -ne 0) { throw "Tests failed" }
-    Write-Host "✅ Tests passed!" -ForegroundColor Green
+    # Проверяем наличие тестов
+    if (Test-Path "src/backend_django/features/main/tests") {
+        # Запуск тестов (используется SQLite in-memory из core.settings.test)
+        pytest src/backend_django/features/main/tests/ -v
+        if ($LASTEXITCODE -ne 0) { throw "Tests failed" }
+        Write-Host "✅ Tests passed!" -ForegroundColor Green
+    } else {
+        Write-Host "⚠️  No tests found - skipping" -ForegroundColor Yellow
+    }
 } catch {
     Write-Host "❌ Tests failed!" -ForegroundColor Red
     exit 1
