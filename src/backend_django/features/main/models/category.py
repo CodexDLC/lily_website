@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from features.system.models.mixins import ActiveMixin, SeoMixin, TimestampMixin
@@ -62,8 +63,7 @@ class Category(TimestampMixin, ActiveMixin, SeoMixin):
 
     def save(self, *args, **kwargs):
         if self.image:
-            # Check if image is new or changed (simple check by name or just process always)
-            # For simplicity and robustness, we process if it's not already webp or just process.
-            # optimize_image handles errors gracefully.
             optimize_image(self.image, max_width=1200)
         super().save(*args, **kwargs)
+        # Clear cache to reflect changes on the site
+        cache.clear()

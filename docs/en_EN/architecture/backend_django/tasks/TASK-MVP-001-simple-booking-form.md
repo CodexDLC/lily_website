@@ -484,7 +484,7 @@ def convert_booking_requests_to_appointments():
 ## Settings Required
 
 ```python
-# settings/base.py or .env
+# settings/base_module.py or .env
 
 # Email
 DEFAULT_FROM_EMAIL = 'noreply@lily-salon.de'

@@ -7,7 +7,9 @@ Secrets and env-specific values loaded from .env via os.environ.
 
 import os
 from pathlib import Path
+from urllib.parse import quote_plus, urlparse
 
+import dj_database_url
 from dotenv import load_dotenv
 
 # ═══════════════════════════════════════════
@@ -17,8 +19,8 @@ from dotenv import load_dotenv
 # In container: /app. Locally: src/backend_django
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-# Load .env from backend root
-load_dotenv(BASE_DIR / ".env")
+# Load .env from PROJECT ROOT (two levels up from src/backend_django)
+load_dotenv(BASE_DIR.parent.parent / ".env")
 
 # ═══════════════════════════════════════════
 # Security
@@ -26,42 +28,48 @@ load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-CHANGE-ME")
 
-DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1", "yes")
+# Main switch for the whole system
+DEBUG = os.environ.get("DEBUG", "True").lower() in ("true", "1", "yes")
 
-ALLOWED_HOSTS = [h.strip() for h in os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h.strip()]
+# --- Smart ALLOWED_HOSTS ---
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend", "0.0.0.0"]
 
-# ═══════════════════════════════════════════
-# Site Base URL
-# ═══════════════════════════════════════════
+env_hosts = os.environ.get("ALLOWED_HOSTS", "")
+if env_hosts:
+    ALLOWED_HOSTS.extend([h.strip() for h in env_hosts.split(",") if h.strip()])
 
 SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "http://127.0.0.1:8000/")
 if not SITE_BASE_URL.endswith("/"):
     SITE_BASE_URL += "/"
+
+domain = urlparse(SITE_BASE_URL).netloc
+if domain:
+    clean_domain = domain.split(":")[0]
+    if clean_domain not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(clean_domain)
 
 # ═══════════════════════════════════════════
 # Application definition
 # ═══════════════════════════════════════════
 
 INSTALLED_APPS = [
-    # ── Translation (must be before admin) ──
+    "django_prometheus",
     "modeltranslation",
-    # ── Django ──
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # ── Features ──
-    "core",  # Core app (for AppConfig & Logging)
+    "core",
     "features.main",
     "features.system",
     "features.booking",
-    # ── API ──
     "ninja",
 ]
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -69,7 +77,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django.middleware.locale.LocaleMiddleware",  # Added for i18n
+    "django.middleware.locale.LocaleMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -85,9 +94,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "django.template.context_processors.i18n",  # Added for i18n
-                "features.system.context_processors.site_settings",  # Global Site Settings
-                "core.context_processors.site_base_url",  # Custom context processor for SITE_BASE_URL
+                "django.template.context_processors.i18n",
+                "features.system.context_processors.site_settings",
             ],
         },
     },
@@ -99,34 +107,73 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # ═══════════════════════════════════════════
 
-# Supports both SQLite (dev) and PostgreSQL (prod/docker)
-DATABASES = {
+# If DATABASE_URL is provided (Production/Neon), use it.
+# Otherwise, fall back to local SQLite.
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+    # Add schema support if provided
+    db_schema = os.environ.get("DB_SCHEMA", "public")
+    DATABASES["default"]["OPTIONS"] = {"options": f"-c search_path={db_schema},public"}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": str(BASE_DIR / "db.sqlite3"),
+        }
+    }
+
+# ═══════════════════════════════════════════
+# Redis & ARQ (Task Queue)
+# ═══════════════════════════════════════════
+
+REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
+REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", None)
+
+# Smart host detection for Docker
+IS_INSIDE_DOCKER = os.path.exists("/.dockerenv")
+if REDIS_HOST == "localhost" and IS_INSIDE_DOCKER:
+    REDIS_HOST = "redis"
+
+# Construct Redis URL with password encoding
+if REDIS_PASSWORD:
+    # Очищаем от кавычек и экранируем спецсимволы (например, '*')
+    clean_password = REDIS_PASSWORD.strip("'\"").strip()
+    encoded_password = quote_plus(clean_password)
+    REDIS_URL = f"redis://:{encoded_password}@{REDIS_HOST}:{REDIS_PORT}/0"
+else:
+    REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+
+# ═══════════════════════════════════════════
+# Cache & Sessions (Redis)
+# ═══════════════════════════════════════════
+
+CACHES = {
     "default": {
-        "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("DB_NAME", str(BASE_DIR / "db.sqlite3")),
-        "USER": os.environ.get("DB_USER", ""),
-        "PASSWORD": os.environ.get("DB_PASSWORD", ""),
-        "HOST": os.environ.get("DB_HOST", ""),
-        "PORT": os.environ.get("DB_PORT", ""),
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
     }
 }
 
-# ═══════════════════════════════════════════
-# Auth
-# ═══════════════════════════════════════════
-
-AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-]
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 
 # ═══════════════════════════════════════════
 # Internationalization
 # ═══════════════════════════════════════════
 
-LANGUAGE_CODE = os.environ.get("LANGUAGE_CODE", "de")  # Default to German
+LANGUAGE_CODE = os.environ.get("LANGUAGE_CODE", "de")
 TIME_ZONE = os.environ.get("TIME_ZONE", "Europe/Berlin")
 USE_I18N = True
 USE_TZ = True
@@ -138,7 +185,6 @@ LANGUAGES = [
     ("en", "English"),
 ]
 
-# Model Translation (django-modeltranslation)
 MODELTRANSLATION_DEFAULT_LANGUAGE = LANGUAGE_CODE.split("-")[0]
 MODELTRANSLATION_LANGUAGES = ("de", "ru", "uk", "en")
 
@@ -147,79 +193,22 @@ LOCALE_PATHS = [
 ]
 
 # ═══════════════════════════════════════════
-# Static files
+# Static & Media
 # ═══════════════════════════════════════════
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
-# ═══════════════════════════════════════════
-# Media files
-# ═══════════════════════════════════════════
-
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# ═══════════════════════════════════════════
-# Default primary key
-# ═══════════════════════════════════════════
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# ═══════════════════════════════════════════
-# Environment
-# ═══════════════════════════════════════════
-
-ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
-
-# ═══════════════════════════════════════════
-# Redis & ARQ (Task Queue)
-# ═══════════════════════════════════════════
-
-REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")
-REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
-REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD", None)
-
-# Автоматически определять хост на основе окружения
-if REDIS_HOST == "localhost" and ENVIRONMENT == "production":
-    REDIS_HOST = "redis"  # Docker service name
-
-# Construct Redis URL
-if REDIS_PASSWORD:
-    REDIS_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0"
-else:
-    REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
-
-# ═══════════════════════════════════════════
-# Cache & Sessions (Redis)
-# ═══════════════════════════════════════════
-
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": REDIS_URL,
-    }
-}
-
-# Store sessions in Redis
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
-
-# ═══════════════════════════════════════════
-# Telegram Integration
-# ═══════════════════════════════════════════
-
-TELEGRAM_ADMIN_ID = os.environ.get("TELEGRAM_ADMIN_ID", None)
 
 # ═══════════════════════════════════════════
 # Logging (Loguru)
 # ═══════════════════════════════════════════
 
-# Disable Django's default logging configuration
 LOGGING_CONFIG = None
-
-# Loguru Settings
 LOG_LEVEL_CONSOLE = os.environ.get("LOG_LEVEL", "INFO")
 LOG_LEVEL_FILE = "DEBUG"
 LOG_ROTATION = "10 MB"

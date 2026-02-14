@@ -1,6 +1,7 @@
 import uuid
 
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -164,6 +165,8 @@ class Master(TimestampMixin, SeoMixin, models.Model):
             optimize_image(self.photo, max_width=800)
 
         super().save(*args, **kwargs)
+        # Clear cache to reflect changes on the site
+        cache.clear()
 
     def get_absolute_url(self):
         return reverse("master_detail", kwargs={"slug": self.slug})

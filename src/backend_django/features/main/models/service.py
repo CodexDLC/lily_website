@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from features.system.models.mixins import ActiveMixin, SeoMixin, TimestampMixin
@@ -73,6 +74,8 @@ class Service(TimestampMixin, ActiveMixin, SeoMixin):
         if self.image:
             optimize_image(self.image, max_width=1200)
         super().save(*args, **kwargs)
+        # Clear cache to reflect changes on the site
+        cache.clear()
 
 
 class PortfolioImage(TimestampMixin):
@@ -109,3 +112,5 @@ class PortfolioImage(TimestampMixin):
         if self.image:
             optimize_image(self.image, max_width=1600)
         super().save(*args, **kwargs)
+        # Clear cache to reflect changes on the site
+        cache.clear()

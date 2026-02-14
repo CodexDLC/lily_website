@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.template.exceptions import TemplateDoesNotExist
 from django.utils import translation
 from django.views.generic import TemplateView
 
@@ -13,6 +15,8 @@ class LLMSTextView(TemplateView):
         # Ensure the template exists for the current language
         try:
             return super().render_to_response(context, **response_kwargs)
-        except Exception:
+        except TemplateDoesNotExist:
             # Fallback to default language (e.g., German) if specific language template not found
-            return TemplateView.as_view(template_name="llms_de.txt", content_type="text/plain")(self.request)
+            return TemplateView.as_view(template_name=f"llms_{settings.LANGUAGE_CODE}.txt", content_type="text/plain")(
+                self.request
+            )

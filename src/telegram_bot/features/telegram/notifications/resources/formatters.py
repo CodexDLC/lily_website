@@ -13,6 +13,5 @@ class NotificationsFormatter:
         Формирует текст главного экрана.
         """
         # Пример использования payload
-        user_name = payload.get("name", "User") if isinstance(payload, dict) else "User"
 
-        return f"{NotificationsTexts.TITLE}\n\n{NotificationsTexts.DESCRIPTION}\nUser: {user_name}"
+        return f"{NotificationsTexts.TITLE}\n\n{NotificationsTexts.DESCRIPTION}\nUser: "

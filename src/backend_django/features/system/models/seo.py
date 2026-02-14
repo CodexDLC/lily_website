@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -39,3 +40,8 @@ class StaticPageSeo(TimestampMixin, SeoMixin):
 
     def __str__(self):
         return self.get_page_key_display()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # Clear cache to reflect changes on the site
+        cache.clear()

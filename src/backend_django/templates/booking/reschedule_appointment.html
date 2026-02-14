@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Termin verschieben" %}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 text-primary">{% translate "Termin verschieben" %}</h1>
+            <p class="lead">{% translate "Hier können Sie Ihren Termin verschieben oder ein neues Zeitfenster wählen." %}</p>
+            <p>{% translate "Bitte wählen Sie unten einen neuen Termin aus." %}</p>
+            <p class="mt-4">
+                <a href="{% url 'booking_wizard' %}" class="btn btn-primary btn-lg">{% translate "Neuen Termin wählen" %}</a>
+            </p>
+            <div class="mt-5 p-3 bg-light border rounded">
+                <p class="mb-0 text-muted">{% translate "Debug-Information: Token" %}: <code>{{ token }}</code></p>
+                <p class="mb-0 text-muted">{% translate "Debug-Information: Slot ID (optional)" %}: <code>{{ request.GET.slot_id }}</code></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
