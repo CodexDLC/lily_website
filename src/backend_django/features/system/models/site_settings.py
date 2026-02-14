@@ -74,7 +74,7 @@ class SiteSettings(models.Model):
     )
     hiring_title = models.CharField(_("Hiring Title"), max_length=255, default="Wir suchen Verstärkung!", blank=True)
     hiring_text = models.TextField(
-        _("Hiring Text"), blank=True, default="Bist du talentiert и liebst deinen Job? Werde Teil unseres Teams!"
+        _("Hiring Text"), blank=True, default="Bist du talentiert und liebst deinen Job? Werde Teil unseres Teams!"
     )
 
     class Meta:

@@ -65,5 +65,10 @@ class Category(TimestampMixin, ActiveMixin, SeoMixin):
         if self.image:
             optimize_image(self.image, max_width=1200)
         super().save(*args, **kwargs)
-        # Clear cache to reflect changes on the site
-        cache.clear()
+        # Targeted cache invalidation
+        cache.delete_many(["active_categories_cache", "bento_grid_cache", f"category_detail_{self.slug}"])
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+
+        return reverse("category_detail", kwargs={"slug": self.slug})
