@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Seite nicht gefunden" %} | LILY Beauty Salon{% endblock %}
+
+{% block content %}
+<main class="section error-page-container">
+    <div class="container">
+        <h1 class="hero-title error-code-large">404</h1>
+        <h2 class="error-subtitle">{% trans "Seite nicht gefunden" %}</h2>
+        <p class="error-message">
+            {% trans "Die von Ihnen gesuchte Seite existiert leider nicht oder wurde verschoben." %}
+        </p>
+        <a href="{% url 'home' %}" class="btn-pill">{% trans "Zur Startseite" %}</a>
+    </div>
+</main>
+{% endblock %}

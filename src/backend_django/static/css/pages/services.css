@@ -1,0 +1,157 @@
+/* =========================================
+   SERVICES PAGE (PRICE LIST)
+   ========================================= */
+
+/* Hero Text Block */
+.hero-text-block {
+    padding: 80px 0 60px;
+    background-color: var(--color-emerald);
+    text-align: center;
+}
+
+.hero-text-block-padded {
+    padding-bottom: 40px;
+}
+
+.hero-title {
+    font-family: var(--font-serif, serif);
+    font-size: 48px;
+    color: var(--color-white);
+    margin-bottom: 10px;
+    font-weight: 400;
+}
+
+.hero-subtitle {
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Price Menu Container */
+.price-menu-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Category Header (Island Title - h2) */
+.category-header {
+    text-align: center;
+    margin-bottom: 40px;
+    margin-top: 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(237, 208, 113, 0.3);
+}
+
+.category-title {
+    font-family: var(--font-serif, serif);
+    font-size: 36px;
+    color: var(--color-white);
+    font-weight: 400;
+    margin: 0;
+}
+
+/* Category Section (within island) */
+.category-section {
+    margin-bottom: 40px;
+}
+
+.category-section:last-of-type {
+    margin-bottom: 20px;
+}
+
+/* Category Subtitle (h3 - categories within bento group) */
+.category-subtitle {
+    font-family: var(--font-serif, serif);
+    font-size: 28px;
+    color: var(--color-gold);
+    font-weight: 400;
+    margin: 0 0 10px 0;
+    text-align: center;
+}
+
+.category-desc {
+    text-align: center;
+    color: rgba(255,255,255,0.7);
+    font-size: 14px;
+    margin-bottom: 25px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+/* Service Row */
+.service-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    transition: 0.2s;
+}
+
+.service-row:last-child {
+    border-bottom: none;
+}
+
+.service-row:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 4px;
+}
+
+/* Service Names */
+.service-names {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.name-de {
+    display: block;
+    font-size: 18px;
+    color: var(--color-white);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.name-ua {
+    display: block;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+}
+
+/* Service Meta (Price & Time) */
+.service-meta {
+    text-align: right;
+    min-width: 120px;
+}
+
+.meta-price {
+    display: block;
+    font-family: var(--font-serif, serif);
+    font-size: 22px;
+    color: var(--color-gold);
+    font-weight: 700;
+}
+
+.meta-time {
+    display: block;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 4px;
+}
+
+/* Service Link Wrapper */
+.service-link-wrapper {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}

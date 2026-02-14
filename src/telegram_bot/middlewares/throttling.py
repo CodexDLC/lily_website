@@ -31,7 +31,7 @@ class ThrottlingMiddleware(BaseMiddleware):
         user_id = None
 
         # Получаем user_id из события
-        if isinstance(event, (Message, CallbackQuery)) and event.from_user:
+        if isinstance(event, Message | CallbackQuery) and event.from_user:
             user_id = event.from_user.id
 
         if not user_id:

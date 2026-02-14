@@ -1,0 +1,24 @@
+{% load i18n %}
+<div class="step-content fade-in" style="text-align: center; padding: 40px 0;">
+
+    <div class="success-icon">✓</div>
+
+    <h2 class="step-heading" style="margin-bottom: 20px;">
+        {% trans "Vielen Dank!" %}
+    </h2>
+
+    <p style="color: var(--color-text-muted); font-size: 18px; margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto;">
+        {% trans "Ihr Termin wurde erfolgreich gebucht. Wir haben Ihnen eine Bestätigung per E-Mail gesendet." %}
+    </p>
+
+    <div class="success-details">
+        <p><strong>{{ appointment.service.title }}</strong></p>
+        <p>{{ appointment.datetime_start|date:"d. F Y, H:i" }}</p>
+        <p>{% trans "bei" %} {{ appointment.master.name }}</p>
+    </div>
+
+    <a href="{% url 'home' %}" class="btn-home">
+        {% trans "Zurück zur Startseite" %}
+    </a>
+
+</div>

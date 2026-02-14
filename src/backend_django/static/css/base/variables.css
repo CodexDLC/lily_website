@@ -1,0 +1,22 @@
+/* =========================================
+   CSS VARIABLES (DARK LUXURY THEME)
+   ========================================= */
+:root {
+    /* Colors */
+    --color-emerald: #003831;       /* Фон сайта */
+    --color-gold: #EDD071;          /* Акценты */
+    --color-text-main: #FFFFFF;     /* Текст белый */
+    --color-text-muted: rgba(255,255,255, 0.7);
+    --color-white: #FFFFFF;
+
+    /* Typography */
+    /* NOTE: Always use with fallback to pass linters:
+       font-family: var(--font-serif, serif);
+       font-family: var(--font-sans, sans-serif); */
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Lato', sans-serif;
+
+    /* Layout */
+    --container-width: 1200px;
+    --site-max-width: 1440px;
+}

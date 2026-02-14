@@ -1,0 +1,1599 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-13 16:27+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: .\features\booking\admin.py:23
+msgid "Basic Information"
+msgstr "Основная информация"
+
+#: .\features\booking\admin.py:27
+msgid "Specializations"
+msgstr "Специализации"
+
+#: .\features\booking\admin.py:31
+msgid "Contact"
+msgstr "Контакты"
+
+#: .\features\booking\admin.py:35 .\features\main\admin.py:106
+msgid "Status & Flags"
+msgstr "Статус и флаги"
+
+#: .\features\booking\admin.py:39
+msgid "Django User"
+msgstr "Пользователь Django"
+
+#: .\features\booking\admin.py:43
+msgid "Telegram Integration"
+msgstr "Интеграция с Telegram"
+
+#: .\features\booking\admin.py:50
+msgid "QR System (Future)"
+msgstr "Система QR (в будущем)"
+
+#: .\features\booking\admin.py:54 .\features\main\admin.py:49
+#: .\features\main\admin.py:122
+msgid "SEO"
+msgstr "SEO"
+
+#: .\features\booking\admin.py:58 .\features\booking\admin.py:184
+#: .\features\booking\admin.py:248 .\features\booking\admin.py:277
+msgid "Timestamps"
+msgstr "Временные метки"
+
+#: .\features\booking\admin.py:65 .\features\booking\admin.py:124
+#: .\features\booking\admin.py:172 .\features\booking\admin.py:196
+#: .\features\booking\models\appointment.py:62
+#: .\features\booking\models\client.py:76 .\features\main\admin.py:54
+#: .\features\main\admin.py:134
+msgid "Status"
+msgstr "Статус"
+
+#: .\features\booking\admin.py:93
+msgid "Contact Information"
+msgstr "Контактная информация"
+
+#: .\features\booking\admin.py:97
+msgid "Socials"
+msgstr "Социальные сети"
+
+#: .\features\booking\admin.py:101
+msgid "Account Status"
+msgstr "Статус аккаунта"
+
+#: .\features\booking\admin.py:105
+msgid "Marketing"
+msgstr "Маркетинг"
+
+#: .\features\booking\admin.py:109
+msgid "Internal"
+msgstr "Внутренние"
+
+#: .\features\booking\admin.py:114 .\templates\contacts\partials\form.html:16
+msgid "Name"
+msgstr "Имя"
+
+#: .\features\booking\admin.py:119
+msgid "Ghost"
+msgstr "Призрак"
+
+#: .\features\booking\admin.py:168
+msgid "Booking Details"
+msgstr "Детали бронирования"
+
+#: .\features\booking\admin.py:176
+msgid "Notes"
+msgstr "Заметки"
+
+#: .\features\booking\admin.py:180
+msgid "Notifications"
+msgstr "Уведомления"
+
+#: .\features\booking\admin.py:191 .\features\booking\models\appointment.py:21
+#: .\features\booking\models\client.py:93
+#: .\features\main\models\contact_request.py:24
+msgid "Client"
+msgstr "Клиент"
+
+#: .\features\booking\admin.py:213
+msgid "Mark as Confirmed"
+msgstr "Отметить как подтверждённые"
+
+#: .\features\booking\admin.py:218
+msgid "Mark as Completed"
+msgstr "Отметить как завершённые"
+
+#: .\features\booking\admin.py:223
+msgid "Cancel Selected"
+msgstr "Отменить выбранные"
+
+#: .\features\booking\admin.py:240
+msgid "Certificate Info"
+msgstr "Информация о сертификате"
+
+#: .\features\booking\admin.py:244 .\features\booking\admin.py:269
+msgid "Display"
+msgstr "Отображение"
+
+#: .\features\booking\admin.py:265
+#: .\features\booking\models\master_portfolio.py:60
+msgid "Portfolio Item"
+msgstr "Элемент портфолио"
+
+#: .\features\booking\admin.py:273 .\features\booking\models\client.py:39
+#: .\templates\team\team.html:44
+msgid "Instagram"
+msgstr "Instagram"
+
+#: .\features\booking\models\appointment.py:23
+#: .\features\booking\models\master.py:146
+#: .\features\booking\models\master_certificate.py:17
+#: .\features\booking\models\master_portfolio.py:19
+msgid "Master"
+msgstr "Мастер"
+
+#: .\features\booking\models\appointment.py:26
+#: .\features\main\models\service.py:65 .\features\main\models\service.py:85
+msgid "Service"
+msgstr "Услуга"
+
+#: .\features\booking\models\appointment.py:31
+msgid "Start Date & Time"
+msgstr "Дата и время начала"
+
+#: .\features\booking\models\appointment.py:31
+msgid "Appointment start time"
+msgstr "Время начала записи"
+
+#: .\features\booking\models\appointment.py:35
+msgid "Duration (minutes)"
+msgstr "Длительность (мин)"
+
+#: .\features\booking\models\appointment.py:35
+msgid "Service duration (auto-filled from Service model)"
+msgstr "Длительность услуги (автоматически из модели услуги)"
+
+#: .\features\booking\models\appointment.py:42
+#: .\features\main\models\service.py:28
+msgid "Price (€)"
+msgstr "Цена (€)"
+
+#: .\features\booking\models\appointment.py:43
+msgid "Price at booking time (snapshot)"
+msgstr "Цена на момент бронирования (снимок)"
+
+#: .\features\booking\models\appointment.py:54
+msgid "Pending Confirmation"
+msgstr "Ожидает подтверждения"
+
+#: .\features\booking\models\appointment.py:55
+msgid "Confirmed"
+msgstr "Подтверждено"
+
+#: .\features\booking\models\appointment.py:56
+msgid "Completed"
+msgstr "Завершено"
+
+#: .\features\booking\models\appointment.py:57
+msgid "Cancelled"
+msgstr "Отменено"
+
+#: .\features\booking\models\appointment.py:58
+msgid "No Show"
+msgstr "Не явился"
+
+#: .\features\booking\models\appointment.py:72
+msgid "Website"
+msgstr "Веб-сайт"
+
+#: .\features\booking\models\appointment.py:73
+msgid "Telegram Bot"
+msgstr "Telegram-бот"
+
+#: .\features\booking\models\appointment.py:74
+#: .\features\system\models\site_settings.py:18
+msgid "Phone"
+msgstr "Телефон"
+
+#: .\features\booking\models\appointment.py:75
+msgid "Admin Panel"
+msgstr "Админ-панель"
+
+#: .\features\booking\models\appointment.py:82
+msgid "Booking Source"
+msgstr "Источник бронирования"
+
+#: .\features\booking\models\appointment.py:83
+msgid "Where this appointment was created"
+msgstr "Где была создана эта запись"
+
+#: .\features\booking\models\appointment.py:87
+msgid "Cancelled At"
+msgstr "Отменено в"
+
+#: .\features\booking\models\appointment.py:95
+msgid "Cancelled by Client"
+msgstr "Отменено клиентом"
+
+#: .\features\booking\models\appointment.py:96
+msgid "Cancelled by Master"
+msgstr "Отменено мастером"
+
+#: .\features\booking\models\appointment.py:97
+msgid "Rescheduled"
+msgstr "Перенесено"
+
+#: .\features\booking\models\appointment.py:98
+#: .\features\main\models\contact_request.py:20
+msgid "Other"
+msgstr "Другое"
+
+#: .\features\booking\models\appointment.py:102
+msgid "Cancellation Reason"
+msgstr "Причина отмены"
+
+#: .\features\booking\models\appointment.py:106
+msgid "Cancellation Note"
+msgstr "Заметка об отмене"
+
+#: .\features\booking\models\appointment.py:106
+msgid "Additional details about cancellation"
+msgstr "Дополнительные детали об отмене"
+
+#: .\features\booking\models\appointment.py:112
+msgid "Client Notes"
+msgstr "Заметки клиента"
+
+#: .\features\booking\models\appointment.py:113
+msgid "Special requests from client (e.g. allergies, preferences)"
+msgstr "Особые пожелания клиента (например, аллергии, предпочтения)"
+
+#: .\features\booking\models\appointment.py:118
+#: .\features\main\models\contact_request.py:31
+msgid "Admin Notes"
+msgstr "Административные заметки"
+
+#: .\features\booking\models\appointment.py:118
+msgid "Internal notes (not visible to client)"
+msgstr "Внутренние заметки (не видны клиенту)"
+
+#: .\features\booking\models\appointment.py:123
+msgid "Reminder Sent"
+msgstr "Напоминание отправлено"
+
+#: .\features\booking\models\appointment.py:123
+msgid "SMS/Email reminder was sent"
+msgstr "СМС/Email напоминание было отправлено"
+
+#: .\features\booking\models\appointment.py:126
+msgid "Reminder Sent At"
+msgstr "Напоминание отправлено в"
+
+#: .\features\booking\models\appointment.py:129
+msgid "Appointment"
+msgstr "Запись"
+
+#: .\features\booking\models\appointment.py:130
+msgid "Appointments"
+msgstr "Записи"
+
+#: .\features\booking\models\appointment.py:160
+msgid "This time slot is already booked."
+msgstr "Этот временной слот уже занят."
+
+#: .\features\booking\models\appointment.py:194
+msgid "This appointment cannot be cancelled."
+msgstr "Эта запись не может быть отменена."
+
+#: .\features\booking\models\appointment.py:205
+msgid "Only confirmed appointments can be marked as completed."
+msgstr "Только подтверждённые записи могут быть отмечены как завершённые."
+
+#: .\features\booking\models\client.py:24
+msgid "Phone Number"
+msgstr "Номер телефона"
+
+#: .\features\booking\models\client.py:25
+msgid "Primary contact method"
+msgstr "Основной способ связи"
+
+#: .\features\booking\models\client.py:30
+#: .\features\system\models\site_settings.py:19
+msgid "Email"
+msgstr "Email"
+
+#: .\features\booking\models\client.py:31
+msgid "Email for notifications and account activation"
+msgstr "Email для уведомлений и активации аккаунта"
+
+#: .\features\booking\models\client.py:34
+msgid "First Name"
+msgstr "Имя"
+
+#: .\features\booking\models\client.py:35
+msgid "Last Name"
+msgstr "Фамилия"
+
+#: .\features\booking\models\client.py:39
+#: .\features\booking\models\client.py:41
+msgid "Username or link"
+msgstr "Имя пользователя или ссылка"
+
+#: .\features\booking\models\client.py:41
+msgid "Telegram"
+msgstr "Telegram"
+
+#: .\features\booking\models\client.py:50
+#: .\features\booking\models\master.py:118
+msgid "Django User Account"
+msgstr "Аккаунт пользователя Django"
+
+#: .\features\booking\models\client.py:51
+msgid "Linked when client activates account"
+msgstr "Связывается когда клиент активирует аккаунт"
+
+#: .\features\booking\models\client.py:60
+msgid "Access Token"
+msgstr "Токен доступа"
+
+#: .\features\booking\models\client.py:61
+msgid "Used in SMS/Email links for appointment management"
+msgstr "Используется в SMS/Email ссылках для управления записями"
+
+#: .\features\booking\models\client.py:70
+msgid "Guest (Temporary)"
+msgstr "Гость (временный)"
+
+#: .\features\booking\models\client.py:71
+msgid "Active (Registered)"
+msgstr "Активный (зарегистрированный)"
+
+#: .\features\booking\models\client.py:72
+msgid "Blocked"
+msgstr "Заблокирован"
+
+#: .\features\booking\models\client.py:82
+msgid "Marketing Consent"
+msgstr "Согласие на маркетинг"
+
+#: .\features\booking\models\client.py:83
+msgid "Client agreed to receive promotional materials"
+msgstr "Клиент согласился получать рекламные материалы"
+
+#: .\features\booking\models\client.py:85
+msgid "Consent Given Date"
+msgstr "Дата согласия"
+
+#: .\features\booking\models\client.py:89
+msgid "Internal Notes"
+msgstr "Внутренние заметки"
+
+#: .\features\booking\models\client.py:89
+msgid "Admin-only notes about the client"
+msgstr "Заметки только для администратора о клиенте"
+
+#: .\features\booking\models\client.py:94
+msgid "Clients"
+msgstr "Клиенты"
+
+#: .\features\booking\models\client.py:122
+msgid "Guest"
+msgstr "Гость"
+
+#: .\features\booking\models\master.py:23
+msgid "Full Name"
+msgstr "Полное имя"
+
+#: .\features\booking\models\master.py:23
+msgid "Master's full name (e.g. 'Maria Ivanova')"
+msgstr "Полное имя мастера (например, 'Мария Иванова')"
+
+#: .\features\booking\models\master.py:26 .\features\main\models\category.py:23
+#: .\features\main\models\service.py:24
+msgid "Slug"
+msgstr "Slug"
+
+#: .\features\booking\models\master.py:26
+msgid "URL part (e.g. 'maria-ivanova')"
+msgstr "Часть URL (например, 'maria-ivanova')"
+
+#: .\features\booking\models\master.py:32
+msgid "Profile Photo"
+msgstr "Фото профиля"
+
+#: .\features\booking\models\master.py:33
+msgid "Professional portrait (recommended: 800x1000px)"
+msgstr "Профессиональное портретное фото (рекомендуется: 800x1000px)"
+
+#: .\features\booking\models\master.py:40
+msgid "Professional Title"
+msgstr "Профессиональное звание"
+
+#: .\features\booking\models\master.py:41
+msgid "e.g. 'Top Colorist', 'Lead Nail Artist'"
+msgstr "например, 'Топ-колорист', 'Ведущий мастер маникюра'"
+
+#: .\features\booking\models\master.py:45
+msgid "Biography"
+msgstr "Биография"
+
+#: .\features\booking\models\master.py:45
+msgid "Full biography and work philosophy (HTML allowed)"
+msgstr "Полная биография и философия работы (HTML разрешён)"
+
+#: .\features\booking\models\master.py:51 .\features\main\models\category.py:37
+#: .\features\main\models\service.py:45
+msgid "Short Description"
+msgstr "Краткое описание"
+
+#: .\features\booking\models\master.py:52
+msgid "Brief intro for Team page (1-2 sentences)"
+msgstr "Краткое представление для страницы Команда (1-2 предложения)"
+
+#: .\features\booking\models\master.py:60 .\features\main\models\category.py:57
+msgid "Categories"
+msgstr "Категории"
+
+#: .\features\booking\models\master.py:61
+msgid "High-level categories for filtering"
+msgstr "Категории верхнего уровня для фильтрации"
+
+#: .\features\booking\models\master.py:65
+msgid "Years of Experience"
+msgstr "Лет опыта"
+
+#: .\features\booking\models\master.py:71
+msgid "Instagram Handle"
+msgstr "Имя пользователя Instagram"
+
+#: .\features\booking\models\master.py:72
+msgid "Username only (e.g. 'maria.beauty')"
+msgstr "Только имя пользователя (например, 'maria.beauty')"
+
+#: .\features\booking\models\master.py:75
+msgid "Direct Phone"
+msgstr "Прямой телефон"
+
+#: .\features\booking\models\master.py:84
+msgid "Active (Working)"
+msgstr "Активный (работает)"
+
+#: .\features\booking\models\master.py:85
+msgid "On Vacation"
+msgstr "В отпуске"
+
+#: .\features\booking\models\master.py:86
+msgid "Fired/Left"
+msgstr "Уволен/ушёл"
+
+#: .\features\booking\models\master.py:87
+msgid "In Training"
+msgstr "На обучении"
+
+#: .\features\booking\models\master.py:95
+msgid "Employment Status"
+msgstr "Статус занятости"
+
+#: .\features\booking\models\master.py:96
+msgid "We never delete masters, only change status"
+msgstr "Мы никогда не удаляем мастеров, только меняем статус"
+
+#: .\features\booking\models\master.py:101
+msgid "Is Owner"
+msgstr "Владелец"
+
+#: .\features\booking\models\master.py:101
+msgid "Display as salon owner with special styling"
+msgstr "Отображать как владельца салона со специальным стилем"
+
+#: .\features\booking\models\master.py:104
+msgid "Featured Master"
+msgstr "Избранный мастер"
+
+#: .\features\booking\models\master.py:108
+#: .\features\booking\models\master_certificate.py:39
+#: .\features\booking\models\master_portfolio.py:49
+msgid "Display Order"
+msgstr "Порядок отображения"
+
+#: .\features\booking\models\master.py:108
+#: .\features\booking\models\master_certificate.py:39
+#: .\features\booking\models\master_portfolio.py:49
+msgid "Lower numbers appear first"
+msgstr "Меньшие числа отображаются первыми"
+
+#: .\features\booking\models\master.py:119
+msgid "Linked when master needs personal cabinet access"
+msgstr "Связывается когда мастеру нужен доступ в личный кабинет"
+
+#: .\features\booking\models\master.py:128
+msgid "Telegram ID"
+msgstr "Telegram ID"
+
+#: .\features\booking\models\master.py:129
+msgid "For 02_telegram_bot authentication and notifications"
+msgstr "Для аутентификации бота и уведомлений"
+
+#: .\features\booking\models\master.py:132
+msgid "Telegram Username"
+msgstr "Имя пользователя Telegram"
+
+#: .\features\booking\models\master.py:138
+msgid "Bot Access Code"
+msgstr "Код доступа к боту"
+
+#: .\features\booking\models\master.py:139
+msgid "One-time code for master registration in 02_telegram_bot"
+msgstr "Одноразовый код для регистрации мастера в боте"
+
+#: .\features\booking\models\master.py:143
+msgid "QR Token"
+msgstr "QR токен"
+
+#: .\features\booking\models\master.py:147
+msgid "Masters"
+msgstr "Мастера"
+
+#: .\features\booking\models\master_certificate.py:21
+msgid "Certificate Title"
+msgstr "Название сертификата"
+
+#: .\features\booking\models\master_certificate.py:21
+msgid "e.g. 'Advanced Nail Art Course'"
+msgstr "например, 'Продвинутый курс дизайна ногтей'"
+
+#: .\features\booking\models\master_certificate.py:25
+msgid "Issuing Organization"
+msgstr "Организация-эмитент"
+
+#: .\features\booking\models\master_certificate.py:25
+msgid "e.g. 'German Beauty Academy'"
+msgstr "например, 'Немецкая Академия Красоты'"
+
+#: .\features\booking\models\master_certificate.py:28
+msgid "Issue Date"
+msgstr "Дата выдачи"
+
+#: .\features\booking\models\master_certificate.py:33
+msgid "Certificate Image"
+msgstr "Изображение сертификата"
+
+#: .\features\booking\models\master_certificate.py:34
+msgid "Scan or photo of certificate (recommended: 1200x900px)"
+msgstr "Скан или фото сертификата (рекомендуется: 1200x900px)"
+
+#: .\features\booking\models\master_certificate.py:42
+#: .\features\booking\models\master_portfolio.py:52 .\features\main\admin.py:60
+#: .\features\main\admin.py:149 .\features\system\models\mixins.py:35
+msgid "Active"
+msgstr "Активно"
+
+#: .\features\booking\models\master_certificate.py:42
+#: .\features\booking\models\master_portfolio.py:52
+msgid "Show on master page"
+msgstr "Показывать на странице мастера"
+
+#: .\features\booking\models\master_certificate.py:45
+msgid "Master Certificate"
+msgstr "Сертификат мастера"
+
+#: .\features\booking\models\master_certificate.py:46
+msgid "Master Certificates"
+msgstr "Сертификаты мастера"
+
+#: .\features\booking\models\master_portfolio.py:25
+#: .\features\main\models\service.py:101
+msgid "Portfolio Image"
+msgstr "Изображение портфолио"
+
+#: .\features\booking\models\master_portfolio.py:26
+msgid "Example of master's work (recommended: 1200x1200px)"
+msgstr "Пример работы мастера (рекомендуется: 1200x1200px)"
+
+#: .\features\booking\models\master_portfolio.py:32
+#: .\features\main\admin.py:118 .\features\system\admin.py:51
+msgid "Description"
+msgstr "Описание"
+
+#: .\features\booking\models\master_portfolio.py:33
+msgid "Brief description of the work (technique, products used, etc.)"
+msgstr "Краткое описание работы (техника, использованные продукты и т.д.)"
+
+#: .\features\booking\models\master_portfolio.py:43
+msgid "Related Service"
+msgstr "Связанная услуга"
+
+#: .\features\booking\models\master_portfolio.py:44
+msgid "Link to service this example demonstrates"
+msgstr "Ссылка на услугу, которую демонстрирует этот пример"
+
+#: .\features\booking\models\master_portfolio.py:56
+msgid "Instagram Post URL"
+msgstr "URL поста в Instagram"
+
+#: .\features\booking\models\master_portfolio.py:56
+msgid "Link to original Instagram post"
+msgstr "Ссылка на оригинальный пост в Instagram"
+
+#: .\features\booking\models\master_portfolio.py:61
+msgid "Portfolio Items"
+msgstr "Элементы портфолио"
+
+#: .\features\booking\models\master_portfolio.py:65
+msgid "General work"
+msgstr "Общие работы"
+
+#: .\features\booking\selectors\wizard.py:143
+#: .\templates\booking\includes\summary_card.html:14
+#: .\templates\services\detail.html:5
+msgid "Leistung"
+msgstr "Услуга"
+
+#: .\features\booking\selectors\wizard.py:144
+msgid "Experte"
+msgstr "Эксперт"
+
+#: .\features\booking\selectors\wizard.py:145
+msgid "Termin"
+msgstr "Запись"
+
+#: .\features\booking\selectors\wizard.py:146
+msgid "Bestätigung"
+msgstr "Подтверждение"
+
+#: .\features\main\admin.py:41
+msgid "Status & Display"
+msgstr "Статус и отображение"
+
+#: .\features\main\admin.py:45
+msgid "Content"
+msgstr "Контент"
+
+#: .\features\main\admin.py:64 .\features\main\admin.py:140
+msgid "Hidden"
+msgstr "Скрыто"
+
+#: .\features\main\admin.py:67 .\features\main\admin.py:162
+msgid "Planned"
+msgstr "Запланировано"
+
+#: .\features\main\admin.py:73
+msgid "Coming Soon"
+msgstr "Скоро"
+
+#: .\features\main\admin.py:77 .\features\main\models\service.py:66
+msgid "Services"
+msgstr "Услуги"
+
+#: .\features\main\admin.py:81
+msgid "services"
+msgstr "услуги"
+
+#: .\features\main\admin.py:110
+msgid "Relation"
+msgstr "Связь"
+
+#: .\features\main\admin.py:114
+msgid "Service Info"
+msgstr "Информация об услуге"
+
+#: .\features\main\admin.py:129
+msgid "Price"
+msgstr "Цена"
+
+#: .\features\main\admin.py:145
+msgid "Unavailable"
+msgstr "Недоступно"
+
+#: .\features\main\admin.py:152
+msgid "Hit"
+msgstr "Хит"
+
+#: .\features\main\admin.py:158
+msgid "HIT"
+msgstr "ХИТ"
+
+#: .\features\main\admin.py:168
+msgid "Soon"
+msgstr "Скоро"
+
+#: .\features\main\admin.py:172
+msgid "✓ Mark as HIT"
+msgstr "✓ Отметить как ХИТ"
+
+#: .\features\main\admin.py:177
+msgid "✗ Remove HIT"
+msgstr "✗ Убрать ХИТ"
+
+#: .\features\main\admin.py:182
+msgid "✓ Mark as Available"
+msgstr "✓ Отметить как доступно"
+
+#: .\features\main\admin.py:187
+msgid "⚠ Mark as Unavailable"
+msgstr "⚠ Отметить как недоступно"
+
+#: .\features\main\admin.py:204 .\features\main\models\category.py:33
+#: .\features\main\models\service.py:56 .\features\main\models\service.py:88
+msgid "Image"
+msgstr "Изображение"
+
+#: .\features\main\admin.py:209
+msgid "Preview"
+msgstr "Предпросмотр"
+
+#: .\features\main\forms.py:11
+msgid "Telefon / WhatsApp"
+msgstr "Телефон / WhatsApp"
+
+#: .\features\main\forms.py:12
+#: .\templates\booking\steps\step_4_confirm_mock.html:42
+#: .\templates\contacts\contacts.html:71
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: .\features\main\forms.py:16 .\features\main\forms.py:21
+#: .\templates\booking\steps\step_4_confirm_mock.html:24
+msgid "Vorname"
+msgstr "Имя"
+
+#: .\features\main\forms.py:28 .\features\main\forms.py:33
+#: .\templates\booking\steps\step_4_confirm_mock.html:30
+msgid "Nachname"
+msgstr "Фамилия"
+
+#: .\features\main\forms.py:40
+msgid "Kontaktart"
+msgstr "Тип контакта"
+
+#: .\features\main\forms.py:44 .\templates\contacts\partials\form.html:44
+#: .\templates\includes\_header.html:30 .\templates\includes\_header.html:66
+msgid "Kontakt"
+msgstr "Контакты"
+
+#: .\features\main\forms.py:48
+msgid "Nummer oder E-Mail"
+msgstr "Номер или Email"
+
+#: .\features\main\forms.py:55
+msgid "Thema"
+msgstr "Тема"
+
+#: .\features\main\forms.py:59
+msgid "Nachricht"
+msgstr "Сообщение"
+
+#: .\features\main\forms.py:60
+msgid "Ihre Nachricht..."
+msgstr "Ваше сообщение..."
+
+#: .\features\main\forms.py:65
+msgid "Ich möchte über Neuigkeiten und Angebote informiert werden."
+msgstr "Я хочу получать новости и предложения."
+
+#: .\features\main\forms.py:80
+msgid "Bitte geben Sie eine gültige E-Mail-Adresse ein."
+msgstr "Пожалуйста, введите действительный адрес электронной почты."
+
+#: .\features\main\models\category.py:14
+msgid "Friseur & Styling"
+msgstr "Парикмахерские услуги"
+
+#: .\features\main\models\category.py:15 .\templates\includes\_footer.html:45
+msgid "Nagelservice"
+msgstr "Ногтевой сервис"
+
+#: .\features\main\models\category.py:16
+msgid "Kosmetologie"
+msgstr "Косметология"
+
+#: .\features\main\models\category.py:17
+msgid "Brows & Lashes"
+msgstr "Брови и Ресницы"
+
+#: .\features\main\models\category.py:18
+msgid "Massage & Relax"
+msgstr "Массаж и Релакс"
+
+#: .\features\main\models\category.py:19
+msgid "Depilation"
+msgstr "Депиляция"
+
+#: .\features\main\models\category.py:22 .\features\main\models\service.py:22
+msgid "Title"
+msgstr "Название"
+
+#: .\features\main\models\category.py:22
+msgid "Category name (e.g. 'Maniküre')."
+msgstr "Название категории (например, 'Маникюр')."
+
+#: .\features\main\models\category.py:23
+msgid "URL part (e.g. 'manicure')."
+msgstr "Часть URL (например, 'manicure')."
+
+#: .\features\main\models\category.py:28
+msgid "Bento Group"
+msgstr "Группа Bento"
+
+#: .\features\main\models\category.py:29
+msgid ""
+"Group for the main page grid (e.g. 'Nails' combines Manicure & Pedicure)."
+msgstr ""
+"Группа для сетки главной страницы (например, 'Nails' объединяет Маникюр и "
+"Педикюр)."
+
+#: .\features\main\models\category.py:34
+msgid "Background image for Hero section and Bento card."
+msgstr "Фоновое изображение для секции Hero и карточки Bento."
+
+#: .\features\main\models\category.py:37
+msgid "Short description displayed in the Hero section."
+msgstr "Краткое описание, отображаемое в секции Hero."
+
+#: .\features\main\models\category.py:41
+msgid "SEO Text / Content"
+msgstr "SEO Текст / Контент"
+
+#: .\features\main\models\category.py:42
+msgid "Detailed text displayed at the bottom of the category page."
+msgstr "Подробный текст, отображаемый внизу страницы категории."
+
+#: .\features\main\models\category.py:48
+msgid "Icon"
+msgstr "Иконка"
+
+#: .\features\main\models\category.py:49
+msgid "SVG icon for menu or footer (optional)."
+msgstr "SVG иконка для меню или футера (опционально)."
+
+#: .\features\main\models\category.py:52 .\features\main\models\service.py:62
+#: .\features\main\models\service.py:97
+msgid "Order"
+msgstr "Порядок"
+
+#: .\features\main\models\category.py:52
+msgid "Sorting order (lower numbers come first)."
+msgstr "Порядок сортировки (меньшие числа идут первыми)."
+
+#: .\features\main\models\category.py:56 .\features\main\models\service.py:18
+msgid "Category"
+msgstr "Категория"
+
+#: .\features\main\models\contact_request.py:17
+msgid "General Question"
+msgstr "Общий вопрос"
+
+#: .\features\main\models\contact_request.py:18
+msgid "Booking Inquiry"
+msgstr "Запрос на бронирование"
+
+#: .\features\main\models\contact_request.py:19
+msgid "Job / Career"
+msgstr "Работа / Карьера"
+
+#: .\features\main\models\contact_request.py:27
+msgid "Topic"
+msgstr "Тема"
+
+#: .\features\main\models\contact_request.py:28
+msgid "Message"
+msgstr "Сообщение"
+
+#: .\features\main\models\contact_request.py:30
+msgid "Processed"
+msgstr "Обработано"
+
+#: .\features\main\models\contact_request.py:34
+msgid "Contact Request"
+msgstr "Запрос на контакт"
+
+#: .\features\main\models\contact_request.py:35
+msgid "Contact Requests"
+msgstr "Запросы на контакт"
+
+#: .\features\main\models\service.py:19
+msgid "Main category (for filtering)."
+msgstr "Основная категория (для фильтрации)."
+
+#: .\features\main\models\service.py:22
+msgid "Service name (e.g. 'Klassische Maniküre')."
+msgstr "Название услуги (например, 'Классический маникюр')."
+
+#: .\features\main\models\service.py:24
+msgid "URL part (e.g. 'classic-manicure')."
+msgstr "Часть URL (например, 'classic-manicure')."
+
+#: .\features\main\models\service.py:29
+msgid "Base price for sorting and calculation."
+msgstr "Базовая цена для сортировки и расчетов."
+
+#: .\features\main\models\service.py:34
+msgid "Price Display Text"
+msgstr "Отображаемый текст цены"
+
+#: .\features\main\models\service.py:35
+msgid "Text to display (e.g. 'ab 30€'). If empty, uses Price field."
+msgstr ""
+"Текст для отображения (например, 'от 30€'). Если пусто, используется поле "
+"Цена."
+
+#: .\features\main\models\service.py:37
+msgid "Duration (min)"
+msgstr "Длительность (мин)"
+
+#: .\features\main\models\service.py:37
+msgid "Duration in minutes."
+msgstr "Длительность в минутах."
+
+#: .\features\main\models\service.py:41
+msgid "Duration Display Text"
+msgstr "Текст для отображения длительности"
+
+#: .\features\main\models\service.py:42
+msgid "Text to display (e.g. 'ca. 45-60 Min'). If empty, uses Duration field."
+msgstr ""
+"Текст для отображения (например, 'ок. 45-60 мин'). Если пусто, используется "
+"поле Длительность."
+
+#: .\features\main\models\service.py:45
+msgid "Displayed in the list view."
+msgstr "Отображается в списке."
+
+#: .\features\main\models\service.py:49
+msgid "Full Content"
+msgstr "Полный контент"
+
+#: .\features\main\models\service.py:50
+msgid "Detailed description/article about the service (HTML/Markdown)."
+msgstr "Подробное описание/статья об услуге (HTML/Markdown)."
+
+#: .\features\main\models\service.py:57
+msgid "Photo of the specific service."
+msgstr "Фото конкретной услуги."
+
+#: .\features\main\models\service.py:60
+msgid "Hit / Popular"
+msgstr "Хит / Популярное"
+
+#: .\features\main\models\service.py:60
+msgid "Highlight this service as popular."
+msgstr "Выделить эту услугу как популярную."
+
+#: .\features\main\models\service.py:62
+msgid "Sorting order."
+msgstr "Порядок сортировки."
+
+#: .\features\main\models\service.py:88
+msgid "High quality photo. Will be resized by CSS."
+msgstr "Фото высокого качества. Будет изменено через CSS."
+
+#: .\features\main\models\service.py:93
+msgid "Title / Description"
+msgstr "Заголовок / Описание"
+
+#: .\features\main\models\service.py:94
+msgid "Optional caption for the image."
+msgstr "Опциональная подпись к изображению."
+
+#: .\features\main\models\service.py:102
+msgid "Portfolio Images"
+msgstr "Изображения портфолио"
+
+#: .\features\system\admin.py:25
+msgid "Page Identification"
+msgstr "Идентификация страницы"
+
+#: .\features\system\admin.py:29
+msgid "SEO Meta Tags"
+msgstr "SEO мета-теги"
+
+#: .\features\system\admin.py:33
+msgid "Open Graph Image"
+msgstr "OG Изображение"
+
+#: .\features\system\admin.py:38 .\features\system\models\mixins.py:57
+msgid "SEO Title"
+msgstr "SEO Заголовок"
+
+#: .\features\system\admin.py:64
+msgid "No description"
+msgstr "Нет описания"
+
+#: .\features\system\admin.py:67 .\features\system\models\mixins.py:67
+msgid "OG Image"
+msgstr "OG Изображение"
+
+#: .\features\system\admin.py:73
+msgid "Yes"
+msgstr "Да"
+
+#: .\features\system\admin.py:77
+msgid "No"
+msgstr "Нет"
+
+#: .\features\system\admin.py:92
+msgid "General Information"
+msgstr "Общая информация"
+
+#: .\features\system\admin.py:96
+msgid "Contact Details"
+msgstr "Контактные данные"
+
+#: .\features\system\admin.py:108 .\features\system\admin.py:131
+msgid "Social Media"
+msgstr "Социальные сети"
+
+#: .\features\system\admin.py:112
+msgid "Working Hours"
+msgstr "Часы работы"
+
+#: .\features\system\models\mixins.py:18
+msgid "Created at"
+msgstr "Создано"
+
+#: .\features\system\models\mixins.py:19
+msgid "Updated at"
+msgstr "Обновлено"
+
+#: .\features\system\models\mixins.py:36
+msgid "If unchecked, this item will be completely hidden from the site."
+msgstr "Если не отмечено, этот элемент будет полностью скрыт с сайта."
+
+#: .\features\system\models\mixins.py:40
+msgid "Available for Booking"
+msgstr "Доступно для бронирования"
+
+#: .\features\system\models\mixins.py:41
+msgid "If unchecked, shows 'Temporarily Unavailable' (e.g. no masters)."
+msgstr ""
+"Если не отмечено, показывает 'Временно недоступно' (например, нет мастеров)."
+
+#: .\features\system\models\mixins.py:44
+msgid "Planned / Coming Soon"
+msgstr "Планируется / Скоро"
+
+#: .\features\system\models\mixins.py:44
+msgid "If checked, shows 'Coming Soon' badge."
+msgstr "Если отмечено, показывает значок 'Скоро'."
+
+#: .\features\system\models\mixins.py:58
+msgid "Browser tab title. Defaults to object title if empty."
+msgstr ""
+"Заголовок вкладки браузера. По умолчанию заголовок объекта, если пусто."
+
+#: .\features\system\models\mixins.py:61
+msgid "SEO Description"
+msgstr "SEO Описание"
+
+#: .\features\system\models\mixins.py:61
+msgid "Meta description for search engines."
+msgstr "Мета-описание для поисковых систем."
+
+#: .\features\system\models\mixins.py:68
+msgid "Image for social media sharing (1200x630px recommended)."
+msgstr "Изображение для соцсетей (рекомендуется 1200x630px)."
+
+#: .\features\system\models\seo.py:20
+msgid "Home Page"
+msgstr "Главная страница"
+
+#: .\features\system\models\seo.py:21
+msgid "Contacts Page"
+msgstr "Страница контактов"
+
+#: .\features\system\models\seo.py:22
+msgid "Team Page"
+msgstr "Страница команды"
+
+#: .\features\system\models\seo.py:23
+msgid "Services List Page"
+msgstr "Страница списка услуг"
+
+#: .\features\system\models\seo.py:24 .\templates\includes\_footer.html:63
+msgid "Impressum"
+msgstr "Импрессум"
+
+#: .\features\system\models\seo.py:25 .\templates\includes\_footer.html:65
+msgid "Datenschutz"
+msgstr "Политика конфиденциальности"
+
+#: .\features\system\models\seo.py:32
+msgid "Page Key"
+msgstr "Ключ страницы"
+
+#: .\features\system\models\seo.py:33
+msgid "Unique identifier for the static page."
+msgstr "Уникальный идентификатор для статической страницы."
+
+#: .\features\system\models\seo.py:37
+msgid "Static Page SEO"
+msgstr "SEO статической страницы"
+
+#: .\features\system\models\seo.py:38
+msgid "Static Pages SEO"
+msgstr "SEO статических страниц"
+
+#: .\features\system\models\site_settings.py:13
+msgid "Company Name"
+msgstr "Название компании"
+
+#: .\features\system\models\site_settings.py:14
+msgid "Owner Name"
+msgstr "Имя владельца"
+
+#: .\features\system\models\site_settings.py:15
+msgid "Tax Number (Steuernummer)"
+msgstr "Налоговый номер"
+
+#: .\features\system\models\site_settings.py:20
+msgid "Street"
+msgstr "Улица"
+
+#: .\features\system\models\site_settings.py:21
+msgid "City & ZIP"
+msgstr "Город и индекс"
+
+#: .\features\system\models\site_settings.py:22
+msgid "Google Maps Link"
+msgstr "Ссылка на Google Maps"
+
+#: .\features\system\models\site_settings.py:25
+msgid "Instagram URL"
+msgstr "Instagram URL"
+
+#: .\features\system\models\site_settings.py:26
+msgid "Telegram URL"
+msgstr "Telegram URL"
+
+#: .\features\system\models\site_settings.py:27
+msgid "WhatsApp URL"
+msgstr "WhatsApp URL"
+
+#: .\features\system\models\site_settings.py:30
+msgid "Mo-Fr (Display)"
+msgstr "Пн-Пт (Отображение)"
+
+#: .\features\system\models\site_settings.py:31
+msgid "Saturday (Display)"
+msgstr "Суббота (Отображение)"
+
+#: .\features\system\models\site_settings.py:32
+msgid "Sunday (Display)"
+msgstr "Воскресенье (Отображение)"
+
+#: .\features\system\models\site_settings.py:36
+msgid "Mo-Fr Start"
+msgstr "Пн-Пт Начало"
+
+#: .\features\system\models\site_settings.py:37
+msgid "Mo-Fr End"
+msgstr "Пн-Пт Конец"
+
+#: .\features\system\models\site_settings.py:40
+msgid "Saturday Start"
+msgstr "Суббота Начало"
+
+#: .\features\system\models\site_settings.py:41
+msgid "Saturday End"
+msgstr "Суббота Конец"
+
+#: .\features\system\models\site_settings.py:47
+msgid "Hiring Active"
+msgstr "Набор активен"
+
+#: .\features\system\models\site_settings.py:49
+msgid "Hiring Title"
+msgstr "Заголовок набора"
+
+#: .\features\system\models\site_settings.py:51
+msgid "Hiring Text"
+msgstr "Текст набора"
+
+#: .\features\system\models\site_settings.py:55
+#: .\features\system\models\site_settings.py:56
+msgid "Site Settings"
+msgstr "Настройки сайта"
+
+#: .\templates\400.html:5 .\templates\400.html:11
+msgid "Ungültige Anfrage"
+msgstr "Неверный запрос"
+
+#: .\templates\400.html:13
+msgid "Der Server konnte Ihre Anfrage nicht verarbeiten."
+msgstr "Сервер не смог обработать ваш запрос."
+
+#: .\templates\400.html:15 .\templates\403.html:15 .\templates\404.html:15
+#: .\templates\500.html:15
+msgid "Zur Startseite"
+msgstr "На главную"
+
+#: .\templates\403.html:5 .\templates\403.html:11
+msgid "Zugriff verweigert"
+msgstr "Доступ запрещен"
+
+#: .\templates\403.html:13
+msgid "Sie haben keine Berechtigung, diese Seite aufzurufen."
+msgstr "У вас нет прав для просмотра этой страницы."
+
+#: .\templates\404.html:5 .\templates\404.html:11
+msgid "Seite nicht gefunden"
+msgstr "Страница не найдена"
+
+#: .\templates\404.html:13
+msgid ""
+"Die von Ihnen gesuchte Seite existiert leider nicht oder wurde verschoben."
+msgstr "Запрашиваемая страница не существует или была перемещена."
+
+#: .\templates\500.html:5
+msgid "Serverfehler"
+msgstr "Ошибка сервера"
+
+#: .\templates\500.html:11
+msgid "Interner Serverfehler"
+msgstr "Внутренняя ошибка сервера"
+
+#: .\templates\500.html:13
+msgid "Es ist ein Fehler aufgetreten. Wir arbeiten bereits daran."
+msgstr "Произошла ошибка. Мы уже работаем над этим."
+
+#: .\templates\booking\includes\summary_card.html:3
+msgid "Ihr Termin"
+msgstr "Ваша запись"
+
+#: .\templates\booking\includes\summary_card.html:9
+msgid "Bitte wählen Sie zuerst eine Leistung aus."
+msgstr "Пожалуйста, выберите услугу сначала."
+
+
+#: .\templates\booking\includes\summary_card.html:38
+msgid "Zeit"
+msgstr "Время"
+
+#: .\templates\booking\includes\summary_card.html:49
+msgid "Gesamt"
+msgstr "Итого"
+
+#: .\templates\booking\steps\step_1_services_mock.html:4
+msgid "Wählen Sie eine Leistung"
+msgstr "Выберите услугу"
+
+#: .\templates\booking\steps\step_1_services_mock.html:52
+#: .\templates\booking\steps\step_2_masters_mock.html:30
+#: .\templates\booking\steps\step_2_masters_mock.html:48
+msgid "Auswählen"
+msgstr "Выбрать"
+
+#: .\templates\booking\steps\step_1_services_mock.html:58
+msgid "Keine Leistungen in dieser Kategorie gefunden."
+msgstr "Услуги в этой категории не найдены."
+
+#: .\templates\booking\steps\step_2_masters_mock.html:5
+msgid "Wählen Sie einen Experten"
+msgstr "Выберите эксперта"
+
+#: .\templates\booking\steps\step_2_masters_mock.html:11
+#: .\templates\booking\steps\step_3_calendar_mock.html:11
+#: .\templates\booking\steps\step_4_confirm_mock.html:11
+msgid "Zurück"
+msgstr "Назад"
+
+#: .\templates\booking\steps\step_2_masters_mock.html:23
+msgid "Beliebiger Experte"
+msgstr "Любой эксперт"
+
+#: .\templates\booking\steps\step_2_masters_mock.html:24
+msgid "Frühestmöglicher Termin"
+msgstr "Ближайшая запись"
+
+#: .\templates\booking\steps\step_2_masters_mock.html:53
+msgid "Leider sind für diese Leistung aktuell keine Experten verfügbar."
+msgstr "К сожалению, для этой услуги в настоящее время нет доступных экспертов."
+
+#: .\templates\booking\steps\step_3_calendar_mock.html:5
+msgid "Wählen Sie einen Termin"
+msgstr "Выберите дату и время"
+
+#: .\templates\booking\steps\step_3_calendar_mock.html:68
+msgid "Ausgewählt"
+msgstr "Выбрано"
+
+#: .\templates\booking\steps\step_3_calendar_mock.html:72
+msgid "Feiertag"
+msgstr "Праздник"
+
+#: .\templates\booking\steps\step_3_calendar_mock.html:80
+msgid "Verfügbare Zeit am"
+msgstr "Доступное время на"
+
+#: .\templates\booking\steps\step_3_calendar_mock.html:95
+msgid "Keine freien Termine an diesem Tag."
+msgstr "На этот день нет свободных записей."
+
+#: .\templates\booking\steps\step_3_calendar_mock.html:100
+msgid "Bitte wählen Sie ein Datum im Kalender."
+msgstr "Пожалуйста, выберите дату в календаре."
+
+#: .\templates\booking\steps\step_4_confirm_mock.html:5
+msgid "Ihre Daten"
+msgstr "Ваши данные"
+
+#: .\templates\booking\steps\step_4_confirm_mock.html:36
+msgid "Telefonnummer"
+msgstr "Номер телефона"
+
+#: .\templates\booking\steps\step_4_confirm_mock.html:48
+msgid "Anmerkungen (Optional)"
+msgstr "Примечания (необязательно)"
+
+#: .\templates\booking\steps\step_4_confirm_mock.html:53
+msgid "Bitte teilen Sie uns Ihre Wünsche, Besonderheiten oder Allergien mit..."
+msgstr "Пожалуйста, сообщите нам о ваших пожеланиях, особенностях или аллергиях..."
+
+#: .\templates\booking\steps\step_4_confirm_mock.html:65
+msgid "Bitte rufen Sie mich zur Bestätigung an"
+msgstr "Пожалуйста, позвоните мне для подтверждения"
+
+#: .\templates\booking\steps\step_4_confirm_mock.html:76
+msgid ""
+"Ich stimme zu, dass meine Daten gespeichert werden und ich "
+"Benachrichtigungen (SMS/E-Mail) zu meinem Termin erhalte."
+msgstr ""
+"Я согласен(на) на хранение моих данных и получение уведомлений (SMS/Email) о "
+"моей записи."
+
+#: .\templates\booking\steps\step_4_confirm_mock.html:84
+msgid "Termin verbindlich buchen"
+msgstr "Подтвердить запись"
+
+#: .\templates\booking\steps\step_5_success.html:7
+#: .\templates\contacts\partials\success_message.html:5
+msgid "Vielen Dank!"
+msgstr "Спасибо!"
+
+#: .\templates\booking\steps\step_5_success.html:11
+msgid ""
+"Ihr Termin wurde erfolgreich gebucht. Wir haben Ihnen eine Bestätigung per E-"
+"Mail gesendet."
+msgstr ""
+"Ваша запись успешно забронирована. Мы отправили вам подтверждение по "
+"электронной почте."
+
+#: .\templates\booking\steps\step_5_success.html:17
+msgid "bei"
+msgstr "в"
+
+#: .\templates\booking\steps\step_5_success.html:21
+msgid "Zurück zur Startseite"
+msgstr "Вернуться на главную"
+
+#: .\templates\booking\wizard.html:5 .\templates\home\home.html:16
+#: .\templates\services\detail.html:89
+msgid "Termin buchen"
+msgstr "Записаться"
+
+#: .\templates\booking\wizard.html:15
+msgid "Online Terminbuchung"
+msgstr "Онлайн-запись"
+
+#: .\templates\booking\wizard.html:16
+msgid "IN WENIGEN SCHRITTEN ZUM TERMIN"
+msgstr "ЗАПИСЬ В НЕСКОЛЬКО ШАГОВ"
+
+#: .\templates\contacts\contacts.html:12
+msgid "Kontaktieren Sie uns"
+msgstr "Свяжитесь с нами"
+
+#: .\templates\contacts\contacts.html:13
+msgid "ÜBER UNS & KONTAKT"
+msgstr "О НАС И КОНТАКТЫ"
+
+#: .\templates\contacts\contacts.html:25
+msgid "Willkommen bei LILY"
+msgstr "Добро пожаловать в LILY"
+
+#: .\templates\contacts\contacts.html:27
+msgid ""
+"LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellen "
+"Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern "
+"auch ein innerer Zustand des Selbstvertrauens."
+msgstr ""
+"Салон красоты LILY — это место, где немецкое качество встречается с "
+"индивидуальным подходом. Мы верим, что красота — это не только внешность, но "
+"и внутреннее состояние уверенности."
+
+#: .\templates\contacts\contacts.html:30
+msgid ""
+"Unsere Meister verwenden nur Premium-Materialien (Wella, L'Oreal, Luxio) und "
+"moderne Techniken, um Ihre natürliche Einzigartigkeit zu unterstreichen."
+msgstr ""
+"Наши мастера используют только премиальные материалы (Wella, L'Oreal, Luxio) "
+"и современные техники, чтобы подчеркнуть вашу природную уникальность."
+
+#: .\templates\contacts\contacts.html:33
+msgid "Ihre Schönheit ist unsere Kunst."
+msgstr "Ваша красота — наше искусство."
+
+#: .\templates\contacts\contacts.html:54
+msgid "Unsere Adresse"
+msgstr "Наш адрес"
+
+#: .\templates\contacts\contacts.html:64
+msgid "Telefon"
+msgstr "Телефон"
+
+#: .\templates\contacts\contacts.html:78
+msgid "Öffnungszeiten"
+msgstr "Часы работы"
+
+#: .\templates\contacts\contacts.html:103
+msgid "Route planen"
+msgstr "Проложить маршрут"
+
+#: .\templates\contacts\partials\form.html:97
+msgid "Absenden"
+msgstr "Отправить"
+
+#: .\templates\contacts\partials\success_message.html:6
+msgid ""
+"Ihre Nachricht wurde gesendet. Wir werden uns in Kürze bei Ihnen melden."
+msgstr "Ваше сообщение отправлено. Мы свяжемся с вами в ближайшее время."
+
+#: .\templates\home\home.html:13
+msgid "Premium Beauty Salon"
+msgstr "Премиум Салон Красоты"
+
+#: .\templates\home\home.html:14
+msgid "Die Kunst"
+msgstr "Искусство"
+
+#: .\templates\home\home.html:14
+msgid "Ihrer Schönheit"
+msgstr "Вашей Красоты"
+
+#: .\templates\home\home.html:15
+msgid ""
+"Deutsche Qualitätsstandards treffen auf ukrainische Servicekunst. Wir "
+"kreieren Looks, die inspirieren."
+msgstr ""
+"Немецкие стандарты качества встречаются с украинским искусством сервиса. Мы "
+"создаем образы, которые вдохновляют."
+
+#: .\templates\home\home.html:29
+msgid "Unsere Leistungen"
+msgstr "Наши услуги"
+
+#: .\templates\home\home.html:30
+msgid "Wählen Sie eine Richtung"
+msgstr "Выберите направление"
+
+#: .\templates\home\home.html:44
+msgid "Demnächst"
+msgstr "Скоро"
+
+#: .\templates\includes\_footer.html:16 .\templates\includes\_footer.html:17
+msgid "Kontakt & Leistungen öffnen"
+msgstr "Открыть Контакты и Услуги"
+
+#: .\templates\includes\_footer.html:16
+msgid "Schließen"
+msgstr "Закрыть"
+
+#: .\templates\includes\_footer.html:36
+msgid "Frisuren & Haarpflege"
+msgstr "Прически и Уход за волосами"
+
+#: .\templates\includes\_footer.html:38
+msgid "Haarschnitte"
+msgstr "Стрижки"
+
+#: .\templates\includes\_footer.html:39
+msgid "Färben"
+msgstr "Окрашивание"
+
+#: .\templates\includes\_footer.html:40
+msgid "Haarbehandlung"
+msgstr "Лечение волос"
+
+#: .\templates\includes\_footer.html:41
+msgid "Styling"
+msgstr "Укладка"
+
+#: .\templates\includes\_footer.html:47
+msgid "Maniküre"
+msgstr "Маникюр"
+
+#: .\templates\includes\_footer.html:48
+msgid "Pediküre"
+msgstr "Педикюр"
+
+#: .\templates\includes\_footer.html:49
+msgid "Verlängerung"
+msgstr "Наращивание"
+
+#: .\templates\includes\_footer.html:53
+msgid "Schönheit & Pflege"
+msgstr "Красота и Уход"
+
+#: .\templates\includes\_footer.html:55
+msgid "Epilation"
+msgstr "Эпиляция"
+
+#: .\templates\includes\_footer.html:56
+msgid "Wimpernverlängerung"
+msgstr "Наращивание ресниц"
+
+#: .\templates\includes\_footer.html:57
+msgid "Laminierung"
+msgstr "Ламинирование"
+
+#: .\templates\includes\_header.html:27 .\templates\includes\_header.html:63
+msgid "Startseite"
+msgstr "Главная"
+
+#: .\templates\includes\_header.html:28 .\templates\includes\_header.html:64
+msgid "Leistungen"
+msgstr "Услуги"
+
+#: .\templates\includes\_header.html:29 .\templates\includes\_header.html:65
+msgid "Team"
+msgstr "Команда"
+
+#: .\templates\services\detail.html:13
+msgid "LILY BEAUTY SALON"
+msgstr "LILY BEAUTY SALON"
+
+#: .\templates\services\detail.html:33
+msgid "Preise"
+msgstr "Цены"
+
+#: .\templates\services\detail.html:64
+msgid "Keine Dienstleistungen gefunden."
+msgstr "Услуги не найдены."
+
+#: .\templates\services\detail.html:73
+msgid "Ihre Experten"
+msgstr "Ваши эксперты"
+
+#: .\templates\services\services.html:11
+msgid "Preisliste"
+msgstr "Прайс-лист"
+
+#: .\templates\services\services.html:12
+msgid "AKTUELLE PREISE"
+msgstr "АКТУАЛЬНЫЕ ЦЕНЫ"
+
+#: .\templates\services\services.html:63
+msgid "Mehr über"
+msgstr "Подробнее о"
+
+#: .\templates\team\team.html:12
+msgid "Unser Team"
+msgstr "Наша команда"
+
+#: .\templates\team\team.html:13
+msgid "SCHÖNHEITSEXPERTEN"
+msgstr "ЭКСПЕРТЫ КРАСОТЫ"
+
+#: .\templates\team\team.html:55
+msgid "Unsere Meister"
+msgstr "Наши мастера"
+
+#: .\templates\team\team.html:85
+msgid "Bewerben"
+msgstr "Подать заявку"

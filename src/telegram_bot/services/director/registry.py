@@ -10,6 +10,7 @@ from aiogram.fsm.state import State
 
 class SceneConfig(NamedTuple):
     """Конфигурация сцены: FSM стейт + entry-point сервис."""
+
     fsm_state: State
     entry_service: str  # Ключ в RENDER_ROUTES[feature] для entry point
 

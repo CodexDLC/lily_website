@@ -1,7 +1,7 @@
 -- ═══════════════════════════════════════════
 -- Initialize PostgreSQL schemas for multi-backend isolation.
 --
--- Run this ONCE on a new database before running migrations.
+-- Run this ONCE on a new infrastructure before running migrations.
 -- Each backend uses its own schema to avoid table name conflicts.
 -- This is especially useful with shared DBs like Neon.
 --

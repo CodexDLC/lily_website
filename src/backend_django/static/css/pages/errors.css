@@ -1,0 +1,33 @@
+/* =========================================
+   ERROR PAGES (400, 403, 404, 500)
+   ========================================= */
+
+.error-page-container {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.error-code-large {
+    font-size: 80px;
+    color: var(--color-gold);
+}
+
+.error-subtitle {
+    color: white;
+    margin-bottom: 20px;
+}
+
+.error-message {
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 40px;
+}
+
+/* Legal Pages */
+.legal-content {
+    color: white;
+    max-width: 800px;
+    margin: 0 auto;
+}

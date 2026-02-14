@@ -1,0 +1,101 @@
+/* =========================================
+   TABLET (768px - 1023px)
+   @media (min-width: 768px) and (max-width: 1023px)
+   ========================================= */
+
+/* Layout */
+.site-wrapper {
+    max-width: 100%;
+    box-shadow: none;
+}
+
+.container {
+    padding: 0 15px;
+}
+
+/* Header - Show burger on tablets */
+.nav-desktop {
+    display: none;
+}
+
+.burger-btn {
+    display: flex;
+    margin-left: auto;
+}
+
+.header-row {
+    height: auto;
+    padding: 15px 0;
+}
+
+.logo-link {
+    position: relative;
+    top: 0;
+}
+
+.logo-img {
+    height: 80px;
+    width: auto;
+}
+
+/* Hero adjustments for tablet */
+.hero-grid {
+    gap: 40px;
+}
+
+.hero-heading {
+    font-size: 52px;
+}
+
+/* Bento grid for tablets - 2 columns */
+.bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.card-large {
+    grid-column: span 2;
+    grid-row: span 1;
+}
+
+/* Price blocks */
+.price-block {
+    padding: 40px 30px;
+}
+
+.category-title {
+    font-size: 32px;
+}
+
+/* Team */
+.owner-block {
+    gap: 30px;
+    padding: 30px;
+}
+
+.team-grid {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+/* Contacts */
+.top-section {
+    grid-template-columns: 1fr;
+    gap: 50px;
+}
+
+.bottom-section {
+    grid-template-columns: 1fr;
+    gap: 50px;
+}
+
+/* Footer */
+.footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+.f-qr {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}

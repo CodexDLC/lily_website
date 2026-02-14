@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ seo.seo_title|default:"Kontakt | LILY Beauty Salon" }}{% endblock %}
+{% block meta_description %}{{ seo.seo_description|default:"Kontaktieren Sie uns." }}{% endblock %}
+
+{% block content %}
+{% include "contacts/_schema_contact_page.html" %}
+<!-- HERO -->
+<section class="hero-text-block">
+    <div class="container">
+        <h1 class="hero-title">{% trans "Kontaktieren Sie uns" %}</h1>
+        <p class="hero-subtitle">{% trans "ÜBER UNS & KONTAKT" %}</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- TOP SECTION: Intro + Form -->
+        <div class="top-section">
+
+            <!-- Left: Text -->
+            <div class="about-content">
+                <h2>{% trans "Willkommen bei LILY" %}</h2>
+                <p class="about-text">
+                    {% trans "LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellem Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern auch ein innerer Zustand des Selbstvertrauens." %}
+                </p>
+                <p class="about-text">
+                    {% trans "Unsere Meister verwenden nur Premium-Materialien (Wella, L'Oreal, Luxio) und moderne Techniken, um Ihre natürliche Einzigartigkeit zu unterstreichen." %}
+                </p>
+                <p class="about-text" style="color: var(--color-gold); font-style: italic; margin-top: 30px;">
+                    "{% trans "Ihre Schönheit ist unsere Kunst." %}"
+                </p>
+            </div>
+
+            <!-- Right: Form -->
+            <div class="form-wrapper">
+                {% include "contacts/partials/form.html" with form=form %}
+            </div>
+
+        </div>
+
+        <!-- SEPARATOR -->
+        <div class="golden-separator"></div>
+
+        <!-- BOTTOM SECTION: Contacts + Map -->
+        <div class="bottom-section">
+
+            <!-- Left: Details -->
+            <address class="contacts-details"> {# Изменено с div на address #}
+
+                <div style="margin-bottom: 30px;">
+                    <span class="label">{% trans "Unsere Adresse" %}</span>
+                    <span class="value">
+                        <a href="{{ settings.google_maps_link }}" target="_blank" style="border-bottom: 1px dashed rgba(255,255,255,0.3);">
+                            {{ settings.address_street }}<br>
+                            {{ settings.address_city }}
+                        </a>
+                    </span>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <span class="label">{% trans "Telefon" %}</span>
+                    <span class="value">
+                        <a href="tel:{{ settings.phone }}">{{ settings.phone }}</a>
+                    </span>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <span class="label">{% trans "E-Mail" %}</span>
+                    <span class="value">
+                        <a href="mailto:{{ settings.email }}">{{ settings.email }}</a>
+                    </span>
+                </div>
+
+                <div>
+                    <span class="label">{% trans "Öffnungszeiten" %}</span>
+                    <span class="value" style="font-size: 16px; line-height: 1.6;">
+                        Mo-Fr: {{ settings.working_hours_weekdays }}<br>
+                        Sa: {{ settings.working_hours_saturday }}<br>
+                        So: {{ settings.working_hours_sunday }}
+                    </span>
+                </div>
+
+            </address>
+
+            <!-- Right: Map + Button -->
+            <div class="map-container-block">
+                <div class="map-wrapper">
+                    <!-- Google Maps Embed -->
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2489.849158468784!2d11.9735!3d51.7515!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a673acd91e008f%3A0xf5faa00aab8978f3!2sLohmannstraße%20111%2C%2006366%20Köthen%20(Anhalt)!5e0!3m2!1sru!2sde!4v1769633393918!5m2!1sru!2sde"
+                        class="map-frame"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+
+                {% if settings.google_maps_link %}
+                <a href="{{ settings.google_maps_link }}" target="_blank" class="btn-navigate">
+                    📍 {% trans "Route planen" %}
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+</section>
+{% endblock %}
