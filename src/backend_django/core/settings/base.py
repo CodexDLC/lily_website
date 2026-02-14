@@ -126,9 +126,10 @@ if DATABASE_URL:
             conn_health_checks=True,
         )
     }
-    # Add schema support if provided
-    db_schema = os.environ.get("DB_SCHEMA", "public")
-    DATABASES["default"]["OPTIONS"] = {"options": f"-c search_path={db_schema},public"}
+    # Neon (PgBouncer) does not support search_path in startup options.
+    # We rely on the default schema (public).
+    # db_schema = os.environ.get("DB_SCHEMA", "public")
+    # DATABASES["default"]["OPTIONS"] = {"options": f"-c search_path={db_schema},public"}
 else:
     DATABASES = {
         "default": {
