@@ -3,11 +3,24 @@ name: CD Release (Deploy)
 on:
   push:
     branches: [ release ]
-  workflow_dispatch:  # Позволяет запускать деплой вручную из интерфейса GitHub
+  workflow_dispatch:
 
 jobs:
+  pre-deploy-check:
+    name: Check Server Availability
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test SSH Connection
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: echo "SSH Connection Successful!"
+
   deploy:
     name: Build & Deploy to VPS
+    needs: pre-deploy-check  # Сборка начнется только если SSH проверка прошла
     runs-on: ubuntu-latest
 
     permissions:
