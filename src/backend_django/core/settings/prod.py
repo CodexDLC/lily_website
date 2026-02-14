@@ -1,7 +1,7 @@
 """
 lily_website — Production Settings.
 
-Inherits from base_module.py. Postgres, DEBUG=False by default, security hardened.
+Inherits from base.py. Postgres, DEBUG=False by default, security hardened.
 """
 
 import os

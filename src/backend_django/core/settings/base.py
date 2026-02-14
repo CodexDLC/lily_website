@@ -32,7 +32,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-CHANGE-ME")
 DEBUG = os.environ.get("DEBUG", "True").lower() in ("true", "1", "yes")
 
 # --- Smart ALLOWED_HOSTS ---
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend", "0.0.0.0"]
+# We start with safe defaults. 0.0.0.0 is removed for security.
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend"]
 
 env_hosts = os.environ.get("ALLOWED_HOSTS", "")
 if env_hosts:
@@ -47,6 +48,12 @@ if domain:
     clean_domain = domain.split(":")[0]
     if clean_domain not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(clean_domain)
+
+    # Automatically add www version for subdomain support
+    if not clean_domain.startswith("www."):
+        www_domain = f"www.{clean_domain}"
+        if www_domain not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(www_domain)
 
 # ═══════════════════════════════════════════
 # Application definition
