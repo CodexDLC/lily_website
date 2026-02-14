@@ -17,5 +17,5 @@ class SiteSettingsTranslationOptions(TranslationOptions):
         "working_hours_weekdays",
         "working_hours_saturday",
         "working_hours_sunday",
-        "address_city",
+        "address_locality",  # Изменено с "address_city" на "address_locality"
     )

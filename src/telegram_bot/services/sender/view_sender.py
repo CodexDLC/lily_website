@@ -4,7 +4,7 @@ from aiogram import Bot
 from aiogram.exceptions import TelegramAPIError
 from loguru import logger as log
 
-from src.telegram_bot.database.redis.managers.sender.sender_manager import SenderManager
+from src.telegram_bot.infrastructure.redis.managers.sender.sender_manager import SenderManager
 from src.telegram_bot.services.base import UnifiedViewDTO, ViewResultDTO
 
 

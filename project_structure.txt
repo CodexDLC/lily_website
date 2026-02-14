@@ -18,8 +18,11 @@ Project Structure: src
             📄 __init__.py
             📄 apps.py
             📄 asgi.py
+            📄 context_processors.py
             📄 logger.py
+            📄 sitemaps.py
             📄 urls.py
+            📄 views.py
             📄 wsgi.py
             📂 arq/
                 📄 __init__.py
@@ -65,6 +68,7 @@ Project Structure: src
                     📄 slots.py
                 📂 views/
                     📄 __init__.py
+                    📄 actions.py
                     📄 steps.py
                     📄 wizard.py
             📂 main/
@@ -72,6 +76,7 @@ Project Structure: src
                 📄 admin.py
                 📄 apps.py
                 📄 forms.py
+                📄 sitemaps.py
                 📄 tests.py
                 📄 translation.py
                 📄 urls.py
@@ -107,7 +112,6 @@ Project Structure: src
                 📄 admin.py
                 📄 apps.py
                 📄 context_processors.py
-                📄 tests.py
                 📄 translation.py
                 📂 fixtures/
                     📄 initial_seo.json
@@ -124,6 +128,9 @@ Project Structure: src
                     📄 seo.py
                 📂 services/
                     📄 images.py
+                📂 tests/
+                    📄 __init__.py
+                    📄 test_image_service.py
         📂 locale/
             📂 de/
                 📂 LC_MESSAGES/
@@ -185,15 +192,12 @@ Project Structure: src
                     📄 booking.css
                     📄 contacts.css
                     📄 errors.css
+                    📄 faq.css
                     📄 home.css
+                    📄 legal.css
                     📄 service-detail.css
                     📄 services.css
                     📄 team.css
-                📂 _old/
-                    📄 adaptive.css
-                    📄 contacts.css
-                    📄 layout.css
-                    📄 pages.css
             📂 fonts/
             📂 img/
                 📄 5.webp
@@ -210,9 +214,16 @@ Project Structure: src
             📄 404.html
             📄 500.html
             📄 base.html
-            📄 llms.txt
+            📄 llms_de.txt
+            📄 llms_en.txt
+            📄 llms_ru.txt
+            📄 llms_uk.txt
             📄 robots.txt
             📂 booking/
+                📄 cancel_appointment.html
+                📄 cancel_success.html
+                📄 confirm_appointment.html
+                📄 reschedule_appointment.html
                 📄 wizard.html
                 📂 includes/
                     📄 stepper.html
@@ -224,23 +235,30 @@ Project Structure: src
                     📄 step_4_confirm_mock.html
                     📄 step_5_success.html
             📂 contacts/
+                📄 _schema_contact_page.html
                 📄 contacts.html
                 📂 partials/
                     📄 form.html
                     📄 success_message.html
             📂 home/
+                📄 _schema_home_page.html
                 📄 home.html
             📂 includes/
                 📄 _footer.html
                 📄 _header.html
+                📄 _hreflang_tags.html
                 📄 _meta.html
+                📄 _schema_local_business.html
             📂 legal/
                 📄 datenschutz.html
+                📄 faq.html
                 📄 impressum.html
             📂 services/
+                📄 _schema_service_detail.html
                 📄 detail.html
                 📄 services.html
             📂 team/
+                📄 _schema_person.html
                 📄 team.html
     📂 shared/
         📄 __init__.py
@@ -273,8 +291,130 @@ Project Structure: src
             📄 garbage_collector.py
             📄 routers.py
             📄 settings.py
-        📂 database/
+        📂 features/
             📄 __init__.py
+            📂 redis/
+                📄 __init__.py
+                📂 errors/
+                    📄 __init__.py
+                    📄 feature_setting.py
+                    📂 handlers/
+                        📄 __init__.py
+                        📄 handlers.py
+                    📂 logic/
+                        📄 __init__.py
+                        📄 orchestrator.py
+                    📂 resources/
+                        📄 __init__.py
+                        📄 errors_map.py
+                    📂 ui/
+                        📄 __init__.py
+                        📄 ui.py
+                📂 notifications/
+                    📄 __init__.py
+                    📄 feature_setting.py
+                    📂 contracts/
+                        📄 __init__.py
+                        📄 contract.py
+                    📂 handlers/
+                        📄 __init__.py
+                        📄 handlers.py
+                    📂 logic/
+                        📄 __init__.py
+                        📄 orchestrator.py
+                        📄 state_manager.py
+                    📂 resources/
+                        📄 __init__.py
+                        📄 callbacks.py
+                        📄 dto.py
+                        📄 formatters.py
+                        📄 keyboards.py
+                        📄 texts.py
+                    📂 tests/
+                        📄 __init__.py
+                        📄 test_orchestrator.py
+                    📂 ui/
+                        📄 __init__.py
+                        📄 ui.py
+            📂 telegram/
+                📄 __init__.py
+                📂 bot_menu/
+                    📄 __init__.py
+                    📄 feature_setting.py
+                    📂 contracts/
+                        📄 __init__.py
+                        📄 menu_contract.py
+                    📂 handlers/
+                        📄 __init__.py
+                        📄 menu_handlers.py
+                    📂 logic/
+                        📄 __init__.py
+                        📄 orchestrator.py
+                    📂 resources/
+                        📄 __init__.py
+                        📄 callbacks.py
+                        📄 texts.py
+                    📂 ui/
+                        📄 __init__.py
+                        📄 menu_ui.py
+                📂 commands/
+                    📄 __init__.py
+                    📄 client.py
+                    📄 feature_setting.py
+                    📄 menu.py
+                    📂 contracts/
+                        📄 __init__.py
+                        📄 commands_contract.py
+                    📂 handlers/
+                        📄 __init__.py
+                        📄 router.py
+                    📂 logic/
+                        📄 __init__.py
+                        📄 orchestrator.py
+                    📂 resources/
+                        📄 __init__.py
+                        📄 callbacks.py
+                        📄 formatters.py
+                        📄 keyboards.py
+                        📄 texts.py
+                    📂 services/
+                        📄 __init__.py
+                    📂 ui/
+                        📄 __init__.py
+                        📄 commands_ui.py
+                📂 notifications/
+                    📄 __init__.py
+                    📄 feature_setting.py
+                    📂 contracts/
+                        📄 __init__.py
+                        📄 contract.py
+                    📂 data_providers/
+                    📂 handlers/
+                        📄 __init__.py
+                        📄 handlers.py
+                    📂 logic/
+                        📄 __init__.py
+                        📄 orchestrator.py
+                        📂 helper/
+                            📄 __init__.py
+                            📄 extract_data.py
+                    📂 resources/
+                        📄 __init__.py
+                        📄 callbacks.py
+                        📄 dto.py
+                        📄 formatters.py
+                        📄 keyboards.py
+                        📄 texts.py
+                    📂 tests/
+                        📄 __init__.py
+                    📂 ui/
+                        📄 __init__.py
+                        📄 ui.py
+        📂 infrastructure/
+            📄 __init__.py
+            📂 api_route/
+                📄 __init__.py
+                📄 notifications.py
             📂 migrations/
                 📄 README
                 📄 env.py
@@ -294,94 +434,7 @@ Project Structure: src
                         📄 sender_manager.py
             📂 repositories/
                 📄 __init__.py
-        📂 features/
-            📄 __init__.py
-            📂 bot_menu/
-                📄 __init__.py
-                📄 feature_setting.py
-                📂 contracts/
-                    📄 __init__.py
-                    📄 menu_contract.py
-                📂 handlers/
-                    📄 __init__.py
-                    📄 menu_handlers.py
-                📂 logic/
-                    📄 __init__.py
-                    📄 orchestrator.py
-                📂 resources/
-                    📄 __init__.py
-                    📄 callbacks.py
-                    📄 texts.py
-                📂 ui/
-                    📄 __init__.py
-                    📄 menu_ui.py
-            📂 commands/
-                📄 __init__.py
-                📄 client.py
-                📄 feature_setting.py
-                📄 menu.py
-                📂 contracts/
-                    📄 __init__.py
-                    📄 commands_contract.py
-                📂 handlers/
-                    📄 __init__.py
-                    📄 router.py
-                📂 logic/
-                    📄 __init__.py
-                    📄 orchestrator.py
-                📂 resources/
-                    📄 __init__.py
-                    📄 callbacks.py
-                    📄 formatters.py
-                    📄 keyboards.py
-                    📄 texts.py
-                📂 services/
-                    📄 __init__.py
-                📂 ui/
-                    📄 __init__.py
-                    📄 commands_ui.py
-            📂 errors/
-                📄 __init__.py
-                📄 feature_setting.py
-                📂 handlers/
-                    📄 __init__.py
-                    📄 handlers.py
-                📂 logic/
-                    📄 __init__.py
-                    📄 orchestrator.py
-                📂 resources/
-                    📄 __init__.py
-                    📄 errors_map.py
-                📂 ui/
-                    📄 __init__.py
-                    📄 ui.py
-            📂 notifications/
-                📄 __init__.py
-                📄 feature_setting.py
-                📂 contracts/
-                    📄 __init__.py
-                    📄 contract.py
-                    📄 payload.py
-                📂 handlers/
-                    📄 __init__.py
-                    📄 handlers.py
-                📂 logic/
-                    📄 __init__.py
-                    📄 orchestrator.py
-                    📄 state_manager.py
-                📂 resources/
-                    📄 __init__.py
-                    📄 callbacks.py
-                    📄 dto.py
-                    📄 formatters.py
-                    📄 keyboards.py
-                    📄 texts.py
-                📂 tests/
-                    📄 __init__.py
-                    📄 test_orchestrator.py
-                📂 ui/
-                    📄 __init__.py
-                    📄 ui.py
+                📄 notifications.py
         📂 middlewares/
             📄 __init__.py
             📄 container.py
@@ -396,11 +449,15 @@ Project Structure: src
                 📂 feature/
                     📄 callbacks.py.tpl
                     📄 contract.py.tpl
+                    📄 dto.py.tpl
                     📄 feature.py.tpl
+                    📄 feature_redis.py.tpl
                     📄 formatters.py.tpl
                     📄 handlers.py.tpl
+                    📄 handlers_redis.py.tpl
                     📄 keyboards.py.tpl
                     📄 orchestrator.py.tpl
+                    📄 orchestrator_redis.py.tpl
                     📄 state_manager.py.tpl
                     📄 test_orchestrator.py.tpl
                     📄 texts.py.tpl
@@ -413,7 +470,6 @@ Project Structure: src
             📂 base/
                 📄 __init__.py
                 📄 base_orchestrator.py
-                📄 base_service.py
                 📄 view_dto.py
             📂 director/
                 📄 __init__.py
@@ -426,6 +482,8 @@ Project Structure: src
                 📄 __init__.py
                 📄 base_manager.py
                 📄 common_fsm_handlers.py
+            📂 helper/
+                📄 __init__.py
             📂 redis/
                 📄 __init__.py
                 📄 dispatcher.py
@@ -440,11 +498,25 @@ Project Structure: src
             📄 __init__.py
             📄 base.py
             📄 config.py
+            📄 email_client.py
+            📄 template_renderer.py
         📂 notification_worker/
             📄 __init__.py
+            📄 config.py
             📄 dependencies.py
             📄 worker.py
+            📂 services/
+                📄 __init__.py
+                📄 notification_service.py
             📂 tasks/
                 📄 __init__.py
+                📄 email_tasks.py
                 📄 notification_tasks.py
                 📄 task_aggregator.py
+        📂 templates/
+            📄 base_email.html
+            📄 cancellation.html
+            📄 confirmation.html
+            📄 reengagement.html
+            📄 reminder.html
+            📄 render_preview.py

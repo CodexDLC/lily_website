@@ -24,7 +24,13 @@ MENU_CONFIG = {
     "is_superuser": False,  # Только для разработчиков (Superuser)
 }
 
+
 # 4. Фабрика (DI)
-# def create_orchestrator(container):
-#     from .logic.orchestrator import NotificationsOrchestrator
-#     return NotificationsOrchestrator()
+def create_orchestrator(container):
+    from .logic.orchestrator import NotificationsOrchestrator
+
+    # Временная заглушка для провайдера данных
+    # В будущем здесь будет реальный репозиторий или API клиент
+    data_provider = None
+
+    return NotificationsOrchestrator(data_provider=data_provider)

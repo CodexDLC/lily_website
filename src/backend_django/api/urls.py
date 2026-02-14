@@ -21,7 +21,7 @@ def health(request):
 
 
 # Добавляем роутер для публикации сообщений в стрим
-# v1.add_router("/stream/", stream_publisher_router) # ВРЕМЕННО ОТКЛЮЧЕНО
+# v1.add_router("/manager_redis/", stream_publisher_router) # ВРЕМЕННО ОТКЛЮЧЕНО
 
 
 api.add_router("/v1/", v1)

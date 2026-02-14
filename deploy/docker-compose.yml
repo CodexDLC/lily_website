@@ -17,6 +17,26 @@ services:
     networks:
       - lily_website-network
 
+  redis:
+    image: redis:7-alpine
+    container_name: lily_website-redis
+    env_file:
+      - ../.env
+    command: >
+      sh -c "redis-server --requirepass $${REDIS_PASSWORD} --appendonly yes"
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - lily_website-network
+
   backend:
     build:
       context: ..
@@ -24,26 +44,26 @@ services:
     container_name: lily_website-backend
     ports:
       - "8000:8000"
-    environment:
-      - ENVIRONMENT=production
-      - REDIS_HOST=redis
-      - DB_ENGINE=django.db.backends.postgresql
-      - DB_NAME=lily_db
-      - DB_USER=lily_user
-      - DB_PASSWORD=lily_password
-      - DB_HOST=db
-      - DB_PORT=5432
     env_file:
-      - ../src/backend_django/.env
+      - ../.env
     volumes:
       - ../src/backend_django:/app
       - uploads:/app/media
       - static_volume:/app/staticfiles
+      - logs_volume:/app/logs
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    links:
+      - redis
     restart: unless-stopped
     networks:
       - lily_website-network
@@ -53,17 +73,17 @@ services:
       context: ..
       dockerfile: deploy/bot/Dockerfile
     container_name: lily_website-telegram_bot
-    environment:
-      - ENVIRONMENT=production
-      - REDIS_HOST=redis
-    env_file: ../.env
+    env_file:
+      - ../.env
     volumes:
       - ../src/telegram_bot:/app/src/telegram_bot:ro
       - ../src/shared:/app/src/shared:ro
     restart: unless-stopped
     depends_on:
-      - redis
-      - backend
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
     networks:
       - lily_website-network
 
@@ -73,46 +93,34 @@ services:
       dockerfile: deploy/worker/Dockerfile
     container_name: lily_website-notification_worker
     command: arq src.workers.notification_worker.worker.WorkerSettings
-    environment:
-      - ENVIRONMENT=production
-      - REDIS_HOST=redis
-    env_file: ../.env
+    env_file:
+      - ../.env
     volumes:
       - ../src/workers:/app/src/workers:ro
       - ../src/shared:/app/src/shared:ro
+      - logs_volume:/app/logs
     restart: unless-stopped
     depends_on:
-      - redis
-    networks:
-      - lily_website-network
-
-  redis:
-    image: redis:7-alpine
-    container_name: lily_website-redis
-    command: redis-server --appendonly yes
-    volumes:
-      - redis-data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    restart: unless-stopped
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
     networks:
       - lily_website-network
 
   nginx:
-    image: nginx:alpine
+    build:
+      context: ..
+      dockerfile: deploy/nginx/Dockerfile
     container_name: lily_website-nginx
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
-      - ./nginx/nginx-main.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/site-local.conf:/etc/nginx/conf.d/default.conf:ro
       - uploads:/app/media:ro
       - static_volume:/app/staticfiles:ro
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - lily_website-network
@@ -122,6 +130,7 @@ volumes:
   redis-data:
   uploads:
   static_volume:
+  logs_volume:
 
 networks:
   lily_website-network:

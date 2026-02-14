@@ -1,7 +1,7 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
-# Импортируем CategorySitemap из features.main
+# Import CategorySitemap from features.main
 from features.main.sitemaps import CategorySitemap
 
 
@@ -16,14 +16,14 @@ class StaticSitemap(Sitemap):
         return reverse(item)
 
 
-# Определяем словарь sitemaps, включая CategorySitemap
+# Define the sitemaps dictionary, including CategorySitemap
 sitemaps = {
     "static": StaticSitemap,
-    "categories": CategorySitemap,  # Добавляем Sitemap для категорий
+    "categories": CategorySitemap,  # Add Sitemap for categories
 }
 
-# Если у вас есть модели, для которых нужно генерировать sitemap,
-# например, для каждой услуги или статьи, вы можете добавить их так:
+# If you have models for which you need to generate a sitemap,
+# for example, for each service or article, you can add them like this:
 # from .models import Service
 
 # class ServiceSitemap(Sitemap):
@@ -34,4 +34,4 @@ sitemaps = {
 #         return Service.objects.all()
 
 #     def lastmod(self, obj):
-#         return obj.updated_at # Предполагается, что у вашей модели Service есть поле updated_at
+#         return obj.updated_at # Assumes your Service model has an updated_at field
