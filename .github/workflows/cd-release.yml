@@ -2,7 +2,7 @@ name: CD Release (Deploy)
 
 on:
   push:
-    branches: [ release, develop ]
+    branches: [ release ]
   workflow_dispatch:
 
 jobs:
