@@ -1,23 +1,24 @@
-// === CONFIGURATION CONSTANTS ===
 constants {
   hostname = "lily-salon-vps"
-  // Имя проекта из Docker Compose (обычно имя папки, если не задано в .env)
-  project_name = "deploy"
+  // Имя проекта из Docker Compose (берется из переменной окружения)
+  project_name = sys.env("COMPOSE_PROJECT_NAME")
 }
 
-// === EXPORT TO GRAFANA CLOUD ===
+// --- LOGS (Loki) ---
 
-prometheus.remote_write "metrics_service" {
-  endpoint {
-    url = sys.env("GCLOUD_HOSTED_METRICS_URL")
-    basic_auth {
-      username = sys.env("GCLOUD_HOSTED_METRICS_ID")
-      password = sys.env("GCLOUD_RW_API_KEY")
-    }
-  }
+discovery.docker "linux_containers" {
+  host = "unix:///var/run/docker.sock"
+  refresh_interval = "15s"
 }
 
-loki.write "grafana_cloud_loki" {
+loki.source.docker "docker_logs" {
+  nodes = discovery.docker.linux_containers.targets
+  client = loki.write.grafana_loki.receiver
+
+  forward_to = [loki.write.grafana_loki.receiver]
+}
+
+loki.write "grafana_loki" {
   endpoint {
     url = sys.env("GCLOUD_HOSTED_LOGS_URL")
     basic_auth {
@@ -27,88 +28,21 @@ loki.write "grafana_cloud_loki" {
   }
 }
 
-// === 1. DOCKER CONTAINERS DISCOVERY (LOGS) ===
-discovery.docker "project_containers" {
-  host = "unix:///var/run/docker.sock"
+// --- METRICS (Prometheus) ---
 
-  // ФИЛЬТР: Берем только контейнеры из текущего проекта!
-  filter {
-    name = "label"
-    values = ["com.docker.compose.project=" + constants.project_name]
-  }
-}
-
-// 2. RELABELING (Adding container name label)
-discovery.relabel "logs_processing" {
-  targets = discovery.docker.project_containers.targets
-
-  rule {
-    source_labels = ["__meta_docker_container_name"]
-    regex         = "/(.*)"
-    target_label  = "container"
-  }
-
-  rule {
-    target_label = "job"
-    replacement  = "lily_website"
-  }
-}
-
-// 3. LOGS COLLECTION (Docker Socket)
-loki.source.docker "log_scraper" {
-  host       = "unix:///var/run/docker.sock"
-  targets    = discovery.relabel.logs_processing.output
-  forward_to = [loki.write.grafana_cloud_loki.receiver]
-}
-
-// === 4. SYSTEM METRICS (Node Exporter) ===
-prometheus.exporter.unix "local_system" {
-  procfs_path = "/host/proc"
-  sysfs_path  = "/host/sys"
-  rootfs_path = "/rootfs"
-
-  disable_collectors = ["ipvs", "btrfs", "infiniband", "xfs", "zfs"]
-}
+prometheus.exporter.unix "node_exporter" { }
 
 prometheus.scrape "node_metrics" {
-  targets    = prometheus.exporter.unix.local_system.targets
-  forward_to = [prometheus.remote_write.metrics_service.receiver]
+  targets    = prometheus.exporter.unix.node_exporter.targets
+  forward_to = [prometheus.remote_write.grafana_cloud.receiver]
 }
 
-// === 5. DJANGO METRICS ===
-prometheus.scrape "django" {
-  targets = [
-    {"__address__" = "backend:8000", "job" = "django", "instance" = constants.hostname},
-  ]
-  metrics_path = "/metrics"
-  forward_to = [prometheus.remote_write.metrics_service.receiver]
-}
-
-// === 6. SYSTEM LOGS (Journal) ===
-journal_module "system_journal" {
-  forward_to = [loki.write.grafana_cloud_loki.receiver]
-}
-
-// JOURNAL MODULE DECLARATION
-declare "journal_module" {
-  argument "forward_to" {
-      optional = false
-  }
-  loki.source.journal "default"  {
-      max_age       = "12h0m0s"
-      forward_to    = [loki.process.default.receiver]
-  }
-  loki.relabel "default" {
-      rule {
-          source_labels = ["__journal__systemd_unit"]
-          target_label  = "unit"
-      }
-      rule {
-          target_label = "instance"
-          replacement  = constants.hostname
-      }
-  }
-  loki.process "default" {
-      forward_to    = argument.forward_to.value
+prometheus.remote_write "grafana_cloud" {
+  endpoint {
+    url = sys.env("GCLOUD_HOSTED_METRICS_URL")
+    basic_auth {
+      username = sys.env("GCLOUD_HOSTED_METRICS_ID")
+      password = sys.env("GCLOUD_RW_API_KEY")
+    }
   }
 }

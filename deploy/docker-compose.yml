@@ -71,7 +71,8 @@ services:
       context: ..
       dockerfile: deploy/bot/Dockerfile
     container_name: lily_website-telegram_bot
-    env_file: .env
+    env_file:
+      - ../.env
     volumes:
       - ../src/telegram_bot:/app/src/telegram_bot:ro
       - ../src/shared:/app/src/shared:ro

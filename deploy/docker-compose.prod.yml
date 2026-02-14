@@ -47,7 +47,6 @@ services:
   redis:
     image: redis:7-alpine
     container_name: lily_website-redis
-    # Используем переменную окружения для пароля, которую подставит GitHub Actions в .env
     command: >
       sh -c "redis-server --requirepass $${REDIS_PASSWORD} --appendonly yes"
     volumes:
@@ -71,6 +70,7 @@ services:
       - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - ./nginx/nginx-main.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/site.conf:/etc/nginx/conf.d/site.conf:ro
       - uploads:/app/media:ro
       - static_volume:/app/staticfiles:ro
       - certs_volume:/etc/letsencrypt:ro
@@ -80,6 +80,11 @@ services:
     restart: always
     networks:
       - lily_website-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   certbot:
     image: certbot/certbot
