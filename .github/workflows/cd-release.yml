@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Test SSH Connection
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -34,6 +34,9 @@ jobs:
         run: |
           echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
@@ -47,7 +50,11 @@ jobs:
           context: .
           file: deploy/backend/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.REPO_LOWER }}-backend:latest
+          tags: |
+            ghcr.io/${{ env.REPO_LOWER }}-backend:latest
+            ghcr.io/${{ env.REPO_LOWER }}-backend:${{ github.sha }}
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-backend:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-backend:buildcache,mode=max
 
       - name: Build and Push Bot
         uses: docker/build-push-action@v5
@@ -55,7 +62,11 @@ jobs:
           context: .
           file: deploy/bot/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.REPO_LOWER }}-bot:latest
+          tags: |
+            ghcr.io/${{ env.REPO_LOWER }}-bot:latest
+            ghcr.io/${{ env.REPO_LOWER }}-bot:${{ github.sha }}
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-bot:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-bot:buildcache,mode=max
 
       - name: Build and Push Worker
         uses: docker/build-push-action@v5
@@ -63,7 +74,11 @@ jobs:
           context: .
           file: deploy/worker/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.REPO_LOWER }}-worker:latest
+          tags: |
+            ghcr.io/${{ env.REPO_LOWER }}-worker:latest
+            ghcr.io/${{ env.REPO_LOWER }}-worker:${{ github.sha }}
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-worker:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-worker:buildcache,mode=max
 
       - name: Build and Push Nginx
         uses: docker/build-push-action@v5
@@ -71,20 +86,26 @@ jobs:
           context: .
           file: deploy/nginx/Dockerfile
           push: true
-          tags: ghcr.io/${{ env.REPO_LOWER }}-nginx:latest
+          tags: |
+            ghcr.io/${{ env.REPO_LOWER }}-nginx:latest
+            ghcr.io/${{ env.REPO_LOWER }}-nginx:${{ github.sha }}
+          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-nginx:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-nginx:buildcache,mode=max
 
       - name: Copy configs to VPS
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: "deploy/docker-compose.prod.yml,deploy/nginx/,deploy/monitoring/"
-          target: "/opt/lily_website"
-          rm: true
+          source: "deploy/"
+          target: "/opt/lily_website/"
+          strip_components: 0
+          rm: false
+          overwrite: true
 
       - name: SSH Deploy
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         env:
           DOCKER_IMAGE_BACKEND: ghcr.io/${{ env.REPO_LOWER }}-backend:latest
           DOCKER_IMAGE_BOT: ghcr.io/${{ env.REPO_LOWER }}-bot:latest
@@ -92,14 +113,19 @@ jobs:
           DOCKER_IMAGE_NGINX: ghcr.io/${{ env.REPO_LOWER }}-nginx:latest
           DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_BOT,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DOMAIN_NAME,REDIS_PASSWORD
+          envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_BOT,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DOMAIN_NAME,REDIS_PASSWORD,GITHUB_TOKEN,GITHUB_ACTOR
           script: |
+            set -e
+
             cd /opt/lily_website/deploy
 
+            # Создаем .env в папке deploy (там где docker-compose.prod.yml)
             echo "${{ secrets.ENV_FILE }}" > .env
 
             update_var() {
@@ -115,15 +141,35 @@ jobs:
             [ ! -z "$REDIS_PASSWORD" ] && update_var "REDIS_PASSWORD" "$REDIS_PASSWORD"
 
             if ! grep -q "DOMAIN_NAME" .env; then
-              DOMAIN=$(grep "SITE_BASE_URL" .env | cut -d'/' -f3 | cut -d':' -f1)
-              [ ! -z "$DOMAIN" ] && echo "DOMAIN_NAME=$DOMAIN" >> .env
+              DOMAIN=$(grep "SITE_BASE_URL" .env 2>/dev/null | cut -d'/' -f3 | cut -d':' -f1 || echo "")
+              [ ! -z "$DOMAIN" ] && update_var "DOMAIN_NAME" "$DOMAIN"
             fi
 
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            # Безопасный логин в GHCR через переменную окружения
+            echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
 
+            # Pull образов
             docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py migrate --noinput
-            docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py collectstatic --noinput
-            docker compose -f docker-compose.prod.yml up -d --remove-orphans --wait
 
+            # Проверяем успешность миграций перед запуском
+            echo "🔄 Running migrations..."
+            if ! docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py migrate --noinput; then
+              echo "❌ Migration failed! Aborting deployment."
+              exit 1
+            fi
+
+            echo "📦 Collecting static files..."
+            docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py collectstatic --noinput
+
+            # Запуск с таймаутом ожидания
+            echo "🚀 Starting services..."
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans --wait --wait-timeout 120
+
+            # Проверка что все контейнеры запущены
+            echo "✅ Checking container health..."
+            docker compose -f docker-compose.prod.yml ps
+
+            # Очистка старых образов
             docker image prune -f
+
+            echo "✅ Deployment completed successfully!"
