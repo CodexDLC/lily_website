@@ -1,11 +1,10 @@
 """
 lily_website — Production Settings.
 
-Inherits from base.py. Postgres, DEBUG=False, security hardened.
+Inherits from base_module.py. Postgres, DEBUG=False by default, security hardened.
 """
 
 import os
-from typing import Any
 
 from .base import *  # noqa: F401,F403
 
@@ -13,34 +12,17 @@ from .base import *  # noqa: F401,F403
 # Security
 # ═══════════════════════════════════════════
 
-DEBUG = False
+# Allow overriding DEBUG from environment, but default to False for safety
+DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1", "yes")
 
-# HTTPS
-SECURE_SSL_REDIRECT = True
-SECURE_HSTS_SECONDS = 31_536_000  # 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-
-# ═══════════════════════════════════════════
-# Database — PostgreSQL
-# ═══════════════════════════════════════════
-
-# Using type ignore for redefinition of DATABASES which is standard in Django settings
-DATABASES: dict[str, dict[str, Any]] = {  # type: ignore[no-redef]
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DB_NAME", "lily_website"),
-        "USER": os.environ.get("DB_USER", "postgres"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", ""),
-        "HOST": os.environ.get("DB_HOST", "postgres"),
-        "PORT": os.environ.get("DB_PORT", "5432"),
-        "OPTIONS": {
-            "options": f"-c search_path={os.environ.get('DB_SCHEMA', 'django_app')},public",
-        },
-    }
-}
+# HTTPS settings (only active if DEBUG is False)
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31_536_000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 # ═══════════════════════════════════════════
 # Static files

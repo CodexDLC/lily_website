@@ -9,4 +9,4 @@ class NotificationsCallback(CallbackData, prefix="notifications"):
     """
 
     action: str
-    id: int | str | None = None
+    session_id: int | str | None = None

@@ -1,7 +1,7 @@
 """
 lily_website — Development Settings.
 
-Inherits from base.py. SQLite, DEBUG=True, verbose logging.
+Inherits from base_module.py. SQLite, DEBUG=True, verbose logging.
 """
 
 from .base import *  # noqa: F401,F403
@@ -15,7 +15,7 @@ DEBUG = True
 # Logging Level for Dev
 LOG_LEVEL_CONSOLE = "DEBUG"
 
-# SQLite for dev (already default in base.py)
+# SQLite for dev (already default in base_module.py)
 # Override DATABASE if needed:
 # DATABASES["default"] = {
 #     "ENGINE": "django.db.backends.sqlite3",

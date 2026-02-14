@@ -6,12 +6,11 @@ from loguru import logger as log
 from redis.asyncio import Redis
 
 from src.shared.core.constants import RedisStreams
+from src.shared.core.manager_redis.manager import StreamManager
 from src.shared.core.redis_service import RedisService
-from src.shared.core.stream.manager import StreamManager
 from src.telegram_bot.core.config import BotSettings
-from src.telegram_bot.database.redis.container import RedisContainer
 from src.telegram_bot.features.telegram.bot_menu.logic.orchestrator import BotMenuOrchestrator
-from src.telegram_bot.features.telegram.commands.client import AuthClient
+from src.telegram_bot.infrastructure.redis.container import RedisContainer
 from src.telegram_bot.services.feature_discovery.service import FeatureDiscoveryService
 from src.telegram_bot.services.redis.dispatcher import bot_redis_dispatcher
 from src.telegram_bot.services.redis.stream_processor import RedisStreamProcessor
@@ -45,13 +44,6 @@ class BotContainer:
             stream_name=RedisStreams.BotEvents.NAME,
             consumer_group_name=RedisStreams.BotEvents.GROUP,
             consumer_name=consumer_name,
-        )
-
-        # --- API Clients ---
-        self.auth_client = AuthClient(
-            base_url=settings.backend_api_url,
-            api_key=settings.backend_api_key,
-            timeout=settings.backend_api_timeout,
         )
 
         # --- Services ---

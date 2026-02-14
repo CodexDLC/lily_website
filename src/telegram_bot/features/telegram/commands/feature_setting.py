@@ -1,10 +1,11 @@
 from aiogram.fsm.state import State, StatesGroup
 
+from src.telegram_bot.features.telegram.commands.contracts.commands_contract import AuthDataProvider
 from src.telegram_bot.features.telegram.commands.logic.orchestrator import StartOrchestrator
 from src.telegram_bot.features.telegram.commands.ui.commands_ui import CommandsUI
 
 
-# 1. Определение состояний (для команд обычно не нужно, но для стандарта оставим)
+# 1. Определение состояний
 class CommandsStates(StatesGroup):
     main = State()
 
@@ -12,7 +13,6 @@ class CommandsStates(StatesGroup):
 STATES = CommandsStates
 
 # 2. Настройки Garbage Collector
-# В командах мы обычно разрешаем текст (так как это команды), но можно включить
 GARBAGE_COLLECT = False
 
 # 3. Настройки Меню
@@ -21,25 +21,29 @@ MENU_CONFIG = {
     "text": "🛠 Команды",
     "icon": "🛠",
     "description": "Управление настройками и помощь",
-    "target_state": "commands",  # Директор должен знать этот ключ
+    "target_state": "commands",
     "priority": 100,
 }
+
+
+# Временная заглушка для AuthDataProvider
+class MockAuthDataProvider(AuthDataProvider):
+    async def upsert_user(self, user_dto):
+        # Просто ничего не делаем, пока нет реального API
+        pass
+
+    async def logout(self, user_id: int):
+        # Заглушка для метода logout
+        pass
 
 
 # 4. Фабрика (DI)
 def create_orchestrator(container):
     """
-    Создает оркестратор, выбирая провайдер данных в зависимости от настроек.
-    Оркестратор — singleton, user передаётся через handle_entry(user_id, payload).
+    Создает оркестратор.
     """
-    # Логика выбора режима (API vs DB)
-    # if container.settings.MODE == "DB":
-    #     from .repository import AuthRepository
-    #     data_provider = AuthRepository(container.db_session)
-    # else:
-
-    # Пока используем API клиент из контейнера
-    data_provider = container.auth_client
+    # Используем заглушку, так как auth_client удален из контейнера
+    data_provider = MockAuthDataProvider()
 
     ui = CommandsUI()
 

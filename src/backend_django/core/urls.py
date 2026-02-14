@@ -5,7 +5,7 @@ Features auto-included via include().
 """
 
 from api.urls import api
-from core.sitemaps import StaticSitemap
+from core.sitemaps import sitemaps  # Импортируем словарь sitemaps напрямую
 from core.views import LLMSTextView
 from django.conf import settings
 
@@ -18,18 +18,12 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 from django.views.generic import TemplateView
-from features.main.sitemaps import CategorySitemap
-
-# Определяем словарь sitemaps
-sitemaps = {
-    "static": StaticSitemap,
-    "categories": CategorySitemap,  # Добавляем Sitemap для категорий
-}
 
 # Non-i18n patterns (technical URLs, API, etc.)
 urlpatterns = [
     path("i18n/", include("django.conf.urls.i18n")),  # For set_language view
     path("api/", api.urls),
+    path("", include("django_prometheus.urls")),  # Prometheus metrics
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sitemaps.views.sitemap"),
 ]
