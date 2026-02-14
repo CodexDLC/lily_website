@@ -13,11 +13,11 @@ def build_main_kb(booking_id: int | str) -> InlineKeyboardMarkup:
 
     builder.button(
         text=NotificationsTexts.BTN_APPROVE,
-        callback_data=NotificationsCallback(action="approve", id=booking_id).pack(),
+        callback_data=NotificationsCallback(action="approve", session_id=booking_id).pack(),
     )
     builder.button(
         text=NotificationsTexts.BTN_REJECT,
-        callback_data=NotificationsCallback(action="reject", id=booking_id).pack(),
+        callback_data=NotificationsCallback(action="reject", session_id=booking_id).pack(),
     )
 
     builder.adjust(2)

@@ -1,14 +1,2 @@
 User-agent: *
-Allow: /
-
-# Disallow admin panel
-Disallow: /admin/
-
-# Disallow internal search or technical pages if any
-Disallow: /search/
-
-# Allow AI bots to read llms.txt context
-Allow: /llms.txt
-
-# Sitemap (Uncomment when sitemap is generated)
-Sitemap: https://lily-salon.de/sitemap.xml
+Disallow: /

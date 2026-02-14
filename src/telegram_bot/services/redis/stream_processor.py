@@ -4,7 +4,7 @@ from typing import Any
 
 from loguru import logger as log
 
-from src.shared.core.stream.manager import StreamManager
+from src.shared.core.manager_redis.manager import StreamManager
 
 
 class RedisStreamProcessor:
@@ -48,7 +48,9 @@ class RedisStreamProcessor:
 
         self.is_running = True
         asyncio.create_task(self._consume_loop())
-        log.info(f"RedisStreamProcessor started listening to stream '{self.stream_name}' as '{self.consumer_name}'")
+        log.info(
+            f"RedisStreamProcessor started listening to manager_redis '{self.stream_name}' as '{self.consumer_name}'"
+        )
 
     async def stop_listening(self):
         """Останавливает цикл чтения."""

@@ -31,7 +31,7 @@ All interactions use server-side rendering with HTMX for progressive enhancement
 ### HTMX Setup
 
 ```html
-<!-- templates/base.html -->
+<!-- templates/base_module.html -->
 <head>
     ...
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>

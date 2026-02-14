@@ -1,9 +1,10 @@
+import os
 from pathlib import Path
+from urllib.parse import quote_plus
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Определяем корень проекта
-# shared/core/config.py -> core -> shared -> src -> ROOT
 ROOT_DIR = Path(__file__).parent.parent.parent.parent
 ENV_FILE_PATH = ROOT_DIR / ".env"
 
@@ -11,11 +12,10 @@ ENV_FILE_PATH = ROOT_DIR / ".env"
 class CommonSettings(BaseSettings):
     """
     Базовые настройки, общие для всех сервисов (Backend, Bot, Worker).
-    Включает Redis, Логирование и общие пути.
     """
 
-    # --- Environment ---
-    environment: str = "development"  # development, production
+    # --- Mode ---
+    debug: bool = True  # True = development, False = production
 
     # --- Redis ---
     redis_host: str = "localhost"
@@ -23,6 +23,9 @@ class CommonSettings(BaseSettings):
     redis_password: str | None = None
     redis_max_connections: int = 50
     redis_timeout: int = 5
+
+    # --- Redis Keys ---
+    redis_site_settings_key: str = "site_settings_hash"
 
     # --- Logging ---
     log_level_console: str = "DEBUG"
@@ -34,25 +37,40 @@ class CommonSettings(BaseSettings):
     system_user_id: int = 2_000_000_000
 
     @property
-    def redis_url(self) -> str:
-        # Автоматически определять хост на основе окружения
-        host = (
-            self.redis_host
-            if self.redis_host != "localhost"
-            else ("redis" if self.environment == "production" else "localhost")
-        )
+    def is_inside_docker(self) -> bool:
+        """Определяет, запущен ли код внутри Docker-контейнера."""
+        return os.path.exists("/.dockerenv")
 
-        if self.redis_password:
-            return f"redis://:{self.redis_password}@{host}:{self.redis_port}"
+    @property
+    def effective_redis_host(self) -> str:
+        if self.redis_host != "localhost":
+            return self.redis_host
+
+        return "redis" if self.is_inside_docker else "localhost"
+
+    @property
+    def redis_url(self) -> str:
+        host = self.effective_redis_host
+
+        # Очищаем пароль от кавычек, если они случайно попали, и экранируем спецсимволы
+        password = self.redis_password
+        if password:
+            password = password.strip("'\"").strip()
+
+        if password:
+            # quote_plus заэкранирует '*' и другие символы для корректного URL
+            encoded_password = quote_plus(password)
+            return f"redis://:{encoded_password}@{host}:{self.redis_port}"
+
         return f"redis://{host}:{self.redis_port}"
 
     @property
     def is_production(self) -> bool:
-        return self.environment.lower() in ("production", "prod")
+        return not self.debug
 
     @property
     def is_development(self) -> bool:
-        return self.environment.lower() in ("development", "dev")
+        return self.debug
 
     # Логи
     @property
@@ -66,5 +84,5 @@ class CommonSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=ENV_FILE_PATH,
         env_file_encoding="utf-8",
-        extra="ignore",  # Игнорировать лишние поля (например, DB_URL в боте)
+        extra="ignore",
     )

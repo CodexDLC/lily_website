@@ -23,7 +23,7 @@ async def startup(settings: BotSettings) -> None:
     """Инициализация логирования при запуске бота."""
     setup_logging(settings, service_name="telegram_bot")
     log.info("Telegram Bot starting...")
-    log.info(f"Backend API: {settings.backend_api_url}")
+    log.info(f"Backend API: {settings.api_url}")
 
 
 async def shutdown(container: BotContainer) -> None:
