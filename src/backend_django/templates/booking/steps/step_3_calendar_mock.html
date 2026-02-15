@@ -19,7 +19,7 @@
             <div class="calendar-header">
                 <!-- Prev Month -->
                 <button class="cal-nav-btn"
-                        hx-get="{% url 'booking_wizard' %}?step=3&month={{ current_month|add:'-1' }}&year={{ current_year }}&service_id={{ selected_service.id }}&master_id={{ selected_master.id }}"
+                        hx-get="{% url 'booking_wizard' %}?step=3&month={{ current_month|add:'-1' }}&year={{ current_year }}&service_id={{ selected_service.id }}&master_id={{ master_id }}"
                         hx-target="#wizard-content"
                         hx-swap="innerHTML">
                     ‹
@@ -29,7 +29,7 @@
 
                 <!-- Next Month -->
                 <button class="cal-nav-btn"
-                        hx-get="{% url 'booking_wizard' %}?step=3&month={{ current_month|add:'1' }}&year={{ current_year }}&service_id={{ selected_service.id }}&master_id={{ selected_master.id }}"
+                        hx-get="{% url 'booking_wizard' %}?step=3&month={{ current_month|add:'1' }}&year={{ current_year }}&service_id={{ selected_service.id }}&master_id={{ master_id }}"
                         hx-target="#wizard-content"
                         hx-swap="innerHTML">
                     ›
@@ -51,7 +51,7 @@
                     {% else %}
                         <!-- Active Day -->
                         <button class="day {% if day.date == selected_date_obj|date:'Y-m-d' %}active{% endif %}"
-                                hx-get="{% url 'booking_wizard' %}?step=3&date={{ day.date }}&service_id={{ selected_service.id }}&master_id={{ selected_master.id }}"
+                                hx-get="{% url 'booking_wizard' %}?step=3&date={{ day.date }}&service_id={{ selected_service.id }}&master_id={{ master_id }}"
                                 hx-target="#wizard-content"
                                 hx-swap="innerHTML"
                                 onclick="selectDay(this)">
@@ -83,7 +83,7 @@
                     <div class="slots-grid-compact">
                         {% for slot in available_slots %}
                         <button class="slot-btn"
-                                hx-get="{% url 'booking_wizard' %}?step=4&service_id={{ selected_service.id }}&master_id={{ selected_master.id }}&date={{ selected_date_obj|date:'Y-m-d' }}&time={{ slot }}"
+                                hx-get="{% url 'booking_wizard' %}?step=4&service_id={{ selected_service.id }}&master_id={{ master_id }}&date={{ selected_date_obj|date:'Y-m-d' }}&time={{ slot }}"
                                 hx-target="#wizard-content"
                                 hx-swap="innerHTML">
                             {{ slot }}

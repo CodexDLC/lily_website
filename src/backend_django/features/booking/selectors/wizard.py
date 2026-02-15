@@ -71,35 +71,39 @@ def get_step_2_context(state: BookingState) -> dict[str, Any] | None:
 
 
 def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[str, Any] | None:
-    """Context for Step 3: Calendar & Slots. Calendar grid is cached, slots are dynamic."""
+    """Context for Step 3: Calendar & Slots."""
     context = {}
 
-    # 1. Get Objects (Safe retrieval)
-    service = None
-    if state.service_id:
-        try:
-            service = Service.objects.get(id=state.service_id)
-            context["selected_service"] = service
-        except Service.DoesNotExist:
-            return None
-    else:
+    # 1. Get Service
+    if not state.service_id:
+        return None
+    try:
+        service = Service.objects.get(id=state.service_id)
+        context["selected_service"] = service
+    except Service.DoesNotExist:
         return None
 
+    # 2. Get Masters (Handle "any" or specific ID)
     masters_list = []
-    if state.master_id:
-        if state.master_id == "any":
-            masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
-        else:
-            try:
-                master = Master.objects.get(id=state.master_id)
-                context["selected_master"] = master
-                masters_list = [master]
-            except (Master.DoesNotExist, ValueError):
-                return None
+    master_id_val = state.master_id or "any"  # Default to any if not set
+    context["master_id"] = master_id_val  # Pass raw value to template
+
+    if master_id_val == "any":
+        masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
     else:
+        try:
+            master = Master.objects.get(id=master_id_val)
+            context["selected_master"] = master
+            masters_list = [master]
+        except (Master.DoesNotExist, ValueError):
+            # If specific master not found, fallback to "any" instead of returning None
+            masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
+            context["master_id"] = "any"
+
+    if not masters_list:
         return None
 
-    # 2. Calendar Grid (Cached)
+    # 3. Calendar Grid (Cached)
     today = timezone.now().date()
     try:
         year = int(view_data.get("year", today.year))
@@ -112,7 +116,7 @@ def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[s
 
     context.update(get_cached_data(f"calendar_grid_cache_{year}_{month}", fetch_calendar))
 
-    # 3. Slots (DYNAMIC - NEVER CACHE)
+    # 4. Slots (DYNAMIC)
     if state.selected_date and service and masters_list:
         context["selected_date_obj"] = state.selected_date
 
@@ -137,6 +141,7 @@ def get_step_4_context(state: BookingState) -> dict[str, Any] | None:
         if state.master_id and state.master_id != "any":
             context["selected_master"] = Master.objects.get(id=state.master_id)
 
+        context["master_id"] = state.master_id or "any"
         context["selected_date"] = state.selected_date
         context["selected_time"] = state.selected_time
     except (Service.DoesNotExist, Master.DoesNotExist):
