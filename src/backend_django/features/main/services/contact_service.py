@@ -1,7 +1,7 @@
+from contextlib import suppress
 from typing import cast
 
 from core.arq.client import DjangoArqClient
-from django.conf import settings
 from features.booking.services.client_service import ClientService
 
 from ..models import ContactRequest
@@ -39,25 +39,23 @@ class ContactService:
         # 2. Create Request
         request = cast("ContactRequest", ContactRequest.objects.create(client=client, message=message, topic=topic))
 
-        # 3. Send Notification via ARQ (Telegram Bot)
-        admin_chat_id = getattr(settings, "TELEGRAM_ADMIN_ID", None)
+        # 3. Send Notification via ARQ (Telegram Bot decides where to send)
+        # Formatted text for the message
+        text = (
+            f"📋 <b>Neue Anfrage von Website</b>\n\n"
+            f"👤 <b>{first_name} {last_name}</b>\n"
+            f"📞 {contact_value} ({contact_type})\n"
+            f"🎯 <b>Thema:</b> {request.get_topic_display()}\n"
+            f"💬 {message}"
+        )
 
-        if admin_chat_id:
-            # Formatted text for the message
-            text = (
-                f"📋 <b>Neue Anfrage von Website</b>\n\n"
-                f"👤 <b>{first_name} {last_name}</b>\n"
-                f"📞 {contact_value} ({contact_type})\n"
-                f"🎯 <b>Thema:</b> {request.get_topic_display()}\n"
-                f"💬 {message}"
-            )
-
-            # We pass request_id so the 02_telegram_bot can attach Inline Buttons (Confirm/Cancel)
+        # We pass request_id so the 02_telegram_bot can attach Inline Buttons (Confirm/Cancel)
+        # Suppress exceptions to not fail the request creation
+        with suppress(Exception):
             DjangoArqClient.enqueue_job(
                 "send_notification_task",
-                user_id=int(admin_chat_id),
                 message=text,
-                request_id=request.id,  # <--- Added ID
+                request_id=request.id,
             )
 
         return request
