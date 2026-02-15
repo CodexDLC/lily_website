@@ -99,7 +99,8 @@ class SiteSettingsAdmin(admin.ModelAdmin):
                     "phone",
                     "email",
                     "address_street",
-                    "address_city",
+                    "address_locality",
+                    "address_postal_code",
                     "google_maps_link",
                 )
             },

@@ -1,12 +1,15 @@
-from typing import Any, Protocol
+from typing import Protocol
 
 
 class NotificationsDataProvider(Protocol):
     """
     Контракт для доступа к данным фичи Notifications.
-    Реализация (Client или Repository) подставляется через DI.
     """
 
-    async def get_data(self, user_id: int) -> Any:
-        """Пример метода получения данных."""
+    async def confirm_appointment(self, appointment_id: int) -> dict:
+        """Подтвердить заявку."""
+        ...
+
+    async def cancel_appointment(self, appointment_id: int, reason: str | None = None, note: str | None = None) -> dict:
+        """Отклонить заявку."""
         ...

@@ -185,3 +185,19 @@ body {
     padding: 0 20px;
     min-width: 0;
 }
+
+/* Styles moved from footer.css */
+@media (min-width: 480px) {
+    .developer-credit-center { display: block; }
+}
+
+/* Styles moved from forms.css */
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: span 1;
+    }
+}

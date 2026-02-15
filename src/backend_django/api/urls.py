@@ -5,6 +5,7 @@ Versioned API routers. Bot and external clients use these endpoints.
 Docs: /api/docs
 """
 
+from api.booking import router as booking_router
 from api.instance import api
 from ninja import Router
 
@@ -22,6 +23,9 @@ def health(request):
 
 # Добавляем роутер для публикации сообщений в стрим
 # v1.add_router("/manager_redis/", stream_publisher_router) # ВРЕМЕННО ОТКЛЮЧЕНО
+
+# Booking API для Telegram Bot (управление записями)
+v1.add_router("/booking/", booking_router)
 
 
 api.add_router("/v1/", v1)

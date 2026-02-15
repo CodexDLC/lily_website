@@ -26,19 +26,21 @@
 /* Team Grid */
 .team-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop */
+    grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop (default) */
     gap: 30px;
 }
 
 /* Responsive Grid */
-@media (max-width: 1024px) {
+/* Адаптировано: 2 колонки для планшетов и меньших экранов (до 1023px) */
+@media (max-width: 1023px) {
     .team-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (max-width: 600px) {
+/* Адаптировано: 1 колонка для мобильных устройств (до 767px) */
+@media (max-width: 767px) {
     .team-grid {
-        grid-template-columns: 1fr; /* 1 column on mobile */
+        grid-template-columns: 1fr;
     }
 }

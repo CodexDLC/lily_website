@@ -1,21 +1,21 @@
-# 🧩 Features
+# 🧩 Features (Django Apps)
 
 [⬅️ Back](../README.md) | [🏠 Docs Root](../../../../README.md)
 
-The `features` directory contains the business logic of the application, organized by domain. Each feature is a self-contained Django app.
+This directory (`src/backend_django/features`) contains the modular Django applications, each representing a distinct feature or domain of the project. This structure promotes a "Feature-Sliced" architecture, where related code (models, views, URLs, templates) for a specific functionality is grouped together.
 
-## 🗺️ Module Map
+## Purpose
 
-| Feature | Description |
+Organizing the backend into features (Django apps) helps to:
+*   **Improve Modularity:** Each feature is a self-contained unit.
+*   **Enhance Scalability:** Easier to manage and scale individual parts of the application.
+*   **Increase Maintainability:** Changes in one feature are less likely to impact others.
+*   **Facilitate Team Collaboration:** Different teams can work on different features concurrently.
+
+## Module Map
+
+| Component | Description |
 |:---|:---|
-| **[Main](./main/README.md)** | Core website functionality (pages, views). |
-| **[System](./system/README.md)** | System-wide configurations and utilities. |
-
-## 🏗️ Architecture
-
-Each feature follows a standard Django app structure:
-- `models.py`: Database schemas.
-- `views.py`: Request handlers.
-- `urls.py`: URL routing for the feature.
-- `admin.py`: Admin interface configuration.
-- `apps.py`: App configuration.
+| **[📂 Main Feature](./main/README.md)** | Core website pages, views, and static content. |
+| **[📂 System Feature](./system/README.md)** | System-wide services, models (e.g., tags, mixins), and configurations. |
+| **[📂 Booking Feature](./booking/README.md)** | Business logic for appointment booking and management. |
