@@ -172,6 +172,15 @@ else:
     REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 
 # ═══════════════════════════════════════════
+# Telegram Bot Settings
+# ═══════════════════════════════════════════
+
+# SUPERUSER_IDS - разработчики (технические ошибки, логи)
+SUPERUSER_IDS = os.environ.get("SUPERUSER_IDS", "")
+# OWNER_IDS - владельцы бизнеса (букинги, контакты, бизнес-уведомления)
+OWNER_IDS = os.environ.get("OWNER_IDS", "")
+
+# ═══════════════════════════════════════════
 # Cache & Sessions (Redis)
 # ═══════════════════════════════════════════
 

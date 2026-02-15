@@ -139,7 +139,6 @@ class BookingService:
     def _handle_post_creation(appointment: Appointment, form_data: dict[str, Any]) -> None:
         """Handles notifications and extra flags."""
         from core.arq.client import DjangoArqClient
-        from django.conf import settings
 
         visits_count = Appointment.objects.filter(
             client=appointment.client, status=Appointment.STATUS_COMPLETED
@@ -160,14 +159,12 @@ class BookingService:
             "category_slug": appointment.service.category.slug if appointment.service.category else None,
         }
 
-        admin_id = getattr(settings, "TELEGRAM_ADMIN_ID", None)
-        if admin_id:
-            try:
-                DjangoArqClient.enqueue_job(
-                    "send_booking_notification_task",
-                    admin_id=int(admin_id),
-                    appointment_data=appointment_data,
-                )
-                log.info(f"Queued booking notification for appointment {appointment.id}")
-            except Exception as e:
-                log.error(f"Failed to queue notification: {e}")
+        # Queue notification task - telegram bot decides where to send (channel, admin, etc)
+        try:
+            DjangoArqClient.enqueue_job(
+                "send_booking_notification_task",
+                appointment_data=appointment_data,
+            )
+            log.info(f"Queued booking notification for appointment {appointment.id}")
+        except Exception as e:
+            log.error(f"Failed to queue notification: {e}")
