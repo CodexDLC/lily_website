@@ -91,7 +91,10 @@ class BookingWizardView(TemplateView):
 
         if not appointment:
             log.error(f"Failed to create appointment for state: {state}")
-            return redirect("booking_wizard")
+            # Clear session so user can start fresh
+            session_service.clear()
+            # Instead of silently redirecting, raise an error so we can see what's wrong
+            raise ValueError("Failed to create appointment - check logs for details")
 
         # 3. Clear Session
         session_service.clear()
