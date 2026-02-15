@@ -8,6 +8,9 @@ Infrastructure layer containing DI container, configuration, and base settings.
 
 | Component | Description |
 |:---|:---|
+| **[📜 API Client](./api_client.md)** | Base HTTP Client (Abstract) |
+| **[📜 Factory](./factory.md)** | Bot & Dispatcher Factory |
+| **[📜 Routers](./routers.md)** | Router Auto-Discovery & Assembly |
 | **[📜 Container](./container.md)** | Dependency Injection container setup |
 | **[📜 Settings](./settings.md)** | Feature registration and middleware config |
 | **[📜 Config](./config.md)** | Environment variables and Pydantic settings |

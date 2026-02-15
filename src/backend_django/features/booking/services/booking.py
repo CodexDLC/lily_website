@@ -68,20 +68,18 @@ class BookingService:
         """
         end_dt = start_dt + timedelta(minutes=duration_minutes)
 
-        # Since we can't easily calculate end_time in a simple SQL filter without extra fields,
-        # we'll fetch today's appointments and check in Python (safe within transaction)
         today_appointments = Appointment.objects.filter(
             master=master,
             datetime_start__date=start_dt.date(),
             status__in=[Appointment.STATUS_PENDING, Appointment.STATUS_CONFIRMED],
-        ).select_for_update()  # Lock rows for this master
+        ).select_for_update()
 
         for app in today_appointments:
             app_start = app.datetime_start
             app_end = app_start + timedelta(minutes=app.duration_minutes)
 
             if start_dt < app_end and end_dt > app_start:
-                return False  # Collision found
+                return False
 
         return True
 
@@ -93,7 +91,6 @@ class BookingService:
             return None
 
         try:
-            # Combine date and time string
             date_str = (
                 state.selected_date.isoformat()
                 if hasattr(state.selected_date, "isoformat")
@@ -139,6 +136,7 @@ class BookingService:
     def _handle_post_creation(appointment: Appointment, form_data: dict[str, Any]) -> None:
         """Handles notifications and extra flags."""
         from core.arq.client import DjangoArqClient
+        from django.conf import settings
 
         visits_count = Appointment.objects.filter(
             client=appointment.client, status=Appointment.STATUS_COMPLETED
@@ -147,6 +145,8 @@ class BookingService:
         appointment_data = {
             "id": appointment.id,
             "client_name": f"{appointment.client.first_name} {appointment.client.last_name}",
+            "first_name": appointment.client.first_name,
+            "last_name": appointment.client.last_name,
             "client_phone": appointment.client.phone or "не указан",
             "client_email": appointment.client.email or "не указан",
             "service_name": appointment.service.title,
@@ -159,10 +159,13 @@ class BookingService:
             "category_slug": appointment.service.category.slug if appointment.service.category else None,
         }
 
-        # Queue notification task - telegram bot decides where to send (channel, admin, etc)
+        owner_ids = settings.OWNER_IDS or ""
+        admin_id = int(owner_ids.split(",")[0]) if owner_ids else 0
+
         try:
             DjangoArqClient.enqueue_job(
                 "send_booking_notification_task",
+                admin_id=admin_id,
                 appointment_data=appointment_data,
             )
             log.info(f"Queued booking notification for appointment {appointment.id}")

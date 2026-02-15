@@ -13,20 +13,22 @@ router = Router(name="notifications_ui_router")
 async def handle_action_approve(
     call: CallbackQuery, callback_data: NotificationsCallback, state, container: BotContainer
 ):
+    """
+    Единый хендлер для всех callback-действий уведомлений.
+    """
     await call.answer()
 
-    # 1. Получаем готовый оркестратор из контейнера
     orchestrator = container.features.get("notifications")
     if not orchestrator:
         return
 
-    # 2. Инициализируем Директора
+    # Инициализируем Директора (хотя в этой фиче навигация пока не используется)
     director = Director(container, state, call.from_user.id)
     orchestrator.set_director(director)
 
-    # 3. Вызываем бизнес-логику
+    # Вызываем бизнес-логику
     view_dto = await orchestrator.handle_action(callback_data, call)
 
-    # 4. Отправляем ответ
+    # Отправляем ответ через ViewSender
     if container.view_sender:
         await container.view_sender.send(view_dto)

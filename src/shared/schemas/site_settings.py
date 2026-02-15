@@ -11,7 +11,9 @@ class SiteSettingsSchema(BaseModel):
 
     company_name: str = Field(default="LILY Beauty Salon")
     site_base_url: str = Field(default="https://lily-salon.de/")
-    logo_url: str = Field(default="/static/img/logo_lily.webp")
+
+    # Используем PNG версию для 100% совместимости в Email
+    logo_url: str = Field(default="/static/img/_source/logo_lily.png")
 
     # Контакты
     phone: str = Field(default="+49 176 59423704")

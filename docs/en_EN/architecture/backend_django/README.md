@@ -1,12 +1,12 @@
 # 🐍 Backend (Django)
 
-[⬅️ Back](../../README.md) | [🏠 Docs Root](../../../README.md)
+[⬅️ Back](../README.md) | [🏠 Docs Root](../../../README.md)
 
 The backend is built with **Django**, following a modular "Feature-Sliced" inspired architecture.
 
 ## 🗺️ Module Map
 
-| Directory | Description |
+| Component | Description |
 |:---|:---|
 | **[⚙️ Core](./core/README.md)** | Settings, WSGI/ASGI, and base configuration. |
 | **[🧩 Features](./features/README.md)** | Business logic modules (apps). |
@@ -15,6 +15,11 @@ The backend is built with **Django**, following a modular "Feature-Sliced" inspi
 | **[🌍 Locale](./locale/README.md)** | Internationalization files. |
 | **[🎨 Static](./static/README.md)** | CSS, JS, and images. |
 | **[🖼️ Media](./media/README.md)** | User-uploaded content. |
+| **[📜 manage.py](./manage.md)** | Django's command-line utility. |
+| **[📂 logs](./logs/README.md)** | Directory for application logs. |
+| **[📜 Staticfiles](./staticfiles.md)** | Collected static files for deployment. |
+| **[📜 conftest.py](./conftest.md)** | Pytest configuration and fixtures. |
+| **[📜 Backend README](./backend_readme.md)** | High-level overview of the Django backend project. |
 
 ## 🏗️ Architecture Overview
 
@@ -30,8 +35,3 @@ The project deviates from the standard flat Django structure to improve scalabil
 2.  **Environment:** Copy `.env.example` to `.env` and configure.
 3.  **Migrate:** `python manage.py migrate`
 4.  **Run:** `python manage.py runserver`
-
-## 📚 Documentation
-
-- [Tasks](./tasks/README.md)
-- [Roadmap](./roadmap.md)
