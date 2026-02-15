@@ -58,26 +58,31 @@ async def main() -> None:
     container.set_bot(bot)  # Устанавливаем объект 02_telegram_bot в контейнер
     log.info("Bot and Dispatcher created")
 
-    # 6. Middleware (порядок: снаружи → внутрь)
+    # 6. Инициализация ARQ
+    await container.init_arq()
+
+    # 7. Middleware (порядок: снаружи → внутрь)
     dp.update.middleware(UserValidationMiddleware())
     dp.update.middleware(ThrottlingMiddleware(redis=redis_client, rate_limit=1.0))
     dp.update.middleware(SecurityMiddleware())
     dp.update.middleware(ContainerMiddleware(container=container))
     log.info("Middleware attached")
 
-    # 7. Роутеры (автоподключение из INSTALLED_FEATURES)
+    # 8. Роутеры (автоподключение из INSTALLED_FEATURES)
     main_router = build_main_router()
     dp.include_router(main_router)
     log.info("Routers attached")
 
-    # 8. Запуск Redis Stream Processor
+    # 9. Запуск Redis Stream Processor
     await container.stream_processor.start_listening()
     log.info("Redis Stream Processor started.")
 
-    # 9. Polling
+    # 10. Polling
     log.info("Bot polling started")
     try:
-        await dp.start_polling(bot)
+        await dp.start_polling(
+            bot, allowed_updates=["message", "callback_query", "inline_query", "chosen_inline_result"]
+        )
     finally:
         await shutdown(container)
 

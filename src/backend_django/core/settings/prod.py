@@ -25,6 +25,7 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    LANGUAGE_COOKIE_SECURE = True  # Added this line
 
 # ═══════════════════════════════════════════
 # Static files

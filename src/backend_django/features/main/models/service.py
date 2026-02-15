@@ -1,3 +1,5 @@
+import contextlib
+
 from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -75,20 +77,21 @@ class Service(TimestampMixin, ActiveMixin, SeoMixin):
             optimize_image(self.image, max_width=1200)
         super().save(*args, **kwargs)
         # Targeted cache invalidation
-        cache.delete_many(
-            [
-                "active_services_cache",
-                "popular_services_cache",
-                f"service_detail_{self.slug}",
-                f"category_detail_{self.category.slug}",
-            ]
-        )
+        # Use contextlib.suppress instead of try-except-pass (Ruff SIM105)
+        with contextlib.suppress(Exception):
+            cache.delete_many(
+                [
+                    "active_services_cache",
+                    "popular_services_cache",
+                    f"service_detail_{self.slug}",
+                    f"category_detail_{self.category.slug}",
+                ]
+            )
 
 
 class PortfolioImage(TimestampMixin):
     """
     Gallery images for a specific service (Before/After, Examples).
-    Displayed as a Bento grid on the service detail page.
     """
 
     service = models.ForeignKey(
@@ -120,4 +123,5 @@ class PortfolioImage(TimestampMixin):
             optimize_image(self.image, max_width=1600)
         super().save(*args, **kwargs)
         # Targeted cache invalidation
-        cache.delete_many([f"service_detail_{self.service.slug}", f"category_detail_{self.service.category.slug}"])
+        with contextlib.suppress(Exception):
+            cache.delete_many([f"service_detail_{self.service.slug}", f"category_detail_{self.service.category.slug}"])

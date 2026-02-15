@@ -11,7 +11,6 @@ Documentation and development plans for the Telegram Bot application located in 
 | **[📂 Core Infrastructure](./core/README.md)** | DI Container, Configuration, Settings, and Middleware |
 | **[📂 Features (Modules)](./features/README.md)** | Modular business logic (Menu, Commands) |
 | **[📂 Services](./services/README.md)** | Shared services (Director, FSM, Sender, Animation) |
-| **[📂 Workers (ARQ)](./workers/README.md)** | Async task queues and background jobs |
 | **[📂 Resources](./resources/README.md)** | Templates, Texts, and Keyboards |
 | **[🗺️ Roadmap](./roadmap.md)** | Development plan and future features |
 
@@ -42,10 +41,15 @@ src/telegram_bot/
  ┃ ┣ 📂 sender              # ViewSender (Smart Message Editing)
  ┃ ┣ 📂 fsm                 # State Managers & Base Classes
  ┃ ┣ 📂 feature_discovery   # Auto-discovery service (Menu, GC)
- ┃ ┗ 📂 worker              # ARQ Workers (Background Tasks)
  ┃
- ┗ 📜 app_telegram.py       # Entry Point (Polling)
+ ┗ 📜 [app_telegram.py](./app_telegram.md) # Entry Point (Polling)
 ```
+
+## 🛠️ Management Scripts
+
+| Component | Description |
+|:---|:---|
+| **[📜 Feature Management Script](./manage_script.md)** | CLI tool for creating new features |
 
 ## 📦 Key Concepts
 
@@ -62,6 +66,3 @@ Quick access to architectural concepts.
 *   **📱 Bot Menu (Dashboard)**
     *   A persistent "Dashboard" message.
     *   Buttons are auto-discovered from features via `MENU_CONFIG`.
-
-*   **⚡ Async Workers (ARQ)**
-    *   Background tasks (notifications, broadcasts) powered by Redis.

@@ -751,7 +751,8 @@
 }
 
 /* --- Adaptive --- */
-@media (max-width: 1024px) {
+/* Адаптировано: для планшетов и меньших экранов (до 1023px) */
+@media (max-width: 1023px) {
     .wizard-grid {
         grid-template-columns: 1fr;
     }
@@ -766,7 +767,8 @@
     }
 }
 
-@media (max-width: 768px) {
+/* Адаптировано: для мобильных устройств (до 767px) */
+@media (max-width: 767px) {
     .step-title {
         display: none;
     }
@@ -778,10 +780,8 @@
     .calendar-layout {
         grid-template-columns: 1fr;
     }
-}
 
-@media (max-width: 600px) {
-    .form-grid {
+    .form-grid { /* Перенесено из @media (max-width: 600px) */
         grid-template-columns: 1fr;
     }
 }

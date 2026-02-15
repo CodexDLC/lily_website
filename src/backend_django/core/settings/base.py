@@ -180,6 +180,9 @@ SUPERUSER_IDS = os.environ.get("SUPERUSER_IDS", "")
 # OWNER_IDS - владельцы бизнеса (букинги, контакты, бизнес-уведомления)
 OWNER_IDS = os.environ.get("OWNER_IDS", "")
 
+# === Bot API Authentication ===
+BOT_API_KEY = os.environ.get("BOT_API_KEY", None)
+
 # ═══════════════════════════════════════════
 # Cache & Sessions (Redis)
 # ═══════════════════════════════════════════

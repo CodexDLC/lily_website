@@ -8,6 +8,8 @@ class BookingNotificationPayload(BaseModel):
 
     id: int
     client_name: str
+    first_name: str | None = ""
+    last_name: str | None = ""
     client_phone: str
     client_email: str
     service_name: str

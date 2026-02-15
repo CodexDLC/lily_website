@@ -1,10 +1,12 @@
-from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from aiogram import Bot
 from loguru import logger as log
 
 from .router import RedisRouter
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class BotRedisDispatcher:
@@ -16,45 +18,33 @@ class BotRedisDispatcher:
     def __init__(self, bot: Bot | None = None):
         self._bot = bot
         self._container = None  # Ссылка на BotContainer
-        # Словарь для хранения зарегистрированных хендлеров:
-        # {message_type: [(handler_func, filter_func), ...]}
-        # Хендлер принимает (payload, container)
+        # Словарь для хранения зарегистрированных хендлеров
         self._handlers: dict[
             str, list[tuple[Callable[[dict[str, Any], Any], Any], Callable[[dict[str, Any]], bool] | None]]
         ] = {}
         log.info("BotRedisDispatcher initialized.")
 
     def set_bot(self, bot: Bot):
-        """Устанавливает объект Bot после инициализации."""
         self._bot = bot
         log.debug("Bot object set in BotRedisDispatcher.")
 
     def set_container(self, container):
-        """Устанавливает DI контейнер."""
         self._container = container
         log.debug("Container set in BotRedisDispatcher.")
 
     def include_router(self, router: RedisRouter):
-        """
-        Подключает роутер к диспетчеру.
-        Копирует все хендлеры из роутера в диспетчер.
-        """
         for message_type, handlers in router.handlers.items():
             if message_type not in self._handlers:
                 self._handlers[message_type] = []
-
-            # Добавляем хендлеры из роутера
             self._handlers[message_type].extend(handlers)
-
         log.info(f"Included router with handlers for types: {list(router.handlers.keys())}")
 
-    def on_message(self, message_type: str, filter_func: Callable[[dict[str, Any]], bool] | None = None):
+    def on_message(self, message_type: str, filter_func: "Callable[[dict[str, Any]], bool] | None" = None):
         """
         Декоратор для регистрации хендлеров сообщений из Redis Stream.
-        Хендлер должен принимать (payload, container).
         """
 
-        def decorator(handler: Callable[[dict[str, Any], Any], Any]):
+        def decorator(handler: "Callable[[dict[str, Any], Any], Any]"):
             if message_type not in self._handlers:
                 self._handlers[message_type] = []
             self._handlers[message_type].append((handler, filter_func))
@@ -65,42 +55,43 @@ class BotRedisDispatcher:
 
     async def process_message(self, message_data: dict[str, Any]):
         """
-        Обрабатывает входящее сообщение из Redis Stream, маршрутизируя его к соответствующим хендлерам.
+        Обрабатывает входящее сообщение из Redis Stream.
+        При ошибке в хендлере ставит задачу на повторную очередь через ARQ.
         """
-        if not self._bot:
-            log.error("Bot object is not set in BotRedisDispatcher. Cannot process messages.")
-            return
-
-        if not self._container:
-            log.error("Container is not set in BotRedisDispatcher. Cannot process messages.")
+        if not self._bot or not self._container:
+            log.error("Bot or Container not set in BotRedisDispatcher.")
             return
 
         msg_type = message_data.get("type")
         if not msg_type:
-            log.warning(f"Received Redis Stream message without 'type' field. Skipping: {message_data}")
+            log.warning(f"Received Redis Stream message without 'type' field: {message_data}")
             return
 
         handlers_for_type = self._handlers.get(msg_type, [])
         if not handlers_for_type:
-            log.debug(f"No handlers registered for message_type='{msg_type}'. Skipping: {message_data}")
+            log.debug(f"No handlers registered for message_type='{msg_type}'")
             return
 
-        processed_any = False
         for handler, filter_func in handlers_for_type:
             try:
                 if filter_func is None or filter_func(message_data):
                     log.debug(f"Calling handler {handler.__name__} for message_type='{msg_type}'")
-                    # Передаем payload и container (без bot)
                     await handler(message_data, self._container)
-                    processed_any = True
             except Exception as e:
-                log.error(
-                    f"Error in Redis Stream handler {handler.__name__} for message_type='{msg_type}': {e}",
-                    exc_info=True,
-                )
+                log.error(f"Error in Redis Stream handler {handler.__name__}: {e}")
 
-        if not processed_any:
-            log.debug(f"No handlers matched filters for message_type='{msg_type}'. Message: {message_data}")
+                # Механизм Retry через ARQ
+                if self._container.arq_pool:
+                    try:
+                        # Ставим задачу на перепостановку в стрим через 60 секунд
+                        await self._container.arq_pool.enqueue_job(
+                            "requeue_to_stream", stream_name="bot_events", payload=message_data, _defer_by=60
+                        )
+                        log.info(f"Retry scheduled for message_type='{msg_type}' via ARQ")
+                    except Exception as arq_err:
+                        log.error(f"Failed to schedule retry in ARQ: {arq_err}")
+
+                raise e
 
 
 # Глобальный экземпляр диспетчера
