@@ -42,10 +42,11 @@ class ClientAdmin(ModelAdmin):
 
 @admin.register(Appointment)
 class AppointmentAdmin(ModelAdmin):
-    list_display = ["id", "client", "master", "service", "datetime_start", "status_badge"]
+    list_display = ["id", "client", "master", "service", "datetime_start", "status_badge", "active_promo_badge"]
     list_display_links = ["id", "client"]
     list_filter = ["status", "master"]
     list_filter_sheet = True
+    readonly_fields = ["active_promo"]
 
     @admin.display(description=_("Status"))
     def status_badge(self, obj):
@@ -61,6 +62,15 @@ class AppointmentAdmin(ModelAdmin):
             color_classes,
             obj.get_status_display(),
         )
+
+    @admin.display(description=_("Promo"))
+    def active_promo_badge(self, obj):
+        if obj.active_promo:
+            return format_html(
+                '<span class="px-2 py-1 rounded-md text-xs font-medium bg-yellow-100 text-yellow-700">🎯 {}</span>',
+                obj.active_promo.title[:30],
+            )
+        return "—"
 
     @action(description=_("Mark as Confirmed"), icon="check_circle")
     def mark_as_confirmed(self, request, queryset):

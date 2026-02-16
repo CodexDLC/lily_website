@@ -14,6 +14,7 @@ class NotificationsTexts:
         "📞 <b>Телефон:</b> {client_phone}\n"
         "📊 <b>Визиты:</b> {visits_info}\n"
         "💰 <b>Сумма:</b> {price} €\n"
+        "{promo_info}"
         "📝 <b>Заметка:</b> {client_notes}\n\n"
         "🆔 <b>ID записи:</b> #{id}"
     )

@@ -38,10 +38,11 @@
                         </div>
                     </div>
 
-                    <div class="owner-actions">
-                        <a href="{% url 'booking_step1' %}?master={{ owner.id }}" class="btn-pill">{% trans "Book Now" %}</a>
+                    <div class="owner-buttons">
+                        <a href="{% url 'booking_wizard' %}?master_id={{ owner.id }}" class="btn-pill">{% trans "Termin buchen" %}</a>
+
                         {% if owner.instagram %}
-                        <a href="https://instagram.com/{{ owner.instagram }}" target="_blank" class="btn-instagram-custom">{% trans "Instagram" %}</a>
+                        <a href="https://instagram.com/{{ owner.instagram }}" target="_blank" class="btn-pill btn-instagram-secondary">{% trans "Instagram" %}</a>
                         {% endif %}
                     </div>
                 </div>
@@ -52,29 +53,37 @@
         <div class="masters-grid-wrapper">
             <h3 class="grid-heading text-center">{% trans "Our Specialists" %}</h3>
             <div class="team-grid">
-                {% for master in masters %}
-                <div class="master-card">
-                    <div class="master-photo-wrapper">
-                        {% if master.photo %}
-                            <img src="{{ master.photo.url }}" alt="{{ master.name }}" class="master-photo-img" loading="lazy">
-                        {% else %}
-                            <img src="{% static 'img/master_placeholder.webp' %}" alt="{{ master.name }}" class="master-photo-img" loading="lazy">
-                        {% endif %}
-                        <div class="master-overlay">
-                            <div class="master-overlay-content">
-                                <a href="{% url 'booking_step1' %}?master={{ master.id }}" class="btn-book-small">{% trans "Book" %}</a>
-                                {% if master.instagram %}
-                                <a href="https://instagram.com/{{ master.instagram }}" target="_blank" class="btn-instagram-custom" style="margin-top: 10px; font-size: 11px; padding: 6px 15px;">Instagram</a>
-                                {% endif %}
-                            </div>
+                {% for master in team %}
+                <article class="master-card">
+                    <div class="master-photo" style="background-image: url('{% if master.photo %}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}');"></div>
+                    <div class="master-info">
+                        <h3 class="master-name">{{ master.name }}</h3>
+                        <p class="master-role">{{ master.title }}</p>
+
+                        <div class="master-buttons">
+                            <a href="{% url 'booking_wizard' %}?master_id={{ master.id }}" class="btn-select">{% trans "Buchen" %}</a>
+                            {% if master.instagram %}
+                            <a href="https://instagram.com/{{ master.instagram }}" target="_blank" class="btn-select btn-instagram-card">Instagram</a>
+                            {% endif %}
                         </div>
                     </div>
-                    <div class="master-info">
-                        <h4 class="master-name">{{ master.name }}</h4>
-                        <p class="master-title">{{ master.title }}</p>
-                    </div>
-                </div>
+                </article>
                 {% endfor %}
+
+                {% if settings.hiring_active %}
+                <article class="master-card hiring-card" style="border: 1px dashed var(--color-gold); background: rgba(237, 208, 113, 0.05);">
+                    <div class="master-photo" style="background-color: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 40px; color: var(--color-gold);">+</span>
+                    </div>
+                    <div class="master-info">
+                        <h3 class="master-name" style="color: var(--color-gold);">{{ settings.hiring_title }}</h3>
+                        <p class="master-role" style="font-size: 14px; line-height: 1.4; margin-bottom: 15px;">
+                            {{ settings.hiring_text }}
+                        </p>
+                        <a href="{% url 'contacts' %}" class="btn-select">{% trans "Bewerben" %}</a>
+                    </div>
+                </article>
+                {% endif %}
             </div>
         </div>
     </div>

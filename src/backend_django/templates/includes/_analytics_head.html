@@ -1,0 +1,57 @@
+{% comment %}
+Google Consent Mode v2 + GA4 + GTM Integration
+CRITICAL: This must be loaded BEFORE GTM/GA4 scripts to avoid race conditions.
+{% endcomment %}
+
+{% if site_settings.google_analytics_id or site_settings.google_tag_manager_id %}
+<script>
+  // 1. Initialize dataLayer
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+
+  // 2. Check localStorage for existing consent
+  const savedConsent = localStorage.getItem('cookie_consent');
+
+  if (savedConsent === 'granted') {
+    // User previously accepted cookies
+    gtag('consent', 'default', {
+      'ad_storage': 'granted',
+      'ad_user_data': 'granted',
+      'ad_personalization': 'granted',
+      'analytics_storage': 'granted',
+      'wait_for_update': 500
+    });
+  } else {
+    // Default: denied (GDPR-compliant)
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'analytics_storage': 'denied',
+      'wait_for_update': 500
+    });
+  }
+</script>
+
+{% if site_settings.google_analytics_id %}
+<!-- Google Analytics 4 (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ site_settings.google_analytics_id }}"></script>
+<script>
+  gtag('js', new Date());
+  gtag('config', '{{ site_settings.google_analytics_id }}', {
+    'anonymize_ip': true,
+    'cookie_flags': 'SameSite=None;Secure'
+  });
+</script>
+{% endif %}
+
+{% if site_settings.google_tag_manager_id %}
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','{{ site_settings.google_tag_manager_id }}');</script>
+<!-- End Google Tag Manager -->
+{% endif %}
+{% endif %}
