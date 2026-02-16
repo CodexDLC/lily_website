@@ -1,5 +1,5 @@
-const CACHE_NAME = 'lily-admin-v1';
-const STATIC_CACHE = 'lily-static-v1';
+const CACHE_NAME = 'lily-admin-v2';
+const STATIC_CACHE = 'lily-static-v2';
 
 // Файлы для кэширования при установке
 const STATIC_ASSETS = [
@@ -59,25 +59,19 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Network-first для admin API и динамического контента
+  // НЕ кешировать API эндпоинты (всегда свежие данные)
+  if (url.pathname.startsWith('/api/')) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
+  // Network-ONLY для админки (НЕ кешировать HTML страницы, только offline fallback)
   if (url.pathname.startsWith('/admin/') && !url.pathname.match(/\.(css|js|png|jpg|jpeg|webp|svg|woff2?|ttf|eot|ico)$/)) {
     event.respondWith(
       fetch(request)
-        .then(response => {
-          // Кэшируем успешные GET запросы
-          if (request.method === 'GET' && response.status === 200) {
-            const responseClone = response.clone();
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(request, responseClone);
-            });
-          }
-          return response;
-        })
         .catch(() => {
-          return caches.match(request)
-            .then(cached => {
-              return cached || caches.match('/static/admin/offline.html');
-            });
+          // Только offline fallback, без кеширования контента
+          return caches.match('/static/admin/offline.html');
         })
     );
     return;

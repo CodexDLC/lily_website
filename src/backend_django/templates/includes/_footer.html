@@ -48,7 +48,7 @@
                 </div>
 
                 <!-- Toggle Button -->
-                <button class="footer-toggle-btn" id="footerToggleBtn">
+                <button class="footer-toggle-btn" id="footerToggleBtn" aria-label="{% trans 'Toggle Footer' %}">
                     <span class="arrow-icon">↑</span>
                 </button>
             </div>
@@ -78,9 +78,9 @@
 
                 <!-- Column 2: Hair -->
                 <div class="f-col">
-                    <h4 class="f-title">
+                    <h3 class="f-title">
                         <a href="{% url 'service_detail' slug='hair' %}">{% trans "Frisuren & Haarpflege" %}</a>
-                    </h4>
+                    </h3>
                     <ul>
                         <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "Haarschnitte" %}</a></li>
                         <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "Färben" %}</a></li>
@@ -91,9 +91,9 @@
 
                 <!-- Column 3: Nails -->
                 <div class="f-col">
-                    <h4 class="f-title">
+                    <h3 class="f-title">
                         <a href="{% url 'service_detail' slug='nails' %}">{% trans "Nagelservice" %}</a>
-                    </h4>
+                    </h3>
                     <ul>
                         <li><a href="{% url 'service_detail' slug='nails' %}">{% trans "Maniküre" %}</a></li>
                         <li><a href="{% url 'service_detail' slug='nails' %}">{% trans "Pediküre" %}</a></li>
@@ -103,9 +103,9 @@
 
                 <!-- Column 4: Beauty & Care -->
                 <div class="f-col">
-                    <h4 class="f-title">
+                    <h3 class="f-title">
                         <a href="{% url 'services' %}">{% trans "Schönheit & Pflege" %}</a>
-                    </h4>
+                    </h3>
                     <ul>
                         <li><a href="{% url 'service_detail' slug='depilation' %}">{% trans "Epilation" %}</a></li>
                         <li><a href="{% url 'service_detail' slug='eyes' %}">{% trans "Wimpernverlängerung" %}</a></li>

@@ -40,9 +40,13 @@
                     </p>
                     {% endif %}
 
-                    {% if owner.instagram %}
-                    <a href="https://instagram.com/{{ owner.instagram }}" target="_blank" class="btn-pill">{% trans "Instagram" %}</a>
-                    {% endif %}
+                    <div class="owner-buttons">
+                        <a href="{% url 'booking_wizard' %}?master_id={{ owner.id }}" class="btn-pill">{% trans "Termin buchen" %}</a>
+
+                        {% if owner.instagram %}
+                        <a href="https://instagram.com/{{ owner.instagram }}" target="_blank" class="btn-pill btn-instagram-secondary">{% trans "Instagram" %}</a>
+                        {% endif %}
+                    </div>
                 </div>
             </article>
         </div>
@@ -62,11 +66,13 @@
                     <div class="master-info">
                         <h3 class="master-name">{{ master.name }}</h3>
                         <p class="master-role">{{ master.title }}</p>
-                        {% if master.instagram %}
-                        <a href="https://instagram.com/{{ master.instagram }}" target="_blank" class="btn-book">Instagram</a>
-                        {% else %}
-                        <span class="btn-book" style="opacity:0.5; cursor:default;">Profil</span>
-                        {% endif %}
+
+                        <div class="master-buttons">
+                            <a href="{% url 'booking_wizard' %}?master_id={{ master.id }}" class="btn-select">{% trans "Buchen" %}</a>
+                            {% if master.instagram %}
+                            <a href="https://instagram.com/{{ master.instagram }}" target="_blank" class="btn-select btn-instagram-card">Instagram</a>
+                            {% endif %}
+                        </div>
                     </div>
                 </article>
                 {% endfor %}
@@ -82,7 +88,7 @@
                         <p class="master-role" style="font-size: 14px; line-height: 1.4; margin-bottom: 15px;">
                             {{ settings.hiring_text }}
                         </p>
-                        <a href="{% url 'contacts' %}" class="btn-book">{% trans "Bewerben" %}</a>
+                        <a href="{% url 'contacts' %}" class="btn-select">{% trans "Bewerben" %}</a>
                     </div>
                 </article>
                 {% endif %}

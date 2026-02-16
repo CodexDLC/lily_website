@@ -125,6 +125,17 @@ class Appointment(TimestampMixin, models.Model):
 
     reminder_sent_at = models.DateTimeField(null=True, blank=True, verbose_name=_("Reminder Sent At"))
 
+    # === Promo Tracking ===
+    active_promo = models.ForeignKey(
+        "promos.PromoMessage",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="appointments",
+        verbose_name=_("Active Promo"),
+        help_text=_("Promo that was active when booking was made"),
+    )
+
     class Meta:
         verbose_name = _("Appointment")
         verbose_name_plural = _("Appointments")

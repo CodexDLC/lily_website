@@ -5,6 +5,7 @@
 <head>
     {% include "includes/_meta.html" %}
     <link rel="preload" as="image" href="{% static 'img/5.webp' %}">
+    <link rel="stylesheet" href="{% static 'css/components/promo-notification.css' %}">
     <script src="{% static 'js/htmx.min.js' %}" defer></script>
     {% block extra_css %}{% endblock %}
 </head>
@@ -21,7 +22,8 @@
         {% include "includes/_footer.html" %}
     </div>
 
-    <script src="{% static 'js/base.js' %}"></script>
+    <script src="{% static 'js/base.js' %}" defer></script>
+    <script src="{% static 'js/promo-notification.js' %}" defer></script>
     {% block scripts %}
     {% endblock %}
 </body>

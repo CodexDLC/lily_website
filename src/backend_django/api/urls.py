@@ -7,6 +7,7 @@ Docs: /api/docs
 
 from api.booking import router as booking_router
 from api.instance import api
+from api.promos import router as promos_router
 from ninja import Router
 
 # from .stream_publisher import router as stream_publisher_router # ВРЕМЕННО ОТКЛЮЧЕНО
@@ -26,6 +27,9 @@ def health(request):
 
 # Booking API для Telegram Bot (управление записями)
 v1.add_router("/booking/", booking_router)
+
+# Promos API (public, no auth)
+v1.add_router("/promos/", promos_router)
 
 
 api.add_router("/v1/", v1)
