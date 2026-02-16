@@ -1,3 +1,4 @@
+{% raw %}
 # 📜 Cancellation Email Template (`cancellation.html`)
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../../README.md)
@@ -133,3 +134,4 @@ A button to book a new appointment, linking to a rescheduling page.
 *   `date`: The date of the cancelled appointment.
 *   `time`: The time of the cancelled appointment.
 *   `link_reschedule`: URL for booking a new appointment.
+{% endraw %}

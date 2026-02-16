@@ -1,3 +1,4 @@
+{% raw %}
 # 🎨 CSS Architecture
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../../README.md)
@@ -150,3 +151,4 @@ python src/backend_django/manage.py collectstatic --noinput
 # 3. (Optional) Minify
 # Uncomment lines in css_compiler.py for app.min.css
 ```
+{% endraw %}

@@ -1,69 +1,71 @@
 {% extends "base.html" %}
-{% load i18n static %}
+{% load static %}
+{% load i18n %}
 
-{% block title %}{% trans "Our Team" %} | LILY Beauty Salon{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/pages/team.css' %}">
-{% endblock %}
+{% block title %}{{ seo.seo_title|default:_("Team | LILY Beauty Salon") }}{% endblock %}
+{% block meta_description %}{{ seo.seo_description|default:_("Lernen Sie unsere Experten kennen.") }}{% endblock %}
 
 {% block content %}
-<section class="team-page section">
+{% include "team/_schema_person.html" %}
+<!-- HERO -->
+<section class="hero-text-block">
     <div class="container">
-        <div class="section-header text-center">
-            <span class="section-subtitle">{% trans "Experts" %}</span>
-            <h1 class="section-title">{% trans "Our Team" %}</h1>
-            <div class="title-line"></div>
-        </div>
+        <h1 class="hero-title">{% trans "Unser Team" %}</h1>
+        <p class="hero-subtitle">{% trans "SCHÖNHEITSEXPERTEN" %}</p>
+    </div>
+</section>
 
-        {% if owner %}
-        <div class="owner-section mb-60">
-            <div class="owner-block">
-                <div class="owner-photo-wrapper">
-                    {% if owner.photo %}
-                        <div class="owner-photo" style="background-image: url('{{ owner.photo.url }}');"></div>
-                    {% else %}
-                        <div class="owner-photo" style="background-image: url('{% static 'img/owner_placeholder.webp' %}');"></div>
-                    {% endif %}
-                </div>
+<!-- CONTENT (Zebra Blocks) -->
+<section class="section">
+
+    <!-- BLOCK 1: OWNER -->
+    {% if owner %}
+    <section class="team-section-block">
+        <div class="container">
+            <article class="owner-block">
+                <!-- Owner Photo -->
+                <div class="owner-photo" style="background-image: url('{% if owner.photo %}{{ owner.photo.url }}{% else %}{% static 'img/lily.webp' %}{% endif %}');"></div>
+
                 <div class="owner-info">
                     <div class="owner-badge">{% trans "Founder & Master" %}</div>
                     <h2 class="owner-name">{{ owner.name }}</h2>
-                    <p class="owner-title">{{ owner.title }}</p>
+                    <span class="owner-role">{{ owner.title }}</span>
 
-                    <div class="owner-bio">
+                    <div class="owner-description">
                         {{ owner.bio|safe }}
                     </div>
 
-                    <div class="owner-stats">
-                        <div class="stat-item">
-                            <span class="stat-num">{{ owner.years_experience }}+</span>
-                            <span class="stat-label">{% trans "Years" %}</span>
-                        </div>
-                    </div>
+                    {% if owner.short_description %}
+                    <p class="owner-note">
+                        {{ owner.short_description }}
+                    </p>
+                    {% endif %}
 
                     <div class="owner-buttons">
                         <a href="{% url 'booking_wizard' %}?master_id={{ owner.id }}" class="btn-pill">{% trans "Termin buchen" %}</a>
-
                         {% if owner.instagram %}
                         <a href="https://instagram.com/{{ owner.instagram }}" target="_blank" class="btn-pill btn-instagram-secondary">{% trans "Instagram" %}</a>
                         {% endif %}
                     </div>
                 </div>
-            </div>
+            </article>
         </div>
-        {% endif %}
+    </section>
+    {% endif %}
 
-        <div class="masters-grid-wrapper">
-            <h3 class="grid-heading text-center">{% trans "Our Specialists" %}</h3>
+    <!-- BLOCK 2: TEAM GRID -->
+    <section class="team-section-block">
+        <div class="container">
+            <h2 class="section-heading text-center">{% trans "Unsere Meister" %}</h2>
+
             <div class="team-grid">
+                <!-- Masters Loop -->
                 {% for master in team %}
                 <article class="master-card">
                     <div class="master-photo" style="background-image: url('{% if master.photo %}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}');"></div>
                     <div class="master-info">
                         <h3 class="master-name">{{ master.name }}</h3>
                         <p class="master-role">{{ master.title }}</p>
-
                         <div class="master-buttons">
                             <a href="{% url 'booking_wizard' %}?master_id={{ master.id }}" class="btn-select">{% trans "Buchen" %}</a>
                             {% if master.instagram %}
@@ -74,6 +76,7 @@
                 </article>
                 {% endfor %}
 
+                <!-- HIRING BLOCK (If enabled) -->
                 {% if settings.hiring_active %}
                 <article class="master-card hiring-card" style="border: 1px dashed var(--color-gold); background: rgba(237, 208, 113, 0.05);">
                     <div class="master-photo" style="background-color: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;">
@@ -88,10 +91,10 @@
                     </div>
                 </article>
                 {% endif %}
+
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-{% include "includes/_schema_local_business.html" %}
+</section>
 {% endblock %}
