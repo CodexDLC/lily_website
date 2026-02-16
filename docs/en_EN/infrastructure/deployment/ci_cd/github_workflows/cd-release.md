@@ -2,7 +2,23 @@
 
 [⬅️ Back](README.md) | [🏠 Docs Root](../../../../../README.md)
 
-This GitHub Actions workflow is responsible for Continuous Deployment (CD) to the production server. It is triggered when code is pushed to the `release` branch or can be manually dispatched. The workflow builds Docker images, pushes them to GitHub Container Registry (GHCR), and then deploys the updated application to a remote VPS via SSH.
+---
+
+> **⚠️ ARCHIVED WORKFLOW**
+>
+> This workflow has been **removed** and replaced with tag-based deployment.
+>
+> **Current workflow:** `.github/workflows/deploy-production-tag.yml`
+>
+> **Documentation:** [Tag-Based Releases Guide](../../releases_via_tags.md)
+>
+> **Migration guide:** [MIGRATION_TO_TAGS.md](../../MIGRATION_TO_TAGS.md)
+
+---
+
+## Historical Documentation (For Reference)
+
+This GitHub Actions workflow was responsible for Continuous Deployment (CD) to the production server. It was triggered when code was pushed to the `release` branch or could be manually dispatched. The workflow built Docker images, pushed them to GitHub Container Registry (GHCR), and then deployed the updated application to a remote VPS via SSH.
 
 ## Trigger
 

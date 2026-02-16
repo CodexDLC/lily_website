@@ -1,49 +1,44 @@
-# 📜 API Client
+# 📄 API Client
 
-[⬅️ Back](./README.md) | [🏠 Docs Root](../../../../README.md)
+[⬅️ Back](./README.md) | [🏠 Docs Root](../../../../../README.md)
 
-This module defines the `BaseApiClient` class, an abstract base class for making asynchronous HTTP requests to external APIs. It provides common functionality for handling API requests, including setting headers, managing timeouts, and error handling.
+The `BaseApiClient` is an asynchronous HTTP client wrapper built on top of `httpx`. It provides a standardized way for the Telegram Bot to communicate with external services (primarily the Django Backend API).
 
-## `BaseApiClient` Class
+## 🏗️ Class: BaseApiClient
 
-The `BaseApiClient` serves as a foundation for specific API clients within the application. It encapsulates the logic for sending HTTP requests and processing responses.
+Located in: `src/telegram_bot/core/api_client.py`
 
-### Initialization (`__init__`)
-
-```python
-def __init__(self, base_url: str, api_key: str | None = None, timeout: float = 10.0):
-```
-Initializes the API client.
-
-*   `base_url` (str): The base URL for the API.
-*   `api_key` (str | None): Optional API key for authentication, added as `X-API-Key` header.
-*   `timeout` (float): Request timeout in seconds.
-
-### Request Method (`_request`)
+### Constructor
 
 ```python
-async def _request(
-    self,
-    method: str,
-    endpoint: str,
-    json: dict[str, Any] | None = None,
-    params: dict[str, Any] | None = None,
-) -> dict[str, Any] | Any:
+def __init__(self, base_url: str, api_key: str | None = None, timeout: float = 10.0)
 ```
-A protected asynchronous method for sending HTTP requests. This method handles the actual communication with the API, including error handling and JSON parsing.
 
-*   `method` (str): The HTTP method (e.g., "GET", "POST", "PUT", "DELETE").
-*   `endpoint` (str): The API endpoint relative to the `base_url`.
-*   `json` (dict[str, Any] | None): Optional JSON payload for the request body.
-*   `params` (dict[str, Any] | None): Optional query parameters.
+- **base_url**: The root URL of the API.
+- **api_key**: Optional API key sent via `X-API-Key` header.
+- **timeout**: Request timeout in seconds (default: 10.0).
 
-**Error Handling:**
-The method includes comprehensive error handling for `httpx.HTTPStatusError` (HTTP errors), `httpx.RequestError` (connection errors), and other general exceptions, raising `ApiClientError` in case of issues.
+### Methods
 
-## `ApiClientError` Exception
+#### `_request` (Internal)
+An asynchronous method to perform HTTP requests.
+
+- **method**: HTTP method (GET, POST, etc.).
+- **endpoint**: API endpoint path.
+- **json**: Optional JSON payload.
+- **params**: Optional query parameters.
+- **Returns**: Parsed JSON data or raises `ApiClientError`.
+
+## ⚠️ Error Handling
+
+The client uses a custom exception `ApiClientError` to wrap various underlying issues:
+- **HTTPStatusError**: Triggered for 4xx and 5xx responses.
+- **RequestError**: Triggered for connection issues, timeouts, etc.
+- **Unknown Error**: Any other unexpected exceptions.
+
+## 📝 Usage Example
 
 ```python
-class ApiClientError(Exception):
-    """Базовая ошибка API клиента"""
+client = BaseApiClient(base_url="https://api.example.com", api_key="secret")
+data = await client._request("GET", "/v1/data")
 ```
-Custom exception class for API client-related errors.

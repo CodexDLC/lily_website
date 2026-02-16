@@ -1,74 +1,46 @@
-# 📜 Garbage Collector
+# 📄 Garbage Collector (FSM)
 
-[⬅️ Back](./README.md) | [🏠 Docs Root](../../../../README.md)
+[⬅️ Back](./README.md) | [🏠 Docs Root](../../../../../README.md)
 
-Dynamic system that automatically deletes unwanted text messages in specific FSM states.
+The `Garbage Collector` system is designed to keep the bot's chat clean by automatically identifying and deleting "garbage" messages (e.g., random text sent by a user when the bot expects only button clicks).
 
-**File:** `src/telegram_bot/core/garbage_collector.py`
+## 🏗️ Class: GarbageStateRegistry
+
+Located in: `src/telegram_bot/core/garbage_collector.py`
+
+This is a static registry that stores FSM states where incoming text messages are considered unwanted.
+
+### Methods
+
+#### `register(state)`
+Registers a state or a group of states as "garbage-prone".
+- Supports individual `State` objects.
+- Supports `StatesGroup` classes (automatically registers all states in the group).
+- Supports lists/tuples of states.
+
+#### `is_garbage(state_name)`
+Checks if a given state name is present in the registry.
 
 ---
 
-## 🎯 Problem
+## 🏗️ Class: IsGarbageStateFilter
 
-When a bot shows inline-keyboard screens, users sometimes type random text. This text clutters the chat. The garbage collector detects and deletes such messages in registered "garbage" states.
+An `aiogram.Filter` that uses the `GarbageStateRegistry` to determine if the current user's state is marked for garbage collection.
 
----
+### Usage in Handlers
 
-## 🏗️ Components
-
-### GarbageStateRegistry (Class-level registry)
-
-A global set that tracks which FSM states should trigger text deletion.
+This filter is typically used in a global handler to catch and delete messages:
 
 ```python
-GarbageStateRegistry.register(MyFeatureStates)  # Register all states
-GarbageStateRegistry.is_garbage("MyFeatureStates:main")  # Check state
-```
-
-### IsGarbageStateFilter (aiogram Filter)
-
-Custom aiogram filter used by `common_fsm_handlers.py` router:
-
-```python
-@router.message(F.text, IsGarbageStateFilter())
-async def delete_garbage_text(message: Message):
+@router.message(IsGarbageStateFilter())
+async def handle_garbage_message(message: Message):
     await message.delete()
 ```
 
----
+## 🧩 Integration
 
-## 🔄 Registration Flow
-
-```text
-1. BotContainer.__init__()
-2.   → discovery_service.discover_all()
-3.     → For each feature in INSTALLED_FEATURES:
-4.       → Load feature_setting.py
-5.       → If GARBAGE_COLLECT = True → register STATES
-6.       → If GARBAGE_STATES = [...] → register explicit list
-7. GarbageStateRegistry now contains all "garbage" states
-```
-
----
-
-## ⚙️ Feature Configuration
-
-In `feature_setting.py`:
+Features register their states during initialization (usually in `feature_setting.py` or via `FeatureDiscoveryService`):
 
 ```python
-# Option 1: Auto-register all states
-GARBAGE_COLLECT = True
-STATES = MyFeatureStates  # All states in this group become "garbage"
-
-# Option 2: Explicit list
-GARBAGE_STATES = [MyFeatureStates.editing, MyFeatureStates.viewing]
-
-# Option 3: Disabled
-GARBAGE_COLLECT = False
+GarbageStateRegistry.register(MyFeatureStates.waiting_for_click)
 ```
-
----
-
-## 📍 Router Placement
-
-The garbage collector router is always registered **last** in the router chain (via `routers.py`), so it only catches messages that no other handler matched.

@@ -11,16 +11,25 @@ develop ──push──→ CI Develop (Lint: Ruff + Mypy)
     │
     └──PR──→ main ──→ CI Main (Tests + Docker Build Check)
                 │
-                └──PR──→ release ──→ CD Release (Build → GHCR → Deploy)
+                └──tag (v*)──→ Deploy Production (Build → GHCR → Deploy)
 ```
+
+**Note:** Production deployment now uses **git tags** instead of the `release` branch.
+
+See: [Tag-Based Releases Guide](../deployment/releases_via_tags.md)
+
+---
 
 ## Branches
 
 | Branch | Purpose | Protection |
 |:---|:---|:---|
 | `develop` | Active development | CI lint on push |
-| `main` | Stable code | PR only, CI tests required |
-| `release` | Production deploy | PR from main only |
+| `main` | Stable code (production-ready) | PR only, CI tests required |
+
+**Production Deployment:** Triggered by pushing tags matching `v*` pattern (e.g., `v1.2.3`)
+
+---
 
 ## Workflows
 
@@ -28,8 +37,7 @@ develop ──push──→ CI Develop (Lint: Ruff + Mypy)
 |:---|:---|:---|
 | `ci-develop.yml` | Push to develop | Ruff lint + Mypy type check |
 | `ci-main.yml` | PR to main | Full pytest + Docker build check |
-| `cd-release.yml` | Push to release | Build images → GHCR → SSH deploy to VPS |
-| `check-release-source.yml` | PR to release | Block non-main PRs |
+| `deploy-production-tag.yml` | Push tag `v*` | Build images → GHCR → SSH deploy to VPS |
 
 ## Docker Architecture
 
