@@ -1,5 +1,5 @@
 from core.cache import get_cached_data
-from django.db.models import Prefetch
+from django.db.models import Count, Prefetch, Q
 from features.booking.models import Master
 
 from ..models import Category, Service
@@ -35,16 +35,19 @@ class CategorySelector:
     def get_for_home_bento():
         """
         Returns active categories for the Home Page Bento Grid.
+        Includes active_masters_count to determine 'Coming Soon' status.
         """
 
         def fetch():
             return list(
                 Category.objects.filter(is_active=True)
+                .annotate(active_masters_count=Count("masters", filter=Q(masters__status=Master.STATUS_ACTIVE)))
                 .only("title", "slug", "image", "bento_group", "is_planned", "description")
                 .order_by("order")
             )
 
-        return get_cached_data("home_bento_cache", fetch)
+        # Changed cache key to v2 to force refresh with new annotation
+        return get_cached_data("home_bento_cache_v2", fetch)
 
     @staticmethod
     def get_for_price_list(bento_group=None):
