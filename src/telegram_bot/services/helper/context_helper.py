@@ -13,13 +13,17 @@ class ContextHelper:
         """
         Извлекает базовые ID из сообщения или колбека.
         """
+        user_id = event.from_user.id if event.from_user else 0
+        chat_id = user_id
+        message_id = None
+        thread_id = None
+
         if isinstance(event, CallbackQuery):
-            user_id = event.from_user.id
-            chat_id = event.message.chat.id if event.message else user_id
-            message_id = event.message.message_id if event.message else None
-            thread_id = event.message.message_thread_id if event.message else None
-        else:
-            user_id = event.from_user.id if event.from_user else 0
+            if isinstance(event.message, Message):
+                chat_id = event.message.chat.id
+                message_id = event.message.message_id
+                thread_id = event.message.message_thread_id
+        elif isinstance(event, Message):
             chat_id = event.chat.id
             message_id = event.message_id
             thread_id = event.message_thread_id

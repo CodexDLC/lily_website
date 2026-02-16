@@ -18,10 +18,13 @@ async def cmd_start(message: Message, state: FSMContext, container: BotContainer
     if not orchestrator:
         return
 
-    # Вызываем логику входа
+    # 1. Вызываем логику входа
     view_dto = await orchestrator.handle_entry(message.from_user.id, payload=message.from_user)
 
-    # Отправляем через централизованный сендер
+    # 2. Указываем ID сообщения-команды для удаления
+    view_dto.trigger_message_id = message.message_id
+
+    # 3. Отправляем через централизованный сендер
     if container.view_sender:
         await container.view_sender.send(view_dto)
 
@@ -32,12 +35,15 @@ async def cmd_menu(message: Message, state: FSMContext, container: BotContainer)
     if not message.from_user:
         return
 
-    # Перенаправляем на оркестратор меню
     orchestrator = container.features.get("bot_menu")
     if not orchestrator:
         return
 
+    # 1. Вызываем логику входа
     view_dto = await orchestrator.handle_entry(message.from_user.id)
+
+    # 2. Указываем ID сообщения-команды для удаления
+    view_dto.trigger_message_id = message.message_id
 
     if container.view_sender:
         await container.view_sender.send(view_dto)

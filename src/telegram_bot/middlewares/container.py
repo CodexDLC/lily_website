@@ -26,3 +26,8 @@ class ContainerMiddleware(BaseMiddleware):
         data["container"] = self.container
 
         return await handler(event, data)
+
+
+def setup(container: BotContainer) -> BaseMiddleware:
+    """Фабрика для создания middleware."""
+    return ContainerMiddleware(container=container)

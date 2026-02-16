@@ -3,8 +3,17 @@
 Все строки, отображаемые пользователю, хранятся здесь.
 """
 
-START_GREETING = "<b>Welcome, {first_name}!</b>\n\nChoose an action below to get started."
+WELCOME_USER = (
+    "<b>👋 Hello, {name}!</b>\n\n"
+    "Welcome to <b>Lily Website Bot</b>. "
+    "Ready to explore? Click the button below to start your journey."
+)
 
-SETTINGS_WIP = "Settings are under development."
+WELCOME_ADMIN = "<b>👋 Hello, Administrator {name}!</b>\n\nYou have elevated privileges. Choose your workspace below:"
 
-HELP_TEXT = "<b>Available commands:</b>\n/start — Main menu\n/help — This help message\n/setting — Settings"
+HELP_TEXT = (
+    "<b>🆘 Help Center</b>\n\n"
+    "/start — Return to welcome screen\n"
+    "/help — Show this message\n"
+    "/admin — Quick access to Admin Panel (if authorized)"
+)

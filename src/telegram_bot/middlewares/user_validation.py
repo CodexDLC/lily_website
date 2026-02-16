@@ -5,6 +5,8 @@ from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery, Message, TelegramObject
 from loguru import logger as log
 
+from src.telegram_bot.core.container import BotContainer
+
 
 class UserValidationMiddleware(BaseMiddleware):
     """
@@ -37,3 +39,8 @@ class UserValidationMiddleware(BaseMiddleware):
         # Для остальных типов событий (Update, etc.) - пропускаем без проверки
         # Это позволяет боту отправлять сообщения в каналы
         return await handler(event, data)
+
+
+def setup(container: BotContainer) -> BaseMiddleware:
+    """Фабрика для создания middleware."""
+    return UserValidationMiddleware()

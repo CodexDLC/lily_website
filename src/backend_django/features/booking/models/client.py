@@ -97,7 +97,8 @@ class Client(TimestampMixin, models.Model):
             models.Index(fields=["phone", "status"]),
             models.Index(fields=["email", "status"]),
         ]
-        constraints = [models.CheckConstraint(check=~models.Q(phone="", email=""), name="client_must_have_contact")]
+        # Исправлено: используем condition вместо check для совместимости с Django 5.2+
+        constraints = [models.CheckConstraint(condition=~models.Q(phone="", email=""), name="client_must_have_contact")]
 
     def __str__(self):
         full_name = self.get_full_name()
