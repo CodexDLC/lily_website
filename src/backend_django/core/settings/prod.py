@@ -27,11 +27,15 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     LANGUAGE_COOKIE_SECURE = True
 
-# CSRF Trusted Origins for production
+# Explicitly trust production domains for CSRF (ignore DRY for stability)
 CSRF_TRUSTED_ORIGINS = [
     "https://lily-salon.de",
     "https://www.lily-salon.de",
 ]
+
+# Ensure cookies are bound to the correct domain
+CSRF_COOKIE_DOMAIN = ".lily-salon.de"
+SESSION_COOKIE_DOMAIN = ".lily-salon.de"
 
 # ═══════════════════════════════════════════
 # Static files

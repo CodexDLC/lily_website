@@ -8,11 +8,13 @@ from modeltranslation.admin import TranslationAdmin
 from unfold.admin import ModelAdmin
 from unfold.decorators import action
 
+from .forms import MasterAdminForm
 from .models import Appointment, Client, Master, MasterCertificate, MasterPortfolio
 
 
 @admin.register(Master)
 class MasterAdmin(ModelAdmin, TranslationAdmin):
+    form = MasterAdminForm
     list_display = ["name", "status_badge", "is_owner", "order"]
     list_display_links = ["name"]
     list_filter = ["status", "is_owner"]

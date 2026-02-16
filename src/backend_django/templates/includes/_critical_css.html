@@ -1,0 +1,63 @@
+<style>
+/* Correct Critical CSS for LILY */
+:root {
+    --color-emerald: #003831;
+    --color-gold: #EDD071;
+    --color-text-main: #FFFFFF;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body {
+    background-color: var(--color-emerald);
+    color: var(--color-text-main);
+    font-family: 'Lato', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.site-wrapper {
+    background-color: var(--color-emerald);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Hero section fix */
+.hero-section {
+    padding: 60px 0;
+    text-align: center;
+}
+
+.hero-heading {
+    color: var(--color-gold);
+    font-family: 'Playfair Display', serif;
+}
+
+/* Instagram Button Style */
+.btn-instagram-custom {
+    display: inline-block;
+    background-color: var(--color-emerald) !important;
+    border: 1px solid var(--color-gold) !important;
+    color: var(--color-gold) !important;
+    padding: 10px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.btn-instagram-custom:hover {
+    background-color: var(--color-gold) !important;
+    color: var(--color-emerald) !important;
+}
+</style>
