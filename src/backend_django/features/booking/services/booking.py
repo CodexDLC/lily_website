@@ -29,7 +29,7 @@ class BookingService:
 
         start_dt = validated_data
 
-        # 2. Get Objects
+        # 2. Get Objects (Handle "any" master logic)
         objects = BookingService._get_objects(state.service_id, state.master_id)
         if not objects:
             return None
@@ -37,10 +37,29 @@ class BookingService:
         service, master = objects
 
         # 3. Final Availability Check
+        # If master was "any", we might need to find a free one here if _get_objects didn't check availability
+        # But let's assume _get_objects returns a candidate, and we verify it here.
+
         with transaction.atomic():
+            # If master_id was "any", we need to be sure this specific master is free.
+            # If not, we could try another one, but for simplicity, let's just fail or rely on _get_objects logic.
+
+            # If master_id was "any", _get_objects returned *some* master.
+            # We must check if they are free.
             if not BookingService._is_slot_still_available(master, start_dt, service.duration):
-                log.warning(f"Double-booking prevented for master {master} at {start_dt}")
-                return None
+                # If the chosen "any" master is busy, try to find another one?
+                if state.master_id == "any":
+                    log.info(f"Master {master} is busy, trying to find another for 'any' selection...")
+                    alternative_master = BookingService._find_free_master(service, start_dt)
+                    if alternative_master:
+                        master = alternative_master
+                        log.info(f"Found alternative master: {master}")
+                    else:
+                        log.warning(f"No alternative masters found at {start_dt}")
+                        return None
+                else:
+                    log.warning(f"Double-booking prevented for master {master} at {start_dt}")
+                    return None
 
             # 4. Handle Client
             client = ClientService.get_or_create_client(
@@ -76,6 +95,16 @@ class BookingService:
         return True
 
     @staticmethod
+    def _find_free_master(service: Service, start_dt: datetime) -> Master | None:
+        """Finds any active master who can perform the service and is free at start_dt."""
+        candidates = Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE)
+
+        for master in candidates:
+            if BookingService._is_slot_still_available(master, start_dt, service.duration):
+                return master
+        return None
+
+    @staticmethod
     def _validate_and_parse(state: BookingState) -> datetime | None:
         if not all([state.service_id, state.master_id, state.selected_date, state.selected_time]):
             return None
@@ -94,7 +123,17 @@ class BookingService:
     def _get_objects(service_id: int, master_id: str) -> tuple[Service, Master] | None:
         try:
             service = Service.objects.get(id=service_id)
-            master = Master.objects.get(id=int(master_id))
+
+            if master_id == "any":
+                # Return the first candidate to start with.
+                # Real availability check happens in create_appointment loop.
+                master = Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE).first()
+
+                if not master:
+                    return None
+            else:
+                master = Master.objects.get(id=int(master_id))
+
             return service, master
         except (Service.DoesNotExist, Master.DoesNotExist, ValueError, TypeError):
             return None
@@ -118,7 +157,6 @@ class BookingService:
     @staticmethod
     def _handle_post_creation(appointment: Appointment, form_data: dict[str, Any]) -> None:
         from core.arq.client import DjangoArqClient
-        from django.conf import settings
 
         visits_count = Appointment.objects.filter(
             client=appointment.client, status=Appointment.STATUS_COMPLETED
@@ -142,13 +180,9 @@ class BookingService:
             "category_slug": appointment.service.category.slug if appointment.service.category else None,
         }
 
-        owner_ids = settings.OWNER_IDS or ""
-        admin_id = int(owner_ids.split(",")[0]) if owner_ids else 0
-
         try:
             DjangoArqClient.enqueue_job(
                 "send_booking_notification_task",
-                admin_id=admin_id,
                 appointment_data=appointment_data,
             )
         except Exception as e:
