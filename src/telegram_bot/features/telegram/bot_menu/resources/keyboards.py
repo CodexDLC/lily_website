@@ -14,7 +14,7 @@ def build_dashboard_keyboard(buttons: dict, mode: str = "bot_menu"):
     """
     Собирает клавиатуру дашборда.
     """
-    i18n = cast(I18nContext, I18nContext.get_current())
+    i18n = cast("I18nContext", I18nContext.get_current())
     builder = InlineKeyboardBuilder()
 
     # 1. Сортируем кнопки фич по приоритету

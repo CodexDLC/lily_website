@@ -10,7 +10,7 @@ def build_main_kb(appointment_id: int, topic_id: int | None = None):
     """
     Клавиатура управления заявкой (Подтвердить / Отклонить).
     """
-    i18n = cast(I18nContext, I18nContext.get_current())
+    i18n = cast("I18nContext", I18nContext.get_current())
     builder = InlineKeyboardBuilder()
 
     builder.button(
@@ -30,7 +30,7 @@ def build_reject_reasons_kb(appointment_id: int, topic_id: int | None = None):
     """
     Клавиатура с причинами отклонения.
     """
-    i18n = cast(I18nContext, I18nContext.get_current())
+    i18n = cast("I18nContext", I18nContext.get_current())
     builder = InlineKeyboardBuilder()
 
     reasons = [
@@ -61,7 +61,7 @@ def build_post_action_kb(appointment_id: int, topic_id: int | None = None):
     """
     Клавиатура после обработки (кнопка удаления).
     """
-    i18n = cast(I18nContext, I18nContext.get_current())
+    i18n = cast("I18nContext", I18nContext.get_current())
     builder = InlineKeyboardBuilder()
     builder.button(
         text=i18n.notifications.btn.delete(),
