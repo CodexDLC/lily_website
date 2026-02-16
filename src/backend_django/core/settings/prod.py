@@ -20,6 +20,13 @@ if not DEBUG:
     # Trust X-Forwarded-Proto header from Nginx reverse proxy
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SECURE_SSL_REDIRECT = True
+
+    # Allow HTTP for internal API requests from bot/worker (inside Docker network)
+    # These services communicate via http://backend:8000 internally
+    SECURE_REDIRECT_EXEMPT = [
+        r"^api/v1/.*",  # All API v1 endpoints accessible via HTTP internally
+    ]
+
     SECURE_HSTS_SECONDS = 31_536_000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
