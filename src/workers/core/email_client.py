@@ -22,10 +22,9 @@ class AsyncEmailClient:
         self.smtp_from_email = smtp_from_email
         self.smtp_use_tls = smtp_use_tls
 
-    async def send_email(self, to_email: str, subject: str, html_content: str):
+    async def send_email(self, to_email: str, subject: str, html_content: str, timeout: int = 15):
         """
         Асинхронная отправка HTML-письма.
-        Поддерживает как Implicit SSL (465), так и STARTTLS (587) или обычный SMTP (1025).
         """
         message = EmailMessage()
         message["From"] = self.smtp_from_email
@@ -35,9 +34,7 @@ class AsyncEmailClient:
         message.add_alternative(html_content, subtype="html")
 
         # Авто-определение режима шифрования
-        # Implicit SSL для порта 465
         use_ssl = self.smtp_port == 465
-        # STARTTLS для порта 587 или если явно включено в настройках
         start_tls = self.smtp_port == 587 or (self.smtp_use_tls and self.smtp_port != 465)
 
         send_kwargs: dict[str, Any] = {
@@ -45,16 +42,22 @@ class AsyncEmailClient:
             "port": self.smtp_port,
             "use_tls": use_ssl,
             "start_tls": start_tls,
+            "timeout": timeout,  # Добавляем таймаут для предотвращения зависания
         }
 
-        # Добавляем аутентификацию только если переданы учетные данные
         if self.smtp_user and self.smtp_password:
             send_kwargs["username"] = self.smtp_user
             send_kwargs["password"] = self.smtp_password
 
         try:
+            logger.debug(
+                f"Attempting to send email to {to_email} via {self.smtp_host}:{self.smtp_port} (SSL:{use_ssl}, TLS:{start_tls})"
+            )
             await aiosmtplib.send(message, **send_kwargs)
             logger.info(f"Email sent successfully to {to_email} via {self.smtp_host}")
+        except aiosmtplib.SMTPConnectError:
+            logger.error(f"Connection failed to {self.smtp_host}:{self.smtp_port}. Check firewall/ports.")
+            raise
         except Exception as e:
-            logger.error(f"Failed to send email to {to_email} via {self.smtp_host}: {e}")
+            logger.error(f"Failed to send email to {to_email} via {self.smtp_host}: {type(e).__name__}: {e}")
             raise e

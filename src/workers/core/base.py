@@ -70,12 +70,16 @@ async def base_shutdown(ctx: dict) -> None:
 class BaseArqSettings:
     """
     Базовые настройки для всех ARQ воркеров.
-    Наследники должны переопределить redis_settings и functions.
     """
 
     max_jobs = 20
     job_timeout = 60
     keep_result = 5
+
+    # Настройки повторных попыток (Retries)
+    # По умолчанию 5 попыток с задержкой
+    max_retries = 5
+    retry_delay = 10  # секунд между попытками
 
     on_startup = base_startup
     on_shutdown = base_shutdown

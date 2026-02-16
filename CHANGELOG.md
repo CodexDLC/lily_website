@@ -2,6 +2,15 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [0.9.3] - 2026-02-16
+### Worker Stability & SMTP Fixes
+- **Added:** Automatic retry mechanism for ARQ workers (5 retries with 10s delay).
+- **Improved:** Added explicit connection timeout (15s) for SMTP client to prevent worker hanging.
+- **Improved:** Detailed logging for SMTP connection attempts (host, port, SSL/TLS status).
+- **Fixed:** Enhanced error handling for `SMTPConnectError` in email tasks.
+
+---
+
 ## [0.9.0] - 2026-02-16
 ### MVP Candidate (Pre-release Testing)
 - **Added:** PWA (Progressive Web App) support for mobile users.
