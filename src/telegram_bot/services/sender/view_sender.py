@@ -39,10 +39,6 @@ class ViewSender:
         self.chat_id = view.chat_id
         self.message_thread_id = view.message_thread_id
 
-        # Максимально надежное определение типа чата (User vs Channel/Topic)
-        # 1. По явному режиму
-        # 2. По отрицательному ID чата (стандарт Telegram для групп/каналов)
-        # 3. По наличию thread_id
         self.is_channel = (
             view.mode in ("channel", "topic")
             or (isinstance(self.chat_id, int) and self.chat_id < 0)
@@ -50,16 +46,20 @@ class ViewSender:
             or self.message_thread_id is not None
         )
 
+        # 1. Удаление триггерного сообщения (например, команды /start)
+        if view.trigger_message_id:
+            with contextlib.suppress(TelegramAPIError):
+                await self.bot.delete_message(chat_id=self.chat_id, message_id=view.trigger_message_id)
+
         ui_coords = await self.manager.get_coords(self.key, self.is_channel)
 
-        log.debug(f"ViewSender | key={self.key} is_channel={self.is_channel} coords={ui_coords}")
-
+        # 2. Очистка старого интерфейса бота
         if view.clean_history:
-            log.debug(f"ViewSender | Cleaning history for key={self.key}")
             await self._delete_previous_interface(ui_coords)
             ui_coords = {}
             await self.manager.clear_coords(self.key, self.is_channel)
 
+        # 3. Обработка Menu и Content
         old_menu_id = ui_coords.get("menu_msg_id")
         new_menu_id = await self._process_message(view_dto=view.menu, old_message_id=old_menu_id, log_prefix="MENU")
 
@@ -78,7 +78,6 @@ class ViewSender:
             await self.manager.update_coords(self.key, updates, self.is_channel)
 
     async def _delete_previous_interface(self, ui_coords: dict):
-        """Пытается удалить старые сообщения."""
         if not self.chat_id:
             return
 
@@ -99,20 +98,16 @@ class ViewSender:
         if not view_dto or not self.chat_id:
             return old_message_id
 
-        # Если у нас есть ID старого сообщения — пытаемся его отредактировать
         if old_message_id:
             try:
-                log.debug(f"ViewSender [{log_prefix}] | Editing message {old_message_id} in chat {self.chat_id}")
                 await self.bot.edit_message_text(
                     chat_id=self.chat_id, message_id=old_message_id, text=view_dto.text, reply_markup=view_dto.kb
                 )
                 return old_message_id
-            except TelegramAPIError as e:
-                log.warning(f"ViewSender [{log_prefix}] | Edit failed: {e}")
+            except TelegramAPIError:
+                pass
 
-        # Если старого ID нет или редактирование не удалось — отправляем новое
         try:
-            log.debug(f"ViewSender [{log_prefix}] | Sending new message to chat {self.chat_id}")
             sent = await self.bot.send_message(
                 chat_id=self.chat_id,
                 text=view_dto.text,

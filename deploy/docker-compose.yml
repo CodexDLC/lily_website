@@ -4,7 +4,6 @@ services:
     container_name: lily_website-db
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ../scripts/init_db_schemas.sql:/docker-entrypoint-initdb.d/init_db_schemas.sql:ro
     environment:
       - POSTGRES_DB=lily_db
       - POSTGRES_USER=lily_user
@@ -48,7 +47,7 @@ services:
       - ../.env
     volumes:
       - ../src/backend_django:/app
-      - ../src/backend_django/media:/app/media # Changed: Mount local media directory
+      - ../src/backend_django/media:/app/media
       - static_volume:/app/staticfiles
       - logs_volume:/app/logs
     depends_on:
@@ -114,7 +113,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ../src/backend_django/media:/app/media:ro # Changed: Mount local media directory
+      - ../src/backend_django/media:/app/media:ro
       - static_volume:/app/staticfiles:ro
     depends_on:
       backend:
@@ -124,7 +123,7 @@ services:
       - lily_website-network
 
   mailpit:
-    image: axllent/mailpit:latest
+    image: axllent/mailpit:v1.21
     container_name: lily_website-mailpit
     ports:
       - "8025:8025"  # Web UI
@@ -140,7 +139,6 @@ services:
 volumes:
   postgres_data:
   redis-data:
-  # uploads: # Removed this volume as it's no longer used for local media
   static_volume:
   logs_volume:
 

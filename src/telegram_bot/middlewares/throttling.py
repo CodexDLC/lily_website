@@ -6,6 +6,8 @@ from aiogram.types import CallbackQuery, Message, TelegramObject
 from loguru import logger as log
 from redis.asyncio import Redis
 
+from src.telegram_bot.core.container import BotContainer
+
 
 class ThrottlingMiddleware(BaseMiddleware):
     """
@@ -55,3 +57,8 @@ class ThrottlingMiddleware(BaseMiddleware):
         await self.redis.set(key, "1", ex=int(self.rate_limit) or 1)
 
         return await handler(event, data)
+
+
+def setup(container: BotContainer) -> BaseMiddleware:
+    """Фабрика для создания middleware."""
+    return ThrottlingMiddleware(redis=container.redis_client, rate_limit=1.0)
