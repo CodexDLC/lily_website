@@ -4,12 +4,14 @@
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
     {% include "includes/_meta.html" %}
+    {% include "includes/_analytics_head.html" %}
     <link rel="preload" as="image" href="{% static 'img/5.webp' %}">
     <link rel="stylesheet" href="{% static 'css/components/promo-notification.css' %}">
     <script src="{% static 'js/htmx.min.js' %}" defer></script>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    {% include "includes/_analytics_body.html" %}
 
     <div class="site-wrapper">
         {% include "includes/_header.html" %}
@@ -21,6 +23,8 @@
 
         {% include "includes/_footer.html" %}
     </div>
+
+    {% include "includes/_cookie_consent.html" %}
 
     <script src="{% static 'js/base.js' %}" defer></script>
     <script src="{% static 'js/promo-notification.js' %}" defer></script>

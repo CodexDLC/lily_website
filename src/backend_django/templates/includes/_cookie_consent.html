@@ -1,0 +1,210 @@
+{% load i18n %}
+{% comment %}
+GDPR/DSGVO-Compliant Cookie Consent Banner
+Legal Requirements (Rechtssicherheit):
+1. Links to Impressum & Datenschutz MUST be accessible
+2. No "Cookie Wall" - banner should not block content access
+3. Equal visual weight for Accept/Reject buttons (no dark patterns)
+4. Users can revoke consent easily via footer link
+{% endcomment %}
+
+<div id="cookieConsentBanner" class="cookie-consent-banner" style="display: none;">
+  <div class="cookie-consent-container">
+    <div class="cookie-consent-content">
+      <div class="cookie-consent-text">
+        <h3 class="cookie-consent-title">{% trans "Cookies & Datenschutz" %}</h3>
+        <p class="cookie-consent-description">
+          {% blocktrans %}
+          Wir verwenden Cookies und ähnliche Technologien, um die Nutzung unserer Website zu analysieren und Ihr Erlebnis zu verbessern.
+          Durch Klicken auf "Alle akzeptieren" stimmen Sie der Verwendung von Analyse- und Marketing-Cookies zu.
+          Mit "Nur essenzielle" werden nur technisch notwendige Cookies gesetzt.
+          {% endblocktrans %}
+        </p>
+        <div class="cookie-consent-links">
+          <a href="/impressum/" class="cookie-link" target="_blank" rel="noopener">{% trans "Impressum" %}</a>
+          <span class="cookie-link-separator">•</span>
+          <a href="/datenschutz/" class="cookie-link" target="_blank" rel="noopener">{% trans "Datenschutz" %}</a>
+        </div>
+      </div>
+
+      <div class="cookie-consent-actions">
+        <button id="cookieReject" class="cookie-btn cookie-btn-secondary" type="button">
+          {% trans "Nur essenzielle" %}
+        </button>
+        <button id="cookieAccept" class="cookie-btn cookie-btn-primary" type="button">
+          {% trans "Alle akzeptieren" %}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Cookie Consent Banner Styles - LILY Beauty Salon */
+.cookie-consent-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.cookie-consent-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.cookie-consent-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.cookie-consent-text {
+  flex: 1;
+  color: #ffffff;
+}
+
+.cookie-consent-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  color: #ffffff;
+}
+
+.cookie-consent-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0 0 0.75rem 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.cookie-consent-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.cookie-link {
+  color: #d4b896;
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.cookie-link:hover {
+  color: #e6d4ba;
+}
+
+.cookie-link-separator {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.cookie-consent-actions {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+/* CRITICAL: Equal visual weight for both buttons (no dark patterns) */
+.cookie-btn {
+  flex: 1;
+  min-width: 150px;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.cookie-btn-primary {
+  background: #d4b896;
+  color: #1a1a1a;
+  border-color: #d4b896;
+}
+
+.cookie-btn-primary:hover {
+  background: #e6d4ba;
+  border-color: #e6d4ba;
+  transform: translateY(-1px);
+}
+
+.cookie-btn-secondary {
+  background: transparent;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.cookie-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Tablet & Desktop */
+@media (min-width: 768px) {
+  .cookie-consent-content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .cookie-consent-actions {
+    width: auto;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+  }
+
+  .cookie-btn {
+    min-width: 160px;
+  }
+}
+
+/* Mobile Optimization */
+@media (max-width: 767px) {
+  .cookie-consent-container {
+    padding: 1.25rem;
+  }
+
+  .cookie-consent-title {
+    font-size: 1.125rem;
+  }
+
+  .cookie-consent-description {
+    font-size: 0.875rem;
+  }
+
+  .cookie-consent-actions {
+    flex-direction: column;
+  }
+
+  .cookie-btn {
+    width: 100%;
+  }
+}
+</style>
+
+<script src="{% static 'js/cookie-consent.js' %}" defer></script>

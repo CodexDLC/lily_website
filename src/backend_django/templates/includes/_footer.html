@@ -120,6 +120,8 @@
                 <span class="separator-text">|</span>
                 <a href="{% url 'datenschutz' %}">{% trans "Datenschutz" %}</a>
                 <span class="separator-text">|</span>
+                <a href="#" onclick="window.revokeCookieConsent(); return false;">{% trans "Cookie-Einstellungen" %}</a>
+                <span class="separator-text">|</span>
                 <a href="{% url 'faq' %}" style="color: var(--color-gold); font-weight: bold;">FAQ</a>
             </div>
         </div>
