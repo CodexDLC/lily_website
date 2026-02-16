@@ -44,19 +44,22 @@ git log --oneline -10  # View last 10 commits
 
 ### Step 2: Run local checks
 
-Before merging to `main`, **always** run local validation:
+Before merging to `main`, **always** run the project quality gate:
 
 ```bash
-.\tools\dev\check_local.ps1  # Windows
-# or
-pwsh tools/dev/check_local.ps1  # Linux/Mac
+python tools/dev/check.py
+```
+
+**Interactive mode (if you need to run specific checks):**
+```bash
+python tools/dev/check.py --settings
 ```
 
 Must pass:
-- ✅ Ruff format (code formatting)
-- ✅ Ruff lint (style checks)
+- ✅ Ruff format & lint (code style)
 - ✅ Mypy (type checking)
 - ✅ Pytest unit tests
+- ✅ Docker integration validation (build & Django internal checks)
 
 ### Step 3: Merge develop → main
 
@@ -334,7 +337,7 @@ Deployment uses the following **GitHub Secrets**:
 Before each release, verify:
 
 - [ ] All features tested locally
-- [ ] `check_local.ps1` ran successfully
+- [ ] `python tools/dev/check.py` ran successfully
 - [ ] PR from `develop` to `main` created and CI passed
 - [ ] PR merged to `main`
 - [ ] Tag created in correct format (`v*.*.*`)

@@ -1,6 +1,6 @@
 [project]
 name = "lily_website"
-version = "0.1.0"
+version = "0.9.9"
 description = ""
 authors = [
     {name = "CodexDLC",email = "primecodex@gmail.com"}
