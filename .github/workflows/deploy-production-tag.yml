@@ -125,11 +125,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
           VERSION: ${{ env.VERSION }}
+          ENV_FILE_CONTENT: ${{ secrets.ENV_FILE }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_BOT,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DOMAIN_NAME,REDIS_PASSWORD,GITHUB_TOKEN,GITHUB_ACTOR,VERSION
+          envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_BOT,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DOMAIN_NAME,REDIS_PASSWORD,GITHUB_TOKEN,GITHUB_ACTOR,VERSION,ENV_FILE_CONTENT
           script: |
             set -e
 
@@ -138,7 +139,7 @@ jobs:
             echo "🚀 Deploying version: $VERSION"
 
             # Создаем .env в папке deploy (там где docker-compose.prod.yml)
-            echo "${{ secrets.ENV_FILE }}" > .env
+            printf '%s\n' "$ENV_FILE_CONTENT" > .env
 
             update_var() {
               grep -q "^$1=" .env && sed -i "s|^$1=.*|$1=$2|g" .env || echo "$1=$2" >> .env
