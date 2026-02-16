@@ -1,6 +1,13 @@
 #!/bin/sh
 set -e
 
+# Если передана команда (например, migrate), выполняем только её
+if [ "$#" -gt 0 ]; then
+    echo "Running command: $@"
+    exec "$@"
+fi
+
+# Иначе запускаем полный цикл запуска приложения
 echo "Running collectstatic..."
 python /app/manage.py collectstatic --noinput
 
