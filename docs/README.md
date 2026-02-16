@@ -20,6 +20,8 @@ Strict technical documentation, API contracts, database schemas, and deployment 
     *   Core logic, Domain logic, Data flows.
 *   **[🤖 Telegram Bot](./en_EN/architecture/telegram_bot/README.md)**
     *   Telegram bot logic, handlers, FSM.
+*   **[⚙️ Workers](./en_EN/architecture/workers/README.md)**
+    *   Background task processing, ARQ workers.
 
 ### 🇷🇺 [Russian: Architect's Mind](./ru_RU/README.md)
 > **Target Audience:** Onboarding, System Design Understanding, Decision Making.

@@ -48,7 +48,7 @@ services:
       - ../.env
     volumes:
       - ../src/backend_django:/app
-      - uploads:/app/media
+      - ../src/backend_django/media:/app/media # Changed: Mount local media directory
       - static_volume:/app/staticfiles
       - logs_volume:/app/logs
     depends_on:
@@ -109,12 +109,12 @@ services:
   nginx:
     build:
       context: ..
-      dockerfile: deploy/nginx/Dockerfile
+      dockerfile: deploy/nginx/Dockerfile.local
     container_name: lily_website-nginx
     ports:
       - "8080:80"
     volumes:
-      - uploads:/app/media:ro
+      - ../src/backend_django/media:/app/media:ro # Changed: Mount local media directory
       - static_volume:/app/staticfiles:ro
     depends_on:
       backend:
@@ -123,10 +123,24 @@ services:
     networks:
       - lily_website-network
 
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: lily_website-mailpit
+    ports:
+      - "8025:8025"  # Web UI
+      - "1025:1025"  # SMTP server
+    environment:
+      - MP_MAX_MESSAGES=500
+      - MP_SMTP_AUTH_ACCEPT_ANY=1
+      - MP_SMTP_AUTH_ALLOW_INSECURE=1
+    restart: unless-stopped
+    networks:
+      - lily_website-network
+
 volumes:
   postgres_data:
   redis-data:
-  uploads:
+  # uploads: # Removed this volume as it's no longer used for local media
   static_volume:
   logs_volume:
 

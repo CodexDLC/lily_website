@@ -1,7 +1,7 @@
+import asyncio
 from typing import Any
 
 from arq.connections import ArqRedis, RedisSettings, create_pool
-from asgiref.sync import async_to_sync
 from django.conf import settings
 
 
@@ -46,5 +46,18 @@ class DjangoArqClient:
     def enqueue_job(cls, function: str, *args: Any, **kwargs: Any) -> Any | None:
         """
         Synchronous wrapper to enqueue a job from Django views.
+        Creates a new event loop if needed.
         """
-        return async_to_sync(cls.enqueue_job_async)(function, *args, **kwargs)
+        try:
+            # Try to get the current event loop
+            loop = asyncio.get_event_loop()
+            if loop.is_closed():
+                # If closed, create a new one
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+        except RuntimeError:
+            # No event loop exists, create a new one
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+        return loop.run_until_complete(cls.enqueue_job_async(function, *args, **kwargs))

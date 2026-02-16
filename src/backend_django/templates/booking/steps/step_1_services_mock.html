@@ -4,8 +4,8 @@
         {% trans "Wählen Sie eine Leistung" %}
     </h3>
 
-    <!-- Category Filter (Tabs) -->
-    <div class="category-tabs">
+    <!-- Category Filter (Desktop Tabs) -->
+    <div class="category-tabs desktop-only">
         {% for cat in categories %}
         <button class="tab-btn {% if cat.slug == selected_category_slug %}active{% endif %}"
                 hx-get="{% url 'booking_wizard' %}?step=1&category={{ cat.slug }}"
@@ -16,9 +16,34 @@
         {% endfor %}
     </div>
 
+    <!-- Category Filter (Premium Mobile Dropdown) -->
+    <div class="category-mobile-select mobile-only">
+        <div class="custom-dropdown" id="category-dropdown">
+            <button class="dropdown-trigger" onclick="toggleDropdown()">
+                <span id="selected-category-label">
+                    {% for cat in categories %}
+                        {% if cat.slug == selected_category_slug %}{{ cat.title }}{% endif %}
+                    {% endfor %}
+                </span>
+                <div class="select-arrow"></div>
+            </button>
+
+            <div class="dropdown-menu" id="dropdown-menu">
+                {% for cat in categories %}
+                <div class="dropdown-item {% if cat.slug == selected_category_slug %}active{% endif %}"
+                     hx-get="{% url 'booking_wizard' %}?step=1&category={{ cat.slug }}"
+                     hx-target="#wizard-content"
+                     hx-swap="innerHTML"
+                     onclick="toggleDropdown()">
+                    {{ cat.title }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
     <!-- Services List -->
     <div class="services-list-wizard">
-
         {% for service in services %}
         <div class="service-card-wizard">
             <div class="sc-info">
@@ -58,12 +83,29 @@
             {% trans "Keine Leistungen in dieser Kategorie gefunden." %}
         </div>
         {% endfor %}
-
     </div>
 </div>
 
-<!-- Only include OOB updates for HTMX requests -->
+<script>
+    function toggleDropdown() {
+        const menu = document.getElementById('dropdown-menu');
+        menu.classList.toggle('show');
+    }
+
+    // Close dropdown when clicking outside
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropdown-trigger') && !event.target.matches('#selected-category-label')) {
+            const dropdowns = document.getElementsByClassName("dropdown-menu");
+            for (let i = 0; i < dropdowns.length; i++) {
+                let openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+</script>
+
 {% if request.headers.HX_Request %}
-    <!-- Update Stepper via OOB -->
     {% include "booking/includes/stepper.html" %}
 {% endif %}

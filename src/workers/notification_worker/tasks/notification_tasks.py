@@ -8,7 +8,9 @@ if TYPE_CHECKING:
     from src.shared.core.manager_redis.manager import StreamManager
 
 
-async def send_booking_notification_task(ctx: dict[str, Any], admin_id: int, appointment_data: dict[str, Any]) -> None:
+async def send_booking_notification_task(
+    ctx: dict[str, Any], appointment_data: dict[str, Any], admin_id: int | None = None
+) -> None:
     """
     Задача для отправки уведомления о новой записи.
     """
@@ -34,3 +36,27 @@ async def send_booking_notification_task(ctx: dict[str, Any], admin_id: int, app
 
     except Exception as e:
         log.exception(f"Error sending notification task: {e}")
+
+
+async def requeue_event_task(ctx: dict[str, Any], event_data: dict[str, Any]) -> None:
+    """
+    Универсальная задача для возврата события в Redis Stream (Retry mechanism).
+    """
+    log.info(f"Task: requeue_event_task | type={event_data.get('type')}")
+
+    stream_manager = cast("StreamManager", ctx.get("stream_manager"))
+    if not stream_manager:
+        log.error("StreamManager not found in context.")
+        return
+
+    try:
+        stream_name = RedisStreams.BotEvents.NAME
+        # Увеличиваем счетчик попыток
+        retries = int(event_data.get("_retries", 0)) + 1
+        event_data["_retries"] = str(retries)
+
+        message_id = await stream_manager.add_event(stream_name, event_data)
+        log.info(f"Event requeued to '{stream_name}' | retry={retries} | msg_id={message_id}")
+
+    except Exception as e:
+        log.error(f"Failed to requeue event: {e}")

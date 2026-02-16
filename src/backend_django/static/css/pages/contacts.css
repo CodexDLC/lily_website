@@ -165,7 +165,8 @@ textarea.input-line {
 }
 
 /* Responsive */
-@media (max-width: 900px) {
+/* Адаптировано: для планшетов и меньших экранов (до 1023px) */
+@media (max-width: 1023px) {
     .top-section {
         grid-template-columns: 1fr;
         gap: 40px;

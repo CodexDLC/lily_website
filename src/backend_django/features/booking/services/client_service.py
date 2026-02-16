@@ -75,9 +75,6 @@ class ClientService:
         if not query:
             return None
 
-        # Return the first match found. This is a performance trade-off.
-        # The infrastructure's default ordering will determine which client is returned
-        # if multiple clients match the OR condition.
         return cast("Client | None", Client.objects.filter(query).first())
 
     @staticmethod
@@ -100,7 +97,7 @@ class ClientService:
 
     @staticmethod
     def _update_existing_client(client: Client, data: dict) -> Client:
-        """Updates an existing client with new data if fields are empty."""
+        """Updates an existing client with new data if values have changed."""
         update_fields = []
 
         fields_to_update = {
@@ -113,10 +110,13 @@ class ClientService:
         }
 
         for field, value in fields_to_update.items():
-            if value and not getattr(client, field):
+            current_value = getattr(client, field)
+            # Обновляем поле, если передано новое непустое значение и оно отличается от текущего
+            if value and value != current_value:
                 setattr(client, field, value)
                 update_fields.append(field)
 
+        # Отдельная логика для согласия на маркетинг (только в сторону согласия)
         if data.get("consent_marketing") and not client.consent_marketing:
             client.consent_marketing = True
             client.consent_date = timezone.now()

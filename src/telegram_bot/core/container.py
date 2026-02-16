@@ -2,6 +2,8 @@ import socket
 from typing import Any
 
 from aiogram import Bot
+from arq import ArqRedis, create_pool
+from arq.connections import RedisSettings
 from loguru import logger as log
 from redis.asyncio import Redis
 
@@ -29,6 +31,7 @@ class BotContainer:
         self.redis_client = redis_client
         self.bot: Bot | None = None
         self.view_sender: ViewSender | None = None
+        self.arq_pool: ArqRedis | None = None
 
         # --- Redis Layer (Shared) ---
         self.redis_service = RedisService(redis_client)
@@ -68,6 +71,18 @@ class BotContainer:
 
         log.info(f"BotContainer | initialized features={list(self.features.keys())}")
 
+    async def init_arq(self) -> None:
+        """Инициализация пула ARQ для постановки задач воркеру."""
+        self.arq_pool = await create_pool(
+            RedisSettings(
+                host=self.settings.effective_redis_host,
+                port=self.settings.redis_port,
+                password=self.settings.redis_password,
+                database=0,
+            )
+        )
+        log.info("BotContainer | ARQ pool initialized.")
+
     def set_bot(self, bot: Bot) -> None:
         """Устанавливает объект Bot в контейнер и инициализирует BotRedisDispatcher."""
         self.bot = bot
@@ -83,5 +98,7 @@ class BotContainer:
         """Закрытие ресурсов."""
         if self.stream_processor:
             await self.stream_processor.stop_listening()
+        if self.arq_pool:
+            await self.arq_pool.close()
         if self.redis_client:
             await self.redis_client.close()

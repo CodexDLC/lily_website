@@ -18,7 +18,13 @@
         </div>
         <div class="hero-visual-col">
             <!-- Local Model PNG -->
-            <img src="{% static 'img/5.webp' %}" class="hero-model-png" alt="Model">
+            <img src="{% static 'img/5.webp' %}"
+                 class="hero-model-png"
+                 alt="Model"
+                 fetchpriority="high"
+                 loading="eager"
+                 width="908"
+                 height="1008">
         </div>
     </div>
 </section>

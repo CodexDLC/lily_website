@@ -1,15 +1,18 @@
-# 📂 Shared Services
+# 📂 Services
 
 [⬅️ Back](../README.md) | [🏠 Docs Root](../../../../README.md)
 
-Shared services used across multiple features.
+This directory contains various shared services used across the Telegram bot application. These services encapsulate common functionalities, business logic, and integrations, promoting reusability and modularity.
 
 ## 🗺️ Module Map
 
 | Component | Description |
 |:---|:---|
-| **[📂 Director](./director/README.md)** | Global navigation and scene management |
-| **[📂 Sender](./sender/README.md)** | Smart message editing (ViewSender) |
-| **[📂 FSM](./fsm/README.md)** | State managers and base classes |
-| **[📂 Feature Discovery](./feature_discovery/README.md)** | Auto-discovery of menus and GC rules |
-| **[📂 Worker](./worker/README.md)** | Async background tasks (ARQ) |
+| **[📂 FSM](./fsm/README.md)** | Finite State Machine (FSM) related services and base classes |
+| **[📂 Base](./base/README.md)** | Base classes and utilities for services and orchestrators |
+| **[📂 Redis](./redis/README.md)** | Redis-specific services, such as stream processing and routing |
+| **[📂 Helper](./helper/README.md)** | General utility and helper services |
+| **[📂 Sender](./sender/README.md)** | Service for sending and editing messages, managing UI coordinates |
+| **[📂 Director](./director/README.md)** | Service for managing global navigation and scene transitions |
+| **[📂 Animation](./animation/README.md)** | Service for handling animations and visual effects |
+| **[📂 Feature Discovery](./feature_discovery/README.md)** | Service for auto-discovering and registering features |
