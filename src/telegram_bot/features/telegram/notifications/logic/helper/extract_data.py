@@ -20,14 +20,24 @@ def extract_context(call: CallbackQuery, callback_data: NotificationsCallback) -
     user_id = call.from_user.id
     chat_id = None
     message_thread_id = None
+    message_text = None
+    message_id = None  # Добавлено
 
     if isinstance(call.message, Message):
         chat_id = call.message.chat.id
         message_thread_id = call.message.message_thread_id
+        message_text = call.message.text
+        message_id = call.message.message_id  # Извлекаем message_id
 
     action = callback_data.action
     session_id = callback_data.session_id
 
     return QueryContext(
-        user_id=user_id, chat_id=chat_id, message_thread_id=message_thread_id, action=action, session_id=session_id
+        user_id=user_id,
+        chat_id=chat_id,
+        message_thread_id=message_thread_id,
+        action=action,
+        session_id=session_id,
+        message_text=message_text,
+        message_id=message_id,  # Передаем извлеченный message_id
     )

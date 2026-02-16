@@ -162,14 +162,3 @@ textarea.form-input-boxed {
     margin-top: 2px;
     color: var(--color-text-muted);
 }
-
-/* --- Responsive --- */
-@media (max-width: 600px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .full-width {
-        grid-column: span 1;
-    }
-}

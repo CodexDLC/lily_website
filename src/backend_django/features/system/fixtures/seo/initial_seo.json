@@ -1,0 +1,312 @@
+{
+  "haircut-women-styling": {
+    "seo_title_de": "Damenhaarschnitt Köthen | Waschen, Schneiden & Föhnen | LILY",
+    "seo_title_ru": "Женская стрижка Кётен | Мытье, Стрижка и Укладка | LILY",
+    "seo_title_uk": "Жіноча стрижка Кьотен | Миття, Стрижка та Укладка | LILY",
+    "seo_title_en": "Women's Haircut Köthen | Wash, Cut & Blow Dry | LILY",
+    "seo_description_de": "Professioneller Damenhaarschnitt in Köthen. Individuelle Typberatung und perfektes Styling. Jetzt Termin buchen!",
+    "seo_description_ru": "Идеальная женская стрижка в Кётене. Подбор формы, мытье головы и профессиональная укладка. Запись онлайн.",
+    "seo_description_uk": "Ідеальна жіноча стрижка у Кьотені. Підбір форми, миття голови та професійна укладка. Запис онлайн.",
+    "seo_description_en": "Professional women's haircut in Köthen. Style consultation and perfect blow dry. Book now!"
+  },
+  "haircut-men": {
+    "seo_title_de": "Herrenhaarschnitt Köthen | Stylisch & Modern | LILY",
+    "seo_title_ru": "Мужская стрижка Кётен | Стильно и Быстро | LILY",
+    "seo_title_uk": "Чоловіча стрижка Кьотен | Стильно та Швидко | LILY",
+    "seo_title_en": "Men's Haircut Köthen | Stylish & Modern | LILY",
+    "seo_description_de": "Klassische und moderne Herrenhaarschnitte in Köthen. Schnell, professionell und präzise.",
+    "seo_description_ru": "Качественные мужские стрижки в Кётене. Классика и тренды. Профессиональные мастера.",
+    "seo_description_uk": "Якісні чоловічі стрижки у Кьотені. Класика та тренди. Професійні майстри.",
+    "seo_description_en": "Classic and modern men's haircuts in Köthen. Fast, professional, and precise."
+  },
+  "coloring-airtouch-balayage": {
+    "seo_title_de": "Balayage & AirTouch Köthen | Premium Blond | LILY",
+    "seo_title_ru": "Сложное окрашивание Кётен | AirTouch и Балаяж | LILY",
+    "seo_title_uk": "Складне фарбування Кьотен | AirTouch та Балаяж | LILY",
+    "seo_title_en": "Balayage & AirTouch Köthen | Premium Blonde | LILY",
+    "seo_description_de": "Exklusives Balayage und AirTouch in Köthen. Schonende Aufhellung und fließende Übergänge. Top-Ergebnisse.",
+    "seo_description_ru": "Топовые техники окрашивания: Эйртач, Балаяж, Шатуш. Идеальный блонд без вреда для волос в Кётене.",
+    "seo_description_uk": "Топові техніки фарбування: Ейртач, Балаяж, Шатуш. Ідеальний блонд без шкоди для волосся у Кьотені.",
+    "seo_description_en": "Exclusive Balayage and AirTouch in Köthen. Gentle lightening and seamless transitions. Top results."
+  },
+  "coloring-roots-toning": {
+    "seo_title_de": "Ansatz färben Köthen | Tönung & Grauabdeckung | LILY",
+    "seo_title_ru": "Окрашивание корней Кётен | Тонирование волос | LILY",
+    "seo_title_uk": "Фарбування коренів Кьотен | Тонування волосся | LILY",
+    "seo_title_en": "Root Touch-Up Köthen | Toning & Coverage | LILY",
+    "seo_description_de": "Professionelle Ansatzfärbung und Haartönung. Perfekte Grauabdeckung und Farbauffrischung.",
+    "seo_description_ru": "Окрашивание корней и тонирование длины. Закрашивание седины и обновление цвета.",
+    "seo_description_uk": "Фарбування коренів та тонування довжини. Зафарбовування сивини та оновлення кольору.",
+    "seo_description_en": "Professional root coloring and hair toning. Perfect grey coverage and color refresh."
+  },
+  "manicure-women-classic": {
+    "seo_title_de": "Klassische Maniküre Köthen | Gepflegte Nägel | LILY",
+    "seo_title_ru": "Классический маникюр Кётен | Уход за руками | LILY",
+    "seo_title_uk": "Класичний манікюр Кьотен | Догляд за руками | LILY",
+    "seo_title_en": "Classic Manicure Köthen | Nail Care | LILY",
+    "seo_description_de": "Professionelle Nagelpflege ohne Lack. Nagelhaut entfernen, feilen und pflegen. Hygienisch rein.",
+    "seo_description_ru": "Гигиенический маникюр без покрытия. Обработка кутикулы и придание формы. Стерильно.",
+    "seo_description_uk": "Гігієнічний манікюр без покриття. Обробка кутикули та надання форми. Стерильно.",
+    "seo_description_en": "Professional nail care without polish. Cuticle removal, filing, and care. Hygienically clean."
+  },
+  "manicure-gellack-premium": {
+    "seo_title_de": "Gelnägel Köthen | Maniküre mit Schellack | LILY",
+    "seo_title_ru": "Маникюр Гель-лак Кётен | Покрытие под кутикулу | LILY",
+    "seo_title_uk": "Манікюр Гель-лак Кьотен | Покриття під кутикулу | LILY",
+    "seo_title_en": "Gel Manicure Köthen | Shellac Nails | LILY",
+    "seo_description_de": "Haltbare Maniküre mit Gellack (Shellac). Riesige Farbauswahl und Glanz bis zu 4 Wochen.",
+    "seo_description_ru": "Комбинированный маникюр с покрытием гель-лаком. Стойкость до 4 недель, огромный выбор цветов.",
+    "seo_description_uk": "Комбінований манікюр з покриттям гель-лаком. Стійкість до 4 тижнів, величезний вибір кольорів.",
+    "seo_description_en": "Long-lasting manicure with gel polish. Huge color selection and shine for up to 4 weeks."
+  },
+  "manicure-polish": {
+    "seo_title_de": "Maniküre mit Lack Köthen | Klassischer Nagellack | LILY",
+    "seo_title_ru": "Маникюр с лаком Кётен | Обычное покрытие | LILY",
+    "seo_title_uk": "Манікюр з лаком Кьотен | Звичайне покриття | LILY",
+    "seo_title_en": "Manicure with Polish Köthen | Regular Nail Polish | LILY",
+    "seo_description_de": "Maniküre mit klassischem Nagellack. Schnelle Pflege und schöne Farben für jeden Tag.",
+    "seo_description_ru": "Маникюр с покрытием обычным лаком. Быстро, красиво и аккуратно.",
+    "seo_description_uk": "Манікюр з покриттям звичайним лаком. Швидко, красиво та охайно.",
+    "seo_description_en": "Manicure with classic nail polish. Quick care and beautiful colors for every day."
+  },
+  "manicure-men": {
+    "seo_title_de": "Herrenmaniküre Köthen | Gepflegte Männerhände | LILY",
+    "seo_title_ru": "Мужской маникюр Кётен | Уход для мужчин | LILY",
+    "seo_title_uk": "Чоловічий манікюр Кьотен | Догляд для чоловіків | LILY",
+    "seo_title_en": "Men's Manicure Köthen | Groomed Hands | LILY",
+    "seo_description_de": "Dezente und saubere Nagelpflege für Männer. Nagelhaut entfernen und polieren.",
+    "seo_description_ru": "Аккуратный мужской маникюр. Ухоженные руки — признак успеха. Быстро и незаметно.",
+    "seo_description_uk": "Охайний чоловічий манікюр. Доглянуті руки — ознака успіху. Швидко та непомітно.",
+    "seo_description_en": "Discreet and clean nail care for men. Cuticle removal and buffing."
+  },
+  "nail-extensions-standard": {
+    "seo_title_de": "Nagelverlängerung Köthen | Gelnägel Aufbau | LILY",
+    "seo_title_ru": "Наращивание ногтей Кётен | Гель до 3 см | LILY",
+    "seo_title_uk": "Нарощування нігтів Кьотен | Гель до 3 см | LILY",
+    "seo_title_en": "Nail Extension Köthen | Gel Sculpting | LILY",
+    "seo_description_de": "Professionelle Nagelverlängerung mit Gel. Natürlicher Look und hohe Stabilität.",
+    "seo_description_ru": "Наращивание ногтей гелем (короткая и средняя длина). Прочно, естественно, красиво.",
+    "seo_description_uk": "Нарощування нігтів гелем (коротка та середня довжина). Міцно, природно, красиво.",
+    "seo_description_en": "Professional gel nail extension. Natural look and high durability."
+  },
+  "nail-extensions-extreme-russian": {
+    "seo_title_de": "Arch Modeling Köthen | French Nails | LILY",
+    "seo_title_ru": "Арочное моделирование Кётен | Выкладной френч | LILY",
+    "seo_title_uk": "Арочне моделювання Кьотен | Викладний френч | LILY",
+    "seo_title_en": "Arched Modeling Köthen | Sculpted French | LILY",
+    "seo_description_de": "Exklusives Arch-Modeling und French-Design. Perfekte Architektur und Länge für höchste Ansprüche.",
+    "seo_description_ru": "Премиум наращивание: арочное моделирование и идеальный выкладной френч. Для ценителей искусства.",
+    "seo_description_uk": "Преміум нарощування: арочне моделювання та ідеальний викладний френч. Для цінителів мистецтва.",
+    "seo_description_en": "Exclusive arch modeling and French design. Perfect architecture and length."
+  },
+  "pedicure-smart-complete": {
+    "seo_title_de": "Smart Pediküre Köthen | Glatte Füße | LILY",
+    "seo_title_ru": "Смарт-педикюр Кётен | Обработка стоп | LILY",
+    "seo_title_uk": "Смарт-педикюр Кьотен | Обробка стоп | LILY",
+    "seo_title_en": "Smart Pedicure Köthen | Smooth Feet | LILY",
+    "seo_description_de": "Innovative Smart-Pediküre mit Disc-Technik. Entfernt Hornhaut effektiv und sanft. Babyweiche Füße.",
+    "seo_description_ru": "Аппаратный Smart-педикюр дисками. Идеально гладкие пятки без трещин. Стерильно.",
+    "seo_description_uk": "Апаратний Smart-педикюр дисками. Ідеально гладкі п'яти без тріщин. Стерильно.",
+    "seo_description_en": "Innovative Smart Pedicure using disc technique. Removes calluses effectively and gently."
+  },
+  "facial-cleansing-combo": {
+    "seo_title_de": "Gesichtsreinigung Köthen | Porenreinigung | LILY",
+    "seo_title_ru": "Чистка лица Кётен | Комбинированная | LILY",
+    "seo_title_uk": "Чистка обличчя Кьотен | Комбінована | LILY",
+    "seo_title_en": "Facial Cleansing Köthen | Deep Pore Cleanse | LILY",
+    "seo_description_de": "Tiefe Gesichtsreinigung (manuell + Ultraschall). Gegen Unreinheiten und Mitesser.",
+    "seo_description_ru": "Глубокая комбинированная чистка лица. Избавление от черных точек и воспалений.",
+    "seo_description_uk": "Глибока комбінована чистка обличчя. Позбавлення від чорних цяток та запалень.",
+    "seo_description_en": "Deep facial cleansing (manual + ultrasound). Against impurities and blackheads."
+  },
+  "facial-carboxy": {
+    "seo_title_de": "Carboxytherapie Köthen | Hautverjüngung | LILY",
+    "seo_title_ru": "Карбокситерапия Кётен | Омоложение CO2 | LILY",
+    "seo_title_uk": "Карбоксітерапія Кьотен | Омолодження CO2 | LILY",
+    "seo_title_en": "Carboxytherapy Köthen | Skin Rejuvenation | LILY",
+    "seo_description_de": "Nicht-invasive Carboxytherapie zur Sauerstoffversorgung der Haut. Sofortiger Glow-Effekt.",
+    "seo_description_ru": "Безинъекционная карбокситерапия. Насыщение кожи кислородом, лифтинг и сияние.",
+    "seo_description_uk": "Безін'єкційна карбоксітерапія. Насичення шкіри киснем, ліфтинг та сяйво.",
+    "seo_description_en": "Non-invasive carboxytherapy for skin oxygenation. Instant glow effect."
+  },
+  "facial-cryo": {
+    "seo_title_de": "Kryotherapie Gesicht Köthen | Kältebehandlung | LILY",
+    "seo_title_ru": "Криотерапия лица Кётен | Лечение холодом | LILY",
+    "seo_title_uk": "Кріотерапія обличчя Кьотен | Лікування холодом | LILY",
+    "seo_title_en": "Cryotherapy Facial Köthen | Cold Treatment | LILY",
+    "seo_description_de": "Beruhigende Kältebehandlung für das Gesicht. Strafft Poren und reduziert Schwellungen.",
+    "seo_description_ru": "Криомассаж лица. Сужение пор, снятие отеков и тонизация кожи.",
+    "seo_description_uk": "Кріомасаж обличчя. Звуження пор, зняття набряків та тонізація шкіри.",
+    "seo_description_en": "Soothing cold treatment for the face. Tightens pores and reduces swelling."
+  },
+  "facial-peeling-light": {
+    "seo_title_de": "Fruchtsäurepeeling Köthen | Hauterneuerung | LILY",
+    "seo_title_ru": "Поверхностный пилинг Кётен | Кислотный пилинг | LILY",
+    "seo_title_uk": "Поверхневий пілінг Кьотен | Кислотний пілінг | LILY",
+    "seo_title_en": "Chemical Peel Köthen | Skin Renewal | LILY",
+    "seo_description_de": "Sanftes chemisches Peeling für einen frischen Teint. Erneuert die Hautstruktur.",
+    "seo_description_ru": "Легкий кислотный пилинг для обновления кожи. Выравнивание тона и рельефа.",
+    "seo_description_uk": "Легкий кислотний пілінг для оновлення шкіри. Вирівнювання тону та рельєфу.",
+    "seo_description_en": "Gentle chemical peel for a fresh complexion. Renews skin structure."
+  },
+  "cosmetology-hydrafacial": {
+    "seo_title_de": "HydraFacial Köthen | Hollywood Glow | LILY",
+    "seo_title_ru": "HydraFacial Кётен | Голливудская чистка | LILY",
+    "seo_title_uk": "HydraFacial Кьотен | Голлівудська чистка | LILY",
+    "seo_title_en": "HydraFacial Köthen | Hollywood Glow | LILY",
+    "seo_description_de": "Original HydraFacial Behandlung. Reinigung, Peeling und Hydratisierung in einem. Sofortiges Ergebnis.",
+    "seo_description_ru": "Вакуумный гидропилинг HydraFacial. Очищение и увлажнение. Эффект \"на выход\".",
+    "seo_description_uk": "Вакуумний гідропілінг HydraFacial. Очищення та зволоження. Ефект \"на вихід\".",
+    "seo_description_en": "Original HydraFacial treatment. Cleansing, exfoliating, and hydrating all in one. Instant results."
+  },
+  "cosmetology-anubis-peel": {
+    "seo_title_de": "AnubisMed Peeling Köthen | Profi-Kosmetik | LILY",
+    "seo_title_ru": "Пилинг AnubisMed Кётен | Испанские пилинги | LILY",
+    "seo_title_uk": "Пілінг AnubisMed Кьотен | Іспанські пілінги | LILY",
+    "seo_title_en": "AnubisMed Peel Köthen | Pro Cosmetics | LILY",
+    "seo_description_de": "Hochwirksame Peelings von AnubisMed. Gegen Akne, Pigmentflecken und Falten.",
+    "seo_description_ru": "Профессиональные испанские пилинги AnubisMed. Решение проблем акне и старения.",
+    "seo_description_uk": "Професійні іспанські пілінги AnubisMed. Вирішення проблем акне та старіння.",
+    "seo_description_en": "Highly effective peels by AnubisMed. Against acne, pigmentation, and wrinkles."
+  },
+  "cosmetology-christina-forever-young": {
+    "seo_title_de": "Christina Forever Young Köthen | Anti-Aging | LILY",
+    "seo_title_ru": "Уход Christina Forever Young Кётен | Омоложение | LILY",
+    "seo_title_uk": "Догляд Christina Forever Young Кьотен | Омолодження | LILY",
+    "seo_title_en": "Christina Forever Young Köthen | Anti-Aging | LILY",
+    "seo_description_de": "Exklusive Anti-Aging Behandlung von Christina Cosmetics. Schützt und verjüngt die Haut.",
+    "seo_description_ru": "Омолаживающая программа Forever Young. Замедление старения и укрепление кожи.",
+    "seo_description_uk": "Омолоджуюча програма Forever Young. Уповільнення старіння та зміцнення шкіри.",
+    "seo_description_en": "Exclusive anti-aging treatment by Christina Cosmetics. Protects and rejuvenates the skin."
+  },
+  "complex-lashes-brows": {
+    "seo_title_de": "Wimpern & Augenbrauen Komplex Köthen | Lifting | LILY",
+    "seo_title_ru": "Комплекс Брови и Ресницы Кётен | Ламинирование | LILY",
+    "seo_title_uk": "Комплекс Брови та Вії Кьотен | Ламінування | LILY",
+    "seo_title_en": "Brows & Lashes Package Köthen | Lifting | LILY",
+    "seo_description_de": "Komplettpaket für den perfekten Blick. Wimpernlifting und Augenbrauenstyling zum Sparpreis.",
+    "seo_description_ru": "Выгодный комплекс: Ламинирование ресниц + Оформление бровей. Идеальный взгляд за один визит.",
+    "seo_description_uk": "Вигідний комплекс: Ламінування вій + Оформлення брів. Ідеальний погляд за один візит.",
+    "seo_description_en": "Complete package for the perfect look. Lash lift and brow styling at a special price."
+  },
+  "brows-architecture-tint": {
+    "seo_title_de": "Augenbrauen Formen & Färben Köthen | Brow Styling | LILY",
+    "seo_title_ru": "Коррекция и Окрашивание Бровей Кётен | LILY",
+    "seo_title_uk": "Корекція та Фарбування Брів Кьотен | LILY",
+    "seo_title_en": "Brow Shaping & Tinting Köthen | Brow Styling | LILY",
+    "seo_description_de": "Professionelles Brow-Mapping, Zupfen und Färben (Henna oder Farbe).",
+    "seo_description_ru": "Архитектура бровей, коррекция воском/пинцетом и стойкое окрашивание.",
+    "seo_description_uk": "Архітектура брів, корекція воском/пінцетом та стійке фарбування.",
+    "seo_description_en": "Professional brow mapping, plucking, and tinting (henna or dye)."
+  },
+  "brows-lamination-lift": {
+    "seo_title_de": "Augenbrauenlifting Köthen | Brow Lamination | LILY",
+    "seo_title_ru": "Ламинирование бровей Кётен | Долговременная укладка | LILY",
+    "seo_title_uk": "Ламінування брів Кьотен | Довготривала укладка | LILY",
+    "seo_title_en": "Brow Lamination Köthen | Brow Lift | LILY",
+    "seo_description_de": "Trend Brow Lifting für volle und geformte Augenbrauen. Hält bis zu 6 Wochen.",
+    "seo_description_ru": "Долговременная укладка бровей. Послушные и густые брови надолго.",
+    "seo_description_uk": "Довготривала укладка брів. Слухняні та густі брови надовго.",
+    "seo_description_en": "Trending Brow Lift for full and shaped brows. Lasts up to 6 weeks."
+  },
+  "lashes-extension-volume": {
+    "seo_title_de": "Wimpernverlängerung Köthen | 2D-3D Volumen | LILY",
+    "seo_title_ru": "Наращивание ресниц 2D-3D Кётен | Объем | LILY",
+    "seo_title_uk": "Нарощування вій 2D-3D Кьотен | Об'єм | LILY",
+    "seo_title_en": "Eyelash Extension Köthen | 2D-3D Volume | LILY",
+    "seo_description_de": "Volumen-Wimpernverlängerung (2D-3D Technik). Ausdrucksstarker Blick und hoher Tragekomfort.",
+    "seo_description_ru": "Объемное наращивание ресниц 2D и 3D. Выразительный взгляд без туши.",
+    "seo_description_uk": "Об'ємне нарощування вій 2D та 3D. Виразний погляд без туші.",
+    "seo_description_en": "Volume eyelash extensions (2D-3D technique). Expressive look and high wearing comfort."
+  },
+  "massage-classic-single": {
+    "seo_title_de": "Klassische Massage Köthen | Ganzkörper | LILY",
+    "seo_title_ru": "Классический массаж Кётен | Общий массаж | LILY",
+    "seo_title_uk": "Класичний масаж Кьотен | Загальний масаж | LILY",
+    "seo_title_en": "Classic Massage Köthen | Full Body | LILY",
+    "seo_description_de": "Traditionelle Massage zur Lockerung der Muskulatur und Förderung der Durchblutung.",
+    "seo_description_ru": "Общий классический массаж тела. Снятие тонуса мышц и улучшение кровообращения.",
+    "seo_description_uk": "Загальний класичний масаж тіла. Зняття тонусу м'язів та покращення кровообігу.",
+    "seo_description_en": "Traditional massage to loosen muscles and promote circulation."
+  },
+  "massage-back": {
+    "seo_title_de": "Rückenmassage Köthen | Gegen Verspannungen | LILY",
+    "seo_title_ru": "Массаж спины Кётен | Лечебный массаж | LILY",
+    "seo_title_uk": "Масаж спини Кьотен | Лікувальний масаж | LILY",
+    "seo_title_en": "Back Massage Köthen | Tension Relief | LILY",
+    "seo_description_de": "Intensive Massage für Rücken, Nacken und Schultern. Hilft bei Schmerzen und Stress.",
+    "seo_description_ru": "Проработка спины и шейно-воротниковой зоны. Снятие боли и усталости.",
+    "seo_description_uk": "Опрацювання спини та шийно-комірцевої зони. Зняття болю та втоми.",
+    "seo_description_en": "Intensive massage for back, neck, and shoulders. Helps with pain and stress."
+  },
+  "massage-relax-short": {
+    "seo_title_de": "Relax Massage Köthen | Entspannung & Wellness | LILY",
+    "seo_title_ru": "Релакс-массаж Кётен | Антистресс | LILY",
+    "seo_title_uk": "Релакс-масаж Кьотен | Антистрес | LILY",
+    "seo_title_en": "Relax Massage Köthen | Wellness & Spa | LILY",
+    "seo_description_de": "Sanfte Entspannungsmassage mit Aromaölen. Ruhe für Körper und Geist.",
+    "seo_description_ru": "Расслабляющий массаж с аромамаслами. Снятие нервного напряжения.",
+    "seo_description_uk": "Розслаблюючий масаж з аромаоліями. Зняття нервової напруги.",
+    "seo_description_en": "Gentle relaxation massage with aroma oils. Peace for body and mind."
+  },
+  "massage-full-body-relax": {
+    "seo_title_de": "Ganzkörpermassage Köthen | Luxus Wellness | LILY",
+    "seo_title_ru": "Массаж всего тела Кётен | Полный Релакс | LILY",
+    "seo_title_uk": "Масаж всього тіла Кьотен | Повний Релакс | LILY",
+    "seo_title_en": "Full Body Massage Köthen | Luxury Wellness | LILY",
+    "seo_description_de": "Umfassende Wellness-Massage von Kopf bis Fuß. Eine Stunde pure Erholung.",
+    "seo_description_ru": "Часовой массаж всего тела. Глубокое расслабление и восстановление сил.",
+    "seo_description_uk": "Годинний масаж всього тіла. Глибоке розслаблення та відновлення сил.",
+    "seo_description_en": "Comprehensive wellness massage from head to toe. One hour of pure relaxation."
+  },
+  "depilation-upper-lip": {
+    "seo_title_de": "Damenbart entfernen Köthen | Gesichtswaxing | LILY",
+    "seo_title_ru": "Депиляция верхней губы Кётен | Усики | LILY",
+    "seo_title_uk": "Депіляція верхньої губи Кьотен | Вусики | LILY",
+    "seo_title_en": "Upper Lip Hair Removal Köthen | Face Waxing | LILY",
+    "seo_description_de": "Sanfte Entfernung von Gesichtshaaren (Oberlippe). Sugaring oder Waxing.",
+    "seo_description_ru": "Удаление усиков над верхней губой. Быстро и без раздражения.",
+    "seo_description_uk": "Видалення вусиків над верхньою губою. Швидко та без подразнення.",
+    "seo_description_en": "Gentle removal of facial hair (upper lip). Sugaring or waxing."
+  },
+  "depilation-armpits": {
+    "seo_title_de": "Achselhaarentfernung Köthen | Waxing & Sugaring | LILY",
+    "seo_title_ru": "Депиляция подмышек Кётен | Шугаринг | LILY",
+    "seo_title_uk": "Депіляція пахв Кьотен | Шугаринг | LILY",
+    "seo_title_en": "Underarm Hair Removal Köthen | Waxing | LILY",
+    "seo_description_de": "Glatte Achseln für Wochen. Schonende Haarentfernung für empfindliche Haut.",
+    "seo_description_ru": "Идеально гладкие подмышки. Удаление волос сахаром или воском.",
+    "seo_description_uk": "Ідеально гладкі пахви. Видалення волосся цукром або воском.",
+    "seo_description_en": "Smooth underarms for weeks. Gentle hair removal for sensitive skin."
+  },
+  "depilation-bikini-classic-single": {
+    "seo_title_de": "Bikinizone Waxing Köthen | Klassisch | LILY",
+    "seo_title_ru": "Классическое бикини Кётен | Депиляция | LILY",
+    "seo_title_uk": "Класичне бікіні Кьотен | Депіляція | LILY",
+    "seo_title_en": "Classic Bikini Wax Köthen | Hair Removal | LILY",
+    "seo_description_de": "Haarentfernung in der Bikinizone (Slip-Linie). Diskret und professionell.",
+    "seo_description_ru": "Депиляция классического бикини (по линии белья). Комфортно и стерильно.",
+    "seo_description_uk": "Депіляція класичного бікіні (по лінії білизни). Комфортно та стерильно.",
+    "seo_description_en": "Hair removal in the bikini zone (panty line). Discreet and professional."
+  },
+  "depilation-men-back": {
+    "seo_title_de": "Rückenenthaarung Männer Köthen | Waxing | LILY",
+    "seo_title_ru": "Депиляция спины мужская Кётен | Воск | LILY",
+    "seo_title_uk": "Депіляція спини чоловіча Кьотен | Віск | LILY",
+    "seo_title_en": "Men's Back Waxing Köthen | Hair Removal | LILY",
+    "seo_description_de": "Effektive Haarentfernung am Rücken für Männer. Glatte Haut ohne Stoppeln.",
+    "seo_description_ru": "Мужская депиляция спины воском. Быстрое удаление нежелательных волос.",
+    "seo_description_uk": "Чоловіча депіляція спини воском. Швидке видалення небажаного волосся.",
+    "seo_description_en": "Effective back hair removal for men. Smooth skin without stubble."
+  },
+  "depilation-package-legs-bikini": {
+    "seo_title_de": "Waxing Paket Köthen | Beine & Bikini | LILY",
+    "seo_title_ru": "Пакет Депиляции Кётен | Ноги и Бикини | LILY",
+    "seo_title_uk": "Пакет Депіляції Кьотен | Ноги та Бікіні | LILY",
+    "seo_title_en": "Waxing Package Köthen | Legs & Bikini | LILY",
+    "seo_description_de": "Sparpaket: Beine komplett und Bikini. Seidenweiche Haut für den ganzen Körper.",
+    "seo_description_ru": "Выгодный комплекс: Ноги полностью + Бикини. Полная гладкость надолго.",
+    "seo_description_uk": "Вигідний комплекс: Ноги повністю + Бікіні. Повна гладкість надовго.",
+    "seo_description_en": "Value package: Full legs and bikini. Silky smooth skin for the whole body."
+  }
+}

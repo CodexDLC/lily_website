@@ -14,20 +14,27 @@ async def handle_new_appointment_notification(message_data: dict[str, Any], cont
     Хендлер для нового уведомления о записи.
     """
     try:
-        orchestrator = container.notifications
+        orchestrator = container.redis_notifications
         view_sender = container.view_sender
+        cache_manager = container.redis.appointment_cache
 
-        log.info(f"Notifications | Processing 'new_appointment' event. ID={message_data.get('id')}")
+        appointment_id = message_data.get("id")
+        log.info(f"Notifications | Processing 'new_appointment' event. ID={appointment_id}")
 
-        # 1. Пытаемся обработать штатно
+        # 1. Сохраняем данные в кэш Redis для последующего использования в UI-фиче
+        if appointment_id:
+            await cache_manager.save(appointment_id, message_data)
+            log.debug(f"Notifications | Appointment {appointment_id} cached in Redis.")
+
+        # 2. Пытаемся обработать штатно (формируем UnifiedViewDTO)
         try:
             view_dto = orchestrator.handle_notification(message_data)
         except Exception as e:
             log.error(f"Notifications | Orchestrator failed: {e}")
-            # 2. Если упало — шлем аварийное уведомление
+            # 3. Если упало — шлем аварийное уведомление
             view_dto = orchestrator.handle_failure(message_data, str(e))
 
-        # 3. Отправляем (хоть что-то)
+        # 4. Отправляем уведомление в Telegram
         await view_sender.send(view_dto)
 
     except Exception as e:
