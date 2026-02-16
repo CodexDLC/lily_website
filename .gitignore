@@ -82,3 +82,12 @@ deploy/.env
 # ═══════════════════════════════════════════
 .template_install_hash
 .env.test
+
+# ═══════════════════════════════════════════
+# Application Logs (JSON error logs)
+# ═══════════════════════════════════════════
+logs/
+**/logs/**/*.json
+src/*/logs/
+!**/logs/.gitkeep
+!**/logs/README.md
