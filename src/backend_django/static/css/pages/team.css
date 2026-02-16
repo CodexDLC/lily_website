@@ -23,24 +23,148 @@
     color: var(--color-white);
 }
 
-/* Team Grid */
+/* --- Owner Block --- */
+.owner-block {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 40px;
+    /* Fix for scroll jitter */
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.owner-photo {
+    flex: 0 0 400px;
+    height: 500px;
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll !important; /* Crucial for mobile performance */
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.owner-info {
+    flex: 1;
+}
+
+.owner-name {
+    font-family: var(--font-serif, serif);
+    font-size: 42px;
+    color: var(--color-gold);
+    margin-bottom: 10px;
+}
+
+.owner-role {
+    display: block;
+    font-family: var(--font-sans, sans-serif);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--color-text-muted);
+    margin-bottom: 25px;
+}
+
+.owner-description {
+    color: var(--color-white);
+    line-height: 1.8;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+.owner-note {
+    font-style: italic;
+    color: var(--color-text-muted);
+    border-left: 2px solid var(--color-gold);
+    padding-left: 20px;
+    margin-bottom: 30px;
+}
+
+/* --- Team Grid --- */
 .team-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns on desktop (default) */
+    grid-template-columns: repeat(3, 1fr);
     gap: 30px;
 }
 
+.master-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: 0.3s;
+    /* Fix for scroll jitter */
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.master-photo {
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll !important;
+}
+
+.master-info {
+    padding: 20px;
+    text-align: center;
+}
+
+.master-name {
+    font-family: var(--font-serif, serif);
+    font-size: 20px;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.master-role {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    margin-bottom: 15px;
+}
+
 /* Responsive Grid */
-/* Адаптировано: 2 колонки для планшетов и меньших экранов (до 1023px) */
 @media (max-width: 1023px) {
     .team-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .owner-block {
+        flex-direction: column;
+        text-align: center;
+        gap: 30px;
+    }
+
+    .owner-photo {
+        flex: 0 0 350px;
+        width: 100%;
+    }
 }
 
-/* Адаптировано: 1 колонка для мобильных устройств (до 767px) */
 @media (max-width: 767px) {
     .team-grid {
         grid-template-columns: 1fr;
+        padding: 0 20px;
+    }
+
+    .master-card {
+        max-width: 85%;
+        margin: 0 auto;
+    }
+
+    .master-photo {
+        height: 220px;
+    }
+
+    .master-info {
+        padding: 15px;
+    }
+
+    .master-name {
+        font-size: 18px;
     }
 }

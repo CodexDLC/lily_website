@@ -1,280 +1,75 @@
-"""Admin interface for booking app."""
+"""Admin interface for booking app using Unfold."""
 
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
+from unfold.admin import ModelAdmin
+from unfold.decorators import action
 
 from .models import Appointment, Client, Master, MasterCertificate, MasterPortfolio
 
 
 @admin.register(Master)
-class MasterAdmin(TranslationAdmin):
-    """Admin interface for Master model."""
-
-    list_display = ["name", "status_badge", "is_owner", "is_featured", "years_experience", "order"]
-    list_filter = ["status", "is_owner", "is_featured", "categories"]
-    search_fields = ["name", "slug", "phone", "instagram", "telegram_username"]
-    readonly_fields = ["bot_access_code", "qr_token", "created_at", "updated_at"]
-    prepopulated_fields = {"slug": ("name",)}
-
-    fieldsets = (
-        (
-            _("Basic Information"),
-            {"fields": ("name", "slug", "photo", "title", "bio", "short_description")},
-        ),
-        (
-            _("Specializations"),
-            {"fields": ("categories", "years_experience")},
-        ),
-        (
-            _("Contact"),
-            {"fields": ("phone", "instagram")},
-        ),
-        (
-            _("Status & Flags"),
-            {"fields": ("status", "is_owner", "is_featured", "order")},
-        ),
-        (
-            _("Django User"),
-            {"fields": ("user",), "classes": ("collapse",)},
-        ),
-        (
-            _("Telegram Integration"),
-            {
-                "fields": ("telegram_id", "telegram_username", "bot_access_code"),
-                "classes": ("collapse",),
-            },
-        ),
-        (
-            _("QR System (Future)"),
-            {"fields": ("qr_token",), "classes": ("collapse",)},
-        ),
-        (
-            _("SEO"),
-            {"fields": ("seo_title", "seo_description", "seo_image"), "classes": ("collapse",)},
-        ),
-        (
-            _("Timestamps"),
-            {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
-        ),
-    )
-
-    filter_horizontal = ["categories"]
+class MasterAdmin(ModelAdmin, TranslationAdmin):
+    list_display = ["name", "status_badge", "is_owner", "order"]
+    list_display_links = ["name"]
+    list_filter = ["status", "is_owner"]
+    search_fields = ["name"]
 
     @admin.display(description=_("Status"))
     def status_badge(self, obj):
-        """Colored status badge."""
         colors = {
-            "active": "green",
-            "vacation": "orange",
-            "fired": "red",
-            "training": "blue",
+            "active": "bg-green-500/20 text-green-700 dark:text-green-400",
+            "vacation": "bg-orange-500/20 text-orange-700 dark:text-orange-400",
         }
-        color = colors.get(obj.status, "gray")
+        color_classes = mark_safe(colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400"))
         return format_html(
-            '<span style="padding:3px 10px;background:{};color:white;border-radius:3px;">{}</span>',
-            color,
+            '<span class="px-2 py-1 rounded-md text-xs font-medium {}">{}</span>',
+            color_classes,
             obj.get_status_display(),
         )
 
 
 @admin.register(Client)
-class ClientAdmin(admin.ModelAdmin):
-    """Admin interface for Client model."""
-
-    list_display = ["display_name_admin", "phone", "email", "instagram", "status_badge", "is_ghost_icon", "created_at"]
-    list_filter = ["status", "consent_marketing", "created_at"]
-    search_fields = ["first_name", "last_name", "phone", "email", "instagram", "telegram", "access_token"]
-    readonly_fields = ["access_token", "created_at", "updated_at"]
-
-    fieldsets = (
-        (
-            _("Contact Information"),
-            {"fields": ("first_name", "last_name", "phone", "email")},
-        ),
-        (
-            _("Socials"),
-            {"fields": ("instagram", "telegram")},
-        ),
-        (
-            _("Account Status"),
-            {"fields": ("status", "user", "access_token")},
-        ),
-        (
-            _("Marketing"),
-            {"fields": ("consent_marketing", "consent_date")},
-        ),
-        (
-            _("Internal"),
-            {"fields": ("notes", "created_at", "updated_at"), "classes": ("collapse",)},
-        ),
-    )
-
-    @admin.display(description=_("Name"))
-    def display_name_admin(self, obj):
-        """Name with ghost indicator."""
-        return obj.display_name()
-
-    @admin.display(description=_("Ghost"), boolean=True)
-    def is_ghost_icon(self, obj):
-        """Ghost account indicator."""
-        return obj.is_ghost
-
-    @admin.display(description=_("Status"))
-    def status_badge(self, obj):
-        """Colored status badge."""
-        colors = {
-            "guest": "orange",
-            "active": "green",
-            "blocked": "red",
-        }
-        color = colors.get(obj.status, "gray")
-        return format_html(
-            '<span style="padding:3px 10px;background:{};color:white;border-radius:3px;">{}</span>',
-            color,
-            obj.get_status_display(),
-        )
+class ClientAdmin(ModelAdmin):
+    list_display = ["first_name", "last_name", "phone", "email", "created_at"]
+    list_display_links = ["first_name", "last_name"]
 
 
 @admin.register(Appointment)
-class AppointmentAdmin(admin.ModelAdmin):
-    """Admin interface for Appointment model."""
-
-    list_display = [
-        "id",
-        "client_name_display",
-        "master",
-        "service",
-        "datetime_start",
-        "duration_minutes",
-        "status_badge",
-        "price",
-    ]
-    list_filter = ["status", "master", "datetime_start", "created_at"]
-    search_fields = [
-        "client__first_name",
-        "client__last_name",
-        "client__phone",
-        "client__email",
-        "master__name",
-        "service__title",
-    ]
-    readonly_fields = ["created_at", "updated_at", "cancelled_at", "reminder_sent_at"]
-    date_hierarchy = "datetime_start"
-
-    fieldsets = (
-        (
-            _("Booking Details"),
-            {"fields": ("client", "master", "service", "datetime_start", "duration_minutes", "price")},
-        ),
-        (
-            _("Status"),
-            {"fields": ("status", "cancelled_at", "cancel_reason", "cancel_note")},
-        ),
-        (
-            _("Notes"),
-            {"fields": ("client_notes", "admin_notes")},
-        ),
-        (
-            _("Notifications"),
-            {"fields": ("reminder_sent", "reminder_sent_at"), "classes": ("collapse",)},
-        ),
-        (
-            _("Timestamps"),
-            {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
-        ),
-    )
-
-    actions = ["mark_as_confirmed", "mark_as_completed", "cancel_appointments"]
-
-    @admin.display(description=_("Client"))
-    def client_name_display(self, obj):
-        """Client name for list display."""
-        return obj.client.display_name()
+class AppointmentAdmin(ModelAdmin):
+    list_display = ["id", "client", "master", "service", "datetime_start", "status_badge"]
+    list_display_links = ["id", "client"]
+    list_filter = ["status", "master"]
+    list_filter_sheet = True
 
     @admin.display(description=_("Status"))
     def status_badge(self, obj):
-        """Colored status badge."""
         colors = {
-            "pending": "orange",
-            "confirmed": "green",
-            "completed": "blue",
-            "cancelled": "red",
-            "no_show": "gray",
+            "pending": "bg-amber-500/20 text-amber-700 dark:text-amber-400",
+            "confirmed": "bg-green-500/20 text-green-700 dark:text-green-400",
+            "completed": "bg-blue-500/20 text-blue-700 dark:text-blue-400",
+            "cancelled": "bg-red-500/20 text-red-700 dark:text-red-400",
         }
-        color = colors.get(obj.status, "gray")
+        color_classes = mark_safe(colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400"))
         return format_html(
-            '<span style="padding:3px 10px;background:{};color:white;border-radius:3px;">{}</span>',
-            color,
+            '<span class="px-2 py-1 rounded-md text-xs font-medium {}">{}</span>',
+            color_classes,
             obj.get_status_display(),
         )
 
-    @admin.action(description=_("Mark as Confirmed"))
+    @action(description=_("Mark as Confirmed"), icon="check_circle")
     def mark_as_confirmed(self, request, queryset):
-        """Mark selected appointments as confirmed."""
         queryset.update(status=Appointment.STATUS_CONFIRMED)
-
-    @admin.action(description=_("Mark as Completed"))
-    def mark_as_completed(self, request, queryset):
-        """Mark selected appointments as completed."""
-        queryset.filter(status=Appointment.STATUS_CONFIRMED).update(status=Appointment.STATUS_COMPLETED)
-
-    @admin.action(description=_("Cancel Selected"))
-    def cancel_appointments(self, request, queryset):
-        """Cancel selected appointments."""
-        queryset.update(status=Appointment.STATUS_CANCELLED, cancel_reason=Appointment.CANCEL_REASON_OTHER)
 
 
 @admin.register(MasterCertificate)
-class MasterCertificateAdmin(TranslationAdmin):
-    """Admin interface for MasterCertificate model."""
-
-    list_display = ["title", "master", "issuer", "issue_date", "order", "is_active"]
-    list_filter = ["master", "is_active", "issue_date"]
-    search_fields = ["title", "issuer", "master__name"]
-    readonly_fields = ["created_at", "updated_at"]
-
-    fieldsets = (
-        (
-            _("Certificate Info"),
-            {"fields": ("master", "title", "issuer", "issue_date", "image")},
-        ),
-        (
-            _("Display"),
-            {"fields": ("order", "is_active")},
-        ),
-        (
-            _("Timestamps"),
-            {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
-        ),
-    )
+class MasterCertificateAdmin(ModelAdmin, TranslationAdmin):
+    list_display = ["title", "master", "is_active"]
 
 
 @admin.register(MasterPortfolio)
-class MasterPortfolioAdmin(TranslationAdmin):
-    """Admin interface for MasterPortfolio model."""
-
-    list_display = ["master", "service", "order", "is_active", "created_at"]
-    list_filter = ["master", "service", "is_active", "created_at"]
-    search_fields = ["master__name", "service__title", "description"]
-    readonly_fields = ["created_at", "updated_at"]
-
-    fieldsets = (
-        (
-            _("Portfolio Item"),
-            {"fields": ("master", "image", "description", "service")},
-        ),
-        (
-            _("Display"),
-            {"fields": ("order", "is_active")},
-        ),
-        (
-            _("Instagram"),
-            {"fields": ("instagram_url",), "classes": ("collapse",)},
-        ),
-        (
-            _("Timestamps"),
-            {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
-        ),
-    )
+class MasterPortfolioAdmin(ModelAdmin, TranslationAdmin):
+    list_display = ["master", "service", "is_active"]

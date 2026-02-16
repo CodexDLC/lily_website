@@ -70,6 +70,23 @@
         </td>
     </tr>
 
+    <!-- КНОПКА "В КАЛЕНДАРЬ" -->
+    {% if calendar_url %}
+    <tr>
+        <td align="center" style="padding-top: 30px;">
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td align="center" style="border-radius: 30px;" bgcolor="#ffffff">
+                        <a href="{{ calendar_url }}" target="_blank" style="font-size: 14px; font-family: Arial, sans-serif; color: #003831; text-decoration: none; padding: 10px 25px; border-radius: 30px; border: 1px solid #003831; display: inline-block; font-weight: bold;">
+                            📅 In den Kalender eintragen
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    {% endif %}
+
     <!-- РАЗДЕЛИТЕЛЬ -->
     <tr><td height="40" style="font-size: 0; line-height: 0;">&nbsp;</td></tr>
 

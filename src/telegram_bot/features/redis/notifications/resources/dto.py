@@ -15,6 +15,7 @@ class BookingNotificationPayload(BaseModel):
     service_name: str
     master_name: str
     datetime: str
+    duration_minutes: int = 30  # <--- ДОБАВИЛИ
     price: float
     request_call: bool
     client_notes: str | None = ""
