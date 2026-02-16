@@ -1,3 +1,4 @@
+{% raw %}
 # 📜 Re-engagement Email Template (`reengagement.html`)
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../../README.md)
@@ -93,3 +94,4 @@ A prominent button that links to the booking calendar, encouraging the client to
 *   `greeting`: Personalized greeting for the recipient.
 *   `body_text`: The main body text of the re-engagement message.
 *   `link_calendar`: URL for the booking calendar.
+{% endraw %}

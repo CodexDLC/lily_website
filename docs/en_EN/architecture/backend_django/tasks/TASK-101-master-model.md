@@ -1,3 +1,4 @@
+{% raw %}
 # TASK-101: Create Master Model
 
 **Status:** 📝 Design Complete
@@ -9,7 +10,7 @@
 
 ## Description
 
-Create the `Master` model to represent salon specialists (stylists, nail technicians, cosmetologists, etc.). Each master has a profile page with biography, photo, specializations, certif icates, and portfolio. Masters are linked to services and appointments.
+Create the `Master` model to represent salon specialists (stylists, nail technicians, cosmetologists, etc.). Each master has a profile page with biography, photo, specializations, certificates, and portfolio. Masters are linked to services and appointments.
 
 ## Acceptance Criteria
 
@@ -321,3 +322,4 @@ class MasterAdmin(TranslationAdmin):
 - Add `booking_preferences` JSON field (preferred days, break times)
 - Implement master calendar view in admin
 - Add master statistics dashboard (bookings, revenue)
+{% endraw %}

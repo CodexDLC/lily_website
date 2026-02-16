@@ -1,3 +1,4 @@
+{% raw %}
 # 📜 Confirmation Email Template (`confirmation.html`)
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../../README.md)
@@ -48,7 +49,7 @@ A styled text tag indicating "TERMINBESTÄTIGUNG" (APPOINTMENT CONFIRMATION).
 </tr>
 <tr>
     <td style="color: #555555; font-family: 'Lato', sans-serif; font-size: 16px; line-height: 1.6; padding-bottom: 30px; text-align: center;">
-        Vielen Dank für Ihre Buchung. Ihr Termin wurde erfolgreich bestätigt. Wir freuen uns darauf, Sie bei uns begrüßen zu dürfen.
+        Vielen Dank für Ihre Buchung. Ihr Termin wurde успешно bestätigt. Wir freuen uns darauf, Sie bei uns begrüßen zu dürfen.
     </td>
 </tr>
 ```
@@ -67,7 +68,7 @@ Displays a personalized greeting followed by a thank you message and confirmatio
                 <td style="color: #333333; font-family: 'Lato', sans-serif; font-size: 14px; padding-bottom: 10px;">{{ service_name }}</td>
             </tr>
             <tr>
-                <td style="color: #003831; font-family: 'Lato', sans-serif; font-size: 14px; font-weight: bold; padding-bottom: 10px;">Datum:</td>
+                <td width="30%" style="color: #003831; font-family: 'Lato', sans-serif; font-size: 14px; font-weight: bold; padding-bottom: 10px;">Datum:</td>
                 <td style="color: #333333; font-family: 'Lato', sans-serif; font-size: 14px; padding-bottom: 10px;">{{ date }}</td>
             </tr>
             <tr>
@@ -89,3 +90,4 @@ Displays the confirmed appointment details in a structured box, including the se
 *   `service_name`: The name of the booked service.
 *   `date`: The date of the booked appointment.
 *   `time`: The time of the booked appointment.
+{% endraw %}

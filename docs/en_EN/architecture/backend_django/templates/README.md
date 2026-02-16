@@ -1,3 +1,4 @@
+{% raw %}
 # 📄 Templates
 
 [⬅️ Back](../README.md) | [🏠 Docs Root](../../../../README.md)
@@ -35,3 +36,4 @@ Templates have access to global context via processors defined in `settings.py`:
 - `site_settings`: Global configuration.
 - `i18n`: Translation context.
 - `auth`: User information.
+{% endraw %}

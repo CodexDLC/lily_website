@@ -1,3 +1,4 @@
+{% raw %}
 # 📜 Base Email Template (`base_email.html`)
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../../README.md)
@@ -77,3 +78,4 @@ This is the primary area where specific email content from child templates will 
 *   `site_url`: The base URL of the website.
 *   `logo_url`: The URL of the logo image (with a default fallback).
 *   `url_path_contact_form`: The path to the contact form.
+{% endraw %}

@@ -1,4 +1,5 @@
-мин# TASK-204: HTMX Booking Flow (SEO-Friendly Dynamic Booking)
+{% raw %}
+# TASK-204: HTMX Booking Flow (SEO-Friendly Dynamic Booking)
 
 **Status:** 📝 Design Complete
 **Priority:** Critical
@@ -433,3 +434,4 @@ urlpatterns = [
 - Implement WebSocket for real-time slot updates
 - Add calendar view (month/week)
 - Implement "smart suggest" (AI-powered slot recommendations)
+{% endraw %}
