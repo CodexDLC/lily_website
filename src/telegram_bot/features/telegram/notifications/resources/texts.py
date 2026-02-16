@@ -10,7 +10,7 @@ class NotificationsTexts:
 
     @staticmethod
     def get_i18n():
-        return cast(I18nContext, I18nContext.get_current())
+        return cast("I18nContext", I18nContext.get_current())
 
     # === Тексты для Telegram (динамические) ===
     @classmethod

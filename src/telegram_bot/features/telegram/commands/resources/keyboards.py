@@ -14,7 +14,7 @@ def build_welcome_keyboard(is_admin: bool = False):
     """
     Клавиатура приветственного экрана.
     """
-    i18n = cast(I18nContext, I18nContext.get_current())
+    i18n = cast("I18nContext", I18nContext.get_current())
     builder = InlineKeyboardBuilder()
 
     builder.button(

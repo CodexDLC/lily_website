@@ -87,7 +87,7 @@ class FeatureDiscoveryService:
             if config:
                 return cast("dict[str, Any]", config)
         except ImportError:
-            module = cast(ModuleType, self._load_feature_setting(feature_path))
+            module = cast("ModuleType", self._load_feature_setting(feature_path))
             if module:
                 config = getattr(module, "MENU_CONFIG", None)
                 if config:

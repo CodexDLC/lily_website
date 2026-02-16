@@ -19,7 +19,7 @@ class CommandsUI:
         """
         Рендерит приветственный экран.
         """
-        i18n = cast(I18nContext, I18nContext.get_current())
+        i18n = cast("I18nContext", I18nContext.get_current())
 
         # Используем тернарный оператор по рекомендации Ruff
         text = i18n.welcome.admin(name=name) if is_admin else i18n.welcome.user(name=name)
