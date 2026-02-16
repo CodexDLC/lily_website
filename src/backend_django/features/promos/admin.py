@@ -20,13 +20,13 @@ class PromoMessageAdmin(ModelAdmin, TranslationAdmin):
         "status_badge",
         "priority",
         "button_preview",
-        "statistics",
-        "date_range",
+        "statistics_display",
+        "date_range_display",
     ]
     list_display_links = ["title"]
     list_filter = ["is_active", "starts_at", "ends_at", "priority"]
     search_fields = ["title", "description", "button_text"]
-    readonly_fields = ["views_count", "clicks_count", "ctr_display", "created_at", "updated_at"]
+    readonly_fields = ["views_count", "clicks_count", "calculated_ctr", "created_at", "updated_at"]
     date_hierarchy = "starts_at"
 
     fieldsets = [
@@ -75,7 +75,7 @@ class PromoMessageAdmin(ModelAdmin, TranslationAdmin):
                 "fields": (
                     "views_count",
                     "clicks_count",
-                    "ctr_display",
+                    "calculated_ctr",
                 ),
                 "classes": ("collapse",),
             },
@@ -97,18 +97,22 @@ class PromoMessageAdmin(ModelAdmin, TranslationAdmin):
         """Display colored status badge."""
         status = obj.status_display
 
-        if status == str(_("Active")):
-            color_classes = "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400"
-            icon = "✓"
-        elif status == str(_("Scheduled")):
-            color_classes = "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400"
-            icon = "⏰"
-        elif status == str(_("Expired")):
-            color_classes = "bg-gray-100 text-gray-700 dark:bg-gray-500/20 dark:text-gray-400"
-            icon = "⏹"
-        else:  # Inactive
-            color_classes = "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
-            icon = "✗"
+        colors = {
+            _("Active"): "bg-green-100 text-green-700",
+            _("Scheduled"): "bg-blue-100 text-blue-700",
+            _("Expired"): "bg-red-100 text-red-700",
+            _("Inactive"): "bg-gray-100 text-gray-700",
+        }
+
+        icons = {
+            _("Active"): "✓",
+            _("Scheduled"): "⏰",
+            _("Expired"): "⏹",
+            _("Inactive"): "•",
+        }
+
+        color_classes = mark_safe(colors.get(status, "bg-gray-100 text-gray-700"))
+        icon = icons.get(status, "•")
 
         return format_html(
             '<span class="px-2 py-1 rounded-md text-xs font-medium {}">{} {}</span>',
@@ -120,41 +124,37 @@ class PromoMessageAdmin(ModelAdmin, TranslationAdmin):
     @admin.display(description=_("Button Preview"))
     def button_preview(self, obj):
         """Show preview of how the button will look."""
-        style = f"background-color: {obj.button_color}; color: {obj.text_color}; padding: 6px 12px; border-radius: 15px; font-size: 11px; display: inline-block;"
-        return format_html('<span style="{}">{}</span>', mark_safe(style), obj.button_text)
+        return format_html(
+            '<span style="background-color: {}; color: {}; padding: 4px 8px; border-radius: 10px; font-size: 10px;">{}</span>',
+            obj.button_color,
+            obj.text_color,
+            obj.button_text,
+        )
 
     @admin.display(description=_("Statistics"))
-    def statistics(self, obj):
-        """Show views and clicks statistics."""
+    def statistics_display(self, obj):
+        """Show views and clicks statistics in list view."""
         if obj.views_count == 0:
-            return format_html('<span class="text-gray-400 text-xs">No views yet</span>')
+            return _("No views yet")
 
-        ctr = float(obj.ctr)
-        if ctr >= 10:
-            color_class = "text-green-600 dark:text-green-400"
-        elif ctr >= 5:
-            color_class = "text-orange-600 dark:text-orange-400"
-        else:
-            color_class = "text-gray-600 dark:text-gray-400"
-
+        ctr_value = f"{obj.ctr:.1f}%"
         return format_html(
-            '<span class="text-xs {}">👁 {} | 🖱 {} | CTR: {:.1f}%</span>',
-            color_class,
+            "👁 {} | 🖱 {} | CTR: {}",
             obj.views_count,
             obj.clicks_count,
-            ctr,
+            ctr_value,
         )
 
     @admin.display(description=_("Date Range"))
-    def date_range(self, obj):
-        """Show formatted date range."""
-        start = obj.starts_at.strftime("%Y-%m-%d %H:%M")
-        end = obj.ends_at.strftime("%Y-%m-%d %H:%M")
-        return format_html('<span class="text-xs">{} → {}</span>', start, end)
+    def date_range_display(self, obj):
+        """Show formatted date range in list view."""
+        if not obj.starts_at or not obj.ends_at:
+            return "—"
+        return f"{obj.starts_at.strftime('%Y-%m-%d')} - {obj.ends_at.strftime('%Y-%m-%d')}"
 
     @admin.display(description=_("CTR"))
-    def ctr_display(self, obj):
-        """Display click-through rate."""
+    def calculated_ctr(self, obj):
+        """Display click-through rate in detail view."""
         if obj.views_count == 0:
             return "—"
         return f"{obj.ctr:.2f}%"
@@ -172,8 +172,3 @@ class PromoMessageAdmin(ModelAdmin, TranslationAdmin):
         self.message_user(request, _(f"{updated} notification(s) deactivated."))
 
     actions = ["activate_promos", "deactivate_promos"]
-
-    def get_queryset(self, request):
-        """Optimize query with select_related/prefetch_related if needed."""
-        qs = super().get_queryset(request)
-        return qs
