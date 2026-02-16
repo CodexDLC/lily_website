@@ -8,7 +8,9 @@ if TYPE_CHECKING:
     from src.shared.core.manager_redis.manager import StreamManager
 
 
-async def send_booking_notification_task(ctx: dict[str, Any], admin_id: int, appointment_data: dict[str, Any]) -> None:
+async def send_booking_notification_task(
+    ctx: dict[str, Any], appointment_data: dict[str, Any], admin_id: int | None = None
+) -> None:
     """
     Задача для отправки уведомления о новой записи.
     """

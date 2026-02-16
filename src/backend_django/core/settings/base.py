@@ -31,6 +31,10 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-CHANGE-ME")
 # Main switch for the whole system
 DEBUG = os.environ.get("DEBUG", "True").lower() in ("true", "1", "yes")
 
+# === Bot API Authentication ===
+BOT_API_KEY = os.environ.get("BOT_API_KEY", None)
+BACKEND_API_KEY = os.environ.get("BACKEND_API_KEY", None)
+
 # --- Smart ALLOWED_HOSTS ---
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend"]
 
