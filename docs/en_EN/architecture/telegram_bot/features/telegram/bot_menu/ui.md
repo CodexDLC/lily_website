@@ -1,38 +1,38 @@
-# 📜 Bot Menu UI
+# 🎨 Bot Menu UI (Rendering)
 
-[⬅️ Back](README.md) | [🏠 Docs Root](../../../../../../README.md)
+[⬅️ Back](./README.md) | [🏠 Docs Root](../../../../../README.md)
 
-Pure rendering layer for the dashboard screen.
-
-**File:** `src/telegram_bot/features/bot_menu/ui/menu_ui.py`
-
----
+The `BotMenuUI` is a pure rendering layer. It takes raw data (feature configurations) and transforms it into a `ViewResultDTO` containing the text and keyboard for the Telegram message.
 
 ## 🏗️ Class: BotMenuUI
 
-### render_dashboard(features: dict) → ViewResultDTO
+Located in: `src/telegram_bot/features/telegram/bot_menu/ui/menu_ui.py`
 
-Takes a dictionary of available features (already filtered by RBAC) and builds:
+### Methods
 
-- **Text:** Dashboard title from `resources/texts.py`
-- **Keyboard:** One inline button per feature, sorted by `priority`
+#### `render_dashboard(buttons: dict[str, dict]) -> ViewResultDTO`
 
-Each button uses `DashboardCallback(target=feature_key)` for navigation.
+Generates the main dashboard interface.
 
----
+- **Input**: A dictionary of feature configurations (text, callback_data, priority, etc.).
+- **Process**:
+    1.  Initializes an `InlineKeyboardBuilder`.
+    2.  Iterates through the provided buttons.
+    3.  If a button has explicit `callback_data`, it uses it. Otherwise, it generates a `DashboardCallback` with a `nav` action.
+    4.  Adjusts the keyboard layout (currently 2 buttons per row).
+- **Output**: A `ViewResultDTO` containing the `DASHBOARD_TITLE` and the generated inline keyboard.
 
-## 🎨 Button Layout
+## 🧩 Components
 
-Buttons are rendered from `MENU_CONFIG` of each feature:
+### Keyboard Builder
+The UI uses `aiogram.utils.keyboard.InlineKeyboardBuilder` for flexible keyboard construction.
 
-```python
-MENU_CONFIG = {
-    "key": "commands",
-    "text": "🛠 Commands",       # Button label
-    "description": "...",         # Shown in dashboard text
-    "target_state": "commands",   # Director navigation key
-    "priority": 100,              # Sort order (lower = higher)
-}
-```
+### Callbacks
+Navigation buttons use the `DashboardCallback` schema:
+- **action**: `nav` (navigation)
+- **target**: The key of the target feature (e.g., `booking`, `account`).
 
-Features without `MENU_CONFIG` (like `errors`) do not appear in the dashboard.
+## 📝 Design Principles
+
+- **Stateless**: The UI layer does not store any state or perform any API calls.
+- **Decoupled**: It doesn't know which features are installed; it simply renders whatever buttons the orchestrator provides.

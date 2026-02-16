@@ -1,5 +1,7 @@
+import json
+
 from loguru import logger as log
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from src.shared.core.config import CommonSettings
 
@@ -16,6 +18,31 @@ class BotSettings(CommonSettings):
     telegram_admin_channel_id: int | None = None
     telegram_notification_topic_id: int = 1
     telegram_topics: dict[str, int] = {}
+
+    @field_validator("telegram_topics", mode="before")
+    @classmethod
+    def parse_telegram_topics(cls, v):
+        """
+        Парсит JSON-строку из переменной окружения в словарь.
+
+        Примеры:
+        - Строка: '{"hair": 2, "nails": 4}' -> dict {"hair": 2, "nails": 4}
+        - Уже словарь: {"hair": 2} -> {"hair": 2} (без изменений)
+        - Пустое значение: None или "" -> {}
+        """
+        if isinstance(v, str):
+            if not v.strip():
+                return {}
+            try:
+                parsed = json.loads(v)
+                if isinstance(parsed, dict):
+                    return parsed
+                log.warning(f"TELEGRAM_TOPICS is not a dict after parsing: {type(parsed)}")
+                return {}
+            except json.JSONDecodeError as e:
+                log.error(f"Failed to parse TELEGRAM_TOPICS as JSON: {e}")
+                return {}
+        return v or {}
 
     # --- Roles (ENV) ---
     superuser_ids: str = ""

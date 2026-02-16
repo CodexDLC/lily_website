@@ -1,87 +1,52 @@
-# 📜 DI Container
+# 📄 DI Container
 
-[⬅️ Back](./README.md) | [🏠 Docs Root](../../../../README.md)
+[⬅️ Back](./README.md) | [🏠 Docs Root](../../../../../README.md)
 
-The `BotContainer` is the central Dependency Injection hub. It assembles all services, API clients, and feature orchestrators at startup.
+The `BotContainer` is the Dependency Injection (DI) hub for the Telegram Bot. It initializes and holds references to settings, Redis clients, services, and feature orchestrators.
 
-**File:** `src/telegram_bot/core/container.py`
+## 🏗️ Class: BotContainer
 
----
+Located in: `src/telegram_bot/core/container.py`
 
-## 🏗️ Responsibilities
-
-1. **Create API clients** (gateways to backend services)
-2. **Run feature discovery** (menu buttons, garbage states)
-3. **Build feature orchestrators** via factories from `feature_setting.py`
-4. **Store orchestrators** in `self.features` dictionary for Director access
-
----
-
-## 📋 Constructor Flow
-
-```text
-BotContainer.__init__(settings, redis_client)
-│
-├── 1. Create AuthClient (HTTP gateway to backend)
-├── 2. Create FeatureDiscoveryService
-├── 3. discovery_service.discover_all()
-│       ├── Scan INSTALLED_FEATURES for MENU_CONFIG
-│       └── Scan INSTALLED_FEATURES for GARBAGE_COLLECT / STATES
-├── 4. self.features = discovery_service.create_feature_orchestrators(self)
-│       └── For each feature with create_orchestrator() → call factory
-└── 5. Create BotMenuOrchestrator (special case: depends on discovery)
-        └── Register as self.features["bot_menu"]
-```
-
----
-
-## 🔑 Key Attributes
-
-| Attribute | Type | Description |
-|:---|:---|:---|
-| `settings` | `BotSettings` | Environment configuration |
-| `redis_client` | `Redis` | Shared Redis connection |
-| `auth_client` | `AuthClient` | HTTP client for auth backend |
-| `discovery_service` | `FeatureDiscoveryService` | Feature auto-discovery |
-| `features` | `dict[str, Any]` | Orchestrator registry (`{key: orchestrator}`) |
-| `bot_menu` | `BotMenuOrchestrator` | Dashboard orchestrator (also in `features`) |
-
----
-
-## 🔌 How Features Access Container
-
-Middleware injects `container` into every handler via aiogram's data propagation:
+### Initialization
 
 ```python
-# In handler:
-async def cmd_start(m: Message, container: BotContainer):
-    orchestrator = container.features["commands"]
-    view_dto = await orchestrator.handle_entry(user_id, payload)
+def __init__(self, settings: BotSettings, redis_client: Redis)
 ```
 
----
+During initialization, the container:
+1.  **Sets up Redis Layers**: Initializes `RedisService`, `StreamManager`, and the bot-specific `RedisContainer`.
+2.  **Initializes Stream Processor**: Sets up `RedisStreamProcessor` to listen for events (e.g., notifications from the backend).
+3.  **Discovers Features**: Uses `FeatureDiscoveryService` to automatically find and instantiate feature orchestrators.
+4.  **Registers Features**: Dynamically adds discovered orchestrators as attributes to the container instance.
 
-## 🔄 Two Data Modes (API vs Direct)
+### Key Components
 
-The container decides which implementation to inject based on configuration:
+- **settings**: Instance of `BotSettings`.
+- **redis_client**: The raw `redis.asyncio` client.
+- **bot**: The `aiogram.Bot` instance (set after factory initialization).
+- **view_sender**: A `ViewSender` service for smart message editing and sending.
+- **arq_pool**: A pool for `ARQ` to enqueue background tasks for the worker.
+- **stream_processor**: Handles incoming Redis Stream messages (e.g., for routing notifications to specific users).
+- **discovery_service**: Manages the auto-discovery of bot features and their menu configurations.
 
-```text
-API Mode (default):
-  container.auth_client → AuthClient (HTTP → FastAPI → DB)
+### Methods
 
-Direct Mode (future):
-  container.auth_repository → AuthRepository (→ DB directly)
-```
+#### `init_arq()`
+Asynchronously initializes the ARQ pool using Redis settings from the configuration.
 
-The orchestrator receives a Protocol-typed provider and does not know which mode is active.
+#### `set_bot(bot: Bot)`
+Injects the `Bot` instance into the container and links it with the `ViewSender` and `BotRedisDispatcher`. This is typically called during the bot's startup sequence.
 
----
+#### `shutdown()`
+Gracefully closes resources, including the stream processor, ARQ pool, and Redis client.
 
-## 🧹 Shutdown
+## 🧩 Feature Access
 
+Features are accessible via the `features` dictionary or directly as attributes:
 ```python
-async def shutdown(self):
-    await self.redis_client.close()
+# Accessing the bot menu orchestrator
+menu = container.bot_menu
+# or
+menu = container.features["bot_menu"]
 ```
-
-Called when the bot stops polling to release Redis connections.

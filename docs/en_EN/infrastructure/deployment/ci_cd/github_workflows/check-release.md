@@ -2,7 +2,23 @@
 
 [⬅️ Back](README.md) | [🏠 Docs Root](../../../../../README.md)
 
-This GitHub Actions workflow is designed to enforce the project's Git Flow strategy, specifically for the `release` branch. It ensures that Pull Requests targeting the `release` branch originate only from the `main` branch, preventing unauthorized or out-of-flow merges.
+---
+
+> **⚠️ ARCHIVED WORKFLOW**
+>
+> This workflow has been **removed** as part of migration to tag-based deployment.
+>
+> **Reason:** No longer needed - `release` branch was removed.
+>
+> **Current approach:** [Tag-Based Releases Guide](../../releases_via_tags.md)
+>
+> **Migration guide:** [MIGRATION_TO_TAGS.md](../../MIGRATION_TO_TAGS.md)
+
+---
+
+## Historical Documentation (For Reference)
+
+This GitHub Actions workflow was designed to enforce the project's Git Flow strategy, specifically for the `release` branch. It ensured that Pull Requests targeting the `release` branch originated only from the `main` branch, preventing unauthorized or out-of-flow merges.
 
 ## Trigger
 

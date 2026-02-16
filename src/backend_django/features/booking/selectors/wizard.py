@@ -27,13 +27,13 @@ def get_step_1_context(state: BookingState) -> dict[str, Any]:
 
     def fetch_categories():
         return list(
-            Category.objects.filter(is_active=True)
+            Category.objects.filter(is_active=True, is_planned=False, is_available=True)
             .annotate(active_masters_count=Count("masters", filter=Q(masters__status=Master.STATUS_ACTIVE)))
             .filter(active_masters_count__gt=0)
             .order_by("order")
         )
 
-    categories = get_cached_data("wizard_categories_cache", fetch_categories)
+    categories = get_cached_data("wizard_categories_cache_v2", fetch_categories)
 
     if not selected_category_slug and categories:
         selected_category_slug = categories[0].slug
@@ -41,9 +41,13 @@ def get_step_1_context(state: BookingState) -> dict[str, Any]:
     def fetch_services():
         if not selected_category_slug:
             return []
-        return list(Service.objects.filter(category__slug=selected_category_slug, is_active=True).order_by("order"))
+        return list(
+            Service.objects.filter(
+                category__slug=selected_category_slug, is_active=True, is_planned=False, is_available=True
+            ).order_by("order")
+        )
 
-    services = get_cached_data(f"wizard_services_cache_{selected_category_slug}", fetch_services)
+    services = get_cached_data(f"wizard_services_cache_{selected_category_slug}_v2", fetch_services)
 
     return {
         "categories": categories,
