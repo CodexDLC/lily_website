@@ -109,6 +109,13 @@ class SiteSettingsAdmin(ModelAdmin):
                 )
             },
         ),
+        (
+            _("Analytics & Marketing"),
+            {
+                "fields": ("google_analytics_id", "google_tag_manager_id"),
+                "description": _("Configure Google Analytics 4 and Tag Manager. Changes take effect immediately."),
+            },
+        ),
     ]
 
     def has_add_permission(self, request):
