@@ -159,8 +159,14 @@ class Master(TimestampMixin, SeoMixin, models.Model):
         if not self.qr_token:
             self.qr_token = uuid.uuid4().hex[:16].upper()
 
+        # Only optimize if photo is new or changed
         if self.photo:
-            optimize_image(self.photo, max_width=800)
+            try:
+                # Check if file is actually a new upload (not a path string)
+                if hasattr(self.photo, "file"):
+                    optimize_image(self.photo, max_width=800)
+            except Exception:
+                pass
 
         super().save(*args, **kwargs)
         # Targeted cache invalidation
