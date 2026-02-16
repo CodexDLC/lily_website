@@ -98,16 +98,16 @@ class PromoMessageAdmin(ModelAdmin, TranslationAdmin):
         status = obj.status_display
 
         if status == str(_("Active")):
-            color_classes = mark_safe("bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400")
+            color_classes = "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400"
             icon = "✓"
         elif status == str(_("Scheduled")):
-            color_classes = mark_safe("bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400")
+            color_classes = "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400"
             icon = "⏰"
         elif status == str(_("Expired")):
-            color_classes = mark_safe("bg-gray-100 text-gray-700 dark:bg-gray-500/20 dark:text-gray-400")
+            color_classes = "bg-gray-100 text-gray-700 dark:bg-gray-500/20 dark:text-gray-400"
             icon = "⏹"
         else:  # Inactive
-            color_classes = mark_safe("bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400")
+            color_classes = "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
             icon = "✗"
 
         return format_html(
@@ -129,7 +129,7 @@ class PromoMessageAdmin(ModelAdmin, TranslationAdmin):
         if obj.views_count == 0:
             return format_html('<span class="text-gray-400 text-xs">No views yet</span>')
 
-        ctr = obj.ctr
+        ctr = float(obj.ctr)
         if ctr >= 10:
             color_class = "text-green-600 dark:text-green-400"
         elif ctr >= 5:
@@ -139,7 +139,7 @@ class PromoMessageAdmin(ModelAdmin, TranslationAdmin):
 
         return format_html(
             '<span class="text-xs {}">👁 {} | 🖱 {} | CTR: {:.1f}%</span>',
-            mark_safe(color_class),
+            color_class,
             obj.views_count,
             obj.clicks_count,
             ctr,
