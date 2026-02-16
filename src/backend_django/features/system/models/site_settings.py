@@ -77,6 +77,20 @@ class SiteSettings(models.Model):
         _("Hiring Text"), blank=True, default="Bist du talentiert und liebst deinen Job? Werde Teil unseres Teams!"
     )
 
+    # --- Analytics & Marketing ---
+    google_analytics_id = models.CharField(
+        _("Google Analytics ID"),
+        max_length=50,
+        blank=True,
+        help_text=_("GA4 Measurement ID (e.g., G-XXXXXXXXXX)"),
+    )
+    google_tag_manager_id = models.CharField(
+        _("Google Tag Manager ID"),
+        max_length=50,
+        blank=True,
+        help_text=_("GTM Container ID (e.g., GTM-XXXXXXX)"),
+    )
+
     class Meta:
         verbose_name = _("Site Settings")
         verbose_name_plural = _("Site Settings")
