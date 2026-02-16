@@ -8,6 +8,9 @@
 <meta name="author" content="LILY Beauty Salon">
 <meta name="generator" content="Django">
 
+<!-- Canonical URL -->
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
 <!-- 2. Robots & AI Control (2026 Standard) -->
 {% block meta_robots %}<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">{% endblock %}
 
@@ -26,7 +29,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{% block twitter_title %}{% firstof seo.seo_title "LILY Beauty Salon" %}{% endblock %}">
 <meta name="twitter:description" content="{% block twitter_description %}{% firstof seo.seo_description "Ukrainian beauty experts in Köthen." %}{% endblock %}">
-<meta name="twitter:image" content="{% block twitter_image %}{% if seo.seo_image %}{{ seo.seo_image.url }}{% else %}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock %}">
+<meta name="twitter:image" content="{% block twitter_image %}{% if twitter_image %}{{ twitter_image }}{% else %}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock %}">
 
 <!-- 5. Technical & Freshness (EEAT) -->
 {% if object.updated_at %}
