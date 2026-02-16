@@ -30,8 +30,6 @@ class NotificationsOrchestrator:
             log.error(f"NotificationsOrchestrator | Validation error: {e}")
             return self.handle_failure(raw_payload, str(e))
 
-        view_result = self.ui.render_notification(payload)
-
         target_chat_id = self.settings.telegram_admin_channel_id
         message_thread_id = self.settings.telegram_notification_topic_id
 
@@ -39,6 +37,8 @@ class NotificationsOrchestrator:
             topic_id = self.settings.telegram_topics.get(payload.category_slug)
             if topic_id:
                 message_thread_id = topic_id
+
+        view_result = self.ui.render_notification(payload, topic_id=message_thread_id)
 
         return UnifiedViewDTO(
             content=view_result,

@@ -1,6 +1,7 @@
 from redis.asyncio import Redis
 
 from src.shared.core.redis_service import RedisService
+from src.telegram_bot.infrastructure.redis.managers.notifications.appointment_cache import AppointmentCacheManager
 from src.telegram_bot.infrastructure.redis.managers.sender.sender_manager import SenderManager
 
 
@@ -24,6 +25,5 @@ class RedisContainer:
         # Менеджер для управления координатами UI (Sender)
         self.sender = SenderManager(self.service)
 
-        # Здесь можно добавить другие менеджеры:
-        # self.account = AccountManager(self.service)
-        # self.booking = BookingManager(self.service)
+        # Менеджер для кэширования данных заявок
+        self.appointment_cache = AppointmentCacheManager(self.service)

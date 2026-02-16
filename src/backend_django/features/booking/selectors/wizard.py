@@ -1,5 +1,5 @@
 import calendar
-from datetime import date
+from datetime import date, timedelta
 from typing import Any, TypedDict
 
 from core.cache import get_cached_data
@@ -71,35 +71,41 @@ def get_step_2_context(state: BookingState) -> dict[str, Any] | None:
 
 
 def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[str, Any] | None:
-    """Context for Step 3: Calendar & Slots. Calendar grid is cached, slots are dynamic."""
+    """Context for Step 3: Calendar & Slots."""
     context = {}
 
-    # 1. Get Objects (Safe retrieval)
-    service = None
-    if state.service_id:
-        try:
-            service = Service.objects.get(id=state.service_id)
-            context["selected_service"] = service
-        except Service.DoesNotExist:
-            return None
-    else:
+    # 1. Get Service
+    if not state.service_id:
+        return None
+    try:
+        service = Service.objects.get(id=state.service_id)
+        context["selected_service"] = service
+    except Service.DoesNotExist:
         return None
 
+    # 2. Get Masters (Handle "any" or specific ID)
     masters_list = []
-    if state.master_id:
-        if state.master_id == "any":
-            masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
-        else:
-            try:
-                master = Master.objects.get(id=state.master_id)
-                context["selected_master"] = master
-                masters_list = [master]
-            except (Master.DoesNotExist, ValueError):
-                return None
+    master_id_val = state.master_id or "any"
+    context["master_id"] = master_id_val
+
+    if master_id_val == "any":
+        masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
     else:
+        try:
+            master = Master.objects.get(id=master_id_val)
+            context["selected_master"] = master
+            masters_list = [master]
+        except (Master.DoesNotExist, ValueError):
+            masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
+            context["master_id"] = "any"
+
+    if not masters_list:
         return None
 
-    # 2. Calendar Grid (Cached)
+    # 3. Date Strip (Horizontal list for mobile)
+    context["date_strip"] = _get_date_strip(days=14)
+
+    # 4. Calendar Grid (Full grid for desktop/modal)
     today = timezone.now().date()
     try:
         year = int(view_data.get("year", today.year))
@@ -112,7 +118,7 @@ def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[s
 
     context.update(get_cached_data(f"calendar_grid_cache_{year}_{month}", fetch_calendar))
 
-    # 3. Slots (DYNAMIC - NEVER CACHE)
+    # 5. Slots (DYNAMIC)
     if state.selected_date and service and masters_list:
         context["selected_date_obj"] = state.selected_date
 
@@ -137,6 +143,7 @@ def get_step_4_context(state: BookingState) -> dict[str, Any] | None:
         if state.master_id and state.master_id != "any":
             context["selected_master"] = Master.objects.get(id=state.master_id)
 
+        context["master_id"] = state.master_id or "any"
         context["selected_date"] = state.selected_date
         context["selected_time"] = state.selected_time
     except (Service.DoesNotExist, Master.DoesNotExist):
@@ -158,6 +165,33 @@ def get_stepper_context(current_step: int) -> list[StepperStep]:
         step["active"] = step_number == current_step
         step["completed"] = step_number < current_step
     return steps
+
+
+def _get_date_strip(days: int = 14) -> list[dict[str, Any]]:
+    """Generates a list of dates starting from today."""
+    strip = []
+    today = timezone.now().date()
+
+    # German weekday names (short)
+    weekdays = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+
+    for i in range(days):
+        current = today + timedelta(days=i)
+        # Skip Sundays (optional, depends on business logic)
+        status = "active"
+        if current.weekday() == 6:
+            status = "disabled"
+
+        strip.append(
+            {
+                "date": current.isoformat(),
+                "day_num": current.day,
+                "weekday": weekdays[current.weekday()],
+                "status": status,
+                "is_today": i == 0,
+            }
+        )
+    return strip
 
 
 def _get_calendar_grid(year: int, month: int) -> dict[str, Any]:

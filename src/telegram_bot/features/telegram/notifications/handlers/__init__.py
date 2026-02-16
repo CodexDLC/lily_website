@@ -1,3 +1,3 @@
-from .handlers import router as notif
+from .handlers import router
 
-__all__ = ["notif"]
+__all__ = ["router"]

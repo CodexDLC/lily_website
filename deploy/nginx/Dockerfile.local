@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+# Удаляем все стандартные конфиги
+RUN rm /etc/nginx/conf.d/*
+
+# Копируем наш основной конфиг
+COPY deploy/nginx/nginx-main.conf /etc/nginx/nginx.conf
+
+# Копируем локальный конфиг для разработки (HTTP only)
+COPY deploy/nginx/site-local.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+# Запускаем nginx
+CMD ["nginx", "-g", "daemon off;"]

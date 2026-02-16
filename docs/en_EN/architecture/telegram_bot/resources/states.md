@@ -1,23 +1,14 @@
-# 📜 Global States
+# 📜 States
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../../README.md)
 
-Global FSM state definitions shared across the bot.
+This module defines FSM (Finite State Machine) states and related configurations for the Telegram Bot. It primarily manages states where incoming text messages from users should be treated as "garbage" and potentially ignored or deleted.
 
-**File:** `src/telegram_bot/resources/states.py`
+## `GARBAGE_TEXT_STATES`
 
----
+```python
+GARBAGE_TEXT_STATES: list[str] = []
+```
+A list of strings, where each string represents an FSM state. When the bot is in any of these states, incoming text messages from the user are considered "garbage" and are typically handled by a garbage collector mechanism (e.g., `GarbageStateRegistry` from `core/garbage_collector.py`) to prevent unintended interactions or to clean up the chat.
 
-## 📋 Contents
-
-| Name | Type | Description |
-|:---|:---|:---|
-| `GARBAGE_TEXT_STATES` | `list` | Legacy list of garbage states (now managed dynamically by `GarbageStateRegistry`) |
-
----
-
-## 📝 Note
-
-In the current architecture, garbage state registration is handled automatically by `FeatureDiscoveryService` through `feature_setting.py` in each feature. The global `states.py` is kept for backward compatibility but is not actively used for garbage collection.
-
-Feature-specific states should be defined in each feature's `feature_setting.py`, not in this global file.
+This list is intended to be populated dynamically or through feature configurations to define contexts where only specific types of input (e.g., button presses, commands) are expected.

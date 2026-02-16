@@ -4,71 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Lily Beauty Salon{% endblock %}</title>
-    <style>
-        /* ОБЩИЕ СТИЛИ */
-        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; display: block; }
-        table { border-collapse: collapse !important; }
-        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #f4f4f4; }
-
-        /* Адаптивность */
-        @media screen and (max-width: 525px) {
-            .wrapper { width: 100% !important; max-width: 100% !important; }
-            .responsive-table { width: 100% !important; }
-            .padding { padding: 10px 5% 15px 5% !important; }
-            .mobile-stack { display: block !important; width: 100% !important; padding-bottom: 10px !important; }
-        }
-    </style>
 </head>
-<body style="margin: 0 !important; padding: 0 !important; background-color: #f4f4f4;">
+<body style="margin: 0; padding: 0; background-color: #f4f4f4;">
 
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-    <tr>
-        <td bgcolor="#f4f4f4" align="center" style="padding: 15px;">
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;" class="responsive-table">
+    <!-- ОСНОВНОЙ КОНТЕЙНЕР (Замена body) -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#f4f4f4" style="table-layout: fixed;">
+        <tr>
+            <td align="center" style="padding: 20px 0;">
 
-                <!-- ХЕДЕР (ОБЩИЙ) -->
+                <!-- ШИРИНА ПИСЬМА 700px -->
+                <!--[if (gte mso 9)|(IE)]>
+                <table align="center" border="0" cellspacing="0" cellpadding="0" width="700">
                 <tr>
-                    <td align="center" bgcolor="#003831" style="padding: 25px 0 20px 0; border-radius: 8px 8px 0 0;">
-                        <a href="{{ site_url }}" target="_blank" style="text-decoration: none;">
-                            <!-- Логотип с дефолтной ссылкой -->
-                            <img src="{{ logo_url | default('https://pinlite.dev/media/storage/a3/65/a365b5fedad7fb5779bc5fcf63f00ebc19ed90808c4010a0fbec7207773ca95e.png') }}" alt="LILY BEAUTY SALON" width="180" style="display: block; font-family: 'Playfair Display', serif; color: #EDD071; font-size: 24px;" border="0">
-                        </a>
-                    </td>
+                <td align="center" valign="top" width="700">
+                <![endif]-->
+
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 700px; background-color: #ffffff; border-radius: 8px; border-collapse: separate;">
+
+                    <!-- ХЕДЕР -->
+                    <tr>
+                        <td align="center" bgcolor="#003831" style="padding: 40px 20px; border-radius: 8px 8px 0 0;">
+                            <a href="{{ site_url }}/de/" target="_blank" style="text-decoration: none;">
+                                <img src="{{ logo_url }}"
+                                     alt="LILY BEAUTY SALON"
+                                     width="200"
+                                     border="0"
+                                     style="display: block; font-family: 'Georgia', serif; color: #edd071; font-size: 28px;">
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- КОНТЕНТНЫЙ БЛОК -->
+                    <tr>
+                        <td style="padding: 50px 40px; color: #333333; font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.6;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                {% block content %}{% endblock %}
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- ФУТЕР -->
+                    <tr>
+                        <td align="center" bgcolor="#f9f9f9" style="padding: 40px 20px; border-top: 1px solid #eeeeee; border-radius: 0 0 8px 8px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                <tr>
+                                    <td align="center" style="color: #888888; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5;">
+                                        <p style="margin: 0 0 10px 0;">© 2023 Lily Beauty Salon. Alle Rechte vorbehalten.</p>
+                                        <p style="margin: 0 0 20px 0;">
+                                            <a href="{{ site_url }}/de/" style="color: #003831; text-decoration: none; font-weight: bold;">Website</a> &nbsp;|&nbsp;
+                                            <a href="{{ site_url }}/de/impressum/" style="color: #003831; text-decoration: none; font-weight: bold;">Impressum</a> &nbsp;|&nbsp;
+                                            <a href="{{ site_url }}/de/datenschutz/" style="color: #003831; text-decoration: none; font-weight: bold;">Datenschutz</a>
+                                        </p>
+                                        <p style="margin: 0; color: #a0a0a0; font-style: italic;">
+                                            Dies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht direkt auf diese Nachricht.<br>
+                                            Bei Fragen nutzen Sie bitte unser <a href="{{ site_url }}/de/contacts/" style="color: #003831; text-decoration: underline;">Kontaktformular</a>.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
                 </tr>
+                </table>
+                <![endif]-->
 
-                <tr>
-                    <td bgcolor="#ffffff" style="padding: 30px 30px 40px 30px; border-radius: 0 0 8px 8px;">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-
-                            <!-- СЮДА ВСТАВЛЯЕТСЯ КОНТЕНТ ИЗ ДРУГИХ ФАЙЛОВ -->
-                            {% block content %}{% endblock %}
-
-                        </table>
-                    </td>
-                </tr>
-
-                <!-- ФУТЕР (ОБЩИЙ) -->
-                <tr>
-                    <td bgcolor="#f4f4f4" align="center" style="padding: 30px 0 30px 0; color: #888888; font-family: 'Lato', sans-serif; font-size: 12px;">
-                        <p style="margin: 0;">© 2023 Lily Beauty Salon. Alle Rechte vorbehalten.</p>
-                        <p style="margin: 10px 0 0 0;">
-                            <a href="{{ site_url }}" style="color: #003831; text-decoration: none;">Website</a> |
-                            <a href="{{ site_url }}/legal/impressum" style="color: #003831; text-decoration: none;">Impressum</a> |
-                            <a href="{{ site_url }}/legal/datenschutz" style="color: #003831; text-decoration: none;">Datenschutz</a>
-                        </p>
-                        <!-- Дисклеймер об автоматическом письме и ссылка на форму обратной связи -->
-                        <p style="margin: 15px 0 0 0; color: #a0a0a0;">
-                            Dies ist eine automatisch generierte E-Mail. Bitte antworten Sie nicht direkt auf diese Nachricht.
-                            Bei Fragen oder Anliegen nutzen Sie bitte unser <a href="{{ site_url }}{{ url_path_contact_form }}" style="color: #003831; text-decoration: underline;">Kontaktformular</a>.
-                        </p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+            </td>
+        </tr>
+    </table>
 
 </body>
 </html>

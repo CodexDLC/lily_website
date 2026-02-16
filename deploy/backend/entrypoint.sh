@@ -1,13 +1,22 @@
-#!/bin/bash
-
-# Exit immediately if a command exits with a non-zero status
+#!/bin/sh
 set -e
 
-echo "Applying database migrations..."
-python manage.py migrate --noinput
+# Если передана команда (например, migrate), выполняем только её
+if [ "$#" -gt 0 ]; then
+    echo "Running command: $@"
+    exec "$@"
+fi
 
-echo "Collecting static files..."
-python manage.py collectstatic --noinput
+# Иначе запускаем полный цикл запуска приложения
+echo "Running collectstatic..."
+python /app/manage.py collectstatic --noinput
 
-# Execute the CMD from Dockerfile
-exec "$@"
+echo "Running migrations..."
+python /app/manage.py migrate --noinput
+
+# Добавляем запуск скрипта обновления контента
+echo "Running update_all_content..."
+python /app/manage.py update_all_content
+
+echo "Starting gunicorn..."
+exec gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 90

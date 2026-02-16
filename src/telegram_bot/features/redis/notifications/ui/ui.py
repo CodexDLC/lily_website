@@ -10,8 +10,8 @@ class NotificationsUI:
     UI сервис для фичи Notifications.
     """
 
-    def render_notification(self, payload: BookingNotificationPayload) -> ViewResultDTO:
+    def render_notification(self, payload: BookingNotificationPayload, topic_id: int | None = None) -> ViewResultDTO:
         text = format_new_booking(payload)
-        kb = build_main_kb(payload.id)
+        kb = build_main_kb(payload.id, topic_id=topic_id)
 
         return ViewResultDTO(text=text, kb=kb)

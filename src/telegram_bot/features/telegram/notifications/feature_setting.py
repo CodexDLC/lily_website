@@ -1,36 +1,36 @@
 from aiogram.fsm.state import State, StatesGroup
 
 
-# 1. Определение состояний
 class NotificationsStates(StatesGroup):
     main = State()
 
 
 STATES = NotificationsStates
-
-# 2. Настройки Garbage Collector
 GARBAGE_COLLECT = True
 
-# 3. Настройки Меню
 MENU_CONFIG = {
     "key": "notifications",
     "text": "✨ Notifications",
     "icon": "✨",
-    "description": "Описание фичи Notifications",
+    "description": "Управление уведомлениями",
     "target_state": "notifications",
     "priority": 50,
-    # Права доступа
-    "is_admin": False,  # Только для владельцев (Owner)
-    "is_superuser": False,  # Только для разработчиков (Superuser)
+    "is_admin": True,
+    "is_superuser": False,
 }
 
 
-# 4. Фабрика (DI)
 def create_orchestrator(container):
+    from src.telegram_bot.core.api_client import BaseApiClient
+    from src.telegram_bot.infrastructure.api_route.notifications import NotificationsApiProvider
+
     from .logic.orchestrator import NotificationsOrchestrator
 
-    # Временная заглушка для провайдера данных
-    # В будущем здесь будет реальный репозиторий или API клиент
-    data_provider = None
+    django_api = BaseApiClient(
+        base_url=container.settings.backend_api_url, api_key=container.settings.backend_api_key, timeout=10.0
+    )
 
-    return NotificationsOrchestrator(data_provider=data_provider)
+    data_provider = NotificationsApiProvider(api_client=django_api)
+
+    # Передаем container напрямую в конструктор
+    return NotificationsOrchestrator(container=container, django_api=django_api, data_provider=data_provider)

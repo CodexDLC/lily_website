@@ -33,7 +33,7 @@ class BotSettings(CommonSettings):
     # --- Backend API (Internal field for ENV) ---
     # We use Field(alias=...) to allow setting via BACKEND_API_URL in .env
     backend_api_url_env: str = Field(default="http://localhost:8000", alias="BACKEND_API_URL")
-    backend_api_key: str | None = None
+    backend_api_key: str | None = Field(default=None, alias="BACKEND_API_KEY")
     backend_api_timeout: float = 10.0
 
     @property
@@ -52,6 +52,11 @@ class BotSettings(CommonSettings):
         # Авто-определение для Docker/Local
         base = "http://localhost:8000" if self.debug else "http://backend:8000"
         return base
+
+    @property
+    def backend_api_url(self) -> str:
+        """Alias for api_url for backwards compatibility."""
+        return self.api_url
 
     @property
     def superuser_ids_list(self) -> list[int]:

@@ -8,7 +8,6 @@ from features.system.services.images import optimize_image
 class Category(TimestampMixin, ActiveMixin, SeoMixin):
     """
     Service Category (e.g. Manicure, Pedicure, Haircut).
-    These are detailed categories. On the main page, they are grouped by 'bento_group'.
     """
 
     BENTO_GROUPS = [

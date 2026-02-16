@@ -54,10 +54,6 @@
     display: none; /* Hide on small screens */
 }
 
-@media (min-width: 768px) {
-    .copyright { display: block; }
-}
-
 /* Developer Credit (Center) */
 .developer-credit-center {
     position: absolute;
@@ -70,10 +66,6 @@
     letter-spacing: 1px;
     text-align: center;
     display: none; /* Hide on very small screens */
-}
-
-@media (min-width: 480px) {
-    .developer-credit-center { display: block; }
 }
 
 .dev-link {
@@ -220,12 +212,6 @@
     padding-bottom: 40px;
     padding-top: 20px;
     border-top: 1px solid rgba(255,255,255,0.05);
-}
-
-@media (min-width: 768px) {
-    .footer-grid {
-        grid-template-columns: 1.2fr 1fr 1fr 1fr;
-    }
 }
 
 /* Footer Column Styles */

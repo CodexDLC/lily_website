@@ -1,2 +1,14 @@
 User-agent: *
-Disallow: /
+Allow: /
+
+# Allow AI context files
+Allow: /llms.txt
+Allow: /*/llms.txt
+
+# Disallow system paths
+Disallow: /admin/
+Disallow: /api/
+Disallow: /static/
+Disallow: /media/
+
+Sitemap: {{ request.scheme }}://{{ request.get_host }}/sitemap.xml

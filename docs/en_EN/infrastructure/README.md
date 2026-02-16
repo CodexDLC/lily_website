@@ -1,10 +1,17 @@
 # Infrastructure Documentation
 
+[⬅️ Back](../README.md) | [🏠 Docs Root](../../README.md)
+
 Overview of the project's infrastructure documentation.
 
-## Sections
+## 🗺️ Module Map
 
-- [Deployment](deployment/README.md): Docker, CI/CD, environments.
-- [Database](database/README.md): DB schemas, migrations, backup strategies.
-- [Project Structure](project_structure/README.md): Explanation of root directories.
-- [Dependencies](dependencies/README.md): Poetry, external services, versions.
+| Component | Description |
+|:---|:---|
+| **[📂 Deployment](./deployment/README.md)** | Docker, CI/CD, environments. |
+| **[📂 DevOps](./devops/README.md)** | DevOps practices and tools. |
+| **[📜 Git Flow](./git_flow.md)** | Git branching and workflow strategy. |
+| **[📂 Project Structure](./project_structure/README.md)** | Explanation of root directories. |
+| **[📂 Dependencies](./dependencies/README.md)** | Poetry, external services, versions. |
+| **[📂 Documentation Standard](./documentation/README.md)** | How documentation is written, structured, and maintained. |
+| **[📂 GitHub Workflows](./github_workflows/README.md)** | Automated CI/CD pipelines and checks. |

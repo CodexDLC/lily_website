@@ -37,7 +37,7 @@
     width: auto;
 }
 
-/* Hero */
+/* Hero (Home Page) */
 .hero-grid {
     flex-direction: column-reverse;
     text-align: center;
@@ -64,7 +64,31 @@
 }
 
 .hero-model-png {
-    max-height: 400px;
+    max-height: 320px;
+}
+
+/* Team & Contacts Page Header Optimization */
+.hero-text-block {
+    padding: 5px 10px !important; /* 5px top/bottom, 10px left/right */
+}
+
+.hero-title {
+    font-size: 32px !important;
+    margin-bottom: 2px !important;
+}
+
+.hero-subtitle {
+    font-size: 11px !important;
+    letter-spacing: 1px !important;
+}
+
+/* Global Section Spacing Optimization - ULTRA COMPACT */
+.section,
+.team-section-block,
+.contacts-section,
+.services-section,
+.price-block-wrapper {
+    padding: 5px 10px !important; /* Added 10px side padding for all sections on mobile */
 }
 
 /* Bento Grid - Stack on mobile */
@@ -99,17 +123,31 @@
     font-size: 18px;
 }
 
-/* Team */
+/* Team - Owner Block Fix */
 .owner-block {
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
     text-align: center;
     padding: 20px;
+    gap: 20px;
 }
 
 .owner-photo {
+    width: 100% !important;
+    height: 350px !important;
+    margin-bottom: 0;
+    background-size: cover;
+    background-position: center;
+    border-radius: 15px;
+    display: block !important;
+}
+
+.owner-info {
     width: 100%;
-    height: 350px;
-    margin-bottom: 20px;
+}
+
+.owner-name {
+    font-size: 24px !important;
 }
 
 /* Contacts */
@@ -140,30 +178,88 @@
     order: 1;
 }
 
-/* Footer */
+/* Footer Mobile Optimization */
+.footer-smart {
+    max-height: 100px;
+}
+
+.footer-bar {
+    padding: 10px;
+    flex-wrap: wrap !important;
+    justify-content: space-between;
+    height: auto !important;
+    min-height: 60px;
+}
+
+.footer-branding {
+    order: 1;
+}
+
+.footer-controls {
+    order: 2;
+}
+
+/* Ad styling on mobile */
+.developer-credit-center {
+    display: block !important;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
+    order: 3;
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    font-size: 10px;
+    opacity: 0.8;
+}
+
+.brand-name {
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+.footer-toggle-btn {
+    width: 28px;
+    height: 28px;
+}
+
+/* Centering Footer Content */
 .footer-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 30px;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.f-col ul {
+    display: inline-block;
     text-align: center;
 }
 
 .f-row {
     justify-content: center;
+    text-align: center;
 }
 
 .f-qr {
     display: flex;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
-.footer-bar {
-    flex-direction: column;
-    gap: 15px;
+.footer-legal-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px 10px;
 }
 
-.footer-smart.active .footer-content {
-    max-height: 1500px;
+.footer-legal-links a {
+    margin: 0;
+    font-size: 10px;
 }
 
 /* Layout */
@@ -184,4 +280,22 @@ body {
     width: 100%;
     padding: 0 20px;
     min-width: 0;
+}
+
+/* Extra Small Screens (iPhone SE, etc.) */
+@media (max-width: 375px) {
+    .brand-name {
+        font-size: 13px;
+    }
+}
+
+/* Styles moved from forms.css */
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: span 1;
+    }
 }
