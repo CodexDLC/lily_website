@@ -1,4 +1,21 @@
 # ============================================
+# Default server to drop invalid Host headers
+# ============================================
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    listen 443 ssl default_server;
+    listen [::]:443 ssl default_server;
+    server_name _;
+
+    # Use a dummy certificate for the default SSL server
+    ssl_certificate /etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem;
+
+    return 444; # Connection closed without response
+}
+
+# ============================================
 # HTTP (Port 80) — Certbot + HTTPS redirect
 # ============================================
 server {

@@ -731,6 +731,39 @@ main {
 
 
 
+@media (min-width: 768px) {
+    .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    .copyright {
+        display: block;
+    }
+
+    .developer-credit-center {
+        display: block;
+    }
+}
+
+@media (min-width: 1024px) {
+    .footer-grid {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .footer-bar {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0;
+    }
+}
+
+
+
 
 
 
