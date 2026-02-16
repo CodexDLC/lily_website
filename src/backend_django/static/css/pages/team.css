@@ -90,11 +90,6 @@
     align-items: center;
 }
 
-.btn-instagram-secondary {
-    background: transparent;
-    color: var(--color-gold);
-}
-
 /* --- Team Grid --- */
 .team-grid {
     display: grid;
@@ -144,11 +139,6 @@
     gap: 10px;
     flex-wrap: wrap;
     justify-content: center;
-}
-
-.btn-instagram-card {
-    border-color: rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.7);
 }
 
 /* Responsive Grid */
