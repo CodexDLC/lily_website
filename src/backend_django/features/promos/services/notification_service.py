@@ -1,24 +1,24 @@
-"""Business logic for promo promos."""
+"""Business logic for promo messages."""
 
 from django.db.models import F, Q, QuerySet
 from django.utils import timezone
 from features.promos.models import PromoMessage
 
 
-class NotificationService:
-    """Service for managing and displaying promo promos."""
+class PromoService:
+    """Service for managing and displaying promo messages."""
 
     @staticmethod
-    def get_active_notification(page_slug: str | None = None) -> PromoMessage | None:
+    def get_active_promo(page_slug: str | None = None) -> PromoMessage | None:
         """
-        Get the highest priority active notification for a specific page.
+        Get the highest priority active promo for a specific page.
 
         Args:
             page_slug: Page identifier (e.g., 'home', 'services', 'team').
                       If None, returns promos targeting all pages.
 
         Returns:
-            PromoMessage object or None if no active notification found.
+            PromoMessage object or None if no active promo found.
         """
         now = timezone.now()
 
@@ -70,38 +70,38 @@ class NotificationService:
         return queryset.order_by("-priority", "-starts_at")
 
     @staticmethod
-    def track_view(notification_id: int) -> None:
+    def track_view(promo_id: int) -> None:
         """
-        Increment the views_count for a notification.
+        Increment the views_count for a promo.
 
         Args:
-            notification_id: ID of the notification to track.
+            promo_id: ID of the promo to track.
         """
-        PromoMessage.objects.filter(id=notification_id).update(views_count=F("views_count") + 1)
+        PromoMessage.objects.filter(id=promo_id).update(views_count=F("views_count") + 1)
 
     @staticmethod
-    def track_click(notification_id: int) -> None:
+    def track_click(promo_id: int) -> None:
         """
-        Increment the clicks_count for a notification.
+        Increment the clicks_count for a promo.
 
         Args:
-            notification_id: ID of the notification to track.
+            promo_id: ID of the promo to track.
         """
-        PromoMessage.objects.filter(id=notification_id).update(clicks_count=F("clicks_count") + 1)
+        PromoMessage.objects.filter(id=promo_id).update(clicks_count=F("clicks_count") + 1)
 
     @staticmethod
-    def is_notification_active(notification_id: int) -> bool:
+    def is_promo_active(promo_id: int) -> bool:
         """
-        Check if a notification is currently active.
+        Check if a promo is currently active.
 
         Args:
-            notification_id: ID of the notification to check.
+            promo_id: ID of the promo to check.
 
         Returns:
-            True if notification is active and within date range, False otherwise.
+            True if promo is active and within date range, False otherwise.
         """
         try:
-            notification = PromoMessage.objects.get(id=notification_id)
-            return notification.is_currently_active
+            promo = PromoMessage.objects.get(id=promo_id)
+            return promo.is_currently_active
         except PromoMessage.DoesNotExist:
             return False

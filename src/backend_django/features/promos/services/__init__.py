@@ -1,5 +1,5 @@
-"""Notification services."""
+"""Promo services."""
 
-from .notification_service import NotificationService
+from .notification_service import PromoService
 
-__all__ = ["NotificationService"]
+__all__ = ["PromoService"]

@@ -1,0 +1,54 @@
+# Minimal Docker Compose for testing build and migrations
+# Used by tools/dev/check_docker.ps1 for CI validation
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: lily_test-db
+    environment:
+      - POSTGRES_DB=lily_db
+      - POSTGRES_USER=lily_user
+      - POSTGRES_PASSWORD=lily_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lily_user -d lily_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - test-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: lily_test-redis
+    command: redis-server --requirepass test_password
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - test-network
+
+  backend:
+    build:
+      context: ..
+      dockerfile: deploy/backend/Dockerfile
+    container_name: lily_test-backend
+    environment:
+      - DATABASE_URL=postgresql://lily_user:lily_password@db:5432/lily_db
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=test_password
+      - SECRET_KEY=test_secret_key_for_ci
+      - DEBUG=False
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
