@@ -25,6 +25,11 @@ class NotificationService:
         if not all([smtp_host, smtp_port, smtp_from_email]):
             raise ValueError("Core SMTP settings (host, port, from_email) are missing.")
 
+        # Type narrowing for mypy
+        assert smtp_host is not None
+        assert smtp_port is not None
+        assert smtp_from_email is not None
+
         self.email_client = AsyncEmailClient(
             smtp_host=smtp_host,
             smtp_port=smtp_port,
