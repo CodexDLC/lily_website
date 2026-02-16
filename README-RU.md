@@ -1,8 +1,8 @@
 # ⚜️ Lily Beauty Salon
 
-[🇬🇧 English](./README.md)
+[🇬🇧 English](./README.md) | [📖 Документация](https://codexdlc.github.io/lily_website/)
 
-> **Разработка премиального веб-ресурса для салона красоты в Германии.**
+> **Разработка веб-ресурса для салона красоты в Германии.**
 >
 > 🚀 **Status:** Active Development (Django + Telegram Bot).
 
@@ -66,7 +66,7 @@ poetry install --extras "django bot dev"
 
 ### 3. Настройка окружения
 
-Создайте файлы `.env` в папках компонентов (или используйте общий, если настроено):
+Создайте файлы `.env` в папках компонентов:
 *   `src/backend-django/.env`
 *   `src/telegram_bot/.env`
 
@@ -81,10 +81,12 @@ python manage.py runserver
 
 **Telegram Bot:**
 ```bash
-cd src/telegram_bot
-# Убедитесь, что БД запущена и миграции применены
-alembic upgrade head
-python -m core
+python -m src.telegram_bot.app_telegram
+```
+
+**Worker ARQ:**
+```bash
+arq src.workers.notification_worker.worker.WorkerSettings
 ```
 
 ---

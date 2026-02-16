@@ -1,8 +1,8 @@
 # ⚜️ Lily Beauty Salon
 
-[🇷🇺 Русский](./README-RU.md)
+[🇷🇺 Русский](./README-RU.md) | [📖 Documentation Hub](https://codexdlc.github.io/lily_website/)
 
-> **Premium web resource development for a beauty salon in Germany.**
+> **Web resource development for a beauty salon in Germany.**
 >
 > 🚀 **Status:** Active Development (Django + Telegram Bot).
 

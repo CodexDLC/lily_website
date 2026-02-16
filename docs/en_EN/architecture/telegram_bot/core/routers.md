@@ -1,39 +1,47 @@
-# 📜 Routers
+# 📄 Router Discovery
 
-[⬅️ Back](./README.md) | [🏠 Docs Root](../../../../README.md)
+[⬅️ Back](./README.md) | [🏠 Docs Root](../../../../../README.md)
 
-This module is responsible for centralizing and managing the registration of Aiogram routers within the Telegram bot application. It provides functions to automatically discover and include routers from installed features, forming the main application router.
+The `Router Discovery` system provides a centralized way to collect and assemble `aiogram.Router` instances from all installed features. This ensures that the bot's main dispatcher is automatically updated when new features are added.
 
-## `collect_feature_routers` Function
+## 🛠️ Functions
+
+Located in: `src/telegram_bot/core/routers.py`
+
+### `collect_feature_routers()`
+
+Scans the features listed in `INSTALLED_FEATURES` for `aiogram` routers.
+
+- **Process**:
+    1. Iterates through each feature path in `INSTALLED_FEATURES`.
+    2. Attempts to import the `handlers` module for that feature (e.g., `src.telegram_bot.features.bot_menu.handlers`).
+    3. Looks for an attribute named `router` within that module.
+    4. If a valid `Router` is found, it is added to the collection.
+- **Returns**: A list of discovered `Router` instances.
+
+### `build_main_router()`
+
+Assembles the root router for the entire application.
+
+- **Process**:
+    1. Creates a new `main_router`.
+    2. Calls `collect_feature_routers()` to get all feature-specific routers.
+    3. Includes all discovered routers into the `main_router`.
+    4. Includes the `common_fsm_router` (shared FSM handlers).
+- **Returns**: The fully assembled `main_router`.
+
+## 🧩 Integration
+
+The `main_router` is typically included in the `Dispatcher` during the bot's startup:
 
 ```python
-def collect_feature_routers() -> list[Router]:
+main_router = build_main_router()
+dispatcher.include_router(main_router)
 ```
-Scans the `INSTALLED_FEATURES` (defined in `settings.py`) for Aiogram routers. Each feature is expected to have a `handlers.py` module containing a `router` instance.
 
-**Process:**
-1.  Iterates through each `feature_path` specified in `INSTALLED_FEATURES`.
-2.  Constructs the module path for the `handlers.py` file within each feature (e.g., `src.telegram_bot.features.bot_menu.handlers`).
-3.  Dynamically imports the `handlers` module.
-4.  Attempts to retrieve a variable named `router` from the imported module.
-5.  If `router` exists and is an instance of `aiogram.Router`, it is added to the list of collected routers.
-6.  Logs the status of router loading for each feature (loaded, no handlers, or error).
+## 📝 Requirements for Features
 
-**Returns:**
-A list of `aiogram.Router` instances collected from the installed features.
-
-## `build_main_router` Function
-
-```python
-def build_main_router() -> Router:
-```
-Assembles the main application router by including all collected feature routers and common FSM handlers. This function is the entry point for routing updates to the appropriate handlers.
-
-**Process:**
-1.  Initializes a main `Router` instance with the name "main\_router".
-2.  Calls `collect_feature_routers()` to get all routers from installed features.
-3.  Includes all feature routers and the `common_fsm_router` (from `src.telegram_bot.services.fsm.common_fsm_handlers`) into the `main_router`.
-4.  Logs the number of UI features loaded.
-
-**Returns:**
-The fully assembled `aiogram.Router` instance, ready to handle incoming updates.
+For a feature's handlers to be automatically discovered, it must:
+1.  Be listed in `INSTALLED_FEATURES` (in `core/settings.py`).
+2.  Have a `handlers.py` (or `handlers/__init__.py`) file.
+3.  Expose an `aiogram.Router` instance named `router` in that file.
