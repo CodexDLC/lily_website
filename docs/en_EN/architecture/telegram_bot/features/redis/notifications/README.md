@@ -1,16 +1,36 @@
-# 📂 Notifications (Redis Feature)
+# 📂 Redis Notifications
 
 [⬅️ Back](../README.md) | [🏠 Docs Root](../../../../../README.md)
 
-This feature is dedicated to processing and delivering various types of asynchronous notifications to Telegram users. It acts as a consumer for notification messages published to Redis Streams, ensuring reliable and scalable delivery of information such as booking updates, system alerts, or personalized messages. The module is designed to be highly decoupled from the notification source, allowing for flexible integration with different backend services.
+The `redis/notifications` feature is responsible for receiving booking events from the Redis Stream and delivering them as formatted messages to specific Telegram Topics.
 
-## 🗺️ Module Map
+## 🏗️ Architecture
 
-| Component | Description |
-|:---|:---|
-| **[📜 Feature Setting](./feature_setting.md)** | Configuration for the Redis Notifications feature |
-| **[📂 Logic](./logic/README.md)** | Business logic for notification processing and delivery |
-| **[📂 Handlers](./handlers/README.md)** | Handlers for processing notification messages from Redis |
-| **[📂 UI](./ui/README.md)** | User interface components related to notification display |
-| **[📂 Contracts](./contracts/README.md)** | Data contracts (DTOs) for notification messages |
-| **[📂 Resources](./resources/README.md)** | Static resources (e.g., texts, keyboards) for notifications |
+Located in: `src/telegram_bot/features/redis/notifications`
+
+### Orchestrator: `NotificationsOrchestrator`
+The core logic for processing incoming Redis events.
+- **Validation**: Uses Pydantic (`BookingNotificationPayload`) to ensure the incoming data is valid.
+- **Routing**: Determines the target Telegram Topic ID based on the `category_slug` of the service.
+- **Error Handling**: If validation fails, it sends a fallback error message to the admin channel.
+
+### UI: `NotificationsUI`
+Renders the notification message.
+- **Formatting**: Transforms the booking data into a human-readable HTML message for Telegram.
+
+## 📋 feature_setting.py
+
+```python
+# Redis features are registered in core/settings.py under INSTALLED_REDIS_FEATURES
+```
+
+## 🔄 Logic Flow
+
+1.  **Message Received**: A raw dictionary arrives from the Redis Stream.
+2.  **Validation**: `NotificationsOrchestrator` converts the dict into a `BookingNotificationPayload`.
+3.  **Topic Selection**:
+    - Looks up `category_slug` in `settings.telegram_topics`.
+    - If found, uses the specific Topic ID.
+    - If not found, defaults to `telegram_notification_topic_id`.
+4.  **Rendering**: `NotificationsUI` generates the HTML text.
+5.  **Dispatch**: Returns a `UnifiedViewDTO` with `mode="topic"` to the dispatcher for delivery.

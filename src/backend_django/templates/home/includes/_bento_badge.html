@@ -1,0 +1,4 @@
+{% load i18n %}
+{% if item.is_planned or item.active_masters_count == 0 %}
+    <span class="badge-coming-soon">{% trans "Demnächst" %}</span>
+{% endif %}
