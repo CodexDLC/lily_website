@@ -306,9 +306,9 @@ class RedisService:
     # --- Stream Methods ---
 
     async def stream_add(self, stream_name: str, data: dict[str, Any]) -> str | None:
-        """Добавляет событие в стрим. Автоматически конвертирует bool в str."""
+        """Добавляет событие в стрим. Автоматически конвертирует bool в str и фильтрует None."""
         try:
-            sanitized_data = {k: (str(v) if isinstance(v, bool) else v) for k, v in data.items()}
+            sanitized_data = {k: (str(v) if isinstance(v, bool) else v) for k, v in data.items() if v is not None}
             result = await self.redis_client.xadd(stream_name, sanitized_data)
             log.debug(f"RedisStream | action=add status=success stream='{stream_name}' id='{result}'")
             return str(result) if result else None

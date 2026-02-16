@@ -142,6 +142,16 @@ class BookingService:
     def _create_appointment_record(
         client: Client, master: Master, service: Service, start_dt: datetime, form_data: dict[str, Any]
     ) -> Appointment:
+        # Get active promo at booking time (only for website bookings)
+        active_promo = None
+        if service.category:
+            try:
+                from features.promos.services import NotificationService
+
+                active_promo = NotificationService.get_active_notification(service.category.slug)
+            except Exception as e:
+                log.warning(f"Failed to get active promo: {e}")
+
         return Appointment.objects.create(
             client=client,
             master=master,
@@ -152,6 +162,7 @@ class BookingService:
             status=Appointment.STATUS_PENDING,
             source="website",
             client_notes=form_data.get("client_notes", ""),
+            active_promo=active_promo,
         )
 
     @staticmethod
@@ -178,6 +189,8 @@ class BookingService:
             "client_notes": appointment.client_notes,
             "visits_count": visits_count,
             "category_slug": appointment.service.category.slug if appointment.service.category else None,
+            "active_promo_id": appointment.active_promo.id if appointment.active_promo else None,
+            "active_promo_title": appointment.active_promo.title if appointment.active_promo else None,
         }
 
         try:

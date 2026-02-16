@@ -68,10 +68,15 @@
     display: none; /* Hide on very small screens */
 }
 
+.dev-text {
+    color: rgba(255,255,255,0.7);
+}
+
 .dev-link {
     color: var(--color-gold);
     text-decoration: none;
     margin-left: 5px;
+    font-weight: bold;
 }
 
 .dev-link:hover {

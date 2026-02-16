@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     "features.main",
     "features.system",
     "features.booking",
+    "features.promos",
     "ninja",
 ]
 
@@ -233,6 +234,17 @@ UNFOLD = {
                         "icon": "content_cut",
                         "link": "/admin/main/service/",
                         "permission": lambda request: request.user.has_perm("main.view_service"),
+                    },
+                ],
+            },
+            {
+                "title": "Marketing",
+                "items": [
+                    {
+                        "title": "Promotions",
+                        "icon": "campaign",
+                        "link": "/admin/promos/promomessage/",
+                        "permission": lambda request: request.user.has_perm("promos.view_promomessage"),
                     },
                 ],
             },

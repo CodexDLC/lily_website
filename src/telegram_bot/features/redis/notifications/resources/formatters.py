@@ -16,6 +16,11 @@ def format_new_booking(payload: BookingNotificationPayload) -> str:
     client_notes = payload.client_notes if payload.client_notes else "—"
     price_str = f"{payload.price:g}"
 
+    # Format promo info
+    promo_info = ""
+    if payload.active_promo_title:
+        promo_info = f"🎯 <b>Промо:</b> {payload.active_promo_title}\n"
+
     details = NotificationsTexts.BOOKING_DETAILS.format(
         id=payload.id,
         client_name=payload.client_name,
@@ -26,6 +31,7 @@ def format_new_booking(payload: BookingNotificationPayload) -> str:
         master_name=payload.master_name,
         price=price_str,
         client_notes=client_notes,
+        promo_info=promo_info,
     )
 
     return f"{title}\n\n{details}"

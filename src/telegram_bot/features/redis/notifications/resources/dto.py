@@ -21,6 +21,8 @@ class BookingNotificationPayload(BaseModel):
     client_notes: str | None = ""
     visits_count: int = 0
     category_slug: str | None = None
+    active_promo_id: int | None = None
+    active_promo_title: str | None = None
 
     @field_validator("request_call", mode="before")
     @classmethod
