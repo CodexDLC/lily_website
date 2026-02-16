@@ -98,19 +98,19 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
                     session_key=appointment_id,
                 )
 
-            updated_text = f"{NotificationsTexts.STATUS_APPROVED}\n\n{context.message_text or ''}"
+            updated_text = f"{NotificationsTexts.status_approved()}\n\n{context.message_text or ''}"
             return UnifiedViewDTO(
                 content=self.ui.render_post_action(updated_text, appointment_id, context.message_thread_id),
                 chat_id=self.settings.telegram_admin_channel_id,
                 session_key=appointment_id,
                 message_thread_id=context.message_thread_id,
                 mode="edit",
-                alert_text=NotificationsTexts.ALERT_APPROVED,
+                alert_text=NotificationsTexts.alert_approved(),
             )
         except Exception as e:
             log.error(f"Orchestrator | Approve error: {e}")
             return UnifiedViewDTO(
-                alert_text=NotificationsTexts.ERROR_API,
+                alert_text=NotificationsTexts.error_api(),
                 chat_id=self.settings.telegram_admin_channel_id,
                 session_key=appointment_id,
             )
@@ -143,7 +143,7 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
                 )
 
             updated_text = (
-                f"{NotificationsTexts.STATUS_REJECTED}\nПричина: {reason_text}\n\n{context.message_text or ''}"
+                f"{NotificationsTexts.status_rejected()}\nПричина: {reason_text}\n\n{context.message_text or ''}"
             )
             return UnifiedViewDTO(
                 content=self.ui.render_post_action(updated_text, appointment_id, context.message_thread_id),
@@ -151,12 +151,12 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
                 session_key=appointment_id,
                 message_thread_id=context.message_thread_id,
                 mode="edit",
-                alert_text=NotificationsTexts.ALERT_REJECTED,
+                alert_text=NotificationsTexts.alert_rejected(),
             )
         except Exception as e:
             log.error(f"Orchestrator | Reject error: {e}")
             return UnifiedViewDTO(
-                alert_text=NotificationsTexts.ERROR_API,
+                alert_text=NotificationsTexts.error_api(),
                 chat_id=self.settings.telegram_admin_channel_id,
                 session_key=appointment_id,
             )
@@ -172,7 +172,7 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
             session_key=appointment_id,
             message_thread_id=context.message_thread_id,
             mode="edit",
-            alert_text=NotificationsTexts.ALERT_CANCELLED,
+            alert_text=NotificationsTexts.alert_cancelled(),
         )
 
     async def _handler_delete_notification(self, context: QueryContext) -> UnifiedViewDTO:
@@ -180,10 +180,13 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
             clean_history=True,
             chat_id=self.settings.telegram_admin_channel_id,
             session_key=context.session_id,
-            alert_text=NotificationsTexts.ALERT_DELETED,
+            alert_text=NotificationsTexts.alert_deleted(),
         )
 
-    async def handle_entry(self, user_id: int, payload: Any = None) -> UnifiedViewDTO:
+    async def handle_entry(self, user_id: int, chat_id: int | None = None, payload: Any = None) -> UnifiedViewDTO:
+        """
+        Точка входа.
+        """
         return UnifiedViewDTO(alert_text="Фича уведомлений работает только через callback")
 
     async def render_content(self, payload: Any) -> Any:

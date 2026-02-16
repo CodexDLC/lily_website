@@ -10,7 +10,6 @@ class ViewResultDTO(BaseModel):
     text: str
     kb: InlineKeyboardMarkup | None = None
 
-    # Разрешаем произвольные типы (для InlineKeyboardMarkup)
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
@@ -26,29 +25,26 @@ class MessageCoordsDTO(BaseModel):
 class UnifiedViewDTO(BaseModel):
     """
     Единый DTO ответа от Оркестратора.
-    Содержит данные для двух сообщений (Content и Menu) и флаги управления.
     """
 
     content: ViewResultDTO | None = None
     menu: ViewResultDTO | None = None
     clean_history: bool = False
-    alert_text: str | None = None  # Для всплывающих уведомлений (answer_callback_query)
+    alert_text: str | None = None
+
+    # ID сообщения, которое вызвало действие (например, /start), чтобы его удалить
+    trigger_message_id: int | None = None
 
     # --- Routing & Session ---
-    chat_id: int | str | None = None  # ID чата/канала
-    session_key: int | str | None = None  # Ключ сессии для Redis (user_id или session_id)
-    mode: str | None = None  # "channel", "topic" или None (private)
-    message_thread_id: int | None = None  # ID топика (для mode="topic")
+    chat_id: int | str | None = None
+    session_key: int | str | None = None
+    mode: str | None = None
+    message_thread_id: int | None = None
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class MenuViewDTO(BaseModel):
-    """
-    Универсальный DTO для передачи готового UI (текст + клавиатура)
-    от сервисного слоя к хендлерам.
-    """
-
     text: str
     keyboard: InlineKeyboardMarkup | None = None
 

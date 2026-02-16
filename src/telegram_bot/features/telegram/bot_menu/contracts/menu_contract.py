@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Any, Protocol
 
 
 class MenuDiscoveryProvider(Protocol):
@@ -7,4 +7,8 @@ class MenuDiscoveryProvider(Protocol):
     Реализуется сервисом FeatureDiscoveryService.
     """
 
-    def get_menu_buttons(self) -> dict[str, dict]: ...
+    def get_menu_buttons(self, is_admin: bool | None = None) -> dict[str, dict[str, Any]]:
+        """
+        Возвращает кнопки меню с возможностью фильтрации по админ-статусу.
+        """
+        ...

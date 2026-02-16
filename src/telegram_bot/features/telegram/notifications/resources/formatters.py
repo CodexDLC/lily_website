@@ -9,7 +9,7 @@ class NotificationsFormatter:
     """
 
     def format_main(self, payload: Any) -> str:
-        return f"{NotificationsTexts.TITLE}\n\n{NotificationsTexts.DESCRIPTION}"
+        return f"{NotificationsTexts.title()}\n\n{NotificationsTexts.description()}"
 
     def prepare_email_data(
         self, appointment_data: dict[str, Any], status: str, reason_text: str | None = None
@@ -43,7 +43,7 @@ class NotificationsFormatter:
             "service_name": appointment_data.get("service_name"),
             "date": date_part,
             "time": time_part,
-            "duration_minutes": appointment_data.get("duration_minutes", 30),  # <--- ПРОБРОСИЛИ
+            "duration_minutes": appointment_data.get("duration_minutes", 30),
             "cancellation_reason": reason_text,
             "status": status,
         }

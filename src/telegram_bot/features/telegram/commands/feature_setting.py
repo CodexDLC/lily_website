@@ -16,14 +16,8 @@ STATES = CommandsStates
 GARBAGE_COLLECT = False
 
 # 3. Настройки Меню
-MENU_CONFIG = {
-    "key": "commands",
-    "text": "🛠 Команды",
-    "icon": "🛠",
-    "description": "Управление настройками и помощь",
-    "target_state": "commands",
-    "priority": 100,
-}
+# Фича commands является точкой входа (/start), поэтому она не должна отображаться в самом меню.
+MENU_CONFIG = None
 
 
 # Временная заглушка для AuthDataProvider
@@ -47,4 +41,4 @@ def create_orchestrator(container):
 
     ui = CommandsUI()
 
-    return StartOrchestrator(auth_provider=data_provider, ui=ui)
+    return StartOrchestrator(auth_provider=data_provider, ui=ui, settings=container.settings)
