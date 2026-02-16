@@ -24,10 +24,16 @@ class Command(BaseCommand):
         # 1. Collect all data
         all_data = {}
         for json_file in json_files:
+            # Skip site_settings.json (it has different format)
+            if json_file.name == "site_settings.json":
+                continue
+
             try:
                 with open(json_file, encoding="utf-8") as f:
                     data = json.load(f)
-                    all_data.update(data)
+                    # Only process if data is a dict (masters format)
+                    if isinstance(data, dict):
+                        all_data.update(data)
             except json.JSONDecodeError as e:
                 self.stdout.write(self.style.ERROR(f"Error decoding {json_file.name}: {e}"))
 
