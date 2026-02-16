@@ -1,41 +1,63 @@
 <style>
-/* Critical CSS for Above-the-Fold Content */
-/* Inline to prevent render-blocking */
-
-/* Reset & Base */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;background:#fff;color:#1a1a1a}
-
-/* Container */
-.container{max-width:1280px;margin:0 auto;padding:0 1.5rem}
-
-/* Hero Split Section - Critical for LCP */
-.hero-split{min-height:100vh;display:flex;align-items:center;padding:2rem 0;background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%)}
-.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
-.hero-text-col{z-index:2}
-.hero-uptitle{font-size:.875rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#666;margin-bottom:1rem}
-.hero-heading{font-size:clamp(2.5rem,5vw,4rem);font-weight:700;line-height:1.1;margin-bottom:1.5rem;color:#1a1a1a}
-.text-gold{color:#d4af37}
-.hero-desc{font-size:1.125rem;line-height:1.7;color:#4a4a4a;margin-bottom:2rem;max-width:500px}
-.btn-pill{display:inline-block;padding:.875rem 2rem;background:#d4af37;color:#fff;text-decoration:none;border-radius:50px;font-weight:600;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 14px rgba(212,175,55,.3)}
-.btn-pill:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(212,175,55,.4)}
-.hero-visual-col{position:relative}
-.hero-model-png{width:100%;height:auto;display:block;object-fit:cover;border-radius:1rem}
-
-/* Responsive */
-@media (max-width:768px){
-  .hero-grid{grid-template-columns:1fr;gap:2rem}
-  .hero-split{min-height:auto;padding:4rem 0}
-  .hero-heading{font-size:2rem}
-  .container{padding:0 1rem}
+/* Correct Critical CSS for LILY */
+:root {
+    --color-emerald: #003831;
+    --color-gold: #EDD071;
+    --color-text-main: #FFFFFF;
 }
 
-/* Header - Basic visibility */
-.site-wrapper{min-height:100vh;display:flex;flex-direction:column}
-main{flex:1}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-/* Font preload fallback */
-@font-face{font-family:'Lato';font-style:normal;font-weight:400;src:local('Lato Regular'),local('Lato-Regular');font-display:swap}
-@font-face{font-family:'Playfair Display';font-style:normal;font-weight:400;src:local('Playfair Display Regular'),local('PlayfairDisplay-Regular');font-display:swap}
+body {
+    background-color: var(--color-emerald);
+    color: var(--color-text-main);
+    font-family: 'Lato', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.site-wrapper {
+    background-color: var(--color-emerald);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Hero section fix */
+.hero-section {
+    padding: 60px 0;
+    text-align: center;
+}
+
+.hero-heading {
+    color: var(--color-gold);
+    font-family: 'Playfair Display', serif;
+}
+
+/* Instagram Button Style */
+.btn-instagram-custom {
+    display: inline-block;
+    background-color: var(--color-emerald) !important;
+    border: 1px solid var(--color-gold) !important;
+    color: var(--color-gold) !important;
+    padding: 10px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.btn-instagram-custom:hover {
+    background-color: var(--color-gold) !important;
+    color: var(--color-emerald) !important;
+}
 </style>
