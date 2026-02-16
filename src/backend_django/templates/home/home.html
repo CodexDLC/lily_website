@@ -47,7 +47,7 @@
                     <h3>{{ bento.hair.title }}</h3>
                     <p class="bento-card-desc">{{ bento.hair.description|truncatechars:50 }}</p>
                     <span class="arrow">→</span>
-                    {% if bento.hair.is_planned %}
+                    {% if bento.hair.is_planned or bento.hair.active_masters_count == 0 %}
                         <span class="badge-coming-soon">{% trans "Demnächst" %}</span>
                     {% endif %}
                 </div>
@@ -61,6 +61,9 @@
                 <div class="card-overlay">
                     <h3>{{ bento.nails.title }}</h3>
                     <p class="bento-card-desc">{{ bento.nails.description|truncatechars:40 }}</p>
+                    {% if bento.nails.is_planned or bento.nails.active_masters_count == 0 %}
+                        <span class="badge-coming-soon">{% trans "Demnächst" %}</span>
+                    {% endif %}
                 </div>
             </a>
             {% endif %}
@@ -72,6 +75,9 @@
                 <div class="card-overlay">
                     <h3>{{ bento.face.title }}</h3>
                     <p class="bento-card-desc">{{ bento.face.description|truncatechars:40 }}</p>
+                    {% if bento.face.is_planned or bento.face.active_masters_count == 0 %}
+                        <span class="badge-coming-soon">{% trans "Demnächst" %}</span>
+                    {% endif %}
                 </div>
             </a>
             {% endif %}
@@ -83,6 +89,9 @@
                 <div class="card-overlay">
                     <h3>{{ bento.eyes.title }}</h3>
                     <p class="bento-card-desc">{{ bento.eyes.description|truncatechars:40 }}</p>
+                    {% if bento.eyes.is_planned or bento.eyes.active_masters_count == 0 %}
+                        <span class="badge-coming-soon">{% trans "Demnächst" %}</span>
+                    {% endif %}
                 </div>
             </a>
             {% endif %}
@@ -94,6 +103,9 @@
                 <div class="card-overlay">
                     <h3>{{ bento.body.title }}</h3>
                     <p class="bento-card-desc">{{ bento.body.description|truncatechars:40 }}</p>
+                    {% if bento.body.is_planned or bento.body.active_masters_count == 0 %}
+                        <span class="badge-coming-soon">{% trans "Demnächst" %}</span>
+                    {% endif %}
                 </div>
             </a>
             {% endif %}
@@ -105,6 +117,9 @@
                 <div class="card-overlay">
                     <h3>{{ bento.hair_removal.title }}</h3>
                     <p class="bento-card-desc">{{ bento.hair_removal.description|truncatechars:40 }}</p>
+                    {% if bento.hair_removal.is_planned or bento.hair_removal.active_masters_count == 0 %}
+                        <span class="badge-coming-soon">{% trans "Demnächst" %}</span>
+                    {% endif %}
                 </div>
             </a>
             {% endif %}

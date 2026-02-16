@@ -1,9 +1,10 @@
-name: CD Release (Deploy)
+name: Deploy Production (Tag-based)
 
 on:
   push:
-    branches: [ release ]
-  workflow_dispatch:
+    tags:
+      - 'v*'  # Триггерится на любой тег начинающийся с 'v' (например v1.2.3)
+  workflow_dispatch:  # Ручной запуск
 
 jobs:
   pre-deploy-check:
@@ -30,6 +31,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Extract version from tag
+        run: |
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
       - name: Lowercase repo name
         run: |
           echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
@@ -52,6 +57,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.REPO_LOWER }}-backend:latest
+            ghcr.io/${{ env.REPO_LOWER }}-backend:${{ env.VERSION }}
             ghcr.io/${{ env.REPO_LOWER }}-backend:${{ github.sha }}
           cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-backend:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-backend:buildcache,mode=max
@@ -64,6 +70,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.REPO_LOWER }}-bot:latest
+            ghcr.io/${{ env.REPO_LOWER }}-bot:${{ env.VERSION }}
             ghcr.io/${{ env.REPO_LOWER }}-bot:${{ github.sha }}
           cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-bot:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-bot:buildcache,mode=max
@@ -76,6 +83,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.REPO_LOWER }}-worker:latest
+            ghcr.io/${{ env.REPO_LOWER }}-worker:${{ env.VERSION }}
             ghcr.io/${{ env.REPO_LOWER }}-worker:${{ github.sha }}
           cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-worker:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-worker:buildcache,mode=max
@@ -88,6 +96,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.REPO_LOWER }}-nginx:latest
+            ghcr.io/${{ env.REPO_LOWER }}-nginx:${{ env.VERSION }}
             ghcr.io/${{ env.REPO_LOWER }}-nginx:${{ github.sha }}
           cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-nginx:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-nginx:buildcache,mode=max
@@ -115,15 +124,18 @@ jobs:
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
+          VERSION: ${{ env.VERSION }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_BOT,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DOMAIN_NAME,REDIS_PASSWORD,GITHUB_TOKEN,GITHUB_ACTOR
+          envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_BOT,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DOMAIN_NAME,REDIS_PASSWORD,GITHUB_TOKEN,GITHUB_ACTOR,VERSION
           script: |
             set -e
 
             cd /opt/lily_website/deploy
+
+            echo "🚀 Deploying version: $VERSION"
 
             # Создаем .env в папке deploy (там где docker-compose.prod.yml)
             echo "${{ secrets.ENV_FILE }}" > .env
@@ -172,4 +184,4 @@ jobs:
             # Очистка старых образов
             docker image prune -f
 
-            echo "✅ Deployment completed successfully!"
+            echo "✅ Deployment $VERSION completed successfully!"
