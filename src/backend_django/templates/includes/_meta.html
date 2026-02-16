@@ -16,7 +16,7 @@
 <!-- 3. Open Graph / Facebook / Telegram (Social Previews) -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
-<meta property="og:title" content="{% block og_title %}{% firstof seo.seo_title "LILY Beauty Salon | Köthen" %}{% endblock %}">
+<meta property="og:title" content="{% block og_title %}{% firstof seo.seo_title "LILY Beauty Salon | Köthen" %}{% endblock %}" >
 <meta property="og:description" content="{% block og_description %}{% firstof seo.seo_description "Ukrainian beauty experts in Köthen. High-end manicure, cosmetology, and hair care." %}{% endblock %}">
 <meta property="og:image" content="{% block og_image %}{% if seo.seo_image %}{{ seo.seo_image.url }}{% else %}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock %}">
 <meta property="og:site_name" content="LILY Beauty Salon">
@@ -41,9 +41,21 @@
 <link rel="manifest" href="{% static 'img/favicon/site.webmanifest' %}">
 <meta name="apple-mobile-web-app-title" content="LILY">
 <meta name="application-name" content="LILY Beauty Salon">
-<meta name="theme-color" content="#3b82f6">
+<meta name="theme-color" content="#003831">
 
 {% include "includes/_schema_local_business.html" %}
 
-<!-- CSS -->
-<link rel="stylesheet" href="{% static 'css/app.css' %}">
+<!-- Critical CSS - Inline for instant render -->
+{% include "includes/_critical_css.html" %}
+
+<!-- Preload critical fonts -->
+<link rel="preload" href="{% static 'fonts/Lato-Regular.ttf' %}" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="{% static 'fonts/Lato-Bold.ttf' %}" as="font" type="font/ttf" crossorigin>
+
+<!-- Preload main CSS as high priority, then apply async -->
+<link rel="preload" href="{% static 'css/app.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="{% static 'css/app.css' %}"></noscript>
+
+<!-- Preconnect for any external resources -->
+<link rel="dns-prefetch" href="https://pinlite.dev">
+<link rel="preconnect" href="https://pinlite.dev" crossorigin>
