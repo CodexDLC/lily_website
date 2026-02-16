@@ -128,7 +128,7 @@ After deployment, verify everything works:
 # https://github.com/CodexDLC/lily_website/actions
 
 # Or check directly on server (if SSH access available):
-ssh user@46.225.138.167
+ssh user@<your-server-ip>
 
 # Check containers:
 docker ps
@@ -271,7 +271,7 @@ git push origin v1.2.3
 **Solution:**
 ```bash
 # SSH to server:
-ssh user@46.225.138.167
+ssh user@<your-server-ip>
 
 cd /opt/lily_website/deploy
 
@@ -310,7 +310,7 @@ Deployment uses the following **GitHub Secrets**:
 
 | Secret | Description |
 |:---|:---|
-| `HOST` | Production server IP (46.225.138.167) |
+| `HOST` | Production server IP |
 | `USERNAME` | SSH user on server |
 | `SSH_KEY` | Private SSH key for connection |
 | `ENV_FILE` | Contents of `.env.production` file |
