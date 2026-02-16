@@ -1,5 +1,3 @@
-from typing import Any
-
 from loguru import logger as log
 
 # Импортируем BaseApiClient из core
@@ -9,44 +7,31 @@ from src.telegram_bot.features.telegram.notifications.contracts.contract import 
 
 class NotificationsApiProvider(NotificationsDataProvider):
     """
-    Реализация NotificationsDataProvider, использующая внешний API.
+    API Provider для управления заявками (appointments) через Django API.
+    Инкапсулирует endpoints и детали взаимодействия с backend.
     """
 
-    def __init__(
-        self, api_client: BaseApiClient, resource_path: str = "/notifications"
-    ):  # <-- Используем BaseApiClient
+    def __init__(self, api_client: BaseApiClient):
         self.api_client = api_client
-        self.resource_path = resource_path
 
-    async def get_data(self, user_id: int) -> Any:
+    async def confirm_appointment(self, appointment_id: int) -> dict:
         """
-        Получение данных через API (CRUD - Read).
+        Подтверждение заявки через Django API.
         """
-        log.debug(f"NotificationsApiProvider | Fetching data for user_id={user_id} via API")
-        # Используем _request из BaseApiClient
-        return await self.api_client._request(method="GET", endpoint=f"{self.resource_path}/{user_id}")
-
-    async def create_notification(self, user_id: int, data: dict) -> Any:
-        """
-        Создание уведомления через API (CRUD - Create).
-        """
-        log.debug(f"NotificationsApiProvider | Creating notification for user_id={user_id} via API")
-        return await self.api_client._request(method="POST", endpoint=f"{self.resource_path}/{user_id}", json=data)
-
-    async def update_notification(self, notification_id: int, data: dict) -> Any:
-        """
-        Обновление уведомления через API (CRUD - Update).
-        """
-        log.debug(f"NotificationsApiProvider | Updating notification_id={notification_id} via API")
+        log.debug(f"NotificationsApiProvider | Confirming appointment_id={appointment_id}")
         return await self.api_client._request(
-            method="PUT",  # Или PATCH, в зависимости от API
-            endpoint=f"{self.resource_path}/{notification_id}",
-            json=data,
+            method="POST",
+            endpoint="/api/v1/booking/appointments/manage/",
+            json={"appointment_id": appointment_id, "action": "confirm"},
         )
 
-    async def delete_notification(self, notification_id: int) -> None:
+    async def cancel_appointment(self, appointment_id: int, reason: str | None = None, note: str | None = None) -> dict:
         """
-        Удаление уведомления через API (CRUD - Delete).
+        Отклонение заявки через Django API.
         """
-        log.debug(f"NotificationsApiProvider | Deleting notification_id={notification_id} via API")
-        await self.api_client._request(method="DELETE", endpoint=f"{self.resource_path}/{notification_id}")
+        log.debug(f"NotificationsApiProvider | Cancelling appointment_id={appointment_id} reason={reason}")
+        return await self.api_client._request(
+            method="POST",
+            endpoint="/api/v1/booking/appointments/manage/",
+            json={"appointment_id": appointment_id, "action": "cancel", "cancel_reason": reason, "cancel_note": note},
+        )

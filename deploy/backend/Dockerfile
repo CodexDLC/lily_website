@@ -21,8 +21,13 @@ RUN useradd -m -u 1000 appuser
 
 COPY --from=builder /venv /venv
 COPY src/backend_django /app
+COPY deploy/backend/entrypoint.sh /entrypoint.sh
 
 RUN mkdir -p /app/staticfiles /app/mediafiles /app/logs/backend && chown -R appuser:appuser /app
+# Добавляем права на чтение для статических и медиафайлов
+RUN chmod -R 755 /app/staticfiles /app/media
+RUN chmod +x /entrypoint.sh
+
 USER appuser
 
 ENV PATH="/venv/bin:$PATH"
@@ -30,7 +35,5 @@ ENV DJANGO_SETTINGS_MODULE="core.settings.dev"
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl -f http://localhost:8000/api/v1/health || exit 1
 
-RUN python /app/manage.py collectstatic --noinput 2>/dev/null || true
-
 WORKDIR /app
-CMD ["gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "90"]
+ENTRYPOINT ["/entrypoint.sh"]
