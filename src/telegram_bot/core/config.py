@@ -8,7 +8,7 @@ from src.shared.core.config import CommonSettings
 
 class BotSettings(CommonSettings):
     """
-    Настройки для Telegram Bot.
+    Configuration settings for the Telegram Bot.
     """
 
     # --- Bot ---
@@ -23,12 +23,16 @@ class BotSettings(CommonSettings):
     @classmethod
     def parse_telegram_topics(cls, v):
         """
-        Парсит JSON-строку из переменной окружения в словарь.
+        Parses a JSON string from an environment variable into a dictionary.
 
-        Примеры:
-        - Строка: '{"hair": 2, "nails": 4}' -> dict {"hair": 2, "nails": 4}
-        - Уже словарь: {"hair": 2} -> {"hair": 2} (без изменений)
-        - Пустое значение: None или "" -> {}
+        This handles multiple input formats, including a valid JSON string,
+        an existing dictionary, or an empty value (None or empty string),
+        returning a dictionary in all cases.
+
+        Examples:
+        - String: '{"hair": 2, "nails": 4}' -> dict {"hair": 2, "nails": 4}
+        - Already a dict: {"hair": 2} -> {"hair": 2}
+        - Empty value: None or "" -> {}
         """
         if isinstance(v, str):
             if not v.strip():
@@ -66,17 +70,17 @@ class BotSettings(CommonSettings):
     @property
     def api_url(self) -> str:
         """
-        Умное определение URL бэкенда.
-        Если в .env задан кастомный URL (не localhost), используем его.
-        Иначе выбираем между localhost и именем сервиса в Docker.
+        Smart determination of the backend URL.
+        If a custom URL is set in .env (not localhost), use it.
+        Otherwise, choose between localhost and the service name in Docker.
         """
         url = self.backend_api_url_env
 
-        # Если URL явно задан и это не дефолтный localhost, возвращаем его
+        # If URL is explicitly set and it's not the default localhost, return it
         if url and "localhost" not in url and "127.0.0.1" not in url:
             return url.rstrip("/")
 
-        # Авто-определение для Docker/Local
+        # Auto-detection for Docker/Local
         base = "http://localhost:8000" if self.debug else "http://backend:8000"
         return base
 

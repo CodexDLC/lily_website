@@ -32,7 +32,13 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    LANGUAGE_COOKIE_SECURE = True  # Added this line
+    LANGUAGE_COOKIE_SECURE = True
+
+# CSRF Trusted Origins for production
+CSRF_TRUSTED_ORIGINS = [
+    "https://lily-salon.de",
+    "https://www.lily-salon.de",
+]
 
 # ═══════════════════════════════════════════
 # Static files

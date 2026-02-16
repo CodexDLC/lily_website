@@ -35,8 +35,9 @@ DEBUG = os.environ.get("DEBUG", "True").lower() in ("true", "1", "yes")
 BOT_API_KEY = os.environ.get("BOT_API_KEY", None)
 BACKEND_API_KEY = os.environ.get("BACKEND_API_KEY", None)
 
-# --- Smart ALLOWED_HOSTS ---
+# --- Smart ALLOWED_HOSTS & CSRF_TRUSTED_ORIGINS ---
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "backend"]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8000"]
 
 env_hosts = os.environ.get("ALLOWED_HOSTS", "")
 if env_hosts:
@@ -46,16 +47,27 @@ SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "http://127.0.0.1:8000/")
 if not SITE_BASE_URL.endswith("/"):
     SITE_BASE_URL += "/"
 
-domain = urlparse(SITE_BASE_URL).netloc
+parsed_url = urlparse(SITE_BASE_URL)
+domain = parsed_url.netloc
 if domain:
     clean_domain = domain.split(":")[0]
     if clean_domain not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(clean_domain)
 
+    # Add to CSRF trusted origins with protocol
+    protocol = parsed_url.scheme or "https"
+    csrf_origin = f"{protocol}://{domain}"
+    if csrf_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(csrf_origin)
+
     if not clean_domain.startswith("www."):
         www_domain = f"www.{clean_domain}"
         if www_domain not in ALLOWED_HOSTS:
             ALLOWED_HOSTS.append(www_domain)
+
+        www_csrf = f"{protocol}://{www_domain}"
+        if www_csrf not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(www_csrf)
 
 # ═══════════════════════════════════════════
 # Application definition
