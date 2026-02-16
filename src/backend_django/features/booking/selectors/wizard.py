@@ -1,5 +1,5 @@
 import calendar
-from datetime import date
+from datetime import date, timedelta
 from typing import Any, TypedDict
 
 from core.cache import get_cached_data
@@ -85,8 +85,8 @@ def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[s
 
     # 2. Get Masters (Handle "any" or specific ID)
     masters_list = []
-    master_id_val = state.master_id or "any"  # Default to any if not set
-    context["master_id"] = master_id_val  # Pass raw value to template
+    master_id_val = state.master_id or "any"
+    context["master_id"] = master_id_val
 
     if master_id_val == "any":
         masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
@@ -96,14 +96,16 @@ def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[s
             context["selected_master"] = master
             masters_list = [master]
         except (Master.DoesNotExist, ValueError):
-            # If specific master not found, fallback to "any" instead of returning None
             masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
             context["master_id"] = "any"
 
     if not masters_list:
         return None
 
-    # 3. Calendar Grid (Cached)
+    # 3. Date Strip (Horizontal list for mobile)
+    context["date_strip"] = _get_date_strip(days=14)
+
+    # 4. Calendar Grid (Full grid for desktop/modal)
     today = timezone.now().date()
     try:
         year = int(view_data.get("year", today.year))
@@ -116,7 +118,7 @@ def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[s
 
     context.update(get_cached_data(f"calendar_grid_cache_{year}_{month}", fetch_calendar))
 
-    # 4. Slots (DYNAMIC)
+    # 5. Slots (DYNAMIC)
     if state.selected_date and service and masters_list:
         context["selected_date_obj"] = state.selected_date
 
@@ -163,6 +165,33 @@ def get_stepper_context(current_step: int) -> list[StepperStep]:
         step["active"] = step_number == current_step
         step["completed"] = step_number < current_step
     return steps
+
+
+def _get_date_strip(days: int = 14) -> list[dict[str, Any]]:
+    """Generates a list of dates starting from today."""
+    strip = []
+    today = timezone.now().date()
+
+    # German weekday names (short)
+    weekdays = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+
+    for i in range(days):
+        current = today + timedelta(days=i)
+        # Skip Sundays (optional, depends on business logic)
+        status = "active"
+        if current.weekday() == 6:
+            status = "disabled"
+
+        strip.append(
+            {
+                "date": current.isoformat(),
+                "day_num": current.day,
+                "weekday": weekdays[current.weekday()],
+                "status": status,
+                "is_today": i == 0,
+            }
+        )
+    return strip
 
 
 def _get_calendar_grid(year: int, month: int) -> dict[str, Any]:

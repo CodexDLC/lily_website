@@ -12,10 +12,10 @@
                 <span class="copyright">© {% now "Y" %}</span>
             </div>
 
-            <!-- 2. Center: Developer Credit -->
+            <!-- 2. Center: Developer Credit (YOUR AD) -->
             <div class="developer-credit-center" id="footerCredits">
                 <span class="dev-text">Developed by</span>
-                <a href="#" class="dev-link">CodexDLC</a>
+                <a href="https://github.com/CodexDLC" target="_blank" class="dev-link">CodexDLC</a>
             </div>
 
             <!-- 3. Right: Controls (Lang + Toggle) -->
@@ -59,23 +59,16 @@
             <div class="footer-grid">
                 <!-- Column 1: Contacts & CTA -->
                 <div class="f-col contact-col">
-                    <!-- Phone -->
                     <div class="f-row"><span class="icon">📞</span> <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a></div>
-
-                    <!-- Address -->
                     <div class="f-row"><span class="icon">📍</span>
                         <a href="{{ site_settings.google_maps_link|default:'#' }}" target="_blank" class="link-dashed">
                             {{ site_settings.address_street }},<br>{{ site_settings.address_city }}
                         </a>
                     </div>
-
-                    <!-- Link to Contacts Page -->
                     <div class="f-row" style="margin-top: 15px;">
                         <span class="icon">✉️</span>
                         <a href="{% url 'contacts' %}" class="more-link">{% trans "Alle Kontakte" %} →</a>
                     </div>
-
-                    <!-- CTA Button -->
                     <div style="margin-top: 25px;">
                         <a href="{% url 'booking_wizard' %}" class="btn-pill btn-gold-outline" style="font-size: 14px; padding: 10px 25px;">
                             {% trans "Termin buchen" %}

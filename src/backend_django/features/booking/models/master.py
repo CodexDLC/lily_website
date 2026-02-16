@@ -15,8 +15,6 @@ User = get_user_model()
 class Master(TimestampMixin, SeoMixin, models.Model):
     """
     Salon master/specialist.
-    Can work without Django User (Telegram-only access).
-    User is created only when master needs Django Admin access (future).
     """
 
     # === Basic Information ===
@@ -75,7 +73,7 @@ class Master(TimestampMixin, SeoMixin, models.Model):
 
     phone = models.CharField(max_length=20, blank=True, verbose_name=_("Direct Phone"))
 
-    # === Employment Status (instead of is_active) ===
+    # === Employment Status ===
     STATUS_ACTIVE = "active"
     STATUS_VACATION = "vacation"
     STATUS_FIRED = "fired"
@@ -109,7 +107,7 @@ class Master(TimestampMixin, SeoMixin, models.Model):
         default=0, verbose_name=_("Display Order"), help_text=_("Lower numbers appear first")
     )
 
-    # === Django User Link (Optional - for future personal cabinet) ===
+    # === Django User Link ===
     user = models.OneToOneField(
         User,
         null=True,
@@ -140,7 +138,7 @@ class Master(TimestampMixin, SeoMixin, models.Model):
         help_text=_("One-time code for master registration in 02_telegram_bot"),
     )
 
-    # === QR Token (Future - for finalization) ===
+    # === QR Token ===
     qr_token = models.CharField(max_length=32, unique=True, editable=False, verbose_name=_("QR Token"))
 
     class Meta:
@@ -173,27 +171,21 @@ class Master(TimestampMixin, SeoMixin, models.Model):
 
     @property
     def instagram_url(self):
-        """Full Instagram profile URL"""
         if self.instagram:
             return f"https://instagram.com/{self.instagram.lstrip('@')}"
         return None
 
     @property
     def is_available_for_booking(self):
-        """Check if master can accept new bookings"""
         return self.status == self.STATUS_ACTIVE
 
     def get_available_services(self):
-        """Get all services this master can perform"""
         from features.main.models import Service
 
         return Service.objects.filter(category__in=self.categories.all(), is_active=True).distinct()
 
     def can_perform_service(self, service):
-        """Check if master can perform specific service"""
         return self.categories.filter(pk=service.category_id).exists()
 
     def active_portfolio_count(self):
-        """Count of published portfolio images (future)"""
-        # return self.portfolio_images.filter(is_active=True).count()
-        return 0  # Placeholder
+        return 0

@@ -1,91 +1,81 @@
-"""Admin interface for system app."""
+"""Admin interface for system app using Unfold."""
 
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
+from unfold.admin import ModelAdmin
 
 from .models import SiteSettings, StaticPageSeo
 
-# ══════════════════════════════════════════════════════════════════════════════
-# ADMIN CLASSES
-# ══════════════════════════════════════════════════════════════════════════════
-
 
 @admin.register(StaticPageSeo)
-class StaticPageSeoAdmin(TranslationAdmin):
+class StaticPageSeoAdmin(ModelAdmin, TranslationAdmin):
     """Admin interface for StaticPageSeo model."""
 
     list_display = ["page_key", "title_preview", "has_description", "has_image"]
+    list_display_links = ["page_key"]
     list_filter = ["page_key"]
     search_fields = ["page_key", "seo_title", "seo_description"]
 
+    # SEO Optimization at the TOP
     fieldsets = [
+        (
+            _("SEO Optimization"),
+            {"fields": ("seo_title", "seo_description", "seo_image")},
+        ),
         (
             _("Page Identification"),
             {"fields": ("page_key",)},
-        ),
-        (
-            _("SEO Meta Tags"),
-            {"fields": ("seo_title", "seo_description")},
-        ),
-        (
-            _("Open Graph Image"),
-            {"fields": ("seo_image",)},
         ),
     ]
 
     @admin.display(description=_("SEO Title"))
     def title_preview(self, obj):
-        """Show SEO title with character count."""
         title = obj.seo_title or "—"
         length = len(obj.seo_title) if obj.seo_title else 0
-        color = "green" if 50 <= length <= 60 else "orange" if length > 0 else "gray"
+
+        if 50 <= length <= 60:
+            color_class = "text-green-600 dark:text-green-400"
+        elif length > 0:
+            color_class = "text-orange-600 dark:text-orange-400"
+        else:
+            color_class = "text-gray-400"
+
         return format_html(
-            '<strong style="color:{};">{}</strong> <small>({} chars)</small>',
-            color,
+            '<span class="font-bold {}">{}</span> <small class="opacity-50">({} chars)</small>',
+            mark_safe(color_class),
             title[:50] + "..." if len(title) > 50 else title,
             length,
         )
 
     @admin.display(description=_("Description"))
     def has_description(self, obj):
-        """Check if SEO description exists."""
         if obj.seo_description:
             length = len(obj.seo_description)
-            color = "green" if 150 <= length <= 160 else "orange"
+            color_classes = mark_safe("bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400")
             return format_html(
-                '<span style="padding:3px 8px;background:{};color:white;border-radius:3px;">✓ {} chars</span>',
-                color,
+                '<span class="px-2 py-1 rounded-md text-xs font-medium {}">✓ {} chars</span>',
+                color_classes,
                 length,
             )
-        return format_html(
-            '<span style="padding:3px 8px;background:gray;color:white;border-radius:3px;">✗ {}</span>',
-            _("No description"),
-        )
+        return format_html('<span class="text-gray-400 text-xs">✗ No description</span>')
 
     @admin.display(description=_("OG Image"))
     def has_image(self, obj):
-        """Check if OG image exists."""
         if obj.seo_image:
-            return format_html(
-                '<span style="padding:3px 8px;background:green;color:white;border-radius:3px;">✓ {}</span>',
-                _("Yes"),
-            )
-        return format_html(
-            '<span style="padding:3px 8px;background:gray;color:white;border-radius:3px;">✗ {}</span>',
-            _("No"),
-        )
+            color_classes = mark_safe("bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400")
+            return format_html('<span class="px-2 py-1 rounded-md text-xs font-medium {}">✓ Yes</span>', color_classes)
+        return format_html('<span class="text-gray-400 text-xs">✗ No</span>')
 
 
 @admin.register(SiteSettings)
-class SiteSettingsAdmin(admin.ModelAdmin):
-    """
-    Admin interface for SiteSettings model.
-    Singleton pattern - only one instance allowed.
-    """
+class SiteSettingsAdmin(ModelAdmin):
+    """Admin interface for SiteSettings model."""
 
-    list_display = ["company_name", "phone", "email", "has_socials"]
+    list_display = ["company_name", "phone", "email", "social_status"]
+    list_display_links = ["company_name"]
 
     fieldsets = [
         (
@@ -122,29 +112,28 @@ class SiteSettingsAdmin(admin.ModelAdmin):
     ]
 
     def has_add_permission(self, request):
-        """Allow add only if no instance exists (Singleton pattern)."""
         return not SiteSettings.objects.exists()
 
     def has_delete_permission(self, request, obj=None):
-        """Prevent deletion of site settings."""
         return False
 
     @admin.display(description=_("Social Media"))
-    def has_socials(self, obj):
-        """Check if social media links are configured."""
+    def social_status(self, obj):
         socials = [obj.instagram_url, obj.telegram_url, obj.whatsapp_url]
         count = sum(1 for s in socials if s)
 
         if count == 3:
-            return format_html(
-                '<span style="padding:3px 8px;background:green;color:white;border-radius:3px;">✓ All ({}/3)</span>',
-                count,
-            )
+            color_classes = mark_safe("bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400")
+            label = f"✓ All ({count}/3)"
         elif count > 0:
-            return format_html(
-                '<span style="padding:3px 8px;background:orange;color:white;border-radius:3px;">⚠ {}/3</span>',
-                count,
-            )
+            color_classes = mark_safe("bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400")
+            label = f"⚠ {count}/3"
+        else:
+            color_classes = mark_safe("bg-gray-100 text-gray-700 dark:bg-gray-500/20 dark:text-gray-400")
+            label = "✗ None"
+
         return format_html(
-            '<span style="padding:3px 8px;background:gray;color:white;border-radius:3px;">✗ None</span>',
+            '<span class="px-2 py-1 rounded-md text-xs font-medium {}">{}</span>',
+            color_classes,
+            label,
         )

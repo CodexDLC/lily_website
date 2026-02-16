@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+from urllib.parse import quote
+
 from src.workers.core.email_client import AsyncEmailClient
 from src.workers.core.template_renderer import TemplateRenderer
 
@@ -19,13 +22,12 @@ class NotificationService:
         url_path_reschedule: str | None = None,
         url_path_contact_form: str | None = None,
     ):
-        # Проверяем наличие минимально необходимых настроек SMTP
         if not all([smtp_host, smtp_port, smtp_from_email]):
             raise ValueError("Core SMTP settings (host, port, from_email) are missing.")
 
         self.email_client = AsyncEmailClient(
-            smtp_host=smtp_host,  # type: ignore[arg-type]
-            smtp_port=smtp_port,  # type: ignore[arg-type]
+            smtp_host=smtp_host,
+            smtp_port=smtp_port,
             smtp_user=smtp_user,
             smtp_password=smtp_password,
             smtp_from_email=smtp_from_email,
@@ -35,35 +37,60 @@ class NotificationService:
         self.site_url = site_url
         self.logo_url = logo_url
 
-        # Сохраняем URL-пути
         self.url_path_confirm = url_path_confirm
         self.url_path_cancel = url_path_cancel
         self.url_path_reschedule = url_path_reschedule
         self.url_path_contact_form = url_path_contact_form
 
-    def _enrich_context(self, data: dict) -> dict:
-        """
-        Обогащает пришедшие данные глобальными настройками и вычисляет приветствие.
-        """
-        context = data.copy()
+    def _generate_google_calendar_url(self, data: dict) -> str:
+        """Генерирует ссылку для добавления события в Google Calendar."""
+        try:
+            service_name = data.get("service_name", "Beauty Termin")
+            date_str = data.get("date")  # DD.MM.YYYY
+            time_str = data.get("time")  # HH:MM
+            duration = int(data.get("duration_minutes", 30))
 
-        # Очищаем базовый URL от слэша на конце
+            if not date_str or not time_str:
+                return ""
+
+            # Парсим начало
+            start_dt = datetime.strptime(f"{date_str} {time_str}", "%d.%m.%Y %H:%M")
+            end_dt = start_dt + timedelta(minutes=duration)
+
+            # Формат для Google: YYYYMMDDTHHMMSSZ (в UTC)
+            # Для простоты используем локальное время, Google сам предложит коррекцию
+            fmt = "%Y%m%dT%H%M%S"
+            dates = f"{start_dt.strftime(fmt)}/{end_dt.strftime(fmt)}"
+
+            base_url = "https://www.google.com/calendar/render?action=TEMPLATE"
+            params = {
+                "text": f"LILY Salon: {service_name}",
+                "dates": dates,
+                "details": f"Ihr Termin im LILY Beauty Salon. Wir freuen uns auf Sie!\nWeb: {self.site_url}",
+                "location": "Lohmannstraße 111, 06366 Köthen (Anhalt)",
+                "sf": "true",
+                "output": "xml",
+            }
+
+            query_str = "&".join([f"{k}={quote(str(v))}" for k, v in params.items()])
+            return f"{base_url}&{query_str}"
+        except Exception:
+            return ""
+
+    def _enrich_context(self, data: dict) -> dict:
+        context = data.copy()
         clean_site_url = self.site_url.rstrip("/")
         context["site_url"] = clean_site_url
 
-        # Логика формирования logo_url
         if self.logo_url:
             if self.logo_url.startswith("http"):
                 context["logo_url"] = self.logo_url
             else:
-                # Если путь относительный, приклеиваем к site_url
                 path = self.logo_url if self.logo_url.startswith("/") else f"/{self.logo_url}"
                 context["logo_url"] = f"{clean_site_url}{path}"
         else:
-            # Фолбэк на PNG в статике
             context["logo_url"] = f"{clean_site_url}/static/img/_source/logo_lily.png"
 
-        # Формируем contact_form_url динамически
         if self.url_path_contact_form:
             path = (
                 self.url_path_contact_form
@@ -74,11 +101,12 @@ class NotificationService:
         else:
             context["contact_form_url"] = "#"
 
-        # Персонализированное приветствие
+        # Генерируем ссылку на календарь
+        context["calendar_url"] = self._generate_google_calendar_url(data)
+
         if "name" in context and "greeting" not in context:
             visits = int(context.get("visits_count", 0))
             name = context["name"]
-
             if visits == 0:
                 context["greeting"] = f"Sehr geehrte/r {name},"
             elif 1 <= visits <= 4:
@@ -86,9 +114,7 @@ class NotificationService:
             else:
                 context["greeting"] = f"Hallo {name},"
 
-        # --- Формирование динамических URL для действий ---
         action_token = data.get("action_token")
-
         if self.url_path_confirm and action_token:
             context["link_confirm"] = f"{clean_site_url}{self.url_path_confirm.format(token=action_token)}"
         else:
@@ -112,9 +138,6 @@ class NotificationService:
         return context
 
     async def send_notification(self, email: str, subject: str, template_name: str, data: dict):
-        """
-        Универсальный метод отправки уведомления.
-        """
         full_context = self._enrich_context(data)
         html_content = self.renderer.render(template_name, full_context)
         await self.email_client.send_email(email, subject, html_content)

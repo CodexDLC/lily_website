@@ -26,6 +26,9 @@ urlpatterns = [
     path("", include("django_prometheus.urls")),  # Prometheus metrics
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sitemaps.views.sitemap"),
+    # PWA files (must be at root for proper scope)
+    path("sw.js", TemplateView.as_view(template_name="sw.js", content_type="application/javascript")),
+    path("manifest.json", TemplateView.as_view(template_name="manifest.json", content_type="application/json")),
 ]
 
 # i18n patterns (URLs with language prefix)
