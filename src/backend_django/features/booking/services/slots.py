@@ -14,6 +14,12 @@ class SlotService:
     def __init__(self, step_minutes: int = 30):
         # step_minutes is used as a fallback or for grid alignment
         self.step_minutes = step_minutes
+        self._cached_settings: SiteSettings | None = None
+
+    def _get_settings(self) -> SiteSettings:
+        if self._cached_settings is None:
+            self._cached_settings = SiteSettings.load()
+        return self._cached_settings
 
     def get_available_slots(self, masters: Master | list[Master], date_obj: date, duration_minutes: int) -> list[str]:
         if isinstance(masters, Master):
@@ -104,7 +110,7 @@ class SlotService:
         return sorted(list(set(available_slots)))
 
     def _get_working_hours(self, date_obj: date) -> tuple[time, time] | None:
-        settings = SiteSettings.load()
+        settings = self._get_settings()
         weekday = date_obj.weekday()
         if weekday < 5:
             return settings.work_start_weekdays, settings.work_end_weekdays

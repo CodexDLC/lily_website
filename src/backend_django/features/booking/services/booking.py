@@ -67,7 +67,7 @@ class BookingService:
                 last_name=form_data.get("last_name", ""),
                 phone=form_data.get("phone", ""),
                 email=form_data.get("email", ""),
-                consent_marketing=True,
+                consent_marketing=form_data.get("consent_marketing", False),
             )
 
             # 5. Create Appointment
