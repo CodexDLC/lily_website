@@ -146,9 +146,9 @@ class BookingService:
         active_promo = None
         if service.category:
             try:
-                from features.promos.services import NotificationService
+                from features.promos.services import PromoService
 
-                active_promo = NotificationService.get_active_notification(service.category.slug)
+                active_promo = PromoService.get_active_promo(service.category.slug)
             except Exception as e:
                 log.warning(f"Failed to get active promo: {e}")
 
