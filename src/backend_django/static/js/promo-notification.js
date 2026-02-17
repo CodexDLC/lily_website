@@ -15,7 +15,7 @@ class PromoNotificationWidget {
     }
 
     /**
-     * Initialize the widget
+     * Initialize the widget with a delay to improve initial page load performance
      */
     async init() {
         try {
@@ -36,11 +36,12 @@ class PromoNotificationWidget {
 
             this.notification = data;
 
-            // Show floating button after delay
+            // Show floating button after the specified delay from DB
+            // We already waited for window.load + 3s, so this is an additional delay if set
             setTimeout(() => {
                 this.showFloatingButton();
                 this.trackView();
-            }, data.display_delay * 1000);
+            }, (data.display_delay || 0) * 1000);
 
         } catch (error) {
             console.error('[PromoNotification] Initialization error:', error);
@@ -49,27 +50,18 @@ class PromoNotificationWidget {
 
     /**
      * Get current page slug from URL path
-     * @returns {string|null} Page slug (e.g., 'home', 'services')
      */
     getCurrentPageSlug() {
         const path = window.location.pathname;
-
-        // Remove leading/trailing slashes and split
         const parts = path.replace(/^\/|\/$/g, '').split('/');
-
-        // Root page = 'home'
         if (parts.length === 0 || parts[0] === '') {
             return 'home';
         }
-
-        // Return first segment (e.g., /services/ -> 'services')
         return parts[0];
     }
 
     /**
      * Fetch active notification from API
-     * @param {string} pageSlug - Current page slug
-     * @returns {Promise<Object|null>} Notification data or null
      */
     async fetchActiveNotification(pageSlug) {
         try {
@@ -77,10 +69,7 @@ class PromoNotificationWidget {
             const response = await fetch(url);
 
             if (!response.ok) {
-                // 404 = no active notifications
-                if (response.status === 404) {
-                    return null;
-                }
+                if (response.status === 404) return null;
                 throw new Error(`API error: ${response.status}`);
             }
 
@@ -92,23 +81,19 @@ class PromoNotificationWidget {
     }
 
     /**
-     * Check if notification was already seen by user
-     * @param {number} notificationId - Notification ID
-     * @returns {boolean} True if already seen
+     * Check if notification was already seen
      */
     wasAlreadySeen(notificationId) {
         try {
             const seen = JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '[]');
             return seen.includes(notificationId);
         } catch (error) {
-            console.error('[PromoNotification] localStorage read error:', error);
             return false;
         }
     }
 
     /**
      * Mark notification as seen
-     * @param {number} notificationId - Notification ID
      */
     markAsSeen(notificationId) {
         try {
@@ -126,18 +111,16 @@ class PromoNotificationWidget {
      * Create and show floating button
      */
     showFloatingButton() {
-        // Create button element
+        if (this.button) return;
+
         this.button = document.createElement('button');
         this.button.className = 'promo-floating-button';
         this.button.textContent = this.notification.button_text;
         this.button.style.backgroundColor = this.notification.button_color;
         this.button.style.color = this.notification.text_color;
-        this.button.setAttribute('aria-label', 'Открыть промо-акцию');
+        this.button.setAttribute('aria-label', 'Show promotion');
 
-        // Click handler
         this.button.addEventListener('click', () => this.openModal());
-
-        // Add to DOM
         document.body.appendChild(this.button);
     }
 
@@ -145,27 +128,22 @@ class PromoNotificationWidget {
      * Create and open modal window
      */
     openModal() {
-        // Track click
         this.trackClick();
 
-        // Create modal overlay
         this.modal = document.createElement('div');
         this.modal.className = 'promo-modal';
         this.modal.setAttribute('role', 'dialog');
         this.modal.setAttribute('aria-modal', 'true');
 
-        // Create modal content
         const content = document.createElement('div');
         content.className = 'promo-modal-content';
 
-        // Close button
         const closeBtn = document.createElement('button');
         closeBtn.className = 'promo-modal-close';
         closeBtn.innerHTML = '&times;';
-        closeBtn.setAttribute('aria-label', 'Закрыть');
+        closeBtn.setAttribute('aria-label', 'Close');
         closeBtn.addEventListener('click', () => this.closeModal());
 
-        // Header
         const header = document.createElement('div');
         header.className = 'promo-modal-header';
 
@@ -175,11 +153,9 @@ class PromoNotificationWidget {
 
         header.appendChild(title);
 
-        // Body
         const body = document.createElement('div');
         body.className = 'promo-modal-body';
 
-        // Image (if exists)
         if (this.notification.image_url) {
             const img = document.createElement('img');
             img.className = 'promo-modal-image';
@@ -188,39 +164,27 @@ class PromoNotificationWidget {
             body.appendChild(img);
         }
 
-        // Description
         const description = document.createElement('div');
         description.className = 'promo-modal-description';
         description.textContent = this.notification.description;
 
         body.appendChild(description);
-
-        // Assemble modal
         content.appendChild(closeBtn);
         content.appendChild(header);
         content.appendChild(body);
         this.modal.appendChild(content);
-
-        // Add to DOM
         document.body.appendChild(this.modal);
 
-        // Trigger animation
         setTimeout(() => {
             this.modal.classList.add('active');
         }, 10);
 
-        // Close on overlay click
         this.modal.addEventListener('click', (e) => {
-            if (e.target === this.modal) {
-                this.closeModal();
-            }
+            if (e.target === this.modal) this.closeModal();
         });
 
-        // Close on ESC key
         this.handleEscKey = (e) => {
-            if (e.key === 'Escape') {
-                this.closeModal();
-            }
+            if (e.key === 'Escape') this.closeModal();
         };
         document.addEventListener('keydown', this.handleEscKey);
     }
@@ -231,22 +195,20 @@ class PromoNotificationWidget {
     closeModal() {
         if (!this.modal) return;
 
-        // Remove active class to trigger exit animation
         this.modal.classList.remove('active');
 
-        // Wait for animation to finish
         setTimeout(() => {
-            this.modal.remove();
-            this.modal = null;
+            if (this.modal) {
+                this.modal.remove();
+                this.modal = null;
+            }
         }, 400);
 
-        // Remove ESC key listener
         if (this.handleEscKey) {
             document.removeEventListener('keydown', this.handleEscKey);
             this.handleEscKey = null;
         }
 
-        // Hide floating button and mark as seen
         if (this.button) {
             this.button.remove();
             this.button = null;
@@ -256,48 +218,48 @@ class PromoNotificationWidget {
     }
 
     /**
-     * Track notification view (button shown)
+     * Track notification view
      */
     async trackView() {
         if (!this.notification) return;
-
         try {
             await fetch(`${this.API_BASE}/${this.notification.id}/track-view/`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
             });
-        } catch (error) {
-            console.error('[PromoNotification] Track view error:', error);
-        }
+        } catch (e) {}
     }
 
     /**
-     * Track notification click (modal opened)
+     * Track notification click
      */
     async trackClick() {
         if (!this.notification) return;
-
         try {
             await fetch(`${this.API_BASE}/${this.notification.id}/track-click/`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
             });
-        } catch (error) {
-            console.error('[PromoNotification] Track click error:', error);
-        }
+        } catch (e) {}
     }
 }
 
-// Auto-initialize on DOM ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        new PromoNotificationWidget().init();
-    });
-} else {
-    // DOM already loaded
-    new PromoNotificationWidget().init();
-}
+/**
+ * Optimized Initialization
+ * Waits for the window to be fully loaded, then waits another 3 seconds
+ * before even checking the API for promotions.
+ */
+window.addEventListener('load', () => {
+    // Use requestIdleCallback if available to run when browser is not busy
+    const initWidget = () => {
+        setTimeout(() => {
+            new PromoNotificationWidget().init();
+        }, 3000); // 3 seconds delay after full load
+    };
+
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(initWidget);
+    } else {
+        initWidget();
+    }
+});

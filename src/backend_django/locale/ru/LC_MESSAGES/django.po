@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-13 16:27+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2026-02-17 18:01+0100\n"
+"PO-Revision-Date: 2026-02-17 17:40+0100\n"
+"Last-Translator: AI Developer\n"
+"Language-Team: Russian\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,1337 +19,1564 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: .\features\booking\admin.py:23
-msgid "Basic Information"
-msgstr "Основная информация"
-
-#: .\features\booking\admin.py:27
-msgid "Specializations"
-msgstr "Специализации"
-
-#: .\features\booking\admin.py:31
-msgid "Contact"
-msgstr "Контакты"
-
-#: .\features\booking\admin.py:35 .\features\main\admin.py:106
-msgid "Status & Flags"
-msgstr "Статус и флаги"
-
-#: .\features\booking\admin.py:39
-msgid "Django User"
-msgstr "Пользователь Django"
-
-#: .\features\booking\admin.py:43
-msgid "Telegram Integration"
-msgstr "Интеграция с Telegram"
-
-#: .\features\booking\admin.py:50
-msgid "QR System (Future)"
-msgstr "Система QR (в будущем)"
-
-#: .\features\booking\admin.py:54 .\features\main\admin.py:49
-#: .\features\main\admin.py:122
-msgid "SEO"
-msgstr "SEO"
-
-#: .\features\booking\admin.py:58 .\features\booking\admin.py:184
-#: .\features\booking\admin.py:248 .\features\booking\admin.py:277
-msgid "Timestamps"
-msgstr "Временные метки"
-
-#: .\features\booking\admin.py:65 .\features\booking\admin.py:124
-#: .\features\booking\admin.py:172 .\features\booking\admin.py:196
-#: .\features\booking\models\appointment.py:62
-#: .\features\booking\models\client.py:76 .\features\main\admin.py:54
-#: .\features\main\admin.py:134
+#: .\src\backend_django\features\booking\admin.py:23
+#: .\src\backend_django\features\booking\admin.py:51
+#: .\src\backend_django\features\booking\models\appointment.py:62
+#: .\src\backend_django\features\booking\models\client.py:76
+#: .\src\backend_django\features\promos\admin.py:95
 msgid "Status"
 msgstr "Статус"
 
-#: .\features\booking\admin.py:93
-msgid "Contact Information"
-msgstr "Контактная информация"
+#: .\src\backend_django\features\booking\admin.py:66
+msgid "Promo"
+msgstr "Промо"
 
-#: .\features\booking\admin.py:97
-msgid "Socials"
-msgstr "Социальные сети"
-
-#: .\features\booking\admin.py:101
-msgid "Account Status"
-msgstr "Статус аккаунта"
-
-#: .\features\booking\admin.py:105
-msgid "Marketing"
-msgstr "Маркетинг"
-
-#: .\features\booking\admin.py:109
-msgid "Internal"
-msgstr "Внутренние"
-
-#: .\features\booking\admin.py:114 .\templates\contacts\partials\form.html:16
-msgid "Name"
-msgstr "Имя"
-
-#: .\features\booking\admin.py:119
-msgid "Ghost"
-msgstr "Призрак"
-
-#: .\features\booking\admin.py:168
-msgid "Booking Details"
-msgstr "Детали бронирования"
-
-#: .\features\booking\admin.py:176
-msgid "Notes"
-msgstr "Заметки"
-
-#: .\features\booking\admin.py:180
-msgid "Notifications"
-msgstr "Уведомления"
-
-#: .\features\booking\admin.py:191 .\features\booking\models\appointment.py:21
-#: .\features\booking\models\client.py:93
-#: .\features\main\models\contact_request.py:24
-msgid "Client"
-msgstr "Клиент"
-
-#: .\features\booking\admin.py:213
+#: .\src\backend_django\features\booking\admin.py:75
 msgid "Mark as Confirmed"
 msgstr "Отметить как подтверждённые"
 
-#: .\features\booking\admin.py:218
-msgid "Mark as Completed"
-msgstr "Отметить как завершённые"
+#: .\src\backend_django\features\booking\models\appointment.py:21
+#: .\src\backend_django\features\booking\models\client.py:93
+#: .\src\backend_django\features\main\models\contact_request.py:24
+msgid "Client"
+msgstr "Клиент"
 
-#: .\features\booking\admin.py:223
-msgid "Cancel Selected"
-msgstr "Отменить выбранные"
-
-#: .\features\booking\admin.py:240
-msgid "Certificate Info"
-msgstr "Информация о сертификате"
-
-#: .\features\booking\admin.py:244 .\features\booking\admin.py:269
-msgid "Display"
-msgstr "Отображение"
-
-#: .\features\booking\admin.py:265
-#: .\features\booking\models\master_portfolio.py:60
-msgid "Portfolio Item"
-msgstr "Элемент портфолио"
-
-#: .\features\booking\admin.py:273 .\features\booking\models\client.py:39
-#: .\templates\team\team.html:44
-msgid "Instagram"
-msgstr "Instagram"
-
-#: .\features\booking\models\appointment.py:23
-#: .\features\booking\models\master.py:146
-#: .\features\booking\models\master_certificate.py:17
-#: .\features\booking\models\master_portfolio.py:19
+#: .\src\backend_django\features\booking\models\appointment.py:23
+#: .\src\backend_django\features\booking\models\master.py:145
+#: .\src\backend_django\features\booking\models\master_certificate.py:17
+#: .\src\backend_django\features\booking\models\master_portfolio.py:19
 msgid "Master"
 msgstr "Мастер"
 
-#: .\features\booking\models\appointment.py:26
-#: .\features\main\models\service.py:65 .\features\main\models\service.py:85
+#: .\src\backend_django\features\booking\models\appointment.py:26
+#: .\src\backend_django\features\main\models\service.py:68
+#: .\src\backend_django\features\main\models\service.py:98
 msgid "Service"
 msgstr "Услуга"
 
-#: .\features\booking\models\appointment.py:31
+#: .\src\backend_django\features\booking\models\appointment.py:31
 msgid "Start Date & Time"
 msgstr "Дата и время начала"
 
-#: .\features\booking\models\appointment.py:31
+#: .\src\backend_django\features\booking\models\appointment.py:31
 msgid "Appointment start time"
 msgstr "Время начала записи"
 
-#: .\features\booking\models\appointment.py:35
+#: .\src\backend_django\features\booking\models\appointment.py:35
 msgid "Duration (minutes)"
 msgstr "Длительность (мин)"
 
-#: .\features\booking\models\appointment.py:35
+#: .\src\backend_django\features\booking\models\appointment.py:35
 msgid "Service duration (auto-filled from Service model)"
 msgstr "Длительность услуги (автоматически из модели услуги)"
 
-#: .\features\booking\models\appointment.py:42
-#: .\features\main\models\service.py:28
+#: .\src\backend_django\features\booking\models\appointment.py:42
+#: .\src\backend_django\features\main\models\service.py:31
 msgid "Price (€)"
 msgstr "Цена (€)"
 
-#: .\features\booking\models\appointment.py:43
+#: .\src\backend_django\features\booking\models\appointment.py:43
 msgid "Price at booking time (snapshot)"
 msgstr "Цена на момент бронирования (снимок)"
 
-#: .\features\booking\models\appointment.py:54
+#: .\src\backend_django\features\booking\models\appointment.py:54
 msgid "Pending Confirmation"
 msgstr "Ожидает подтверждения"
 
-#: .\features\booking\models\appointment.py:55
+#: .\src\backend_django\features\booking\models\appointment.py:55
 msgid "Confirmed"
 msgstr "Подтверждено"
 
-#: .\features\booking\models\appointment.py:56
+#: .\src\backend_django\features\booking\models\appointment.py:56
 msgid "Completed"
 msgstr "Завершено"
 
-#: .\features\booking\models\appointment.py:57
+#: .\src\backend_django\features\booking\models\appointment.py:57
 msgid "Cancelled"
 msgstr "Отменено"
 
-#: .\features\booking\models\appointment.py:58
+#: .\src\backend_django\features\booking\models\appointment.py:58
 msgid "No Show"
 msgstr "Не явился"
 
-#: .\features\booking\models\appointment.py:72
+#: .\src\backend_django\features\booking\models\appointment.py:72
 msgid "Website"
 msgstr "Веб-сайт"
 
-#: .\features\booking\models\appointment.py:73
+#: .\src\backend_django\features\booking\models\appointment.py:73
 msgid "Telegram Bot"
 msgstr "Telegram-бот"
 
-#: .\features\booking\models\appointment.py:74
-#: .\features\system\models\site_settings.py:18
+#: .\src\backend_django\features\booking\models\appointment.py:74
+#: .\src\backend_django\features\system\models\site_settings.py:28
 msgid "Phone"
 msgstr "Телефон"
 
-#: .\features\booking\models\appointment.py:75
+#: .\src\backend_django\features\booking\models\appointment.py:75
 msgid "Admin Panel"
 msgstr "Админ-панель"
 
-#: .\features\booking\models\appointment.py:82
+#: .\src\backend_django\features\booking\models\appointment.py:82
 msgid "Booking Source"
 msgstr "Источник бронирования"
 
-#: .\features\booking\models\appointment.py:83
+#: .\src\backend_django\features\booking\models\appointment.py:83
 msgid "Where this appointment was created"
 msgstr "Где была создана эта запись"
 
-#: .\features\booking\models\appointment.py:87
+#: .\src\backend_django\features\booking\models\appointment.py:87
 msgid "Cancelled At"
 msgstr "Отменено в"
 
-#: .\features\booking\models\appointment.py:95
+#: .\src\backend_django\features\booking\models\appointment.py:95
 msgid "Cancelled by Client"
 msgstr "Отменено клиентом"
 
-#: .\features\booking\models\appointment.py:96
+#: .\src\backend_django\features\booking\models\appointment.py:96
 msgid "Cancelled by Master"
 msgstr "Отменено мастером"
 
-#: .\features\booking\models\appointment.py:97
+#: .\src\backend_django\features\booking\models\appointment.py:97
 msgid "Rescheduled"
 msgstr "Перенесено"
 
-#: .\features\booking\models\appointment.py:98
-#: .\features\main\models\contact_request.py:20
+#: .\src\backend_django\features\booking\models\appointment.py:98
+#: .\src\backend_django\features\main\models\contact_request.py:20
 msgid "Other"
 msgstr "Другое"
 
-#: .\features\booking\models\appointment.py:102
+#: .\src\backend_django\features\booking\models\appointment.py:102
 msgid "Cancellation Reason"
 msgstr "Причина отмены"
 
-#: .\features\booking\models\appointment.py:106
+#: .\src\backend_django\features\booking\models\appointment.py:106
 msgid "Cancellation Note"
 msgstr "Заметка об отмене"
 
-#: .\features\booking\models\appointment.py:106
+#: .\src\backend_django\features\booking\models\appointment.py:106
 msgid "Additional details about cancellation"
 msgstr "Дополнительные детали об отмене"
 
-#: .\features\booking\models\appointment.py:112
+#: .\src\backend_django\features\booking\models\appointment.py:112
 msgid "Client Notes"
 msgstr "Заметки клиента"
 
-#: .\features\booking\models\appointment.py:113
+#: .\src\backend_django\features\booking\models\appointment.py:113
 msgid "Special requests from client (e.g. allergies, preferences)"
 msgstr "Особые пожелания клиента (например, аллергии, предпочтения)"
 
-#: .\features\booking\models\appointment.py:118
-#: .\features\main\models\contact_request.py:31
+#: .\src\backend_django\features\booking\models\appointment.py:118
+#: .\src\backend_django\features\main\models\contact_request.py:31
 msgid "Admin Notes"
 msgstr "Административные заметки"
 
-#: .\features\booking\models\appointment.py:118
+#: .\src\backend_django\features\booking\models\appointment.py:118
 msgid "Internal notes (not visible to client)"
 msgstr "Внутренние заметки (не видны клиенту)"
 
-#: .\features\booking\models\appointment.py:123
+#: .\src\backend_django\features\booking\models\appointment.py:123
 msgid "Reminder Sent"
 msgstr "Напоминание отправлено"
 
-#: .\features\booking\models\appointment.py:123
+#: .\src\backend_django\features\booking\models\appointment.py:123
 msgid "SMS/Email reminder was sent"
 msgstr "СМС/Email напоминание было отправлено"
 
-#: .\features\booking\models\appointment.py:126
+#: .\src\backend_django\features\booking\models\appointment.py:126
 msgid "Reminder Sent At"
 msgstr "Напоминание отправлено в"
 
-#: .\features\booking\models\appointment.py:129
+#: .\src\backend_django\features\booking\models\appointment.py:135
+msgid "Active Promo"
+msgstr "Активная акция"
+
+#: .\src\backend_django\features\booking\models\appointment.py:136
+msgid "Promo that was active when booking was made"
+msgstr "Акция, которая действовала на момент бронирования"
+
+#: .\src\backend_django\features\booking\models\appointment.py:140
 msgid "Appointment"
 msgstr "Запись"
 
-#: .\features\booking\models\appointment.py:130
+#: .\src\backend_django\features\booking\models\appointment.py:141
 msgid "Appointments"
 msgstr "Записи"
 
-#: .\features\booking\models\appointment.py:160
+#: .\src\backend_django\features\booking\models\appointment.py:171
 msgid "This time slot is already booked."
 msgstr "Этот временной слот уже занят."
 
-#: .\features\booking\models\appointment.py:194
+#: .\src\backend_django\features\booking\models\appointment.py:205
 msgid "This appointment cannot be cancelled."
 msgstr "Эта запись не может быть отменена."
 
-#: .\features\booking\models\appointment.py:205
+#: .\src\backend_django\features\booking\models\appointment.py:216
 msgid "Only confirmed appointments can be marked as completed."
 msgstr "Только подтверждённые записи могут быть отмечены как завершённые."
 
-#: .\features\booking\models\client.py:24
+#: .\src\backend_django\features\booking\models\client.py:24
 msgid "Phone Number"
 msgstr "Номер телефона"
 
-#: .\features\booking\models\client.py:25
+#: .\src\backend_django\features\booking\models\client.py:25
 msgid "Primary contact method"
 msgstr "Основной способ связи"
 
-#: .\features\booking\models\client.py:30
-#: .\features\system\models\site_settings.py:19
+#: .\src\backend_django\features\booking\models\client.py:30
+#: .\src\backend_django\features\system\models\site_settings.py:29
 msgid "Email"
 msgstr "Email"
 
-#: .\features\booking\models\client.py:31
+#: .\src\backend_django\features\booking\models\client.py:31
 msgid "Email for notifications and account activation"
 msgstr "Email для уведомлений и активации аккаунта"
 
-#: .\features\booking\models\client.py:34
+#: .\src\backend_django\features\booking\models\client.py:34
 msgid "First Name"
 msgstr "Имя"
 
-#: .\features\booking\models\client.py:35
+#: .\src\backend_django\features\booking\models\client.py:35
 msgid "Last Name"
 msgstr "Фамилия"
 
-#: .\features\booking\models\client.py:39
-#: .\features\booking\models\client.py:41
+#: .\src\backend_django\features\booking\models\client.py:39
+#: .\src\backend_django\templates\team\team.html:52
+msgid "Instagram"
+msgstr "Instagram"
+
+#: .\src\backend_django\features\booking\models\client.py:39
+#: .\src\backend_django\features\booking\models\client.py:41
 msgid "Username or link"
 msgstr "Имя пользователя или ссылка"
 
-#: .\features\booking\models\client.py:41
+#: .\src\backend_django\features\booking\models\client.py:41
 msgid "Telegram"
 msgstr "Telegram"
 
-#: .\features\booking\models\client.py:50
-#: .\features\booking\models\master.py:118
+#: .\src\backend_django\features\booking\models\client.py:50
+#: .\src\backend_django\features\booking\models\master.py:117
 msgid "Django User Account"
 msgstr "Аккаунт пользователя Django"
 
-#: .\features\booking\models\client.py:51
+#: .\src\backend_django\features\booking\models\client.py:51
 msgid "Linked when client activates account"
 msgstr "Связывается когда клиент активирует аккаунт"
 
-#: .\features\booking\models\client.py:60
+#: .\src\backend_django\features\booking\models\client.py:60
 msgid "Access Token"
 msgstr "Токен доступа"
 
-#: .\features\booking\models\client.py:61
+#: .\src\backend_django\features\booking\models\client.py:61
 msgid "Used in SMS/Email links for appointment management"
 msgstr "Используется в SMS/Email ссылках для управления записями"
 
-#: .\features\booking\models\client.py:70
+#: .\src\backend_django\features\booking\models\client.py:70
 msgid "Guest (Temporary)"
 msgstr "Гость (временный)"
 
-#: .\features\booking\models\client.py:71
+#: .\src\backend_django\features\booking\models\client.py:71
 msgid "Active (Registered)"
 msgstr "Активный (зарегистрированный)"
 
-#: .\features\booking\models\client.py:72
+#: .\src\backend_django\features\booking\models\client.py:72
 msgid "Blocked"
 msgstr "Заблокирован"
 
-#: .\features\booking\models\client.py:82
+#: .\src\backend_django\features\booking\models\client.py:82
 msgid "Marketing Consent"
 msgstr "Согласие на маркетинг"
 
-#: .\features\booking\models\client.py:83
+#: .\src\backend_django\features\booking\models\client.py:83
 msgid "Client agreed to receive promotional materials"
 msgstr "Клиент согласился получать рекламные материалы"
 
-#: .\features\booking\models\client.py:85
+#: .\src\backend_django\features\booking\models\client.py:85
 msgid "Consent Given Date"
 msgstr "Дата согласия"
 
-#: .\features\booking\models\client.py:89
+#: .\src\backend_django\features\booking\models\client.py:89
 msgid "Internal Notes"
 msgstr "Внутренние заметки"
 
-#: .\features\booking\models\client.py:89
+#: .\src\backend_django\features\booking\models\client.py:89
 msgid "Admin-only notes about the client"
 msgstr "Заметки только для администратора о клиенте"
 
-#: .\features\booking\models\client.py:94
+#: .\src\backend_django\features\booking\models\client.py:94
 msgid "Clients"
 msgstr "Клиенты"
 
-#: .\features\booking\models\client.py:122
+#: .\src\backend_django\features\booking\models\client.py:123
 msgid "Guest"
 msgstr "Гость"
 
-#: .\features\booking\models\master.py:23
+#: .\src\backend_django\features\booking\models\master.py:22
 msgid "Full Name"
 msgstr "Полное имя"
 
-#: .\features\booking\models\master.py:23
+#: .\src\backend_django\features\booking\models\master.py:22
 msgid "Master's full name (e.g. 'Maria Ivanova')"
 msgstr "Полное имя мастера (например, 'Мария Иванова')"
 
-#: .\features\booking\models\master.py:26 .\features\main\models\category.py:23
-#: .\features\main\models\service.py:24
+#: .\src\backend_django\features\booking\models\master.py:25
+#: .\src\backend_django\features\main\models\category.py:23
+#: .\src\backend_django\features\main\models\service.py:27
 msgid "Slug"
 msgstr "Slug"
 
-#: .\features\booking\models\master.py:26
+#: .\src\backend_django\features\booking\models\master.py:25
 msgid "URL part (e.g. 'maria-ivanova')"
 msgstr "Часть URL (например, 'maria-ivanova')"
 
-#: .\features\booking\models\master.py:32
+#: .\src\backend_django\features\booking\models\master.py:31
 msgid "Profile Photo"
 msgstr "Фото профиля"
 
-#: .\features\booking\models\master.py:33
+#: .\src\backend_django\features\booking\models\master.py:32
 msgid "Professional portrait (recommended: 800x1000px)"
 msgstr "Профессиональное портретное фото (рекомендуется: 800x1000px)"
 
-#: .\features\booking\models\master.py:40
+#: .\src\backend_django\features\booking\models\master.py:39
 msgid "Professional Title"
 msgstr "Профессиональное звание"
 
-#: .\features\booking\models\master.py:41
+#: .\src\backend_django\features\booking\models\master.py:40
 msgid "e.g. 'Top Colorist', 'Lead Nail Artist'"
 msgstr "например, 'Топ-колорист', 'Ведущий мастер маникюра'"
 
-#: .\features\booking\models\master.py:45
+#: .\src\backend_django\features\booking\models\master.py:44
 msgid "Biography"
 msgstr "Биография"
 
-#: .\features\booking\models\master.py:45
+#: .\src\backend_django\features\booking\models\master.py:44
 msgid "Full biography and work philosophy (HTML allowed)"
 msgstr "Полная биография и философия работы (HTML разрешён)"
 
-#: .\features\booking\models\master.py:51 .\features\main\models\category.py:37
-#: .\features\main\models\service.py:45
+#: .\src\backend_django\features\booking\models\master.py:50
+#: .\src\backend_django\features\main\models\category.py:37
+#: .\src\backend_django\features\main\models\service.py:48
 msgid "Short Description"
 msgstr "Краткое описание"
 
-#: .\features\booking\models\master.py:52
+#: .\src\backend_django\features\booking\models\master.py:51
 msgid "Brief intro for Team page (1-2 sentences)"
 msgstr "Краткое представление для страницы Команда (1-2 предложения)"
 
-#: .\features\booking\models\master.py:60 .\features\main\models\category.py:57
+#: .\src\backend_django\features\booking\models\master.py:59
+#: .\src\backend_django\features\main\models\category.py:57
 msgid "Categories"
 msgstr "Категории"
 
-#: .\features\booking\models\master.py:61
+#: .\src\backend_django\features\booking\models\master.py:60
 msgid "High-level categories for filtering"
 msgstr "Категории верхнего уровня для фильтрации"
 
-#: .\features\booking\models\master.py:65
+#: .\src\backend_django\features\booking\models\master.py:64
 msgid "Years of Experience"
 msgstr "Лет опыта"
 
-#: .\features\booking\models\master.py:71
+#: .\src\backend_django\features\booking\models\master.py:70
 msgid "Instagram Handle"
 msgstr "Имя пользователя Instagram"
 
-#: .\features\booking\models\master.py:72
+#: .\src\backend_django\features\booking\models\master.py:71
 msgid "Username only (e.g. 'maria.beauty')"
 msgstr "Только имя пользователя (например, 'maria.beauty')"
 
-#: .\features\booking\models\master.py:75
+#: .\src\backend_django\features\booking\models\master.py:74
 msgid "Direct Phone"
 msgstr "Прямой телефон"
 
-#: .\features\booking\models\master.py:84
+#: .\src\backend_django\features\booking\models\master.py:83
 msgid "Active (Working)"
 msgstr "Активный (работает)"
 
-#: .\features\booking\models\master.py:85
+#: .\src\backend_django\features\booking\models\master.py:84
 msgid "On Vacation"
 msgstr "В отпуске"
 
-#: .\features\booking\models\master.py:86
+#: .\src\backend_django\features\booking\models\master.py:85
 msgid "Fired/Left"
 msgstr "Уволен/ушёл"
 
-#: .\features\booking\models\master.py:87
+#: .\src\backend_django\features\booking\models\master.py:86
 msgid "In Training"
 msgstr "На обучении"
 
-#: .\features\booking\models\master.py:95
+#: .\src\backend_django\features\booking\models\master.py:94
 msgid "Employment Status"
 msgstr "Статус занятости"
 
-#: .\features\booking\models\master.py:96
+#: .\src\backend_django\features\booking\models\master.py:95
 msgid "We never delete masters, only change status"
 msgstr "Мы никогда не удаляем мастеров, только меняем статус"
 
-#: .\features\booking\models\master.py:101
+#: .\src\backend_django\features\booking\models\master.py:100
 msgid "Is Owner"
 msgstr "Владелец"
 
-#: .\features\booking\models\master.py:101
+#: .\src\backend_django\features\booking\models\master.py:100
 msgid "Display as salon owner with special styling"
 msgstr "Отображать как владельца салона со специальным стилем"
 
-#: .\features\booking\models\master.py:104
+#: .\src\backend_django\features\booking\models\master.py:103
 msgid "Featured Master"
 msgstr "Избранный мастер"
 
-#: .\features\booking\models\master.py:108
-#: .\features\booking\models\master_certificate.py:39
-#: .\features\booking\models\master_portfolio.py:49
+#: .\src\backend_django\features\booking\models\master.py:107
+#: .\src\backend_django\features\booking\models\master_certificate.py:39
+#: .\src\backend_django\features\booking\models\master_portfolio.py:49
 msgid "Display Order"
 msgstr "Порядок отображения"
 
-#: .\features\booking\models\master.py:108
-#: .\features\booking\models\master_certificate.py:39
-#: .\features\booking\models\master_portfolio.py:49
+#: .\src\backend_django\features\booking\models\master.py:107
+#: .\src\backend_django\features\booking\models\master_certificate.py:39
+#: .\src\backend_django\features\booking\models\master_portfolio.py:49
 msgid "Lower numbers appear first"
 msgstr "Меньшие числа отображаются первыми"
 
-#: .\features\booking\models\master.py:119
+#: .\src\backend_django\features\booking\models\master.py:118
 msgid "Linked when master needs personal cabinet access"
 msgstr "Связывается когда мастеру нужен доступ в личный кабинет"
 
-#: .\features\booking\models\master.py:128
+#: .\src\backend_django\features\booking\models\master.py:127
 msgid "Telegram ID"
 msgstr "Telegram ID"
 
-#: .\features\booking\models\master.py:129
+#: .\src\backend_django\features\booking\models\master.py:128
 msgid "For 02_telegram_bot authentication and notifications"
 msgstr "Для аутентификации бота и уведомлений"
 
-#: .\features\booking\models\master.py:132
+#: .\src\backend_django\features\booking\models\master.py:131
 msgid "Telegram Username"
 msgstr "Имя пользователя Telegram"
 
-#: .\features\booking\models\master.py:138
+#: .\src\backend_django\features\booking\models\master.py:137
 msgid "Bot Access Code"
 msgstr "Код доступа к боту"
 
-#: .\features\booking\models\master.py:139
+#: .\src\backend_django\features\booking\models\master.py:138
 msgid "One-time code for master registration in 02_telegram_bot"
 msgstr "Одноразовый код для регистрации мастера в боте"
 
-#: .\features\booking\models\master.py:143
+#: .\src\backend_django\features\booking\models\master.py:142
 msgid "QR Token"
 msgstr "QR токен"
 
-#: .\features\booking\models\master.py:147
+#: .\src\backend_django\features\booking\models\master.py:146
 msgid "Masters"
 msgstr "Мастера"
 
-#: .\features\booking\models\master_certificate.py:21
+#: .\src\backend_django\features\booking\models\master_certificate.py:21
 msgid "Certificate Title"
 msgstr "Название сертификата"
 
-#: .\features\booking\models\master_certificate.py:21
+#: .\src\backend_django\features\booking\models\master_certificate.py:21
 msgid "e.g. 'Advanced Nail Art Course'"
 msgstr "например, 'Продвинутый курс дизайна ногтей'"
 
-#: .\features\booking\models\master_certificate.py:25
+#: .\src\backend_django\features\booking\models\master_certificate.py:25
 msgid "Issuing Organization"
 msgstr "Организация-эмитент"
 
-#: .\features\booking\models\master_certificate.py:25
+#: .\src\backend_django\features\booking\models\master_certificate.py:25
 msgid "e.g. 'German Beauty Academy'"
 msgstr "например, 'Немецкая Академия Красоты'"
 
-#: .\features\booking\models\master_certificate.py:28
+#: .\src\backend_django\features\booking\models\master_certificate.py:28
 msgid "Issue Date"
 msgstr "Дата выдачи"
 
-#: .\features\booking\models\master_certificate.py:33
+#: .\src\backend_django\features\booking\models\master_certificate.py:33
 msgid "Certificate Image"
 msgstr "Изображение сертификата"
 
-#: .\features\booking\models\master_certificate.py:34
+#: .\src\backend_django\features\booking\models\master_certificate.py:34
 msgid "Scan or photo of certificate (recommended: 1200x900px)"
 msgstr "Скан или фото сертификата (рекомендуется: 1200x900px)"
 
-#: .\features\booking\models\master_certificate.py:42
-#: .\features\booking\models\master_portfolio.py:52 .\features\main\admin.py:60
-#: .\features\main\admin.py:149 .\features\system\models\mixins.py:35
+#: .\src\backend_django\features\booking\models\master_certificate.py:42
+#: .\src\backend_django\features\booking\models\master_portfolio.py:52
+#: .\src\backend_django\features\promos\admin.py:101
+#: .\src\backend_django\features\promos\admin.py:108
+#: .\src\backend_django\features\promos\models\promo_message.py:31
+#: .\src\backend_django\features\promos\models\promo_message.py:132
+#: .\src\backend_django\features\system\models\mixins.py:35
 msgid "Active"
 msgstr "Активно"
 
-#: .\features\booking\models\master_certificate.py:42
-#: .\features\booking\models\master_portfolio.py:52
+#: .\src\backend_django\features\booking\models\master_certificate.py:42
+#: .\src\backend_django\features\booking\models\master_portfolio.py:52
 msgid "Show on master page"
 msgstr "Показывать на странице мастера"
 
-#: .\features\booking\models\master_certificate.py:45
+#: .\src\backend_django\features\booking\models\master_certificate.py:45
 msgid "Master Certificate"
 msgstr "Сертификат мастера"
 
-#: .\features\booking\models\master_certificate.py:46
+#: .\src\backend_django\features\booking\models\master_certificate.py:46
 msgid "Master Certificates"
 msgstr "Сертификаты мастера"
 
-#: .\features\booking\models\master_portfolio.py:25
-#: .\features\main\models\service.py:101
+#: .\src\backend_django\features\booking\models\master_portfolio.py:25
+#: .\src\backend_django\features\main\models\service.py:114
 msgid "Portfolio Image"
 msgstr "Изображение портфолио"
 
-#: .\features\booking\models\master_portfolio.py:26
+#: .\src\backend_django\features\booking\models\master_portfolio.py:26
 msgid "Example of master's work (recommended: 1200x1200px)"
 msgstr "Пример работы мастера (рекомендуется: 1200x1200px)"
 
-#: .\features\booking\models\master_portfolio.py:32
-#: .\features\main\admin.py:118 .\features\system\admin.py:51
+#: .\src\backend_django\features\booking\models\master_portfolio.py:32
+#: .\src\backend_django\features\promos\models\promo_message.py:20
+#: .\src\backend_django\features\system\admin.py:53
 msgid "Description"
 msgstr "Описание"
 
-#: .\features\booking\models\master_portfolio.py:33
+#: .\src\backend_django\features\booking\models\master_portfolio.py:33
 msgid "Brief description of the work (technique, products used, etc.)"
 msgstr "Краткое описание работы (техника, использованные продукты и т.д.)"
 
-#: .\features\booking\models\master_portfolio.py:43
+#: .\src\backend_django\features\booking\models\master_portfolio.py:43
 msgid "Related Service"
 msgstr "Связанная услуга"
 
-#: .\features\booking\models\master_portfolio.py:44
+#: .\src\backend_django\features\booking\models\master_portfolio.py:44
 msgid "Link to service this example demonstrates"
 msgstr "Ссылка на услугу, которую демонстрирует этот пример"
 
-#: .\features\booking\models\master_portfolio.py:56
+#: .\src\backend_django\features\booking\models\master_portfolio.py:56
 msgid "Instagram Post URL"
 msgstr "URL поста в Instagram"
 
-#: .\features\booking\models\master_portfolio.py:56
+#: .\src\backend_django\features\booking\models\master_portfolio.py:56
 msgid "Link to original Instagram post"
 msgstr "Ссылка на оригинальный пост в Instagram"
 
-#: .\features\booking\models\master_portfolio.py:61
+#: .\src\backend_django\features\booking\models\master_portfolio.py:60
+msgid "Portfolio Item"
+msgstr "Элемент портфолио"
+
+#: .\src\backend_django\features\booking\models\master_portfolio.py:61
 msgid "Portfolio Items"
 msgstr "Элементы портфолио"
 
-#: .\features\booking\models\master_portfolio.py:65
+#: .\src\backend_django\features\booking\models\master_portfolio.py:65
 msgid "General work"
 msgstr "Общие работы"
 
-#: .\features\booking\selectors\wizard.py:143
-#: .\templates\booking\includes\summary_card.html:14
-#: .\templates\services\detail.html:5
+#: .\src\backend_django\features\booking\selectors\wizard.py:162
+#: .\src\backend_django\templates\booking\includes\summary_card.html:14
+#: .\src\backend_django\templates\services\detail.html:5
 msgid "Leistung"
 msgstr "Услуга"
 
-#: .\features\booking\selectors\wizard.py:144
+#: .\src\backend_django\features\booking\selectors\wizard.py:163
+#: .\src\backend_django\templates\booking\includes\summary_card.html:24
 msgid "Experte"
 msgstr "Эксперт"
 
-#: .\features\booking\selectors\wizard.py:145
+#: .\src\backend_django\features\booking\selectors\wizard.py:164
 msgid "Termin"
 msgstr "Запись"
 
-#: .\features\booking\selectors\wizard.py:146
+#: .\src\backend_django\features\booking\selectors\wizard.py:165
 msgid "Bestätigung"
 msgstr "Подтверждение"
 
-#: .\features\main\admin.py:41
-msgid "Status & Display"
-msgstr "Статус и отображение"
-
-#: .\features\main\admin.py:45
-msgid "Content"
-msgstr "Контент"
-
-#: .\features\main\admin.py:64 .\features\main\admin.py:140
-msgid "Hidden"
-msgstr "Скрыто"
-
-#: .\features\main\admin.py:67 .\features\main\admin.py:162
-msgid "Planned"
-msgstr "Запланировано"
-
-#: .\features\main\admin.py:73
-msgid "Coming Soon"
-msgstr "Скоро"
-
-#: .\features\main\admin.py:77 .\features\main\models\service.py:66
-msgid "Services"
-msgstr "Услуги"
-
-#: .\features\main\admin.py:81
-msgid "services"
-msgstr "услуги"
-
-#: .\features\main\admin.py:110
-msgid "Relation"
-msgstr "Связь"
-
-#: .\features\main\admin.py:114
-msgid "Service Info"
-msgstr "Информация об услуге"
-
-#: .\features\main\admin.py:129
-msgid "Price"
-msgstr "Цена"
-
-#: .\features\main\admin.py:145
-msgid "Unavailable"
-msgstr "Недоступно"
-
-#: .\features\main\admin.py:152
-msgid "Hit"
-msgstr "Хит"
-
-#: .\features\main\admin.py:158
-msgid "HIT"
-msgstr "ХИТ"
-
-#: .\features\main\admin.py:168
-msgid "Soon"
-msgstr "Скоро"
-
-#: .\features\main\admin.py:172
-msgid "✓ Mark as HIT"
-msgstr "✓ Отметить как ХИТ"
-
-#: .\features\main\admin.py:177
-msgid "✗ Remove HIT"
-msgstr "✗ Убрать ХИТ"
-
-#: .\features\main\admin.py:182
-msgid "✓ Mark as Available"
-msgstr "✓ Отметить как доступно"
-
-#: .\features\main\admin.py:187
-msgid "⚠ Mark as Unavailable"
-msgstr "⚠ Отметить как недоступно"
-
-#: .\features\main\admin.py:204 .\features\main\models\category.py:33
-#: .\features\main\models\service.py:56 .\features\main\models\service.py:88
-msgid "Image"
-msgstr "Изображение"
-
-#: .\features\main\admin.py:209
-msgid "Preview"
-msgstr "Предпросмотр"
-
-#: .\features\main\forms.py:11
+#: .\src\backend_django\features\main\forms.py:11
 msgid "Telefon / WhatsApp"
 msgstr "Телефон / WhatsApp"
 
-#: .\features\main\forms.py:12
-#: .\templates\booking\steps\step_4_confirm_mock.html:42
-#: .\templates\contacts\contacts.html:71
+#: .\src\backend_django\features\main\forms.py:12
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:42
+#: .\src\backend_django\templates\contacts\contacts.html:72
 msgid "E-Mail"
 msgstr "E-Mail"
 
-#: .\features\main\forms.py:16 .\features\main\forms.py:21
-#: .\templates\booking\steps\step_4_confirm_mock.html:24
+#: .\src\backend_django\features\main\forms.py:16
+#: .\src\backend_django\features\main\forms.py:21
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:24
 msgid "Vorname"
 msgstr "Имя"
 
-#: .\features\main\forms.py:28 .\features\main\forms.py:33
-#: .\templates\booking\steps\step_4_confirm_mock.html:30
+#: .\src\backend_django\features\main\forms.py:28
+#: .\src\backend_django\features\main\forms.py:33
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:30
 msgid "Nachname"
 msgstr "Фамилия"
 
-#: .\features\main\forms.py:40
+#: .\src\backend_django\features\main\forms.py:40
 msgid "Kontaktart"
 msgstr "Тип контакта"
 
-#: .\features\main\forms.py:44 .\templates\contacts\partials\form.html:44
-#: .\templates\includes\_header.html:30 .\templates\includes\_header.html:66
+#: .\src\backend_django\features\main\forms.py:44
+#: .\src\backend_django\templates\contacts\partials\form.html:42
+#: .\src\backend_django\templates\includes\_header.html:34
+#: .\src\backend_django\templates\includes\_header.html:54
 msgid "Kontakt"
 msgstr "Контакты"
 
-#: .\features\main\forms.py:48
+#: .\src\backend_django\features\main\forms.py:48
 msgid "Nummer oder E-Mail"
 msgstr "Номер или Email"
 
-#: .\features\main\forms.py:55
+#: .\src\backend_django\features\main\forms.py:55
 msgid "Thema"
 msgstr "Тема"
 
-#: .\features\main\forms.py:59
+#: .\src\backend_django\features\main\forms.py:59
 msgid "Nachricht"
 msgstr "Сообщение"
 
-#: .\features\main\forms.py:60
+#: .\src\backend_django\features\main\forms.py:60
 msgid "Ihre Nachricht..."
 msgstr "Ваше сообщение..."
 
-#: .\features\main\forms.py:65
+#: .\src\backend_django\features\main\forms.py:66
+msgid ""
+"Ich habe die <a href=\"/datenschutz/\" target=\"_blank\" rel=\"noopener "
+"noreferrer\" style=\"color: var(--color-gold); text-decoration: underline;"
+"\">Datenschutzerklärung</a> gelesen und erkläre mich mit der Verarbeitung "
+"meiner Daten einverstanden."
+msgstr ""
+"Я прочитал(а) <a href=\"/datenschutz/\" target=\"_blank\" rel=\"noopener "
+"noreferrer\" style=\"color: var(--color-gold); text-decoration: underline;"
+"\">Политику конфиденциальности</a> и даю согласие на обработку моих данных."
+
+#: .\src\backend_django\features\main\forms.py:74
 msgid "Ich möchte über Neuigkeiten und Angebote informiert werden."
 msgstr "Я хочу получать новости и предложения."
 
-#: .\features\main\forms.py:80
+#: .\src\backend_django\features\main\forms.py:89
 msgid "Bitte geben Sie eine gültige E-Mail-Adresse ein."
 msgstr "Пожалуйста, введите действительный адрес электронной почты."
 
-#: .\features\main\models\category.py:14
+#: .\src\backend_django\features\main\models\category.py:14
 msgid "Friseur & Styling"
 msgstr "Парикмахерские услуги"
 
-#: .\features\main\models\category.py:15 .\templates\includes\_footer.html:45
+#: .\src\backend_django\features\main\models\category.py:15
+#: .\src\backend_django\templates\includes\_footer.html:95
+#: .\src\backend_django\templates\legal\faq.html:27
 msgid "Nagelservice"
 msgstr "Ногтевой сервис"
 
-#: .\features\main\models\category.py:16
+#: .\src\backend_django\features\main\models\category.py:16
 msgid "Kosmetologie"
 msgstr "Косметология"
 
-#: .\features\main\models\category.py:17
+#: .\src\backend_django\features\main\models\category.py:17
 msgid "Brows & Lashes"
 msgstr "Брови и Ресницы"
 
-#: .\features\main\models\category.py:18
+#: .\src\backend_django\features\main\models\category.py:18
 msgid "Massage & Relax"
 msgstr "Массаж и Релакс"
 
-#: .\features\main\models\category.py:19
+#: .\src\backend_django\features\main\models\category.py:19
 msgid "Depilation"
 msgstr "Депиляция"
 
-#: .\features\main\models\category.py:22 .\features\main\models\service.py:22
+#: .\src\backend_django\features\main\models\category.py:22
+#: .\src\backend_django\features\main\models\service.py:25
+#: .\src\backend_django\features\promos\models\promo_message.py:18
 msgid "Title"
 msgstr "Название"
 
-#: .\features\main\models\category.py:22
+#: .\src\backend_django\features\main\models\category.py:22
 msgid "Category name (e.g. 'Maniküre')."
 msgstr "Название категории (например, 'Маникюр')."
 
-#: .\features\main\models\category.py:23
+#: .\src\backend_django\features\main\models\category.py:23
 msgid "URL part (e.g. 'manicure')."
 msgstr "Часть URL (например, 'manicure')."
 
-#: .\features\main\models\category.py:28
+#: .\src\backend_django\features\main\models\category.py:28
 msgid "Bento Group"
 msgstr "Группа Bento"
 
-#: .\features\main\models\category.py:29
+#: .\src\backend_django\features\main\models\category.py:29
 msgid ""
 "Group for the main page grid (e.g. 'Nails' combines Manicure & Pedicure)."
 msgstr ""
 "Группа для сетки главной страницы (например, 'Nails' объединяет Маникюр и "
 "Педикюр)."
 
-#: .\features\main\models\category.py:34
+#: .\src\backend_django\features\main\models\category.py:33
+#: .\src\backend_django\features\main\models\service.py:59
+#: .\src\backend_django\features\main\models\service.py:101
+#: .\src\backend_django\features\promos\models\promo_message.py:86
+msgid "Image"
+msgstr "Изображение"
+
+#: .\src\backend_django\features\main\models\category.py:34
 msgid "Background image for Hero section and Bento card."
 msgstr "Фоновое изображение для секции Hero и карточки Bento."
 
-#: .\features\main\models\category.py:37
+#: .\src\backend_django\features\main\models\category.py:37
 msgid "Short description displayed in the Hero section."
 msgstr "Краткое описание, отображаемое в секции Hero."
 
-#: .\features\main\models\category.py:41
+#: .\src\backend_django\features\main\models\category.py:41
 msgid "SEO Text / Content"
 msgstr "SEO Текст / Контент"
 
-#: .\features\main\models\category.py:42
+#: .\src\backend_django\features\main\models\category.py:42
 msgid "Detailed text displayed at the bottom of the category page."
 msgstr "Подробный текст, отображаемый внизу страницы категории."
 
-#: .\features\main\models\category.py:48
+#: .\src\backend_django\features\main\models\category.py:48
 msgid "Icon"
 msgstr "Иконка"
 
-#: .\features\main\models\category.py:49
+#: .\src\backend_django\features\main\models\category.py:49
 msgid "SVG icon for menu or footer (optional)."
 msgstr "SVG иконка для меню или футера (опционально)."
 
-#: .\features\main\models\category.py:52 .\features\main\models\service.py:62
-#: .\features\main\models\service.py:97
+#: .\src\backend_django\features\main\models\category.py:52
+#: .\src\backend_django\features\main\models\service.py:65
+#: .\src\backend_django\features\main\models\service.py:110
 msgid "Order"
 msgstr "Порядок"
 
-#: .\features\main\models\category.py:52
+#: .\src\backend_django\features\main\models\category.py:52
 msgid "Sorting order (lower numbers come first)."
 msgstr "Порядок сортировки (меньшие числа идут первыми)."
 
-#: .\features\main\models\category.py:56 .\features\main\models\service.py:18
+#: .\src\backend_django\features\main\models\category.py:56
+#: .\src\backend_django\features\main\models\service.py:21
 msgid "Category"
 msgstr "Категория"
 
-#: .\features\main\models\contact_request.py:17
+#: .\src\backend_django\features\main\models\contact_request.py:17
 msgid "General Question"
 msgstr "Общий вопрос"
 
-#: .\features\main\models\contact_request.py:18
+#: .\src\backend_django\features\main\models\contact_request.py:18
 msgid "Booking Inquiry"
 msgstr "Запрос на бронирование"
 
-#: .\features\main\models\contact_request.py:19
+#: .\src\backend_django\features\main\models\contact_request.py:19
 msgid "Job / Career"
 msgstr "Работа / Карьера"
 
-#: .\features\main\models\contact_request.py:27
+#: .\src\backend_django\features\main\models\contact_request.py:27
 msgid "Topic"
 msgstr "Тема"
 
-#: .\features\main\models\contact_request.py:28
+#: .\src\backend_django\features\main\models\contact_request.py:28
 msgid "Message"
 msgstr "Сообщение"
 
-#: .\features\main\models\contact_request.py:30
+#: .\src\backend_django\features\main\models\contact_request.py:30
 msgid "Processed"
 msgstr "Обработано"
 
-#: .\features\main\models\contact_request.py:34
+#: .\src\backend_django\features\main\models\contact_request.py:34
 msgid "Contact Request"
 msgstr "Запрос на контакт"
 
-#: .\features\main\models\contact_request.py:35
+#: .\src\backend_django\features\main\models\contact_request.py:35
 msgid "Contact Requests"
 msgstr "Запросы на контакт"
 
-#: .\features\main\models\service.py:19
+#: .\src\backend_django\features\main\models\service.py:22
 msgid "Main category (for filtering)."
 msgstr "Основная категория (для фильтрации)."
 
-#: .\features\main\models\service.py:22
+#: .\src\backend_django\features\main\models\service.py:25
 msgid "Service name (e.g. 'Klassische Maniküre')."
 msgstr "Название услуги (например, 'Классический маникюр')."
 
-#: .\features\main\models\service.py:24
+#: .\src\backend_django\features\main\models\service.py:27
 msgid "URL part (e.g. 'classic-manicure')."
 msgstr "Часть URL (например, 'classic-manicure')."
 
-#: .\features\main\models\service.py:29
+#: .\src\backend_django\features\main\models\service.py:32
 msgid "Base price for sorting and calculation."
 msgstr "Базовая цена для сортировки и расчетов."
 
-#: .\features\main\models\service.py:34
+#: .\src\backend_django\features\main\models\service.py:37
 msgid "Price Display Text"
 msgstr "Отображаемый текст цены"
 
-#: .\features\main\models\service.py:35
+#: .\src\backend_django\features\main\models\service.py:38
 msgid "Text to display (e.g. 'ab 30€'). If empty, uses Price field."
 msgstr ""
 "Текст для отображения (например, 'от 30€'). Если пусто, используется поле "
 "Цена."
 
-#: .\features\main\models\service.py:37
+#: .\src\backend_django\features\main\models\service.py:40
 msgid "Duration (min)"
 msgstr "Длительность (мин)"
 
-#: .\features\main\models\service.py:37
+#: .\src\backend_django\features\main\models\service.py:40
 msgid "Duration in minutes."
 msgstr "Длительность в минутах."
 
-#: .\features\main\models\service.py:41
+#: .\src\backend_django\features\main\models\service.py:44
 msgid "Duration Display Text"
 msgstr "Текст для отображения длительности"
 
-#: .\features\main\models\service.py:42
+#: .\src\backend_django\features\main\models\service.py:45
 msgid "Text to display (e.g. 'ca. 45-60 Min'). If empty, uses Duration field."
 msgstr ""
 "Текст для отображения (например, 'ок. 45-60 мин'). Если пусто, используется "
 "поле Длительность."
 
-#: .\features\main\models\service.py:45
+#: .\src\backend_django\features\main\models\service.py:48
 msgid "Displayed in the list view."
 msgstr "Отображается в списке."
 
-#: .\features\main\models\service.py:49
+#: .\src\backend_django\features\main\models\service.py:52
 msgid "Full Content"
 msgstr "Полный контент"
 
-#: .\features\main\models\service.py:50
+#: .\src\backend_django\features\main\models\service.py:53
 msgid "Detailed description/article about the service (HTML/Markdown)."
 msgstr "Подробное описание/статья об услуге (HTML/Markdown)."
 
-#: .\features\main\models\service.py:57
+#: .\src\backend_django\features\main\models\service.py:60
 msgid "Photo of the specific service."
 msgstr "Фото конкретной услуги."
 
-#: .\features\main\models\service.py:60
+#: .\src\backend_django\features\main\models\service.py:63
 msgid "Hit / Popular"
 msgstr "Хит / Популярное"
 
-#: .\features\main\models\service.py:60
+#: .\src\backend_django\features\main\models\service.py:63
 msgid "Highlight this service as popular."
 msgstr "Выделить эту услугу как популярную."
 
-#: .\features\main\models\service.py:62
+#: .\src\backend_django\features\main\models\service.py:65
 msgid "Sorting order."
 msgstr "Порядок сортировки."
 
-#: .\features\main\models\service.py:88
+#: .\src\backend_django\features\main\models\service.py:69
+msgid "Services"
+msgstr "Услуги"
+
+#: .\src\backend_django\features\main\models\service.py:101
 msgid "High quality photo. Will be resized by CSS."
 msgstr "Фото высокого качества. Будет изменено через CSS."
 
-#: .\features\main\models\service.py:93
+#: .\src\backend_django\features\main\models\service.py:106
 msgid "Title / Description"
 msgstr "Заголовок / Описание"
 
-#: .\features\main\models\service.py:94
+#: .\src\backend_django\features\main\models\service.py:107
 msgid "Optional caption for the image."
 msgstr "Опциональная подпись к изображению."
 
-#: .\features\main\models\service.py:102
+#: .\src\backend_django\features\main\models\service.py:110
+msgid "Sorting order in the gallery."
+msgstr "Порядок сортировки в галерее."
+
+#: .\src\backend_django\features\main\models\service.py:115
 msgid "Portfolio Images"
 msgstr "Изображения портфолио"
 
-#: .\features\system\admin.py:25
+#: .\src\backend_django\features\promos\admin.py:34
+msgid "Content"
+msgstr "Контент"
+
+#: .\src\backend_django\features\promos\admin.py:45
+msgid "Scheduling"
+msgstr "Расписание"
+
+#: .\src\backend_django\features\promos\admin.py:57
+msgid "Targeting"
+msgstr "Таргетинг"
+
+#: .\src\backend_django\features\promos\admin.py:60
+msgid ""
+"Leave empty to show on all pages. Use comma-separated slugs (e.g., "
+"'home,services')"
+msgstr ""
+"Оставьте пустым, чтобы показывать на всех страницах. Используйте слаги через "
+"запятую (например, 'home,services')"
+
+#: .\src\backend_django\features\promos\admin.py:64
+msgid "Design"
+msgstr "Дизайн"
+
+#: .\src\backend_django\features\promos\admin.py:73
+#: .\src\backend_django\features\promos\admin.py:134
+msgid "Statistics"
+msgstr "Статистика"
+
+#: .\src\backend_django\features\promos\admin.py:84
+msgid "Metadata"
+msgstr "Метаданные"
+
+#: .\src\backend_django\features\promos\admin.py:102
+#: .\src\backend_django\features\promos\admin.py:109
+#: .\src\backend_django\features\promos\models\promo_message.py:128
+msgid "Scheduled"
+msgstr "Запланировано"
+
+#: .\src\backend_django\features\promos\admin.py:103
+#: .\src\backend_django\features\promos\admin.py:110
+#: .\src\backend_django\features\promos\models\promo_message.py:130
+msgid "Expired"
+msgstr "Истекло"
+
+#: .\src\backend_django\features\promos\admin.py:104
+#: .\src\backend_django\features\promos\admin.py:111
+#: .\src\backend_django\features\promos\models\promo_message.py:124
+msgid "Inactive"
+msgstr "Неактивно"
+
+#: .\src\backend_django\features\promos\admin.py:124
+msgid "Button Preview"
+msgstr "Предпросмотр кнопки"
+
+#: .\src\backend_django\features\promos\admin.py:138
+msgid "No views yet"
+msgstr "Просмотров пока нет"
+
+#: .\src\backend_django\features\promos\admin.py:148
+msgid "Date Range"
+msgstr "Диапазон дат"
+
+#: .\src\backend_django\features\promos\admin.py:155
+msgid "CTR"
+msgstr "CTR (Кликабельность)"
+
+#: .\src\backend_django\features\promos\admin.py:162
+msgid "Activate selected promos"
+msgstr "Активировать выбранные акции"
+
+#: .\src\backend_django\features\promos\admin.py:168
+msgid "Deactivate selected promos"
+msgstr "Деактивировать выбранные акции"
+
+#: .\src\backend_django\features\promos\apps.py:12
+msgid "Promos"
+msgstr "Акции"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:18
+msgid "Main title of the promotion"
+msgstr "Главный заголовок акции"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:20
+msgid "Full description shown in the modal window"
+msgstr "Полное описание, отображаемое в модальном окне"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:23
+msgid "Button Text"
+msgstr "Текст кнопки"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:26
+msgid "Text displayed on the floating button"
+msgstr "Текст, отображаемый на плавающей кнопке"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:33
+msgid ""
+"If unchecked, the notification will not be shown even if within the date "
+"range"
+msgstr ""
+"Если не отмечено, уведомление не будет отображаться, даже если оно попадает "
+"в диапазон дат"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:38
+msgid "Start Date"
+msgstr "Дата начала"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:40
+msgid "When to start showing this notification"
+msgstr "Когда начать показ этого уведомления"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:44
+msgid "End Date"
+msgstr "Дата окончания"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:45
+msgid "When to stop showing this notification"
+msgstr "Когда прекратить показ этого уведомления"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:49
+msgid "Display Delay (seconds)"
+msgstr "Задержка показа (секунды)"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:52
+msgid "How many seconds to wait after page load before showing the button"
+msgstr "Сколько секунд ждать после загрузки страницы перед показом кнопки"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:57
+msgid "Target Pages"
+msgstr "Целевые страницы"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:60
+msgid ""
+"Comma-separated list of page slugs (e.g., 'home,services,team'). Leave empty "
+"to show on all pages."
+msgstr ""
+"Список слагов страниц через запятую (например, 'home,services,team'). "
+"Оставьте пустым для показа на всех страницах."
+
+#: .\src\backend_django\features\promos\models\promo_message.py:65
+msgid "Priority"
+msgstr "Приоритет"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:67
+msgid ""
+"Higher priority promos are shown first if multiple are active (higher number "
+"= higher priority)"
+msgstr ""
+"Акции с более высоким приоритетом показываются первыми (большее число = выше "
+"приоритет)"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:72
+msgid "Button Background Color"
+msgstr "Цвет фона кнопки"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:75
+msgid "Hex color code (e.g., #EDD071)"
+msgstr "Hex-код цвета (например, #EDD071)"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:79
+msgid "Button Text Color"
+msgstr "Цвет текста кнопки"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:82
+msgid "Hex color code (e.g., #003831)"
+msgstr "Hex-код цвета (например, #003831)"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:90
+msgid "Optional image to display in the modal window"
+msgstr "Опциональное изображение для модального окна"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:95
+msgid "Views Count"
+msgstr "Количество просмотров"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:97
+msgid "How many times the floating button was displayed"
+msgstr "Сколько раз была показана плавающая кнопка"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:101
+msgid "Clicks Count"
+msgstr "Количество кликов"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:103
+msgid "How many times the modal window was opened"
+msgstr "Сколько раз было открыто модальное окно"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:107
+msgid "Promo Notification"
+msgstr "Промо-уведомление"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:108
+msgid "Promo Notifications"
+msgstr "Промо-уведомления"
+
+#: .\src\backend_django\features\promos\models\promo_message.py:146
+msgid "End date must be after start date"
+msgstr "Дата окончания должна быть позже даты начала"
+
+#: .\src\backend_django\features\system\admin.py:25
+msgid "SEO Optimization"
+msgstr "SEO Оптимизация"
+
+#: .\src\backend_django\features\system\admin.py:29
 msgid "Page Identification"
 msgstr "Идентификация страницы"
 
-#: .\features\system\admin.py:29
-msgid "SEO Meta Tags"
-msgstr "SEO мета-теги"
-
-#: .\features\system\admin.py:33
-msgid "Open Graph Image"
-msgstr "OG Изображение"
-
-#: .\features\system\admin.py:38 .\features\system\models\mixins.py:57
+#: .\src\backend_django\features\system\admin.py:34
+#: .\src\backend_django\features\system\models\mixins.py:57
 msgid "SEO Title"
 msgstr "SEO Заголовок"
 
-#: .\features\system\admin.py:64
-msgid "No description"
-msgstr "Нет описания"
-
-#: .\features\system\admin.py:67 .\features\system\models\mixins.py:67
+#: .\src\backend_django\features\system\admin.py:65
+#: .\src\backend_django\features\system\models\mixins.py:67
 msgid "OG Image"
 msgstr "OG Изображение"
 
-#: .\features\system\admin.py:73
-msgid "Yes"
-msgstr "Да"
-
-#: .\features\system\admin.py:77
-msgid "No"
-msgstr "Нет"
-
-#: .\features\system\admin.py:92
+#: .\src\backend_django\features\system\admin.py:82
 msgid "General Information"
 msgstr "Общая информация"
 
-#: .\features\system\admin.py:96
+#: .\src\backend_django\features\system\admin.py:86
 msgid "Contact Details"
 msgstr "Контактные данные"
 
-#: .\features\system\admin.py:108 .\features\system\admin.py:131
+#: .\src\backend_django\features\system\admin.py:99
+#: .\src\backend_django\features\system\admin.py:127
 msgid "Social Media"
 msgstr "Социальные сети"
 
-#: .\features\system\admin.py:112
+#: .\src\backend_django\features\system\admin.py:103
 msgid "Working Hours"
 msgstr "Часы работы"
 
-#: .\features\system\models\mixins.py:18
+#: .\src\backend_django\features\system\admin.py:113
+msgid "Analytics & Marketing"
+msgstr "Аналитика и Маркетинг"
+
+#: .\src\backend_django\features\system\admin.py:116
+msgid ""
+"Configure Google Analytics 4 and Tag Manager. Changes take effect "
+"immediately."
+msgstr ""
+"Настройте Google Analytics 4 и Tag Manager. Изменения вступают в силу "
+"немедленно."
+
+#: .\src\backend_django\features\system\models\mixins.py:18
 msgid "Created at"
 msgstr "Создано"
 
-#: .\features\system\models\mixins.py:19
+#: .\src\backend_django\features\system\models\mixins.py:19
 msgid "Updated at"
 msgstr "Обновлено"
 
-#: .\features\system\models\mixins.py:36
+#: .\src\backend_django\features\system\models\mixins.py:36
 msgid "If unchecked, this item will be completely hidden from the site."
 msgstr "Если не отмечено, этот элемент будет полностью скрыт с сайта."
 
-#: .\features\system\models\mixins.py:40
+#: .\src\backend_django\features\system\models\mixins.py:40
 msgid "Available for Booking"
 msgstr "Доступно для бронирования"
 
-#: .\features\system\models\mixins.py:41
+#: .\src\backend_django\features\system\models\mixins.py:41
 msgid "If unchecked, shows 'Temporarily Unavailable' (e.g. no masters)."
 msgstr ""
 "Если не отмечено, показывает 'Временно недоступно' (например, нет мастеров)."
 
-#: .\features\system\models\mixins.py:44
+#: .\src\backend_django\features\system\models\mixins.py:44
 msgid "Planned / Coming Soon"
 msgstr "Планируется / Скоро"
 
-#: .\features\system\models\mixins.py:44
+#: .\src\backend_django\features\system\models\mixins.py:44
 msgid "If checked, shows 'Coming Soon' badge."
 msgstr "Если отмечено, показывает значок 'Скоро'."
 
-#: .\features\system\models\mixins.py:58
+#: .\src\backend_django\features\system\models\mixins.py:58
 msgid "Browser tab title. Defaults to object title if empty."
 msgstr ""
 "Заголовок вкладки браузера. По умолчанию заголовок объекта, если пусто."
 
-#: .\features\system\models\mixins.py:61
+#: .\src\backend_django\features\system\models\mixins.py:61
 msgid "SEO Description"
 msgstr "SEO Описание"
 
-#: .\features\system\models\mixins.py:61
+#: .\src\backend_django\features\system\models\mixins.py:61
 msgid "Meta description for search engines."
 msgstr "Мета-описание для поисковых систем."
 
-#: .\features\system\models\mixins.py:68
+#: .\src\backend_django\features\system\models\mixins.py:68
 msgid "Image for social media sharing (1200x630px recommended)."
 msgstr "Изображение для соцсетей (рекомендуется 1200x630px)."
 
-#: .\features\system\models\seo.py:20
+#: .\src\backend_django\features\system\models\seo.py:21
 msgid "Home Page"
 msgstr "Главная страница"
 
-#: .\features\system\models\seo.py:21
+#: .\src\backend_django\features\system\models\seo.py:22
 msgid "Contacts Page"
 msgstr "Страница контактов"
 
-#: .\features\system\models\seo.py:22
+#: .\src\backend_django\features\system\models\seo.py:23
 msgid "Team Page"
 msgstr "Страница команды"
 
-#: .\features\system\models\seo.py:23
+#: .\src\backend_django\features\system\models\seo.py:24
 msgid "Services List Page"
 msgstr "Страница списка услуг"
 
-#: .\features\system\models\seo.py:24 .\templates\includes\_footer.html:63
+#: .\src\backend_django\features\system\models\seo.py:25
+#: .\src\backend_django\templates\includes\_cookie_consent.html:24
+#: .\src\backend_django\templates\includes\_footer.html:119
 msgid "Impressum"
 msgstr "Импрессум"
 
-#: .\features\system\models\seo.py:25 .\templates\includes\_footer.html:65
+#: .\src\backend_django\features\system\models\seo.py:26
+#: .\src\backend_django\templates\includes\_cookie_consent.html:26
+#: .\src\backend_django\templates\includes\_footer.html:121
 msgid "Datenschutz"
 msgstr "Политика конфиденциальности"
 
-#: .\features\system\models\seo.py:32
+#: .\src\backend_django\features\system\models\seo.py:33
 msgid "Page Key"
 msgstr "Ключ страницы"
 
-#: .\features\system\models\seo.py:33
+#: .\src\backend_django\features\system\models\seo.py:34
 msgid "Unique identifier for the static page."
 msgstr "Уникальный идентификатор для статической страницы."
 
-#: .\features\system\models\seo.py:37
+#: .\src\backend_django\features\system\models\seo.py:38
 msgid "Static Page SEO"
 msgstr "SEO статической страницы"
 
-#: .\features\system\models\seo.py:38
+#: .\src\backend_django\features\system\models\seo.py:39
 msgid "Static Pages SEO"
 msgstr "SEO статических страниц"
 
-#: .\features\system\models\site_settings.py:13
+#: .\src\backend_django\features\system\models\site_settings.py:15
 msgid "Company Name"
 msgstr "Название компании"
 
-#: .\features\system\models\site_settings.py:14
+#: .\src\backend_django\features\system\models\site_settings.py:16
 msgid "Owner Name"
 msgstr "Имя владельца"
 
-#: .\features\system\models\site_settings.py:15
+#: .\src\backend_django\features\system\models\site_settings.py:17
 msgid "Tax Number (Steuernummer)"
 msgstr "Налоговый номер"
 
-#: .\features\system\models\site_settings.py:20
+#: .\src\backend_django\features\system\models\site_settings.py:19
+msgid "Site Base URL"
+msgstr "Базовый URL сайта"
+
+#: .\src\backend_django\features\system\models\site_settings.py:19
+msgid "If empty, uses value from .env (SITE_BASE_URL)"
+msgstr "Если пусто, используется значение из .env (SITE_BASE_URL)"
+
+#: .\src\backend_django\features\system\models\site_settings.py:22
+msgid "Logo URL"
+msgstr "URL Логотипа"
+
+#: .\src\backend_django\features\system\models\site_settings.py:30
 msgid "Street"
 msgstr "Улица"
 
-#: .\features\system\models\site_settings.py:21
-msgid "City & ZIP"
-msgstr "Город и индекс"
+#: .\src\backend_django\features\system\models\site_settings.py:31
+msgid "City"
+msgstr "Город"
 
-#: .\features\system\models\site_settings.py:22
+#: .\src\backend_django\features\system\models\site_settings.py:32
+msgid "PLZ"
+msgstr "Индекс"
+
+#: .\src\backend_django\features\system\models\site_settings.py:33
 msgid "Google Maps Link"
 msgstr "Ссылка на Google Maps"
 
-#: .\features\system\models\site_settings.py:25
+#: .\src\backend_django\features\system\models\site_settings.py:34
+msgid "Latitude"
+msgstr "Широта"
+
+#: .\src\backend_django\features\system\models\site_settings.py:35
+msgid "Longitude"
+msgstr "Долгота"
+
+#: .\src\backend_django\features\system\models\site_settings.py:38
 msgid "Instagram URL"
 msgstr "Instagram URL"
 
-#: .\features\system\models\site_settings.py:26
+#: .\src\backend_django\features\system\models\site_settings.py:39
 msgid "Telegram URL"
 msgstr "Telegram URL"
 
-#: .\features\system\models\site_settings.py:27
+#: .\src\backend_django\features\system\models\site_settings.py:40
 msgid "WhatsApp URL"
 msgstr "WhatsApp URL"
 
-#: .\features\system\models\site_settings.py:30
+#: .\src\backend_django\features\system\models\site_settings.py:43
 msgid "Mo-Fr (Display)"
 msgstr "Пн-Пт (Отображение)"
 
-#: .\features\system\models\site_settings.py:31
+#: .\src\backend_django\features\system\models\site_settings.py:44
 msgid "Saturday (Display)"
 msgstr "Суббота (Отображение)"
 
-#: .\features\system\models\site_settings.py:32
+#: .\src\backend_django\features\system\models\site_settings.py:45
 msgid "Sunday (Display)"
 msgstr "Воскресенье (Отображение)"
 
-#: .\features\system\models\site_settings.py:36
+#: .\src\backend_django\features\system\models\site_settings.py:49
 msgid "Mo-Fr Start"
 msgstr "Пн-Пт Начало"
 
-#: .\features\system\models\site_settings.py:37
+#: .\src\backend_django\features\system\models\site_settings.py:50
 msgid "Mo-Fr End"
 msgstr "Пн-Пт Конец"
 
-#: .\features\system\models\site_settings.py:40
+#: .\src\backend_django\features\system\models\site_settings.py:53
 msgid "Saturday Start"
 msgstr "Суббота Начало"
 
-#: .\features\system\models\site_settings.py:41
+#: .\src\backend_django\features\system\models\site_settings.py:54
 msgid "Saturday End"
 msgstr "Суббота Конец"
 
-#: .\features\system\models\site_settings.py:47
+#: .\src\backend_django\features\system\models\site_settings.py:59
+msgid "Price Range"
+msgstr "Диапазон цен"
+
+#: .\src\backend_django\features\system\models\site_settings.py:62
+msgid "Contact Form URL Path"
+msgstr "Путь URL формы контактов"
+
+#: .\src\backend_django\features\system\models\site_settings.py:64
+msgid "Booking Confirm URL Path"
+msgstr "Путь URL подтверждения брони"
+
+#: .\src\backend_django\features\system\models\site_settings.py:67
+msgid "Booking Cancel URL Path"
+msgstr "Путь URL отмены брони"
+
+#: .\src\backend_django\features\system\models\site_settings.py:69
+msgid "Booking Reschedule URL Path"
+msgstr "Путь URL переноса брони"
+
+#: .\src\backend_django\features\system\models\site_settings.py:73
 msgid "Hiring Active"
 msgstr "Набор активен"
 
-#: .\features\system\models\site_settings.py:49
+#: .\src\backend_django\features\system\models\site_settings.py:75
 msgid "Hiring Title"
 msgstr "Заголовок набора"
 
-#: .\features\system\models\site_settings.py:51
+#: .\src\backend_django\features\system\models\site_settings.py:77
 msgid "Hiring Text"
 msgstr "Текст набора"
 
-#: .\features\system\models\site_settings.py:55
-#: .\features\system\models\site_settings.py:56
+#: .\src\backend_django\features\system\models\site_settings.py:82
+msgid "Google Analytics ID"
+msgstr "Google Analytics ID"
+
+#: .\src\backend_django\features\system\models\site_settings.py:85
+msgid "GA4 Measurement ID (e.g., G-XXXXXXXXXX)"
+msgstr "GA4 Measurement ID (например, G-XXXXXXXXXX)"
+
+#: .\src\backend_django\features\system\models\site_settings.py:88
+msgid "Google Tag Manager ID"
+msgstr "Google Tag Manager ID"
+
+#: .\src\backend_django\features\system\models\site_settings.py:91
+msgid "GTM Container ID (e.g., GTM-XXXXXXX)"
+msgstr "GTM Container ID (например, GTM-XXXXXXX)"
+
+#: .\src\backend_django\features\system\models\site_settings.py:95
+#: .\src\backend_django\features\system\models\site_settings.py:96
 msgid "Site Settings"
 msgstr "Настройки сайта"
 
-#: .\templates\400.html:5 .\templates\400.html:11
+#: .\src\backend_django\templates\400.html:5
+#: .\src\backend_django\templates\400.html:11
 msgid "Ungültige Anfrage"
 msgstr "Неверный запрос"
 
-#: .\templates\400.html:13
+#: .\src\backend_django\templates\400.html:13
 msgid "Der Server konnte Ihre Anfrage nicht verarbeiten."
 msgstr "Сервер не смог обработать ваш запрос."
 
-#: .\templates\400.html:15 .\templates\403.html:15 .\templates\404.html:15
-#: .\templates\500.html:15
+#: .\src\backend_django\templates\400.html:15
+#: .\src\backend_django\templates\403.html:15
+#: .\src\backend_django\templates\404.html:15
+#: .\src\backend_django\templates\500.html:15
+#: .\src\backend_django\templates\booking\cancel_success.html:14
+#: .\src\backend_django\templates\booking\confirm_appointment.html:14
 msgid "Zur Startseite"
 msgstr "На главную"
 
-#: .\templates\403.html:5 .\templates\403.html:11
+#: .\src\backend_django\templates\403.html:5
+#: .\src\backend_django\templates\403.html:11
 msgid "Zugriff verweigert"
 msgstr "Доступ запрещен"
 
-#: .\templates\403.html:13
+#: .\src\backend_django\templates\403.html:13
 msgid "Sie haben keine Berechtigung, diese Seite aufzurufen."
 msgstr "У вас нет прав для просмотра этой страницы."
 
-#: .\templates\404.html:5 .\templates\404.html:11
+#: .\src\backend_django\templates\404.html:5
+#: .\src\backend_django\templates\404.html:11
 msgid "Seite nicht gefunden"
 msgstr "Страница не найдена"
 
-#: .\templates\404.html:13
+#: .\src\backend_django\templates\404.html:13
 msgid ""
 "Die von Ihnen gesuchte Seite existiert leider nicht oder wurde verschoben."
 msgstr "Запрашиваемая страница не существует или была перемещена."
 
-#: .\templates\500.html:5
+#: .\src\backend_django\templates\500.html:5
 msgid "Serverfehler"
 msgstr "Ошибка сервера"
 
-#: .\templates\500.html:11
+#: .\src\backend_django\templates\500.html:11
 msgid "Interner Serverfehler"
 msgstr "Внутренняя ошибка сервера"
 
-#: .\templates\500.html:13
+#: .\src\backend_django\templates\500.html:13
 msgid "Es ist ein Fehler aufgetreten. Wir arbeiten bereits daran."
 msgstr "Произошла ошибка. Мы уже работаем над этим."
 
-#: .\templates\booking\includes\summary_card.html:3
+#: .\src\backend_django\templates\booking\cancel_appointment.html:4
+#: .\src\backend_django\templates\booking\cancel_appointment.html:10
+msgid "Termin stornieren"
+msgstr "Отменить запись"
+
+#: .\src\backend_django\templates\booking\cancel_appointment.html:11
+msgid "Möchten Sie diesen Termin wirklich stornieren?"
+msgstr "Вы действительно хотите отменить эту запись?"
+
+#: .\src\backend_django\templates\booking\cancel_appointment.html:12
+msgid "Diese Aktion kann nicht rückgängig gemacht werden."
+msgstr "Это действие нельзя будет отменить."
+
+#: .\src\backend_django\templates\booking\cancel_appointment.html:15
+msgid "Ja, Termin stornieren"
+msgstr "Да, отменить запись"
+
+#: .\src\backend_django\templates\booking\cancel_appointment.html:18
+msgid "Nein, zurück zur Startseite"
+msgstr "Нет, вернуться на главную"
+
+#: .\src\backend_django\templates\booking\cancel_appointment.html:21
+#: .\src\backend_django\templates\booking\cancel_success.html:17
+#: .\src\backend_django\templates\booking\confirm_appointment.html:17
+#: .\src\backend_django\templates\booking\reschedule_appointment.html:17
+msgid "Debug-Information: Token"
+msgstr "Отладочная информация: Токен"
+
+#: .\src\backend_django\templates\booking\cancel_success.html:4
+msgid "Termin erfolgreich storniert"
+msgstr "Запись успешно отменена"
+
+#: .\src\backend_django\templates\booking\cancel_success.html:10
+msgid "Termin erfolgreich storniert!"
+msgstr "Запись успешно отменена!"
+
+#: .\src\backend_django\templates\booking\cancel_success.html:11
+msgid "Ihr Termin wurde erfolgreich storniert."
+msgstr "Ваш запись была успешно отменена."
+
+#: .\src\backend_django\templates\booking\cancel_success.html:12
+msgid "Wir hoffen, Sie bald wieder bei uns begrüßen zu dürfen."
+msgstr "Мы надеемся вскоре снова приветствовать вас у нас."
+
+#: .\src\backend_django\templates\booking\confirm_appointment.html:4
+msgid "Termin подтвердить"
+msgstr "Подтвердить запись"
+
+#: .\src\backend_django\templates\booking\confirm_appointment.html:10
+msgid "Ihre Terminbestätigung"
+msgstr "Ваше подтверждение записи"
+
+#: .\src\backend_django\templates\booking\confirm_appointment.html:11
+msgid "Vielen Dank! Ihr Termin wurde успешно подтвержден."
+msgstr "Спасибо! Ваша запись была успешно подтверждена."
+
+#: .\src\backend_django\templates\booking\confirm_appointment.html:12
+msgid "Sie erhalten in Kürze eine Bestätigungs-E-Mail."
+msgstr "Вскоре вы получите письмо с подтверждением."
+
+#: .\src\backend_django\templates\booking\includes\summary_card.html:3
 msgid "Ihr Termin"
 msgstr "Ваша запись"
 
-#: .\templates\booking\includes\summary_card.html:9
+#: .\src\backend_django\templates\booking\includes\summary_card.html:9
 msgid "Bitte wählen Sie zuerst eine Leistung aus."
 msgstr "Пожалуйста, выберите услугу сначала."
 
-
-#: .\templates\booking\includes\summary_card.html:38
+#: .\src\backend_django\templates\booking\includes\summary_card.html:38
 msgid "Zeit"
 msgstr "Время"
 
-#: .\templates\booking\includes\summary_card.html:49
+#: .\src\backend_django\templates\booking\includes\summary_card.html:49
 msgid "Gesamt"
 msgstr "Итого"
 
-#: .\templates\booking\steps\step_1_services_mock.html:4
+#: .\src\backend_django\templates\booking\reschedule_appointment.html:4
+#: .\src\backend_django\templates\booking\reschedule_appointment.html:10
+msgid "Termin verschieben"
+msgstr "Перенести запись"
+
+#: .\src\backend_django\templates\booking\reschedule_appointment.html:11
+msgid ""
+"Hier können Sie Ihren Termin verschieben oder ein neues Zeitfenster wählen."
+msgstr ""
+"Здесь вы можете перенести свою запись или выбрать новое временное окно."
+
+#: .\src\backend_django\templates\booking\reschedule_appointment.html:12
+msgid "Bitte wählen Sie unten einen neuen Termin aus."
+msgstr "Пожалуйста, выберите новую дату ниже."
+
+#: .\src\backend_django\templates\booking\reschedule_appointment.html:14
+msgid "Neuen Termin wählen"
+msgstr "Выбрать новую дату"
+
+#: .\src\backend_django\templates\booking\reschedule_appointment.html:18
+msgid "Debug-Information: Slot ID (optional)"
+msgstr "Отладочная информация: Slot ID (опционально)"
+
+#: .\src\backend_django\templates\booking\steps\step_1_services_mock.html:4
 msgid "Wählen Sie eine Leistung"
 msgstr "Выберите услугу"
 
-#: .\templates\booking\steps\step_1_services_mock.html:52
-#: .\templates\booking\steps\step_2_masters_mock.html:30
-#: .\templates\booking\steps\step_2_masters_mock.html:48
+#: .\src\backend_django\templates\booking\steps\step_1_services_mock.html:77
+#: .\src\backend_django\templates\booking\steps\step_2_masters_mock.html:30
+#: .\src\backend_django\templates\booking\steps\step_2_masters_mock.html:48
 msgid "Auswählen"
 msgstr "Выбрать"
 
-#: .\templates\booking\steps\step_1_services_mock.html:58
+#: .\src\backend_django\templates\booking\steps\step_1_services_mock.html:83
 msgid "Keine Leistungen in dieser Kategorie gefunden."
 msgstr "Услуги в этой категории не найдены."
 
-#: .\templates\booking\steps\step_2_masters_mock.html:5
+#: .\src\backend_django\templates\booking\steps\step_2_masters_mock.html:5
 msgid "Wählen Sie einen Experten"
 msgstr "Выберите эксперта"
 
-#: .\templates\booking\steps\step_2_masters_mock.html:11
-#: .\templates\booking\steps\step_3_calendar_mock.html:11
-#: .\templates\booking\steps\step_4_confirm_mock.html:11
+#: .\src\backend_django\templates\booking\steps\step_2_masters_mock.html:11
+#: .\src\backend_django\templates\booking\steps\step_3_calendar_mock.html:11
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:11
 msgid "Zurück"
 msgstr "Назад"
 
-#: .\templates\booking\steps\step_2_masters_mock.html:23
+#: .\src\backend_django\templates\booking\steps\step_2_masters_mock.html:23
 msgid "Beliebiger Experte"
 msgstr "Любой эксперт"
 
-#: .\templates\booking\steps\step_2_masters_mock.html:24
+#: .\src\backend_django\templates\booking\steps\step_2_masters_mock.html:24
 msgid "Frühestmöglicher Termin"
 msgstr "Ближайшая запись"
 
-#: .\templates\booking\steps\step_2_masters_mock.html:53
+#: .\src\backend_django\templates\booking\steps\step_2_masters_mock.html:53
 msgid "Leider sind für diese Leistung aktuell keine Experten verfügbar."
-msgstr "К сожалению, для этой услуги в настоящее время нет доступных экспертов."
+msgstr ""
+"К сожалению, для этой услуги в настоящее время нет доступных экспертов."
 
-#: .\templates\booking\steps\step_3_calendar_mock.html:5
+#: .\src\backend_django\templates\booking\steps\step_3_calendar_mock.html:5
 msgid "Wählen Sie einen Termin"
 msgstr "Выберите дату и время"
 
-#: .\templates\booking\steps\step_3_calendar_mock.html:68
-msgid "Ausgewählt"
-msgstr "Выбрано"
-
-#: .\templates\booking\steps\step_3_calendar_mock.html:72
-msgid "Feiertag"
-msgstr "Праздник"
-
-#: .\templates\booking\steps\step_3_calendar_mock.html:80
+#: .\src\backend_django\templates\booking\steps\step_3_calendar_mock.html:61
 msgid "Verfügbare Zeit am"
 msgstr "Доступное время на"
 
-#: .\templates\booking\steps\step_3_calendar_mock.html:95
-msgid "Keine freien Termine an diesem Tag."
-msgstr "На этот день нет свободных записей."
+#: .\src\backend_django\templates\booking\steps\step_3_calendar_mock.html:76
+msgid "Keine freien Termine."
+msgstr "Нет свободных записей."
 
-#: .\templates\booking\steps\step_3_calendar_mock.html:100
-msgid "Bitte wählen Sie ein Datum im Kalender."
-msgstr "Пожалуйста, выберите дату в календаре."
+#: .\src\backend_django\templates\booking\steps\step_3_calendar_mock.html:81
+msgid "Bitte wählen Sie ein Datum."
+msgstr "Пожалуйста, выберите дату."
 
-#: .\templates\booking\steps\step_4_confirm_mock.html:5
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:5
 msgid "Ihre Daten"
 msgstr "Ваши данные"
 
-#: .\templates\booking\steps\step_4_confirm_mock.html:36
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:36
 msgid "Telefonnummer"
 msgstr "Номер телефона"
 
-#: .\templates\booking\steps\step_4_confirm_mock.html:48
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:48
 msgid "Anmerkungen (Optional)"
 msgstr "Примечания (необязательно)"
 
-#: .\templates\booking\steps\step_4_confirm_mock.html:53
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:53
 msgid "Bitte teilen Sie uns Ihre Wünsche, Besonderheiten oder Allergien mit..."
-msgstr "Пожалуйста, сообщите нам о ваших пожеланиях, особенностях или аллергиях..."
+msgstr ""
+"Пожалуйста, сообщите нам о ваших пожеланиях, особенностях или аллергиях..."
 
-#: .\templates\booking\steps\step_4_confirm_mock.html:65
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:65
 msgid "Bitte rufen Sie mich zur Bestätigung an"
 msgstr "Пожалуйста, позвоните мне для подтверждения"
 
-#: .\templates\booking\steps\step_4_confirm_mock.html:76
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:76
 msgid ""
 "Ich stimme zu, dass meine Daten gespeichert werden und ich "
 "Benachrichtigungen (SMS/E-Mail) zu meinem Termin erhalte."
@@ -1357,59 +1584,62 @@ msgstr ""
 "Я согласен(на) на хранение моих данных и получение уведомлений (SMS/Email) о "
 "моей записи."
 
-#: .\templates\booking\steps\step_4_confirm_mock.html:84
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:84
 msgid "Termin verbindlich buchen"
 msgstr "Подтвердить запись"
 
-#: .\templates\booking\steps\step_5_success.html:7
-#: .\templates\contacts\partials\success_message.html:5
+#: .\src\backend_django\templates\booking\steps\step_5_success.html:7
+#: .\src\backend_django\templates\contacts\partials\success_message.html:5
 msgid "Vielen Dank!"
 msgstr "Спасибо!"
 
-#: .\templates\booking\steps\step_5_success.html:11
+#: .\src\backend_django\templates\booking\steps\step_5_success.html:11
 msgid ""
-"Ihr Termin wurde erfolgreich gebucht. Wir haben Ihnen eine Bestätigung per E-"
+"Ihr Termin wurde успешно gebucht. Wir haben Ihnen eine Bestätigung per E-"
 "Mail gesendet."
 msgstr ""
 "Ваша запись успешно забронирована. Мы отправили вам подтверждение по "
 "электронной почте."
 
-#: .\templates\booking\steps\step_5_success.html:17
+#: .\src\backend_django\templates\booking\steps\step_5_success.html:17
 msgid "bei"
 msgstr "в"
 
-#: .\templates\booking\steps\step_5_success.html:21
+#: .\src\backend_django\templates\booking\steps\step_5_success.html:21
 msgid "Zurück zur Startseite"
 msgstr "Вернуться на главную"
 
-#: .\templates\booking\wizard.html:5 .\templates\home\home.html:16
-#: .\templates\services\detail.html:89
+#: .\src\backend_django\templates\booking\wizard.html:5
+#: .\src\backend_django\templates\home\home.html:17
+#: .\src\backend_django\templates\includes\_footer.html:74
+#: .\src\backend_django\templates\services\detail.html:90
+#: .\src\backend_django\templates\team\team.html:50
 msgid "Termin buchen"
 msgstr "Записаться"
 
-#: .\templates\booking\wizard.html:15
+#: .\src\backend_django\templates\booking\wizard.html:15
 msgid "Online Terminbuchung"
 msgstr "Онлайн-запись"
 
-#: .\templates\booking\wizard.html:16
+#: .\src\backend_django\templates\booking\wizard.html:16
 msgid "IN WENIGEN SCHRITTEN ZUM TERMIN"
 msgstr "ЗАПИСЬ В НЕСКОЛЬКО ШАГОВ"
 
-#: .\templates\contacts\contacts.html:12
+#: .\src\backend_django\templates\contacts\contacts.html:13
 msgid "Kontaktieren Sie uns"
 msgstr "Свяжитесь с нами"
 
-#: .\templates\contacts\contacts.html:13
+#: .\src\backend_django\templates\contacts\contacts.html:14
 msgid "ÜBER UNS & KONTAKT"
 msgstr "О НАС И КОНТАКТЫ"
 
-#: .\templates\contacts\contacts.html:25
+#: .\src\backend_django\templates\contacts\contacts.html:26
 msgid "Willkommen bei LILY"
 msgstr "Добро пожаловать в LILY"
 
-#: .\templates\contacts\contacts.html:27
+#: .\src\backend_django\templates\contacts\contacts.html:28
 msgid ""
-"LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellen "
+"LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellem "
 "Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern "
 "auch ein innerer Zustand des Selbstvertrauens."
 msgstr ""
@@ -1417,56 +1647,70 @@ msgstr ""
 "индивидуальным подходом. Мы верим, что красота — это не только внешность, но "
 "и внутреннее состояние уверенности."
 
-#: .\templates\contacts\contacts.html:30
+#: .\src\backend_django\templates\contacts\contacts.html:31
 msgid ""
-"Unsere Meister verwenden nur Premium-Materialien (Wella, L'Oreal, Luxio) und "
-"moderne Techniken, um Ihre natürliche Einzigartigkeit zu unterstreichen."
+"Unsere Meister verwenden nur Premium-Materialien von führenden Marken wie "
+"Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona und weitere, um "
+"Ihre natürliche Einzigartigkeit zu unterstreichen."
 msgstr ""
-"Наши мастера используют только премиальные материалы (Wella, L'Oreal, Luxio) "
-"и современные техники, чтобы подчеркнуть вашу природную уникальность."
+"Наши мастера используют только премиальные материалы от ведущих брендов, "
+"таких как Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona и "
+"другие, чтобы подчеркнуть вашу природную уникальность."
 
-#: .\templates\contacts\contacts.html:33
+#: .\src\backend_django\templates\contacts\contacts.html:34
 msgid "Ihre Schönheit ist unsere Kunst."
 msgstr "Ваша красота — наше искусство."
 
-#: .\templates\contacts\contacts.html:54
+#: .\src\backend_django\templates\contacts\contacts.html:55
 msgid "Unsere Adresse"
 msgstr "Наш адрес"
 
-#: .\templates\contacts\contacts.html:64
+#: .\src\backend_django\templates\contacts\contacts.html:65
 msgid "Telefon"
 msgstr "Телефон"
 
-#: .\templates\contacts\contacts.html:78
+#: .\src\backend_django\templates\contacts\contacts.html:79
 msgid "Öffnungszeiten"
 msgstr "Часы работы"
 
-#: .\templates\contacts\contacts.html:103
+#: .\src\backend_django\templates\contacts\contacts.html:105
 msgid "Route planen"
 msgstr "Проложить маршрут"
 
-#: .\templates\contacts\partials\form.html:97
+#: .\src\backend_django\templates\contacts\partials\form.html:15
+msgid "Name"
+msgstr "Имя"
+
+#: .\src\backend_django\templates\contacts\partials\form.html:110
 msgid "Absenden"
 msgstr "Отправить"
 
-#: .\templates\contacts\partials\success_message.html:6
+#: .\src\backend_django\templates\contacts\partials\success_message.html:6
 msgid ""
 "Ihre Nachricht wurde gesendet. Wir werden uns in Kürze bei Ihnen melden."
 msgstr "Ваше сообщение отправлено. Мы свяжемся с вами в ближайшее время."
 
-#: .\templates\home\home.html:13
+#: .\src\backend_django\templates\home\_schema_home_page.html:71
+msgid "Online-Terminbuchung"
+msgstr "Онлайн-запись"
+
+#: .\src\backend_django\templates\home\_schema_home_page.html:76
+msgid "Beauty Services"
+msgstr "Бьюти-услуги"
+
+#: .\src\backend_django\templates\home\home.html:14
 msgid "Premium Beauty Salon"
 msgstr "Премиум Салон Красоты"
 
-#: .\templates\home\home.html:14
+#: .\src\backend_django\templates\home\home.html:15
 msgid "Die Kunst"
 msgstr "Искусство"
 
-#: .\templates\home\home.html:14
+#: .\src\backend_django\templates\home\home.html:15
 msgid "Ihrer Schönheit"
 msgstr "Вашей Красоты"
 
-#: .\templates\home\home.html:15
+#: .\src\backend_django\templates\home\home.html:16
 msgid ""
 "Deutsche Qualitätsstandards treffen auf ukrainische Servicekunst. Wir "
 "kreieren Looks, die inspirieren."
@@ -1474,126 +1718,483 @@ msgstr ""
 "Немецкие стандарты качества встречаются с украинским искусством сервиса. Мы "
 "создаем образы, которые вдохновляют."
 
-#: .\templates\home\home.html:29
+#: .\src\backend_django\templates\home\home.html:36
 msgid "Unsere Leistungen"
 msgstr "Наши услуги"
 
-#: .\templates\home\home.html:30
+#: .\src\backend_django\templates\home\home.html:37
 msgid "Wählen Sie eine Richtung"
 msgstr "Выберите направление"
 
-#: .\templates\home\home.html:44
-msgid "Demnächst"
+#: .\src\backend_django\templates\home\includes\_bento_badge.html:3
+msgid "Demнächst"
 msgstr "Скоро"
 
-#: .\templates\includes\_footer.html:16 .\templates\includes\_footer.html:17
-msgid "Kontakt & Leistungen öffnen"
-msgstr "Открыть Контакты и Услуги"
+#: .\src\backend_django\templates\includes\_cookie_consent.html:15
+msgid "Cookies & Datenschutz"
+msgstr "Куки и конфиденциальность"
 
-#: .\templates\includes\_footer.html:16
-msgid "Schließen"
-msgstr "Закрыть"
+#: .\src\backend_django\templates\includes\_cookie_consent.html:17
+msgid ""
+"\n"
+"          Wir verwenden Cookies und ähnliche Technologien, um die Nutzung "
+"unserer Website zu анализировать und Ihr Erlebnis zu verbessern.\n"
+"          Durch Klicken auf \"Alle akzeptieren\" stimmen Sie der Verwendung "
+"von Analyse- und Marketing-Cookies zu.\n"
+"          Mit \"Nur essenzielle\" werden nur technisch notwendige Cookies "
+"gesetzt.\n"
+"          "
+msgstr ""
+"\n"
+"          Мы используем файлы cookie и аналогичные технологии для анализа "
+"использования нашего веб-сайта и улучшения вашего опыта.\n"
+"          Нажимая «Принять все», вы соглашаетесь на использование "
+"аналитических и маркетинговых файлов cookie.\n"
+"          При выборе «Только необходимые» будут установлены только "
+"технически необходимые файлы cookie.\n"
+"          "
 
-#: .\templates\includes\_footer.html:36
+#: .\src\backend_django\templates\includes\_cookie_consent.html:32
+msgid "Nur essenzielle"
+msgstr "Только необходимые"
+
+#: .\src\backend_django\templates\includes\_cookie_consent.html:35
+msgid "Alle akzeptieren"
+msgstr "Принять все"
+
+#: .\src\backend_django\templates\includes\_footer.html:51
+msgid "Toggle Footer"
+msgstr "Переключить футер"
+
+#: .\src\backend_django\templates\includes\_footer.html:70
+msgid "Alle Kontakte"
+msgstr "Все контакты"
+
+#: .\src\backend_django\templates\includes\_footer.html:82
 msgid "Frisuren & Haarpflege"
 msgstr "Прически и Уход за волосами"
 
-#: .\templates\includes\_footer.html:38
+#: .\src\backend_django\templates\includes\_footer.html:85
 msgid "Haarschnitte"
 msgstr "Стрижки"
 
-#: .\templates\includes\_footer.html:39
+#: .\src\backend_django\templates\includes\_footer.html:86
 msgid "Färben"
 msgstr "Окрашивание"
 
-#: .\templates\includes\_footer.html:40
+#: .\src\backend_django\templates\includes\_footer.html:87
 msgid "Haarbehandlung"
 msgstr "Лечение волос"
 
-#: .\templates\includes\_footer.html:41
+#: .\src\backend_django\templates\includes\_footer.html:88
 msgid "Styling"
 msgstr "Укладка"
 
-#: .\templates\includes\_footer.html:47
+#: .\src\backend_django\templates\includes\_footer.html:98
 msgid "Maniküre"
 msgstr "Маникюр"
 
-#: .\templates\includes\_footer.html:48
+#: .\src\backend_django\templates\includes\_footer.html:99
 msgid "Pediküre"
 msgstr "Педикюр"
 
-#: .\templates\includes\_footer.html:49
+#: .\src\backend_django\templates\includes\_footer.html:100
 msgid "Verlängerung"
 msgstr "Наращивание"
 
-#: .\templates\includes\_footer.html:53
+#: .\src\backend_django\templates\includes\_footer.html:107
 msgid "Schönheit & Pflege"
 msgstr "Красота и Уход"
 
-#: .\templates\includes\_footer.html:55
+#: .\src\backend_django\templates\includes\_footer.html:110
 msgid "Epilation"
 msgstr "Эпиляция"
 
-#: .\templates\includes\_footer.html:56
+#: .\src\backend_django\templates\includes\_footer.html:111
+#: .\src\backend_django\templates\legal\faq.html:32
 msgid "Wimpernverlängerung"
 msgstr "Наращивание ресниц"
 
-#: .\templates\includes\_footer.html:57
+#: .\src\backend_django\templates\includes\_footer.html:112
 msgid "Laminierung"
 msgstr "Ламинирование"
 
-#: .\templates\includes\_header.html:27 .\templates\includes\_header.html:63
+#: .\src\backend_django\templates\includes\_footer.html:113
+#: .\src\backend_django\templates\legal\faq.html:31
+msgid "Massage"
+msgstr "Массаж"
+
+#: .\src\backend_django\templates\includes\_footer.html:123
+msgid "Cookie-Einstellungen"
+msgstr "Настройки Cookie"
+
+#: .\src\backend_django\templates\includes\_header.html:31
+#: .\src\backend_django\templates\includes\_header.html:51
 msgid "Startseite"
 msgstr "Главная"
 
-#: .\templates\includes\_header.html:28 .\templates\includes\_header.html:64
+#: .\src\backend_django\templates\includes\_header.html:32
+#: .\src\backend_django\templates\includes\_header.html:52
 msgid "Leistungen"
 msgstr "Услуги"
 
-#: .\templates\includes\_header.html:29 .\templates\includes\_header.html:65
+#: .\src\backend_django\templates\includes\_header.html:33
+#: .\src\backend_django\templates\includes\_header.html:53
 msgid "Team"
 msgstr "Команда"
 
-#: .\templates\services\detail.html:13
+#: .\src\backend_django\templates\includes\_promo_notification.html:14
+msgid "Promotion anzeigen"
+msgstr "Показать акцию"
+
+#: .\src\backend_django\templates\includes\_promo_notification.html:21
+msgid "Schließen"
+msgstr "Закрыть"
+
+#: .\src\backend_django\templates\legal\faq.html:5
+#: .\src\backend_django\templates\legal\faq.html:12
+msgid "Häufig gestellte Fragen"
+msgstr "Часто задаваемые вопросы"
+
+#: .\src\backend_django\templates\legal\faq.html:6
+msgid ""
+"Antworten auf Ihre Fragen zu unseren Dienstleistungen, Marken und "
+"Terminbuchung."
+msgstr ""
+"Ответы на ваши вопросы о наших услугах, брендах и бронировании записей."
+
+#: .\src\backend_django\templates\legal\faq.html:13
+msgid "ALLES, WAS SIE WISSEN MÜSSEN"
+msgstr "ВСЁ, ЧТО ВАМ НУЖНО ЗНАТЬ"
+
+#: .\src\backend_django\templates\legal\faq.html:21
+#: .\src\backend_django\templates\legal\faq.html:158
+msgid "Welche Dienstleistungen bieten Sie an?"
+msgstr "Какие услуги вы предлагаете?"
+
+#: .\src\backend_django\templates\legal\faq.html:25
+msgid "Unser Schönheitssalon bietet Leistungen in mehreren Bereichen an:"
+msgstr "Наш салон красоты предлагает услуги в нескольких направлениях:"
+
+#: .\src\backend_django\templates\legal\faq.html:28
+msgid "Friseurdienstleistungen"
+msgstr "Парикмахерские услуги"
+
+#: .\src\backend_django\templates\legal\faq.html:29
+msgid "Gesichtskosmetik"
+msgstr "Косметология лица"
+
+#: .\src\backend_django\templates\legal\faq.html:30
+msgid "Haarentfernung und Körperpflege"
+msgstr "Эпиляция и уход за телом"
+
+#: .\src\backend_django\templates\legal\faq.html:34
+msgid "Jeder Bereich umfasst verschiedene Behandlungen und Pflegeoptionen."
+msgstr "Каждое направление включает различные процедуры и варианты ухода."
+
+#: .\src\backend_django\templates\legal\faq.html:41
+#: .\src\backend_django\templates\legal\faq.html:166
+msgid "Mit welchen Materialien und Marken arbeiten Sie?"
+msgstr "С какими материалами и брендами вы работаете?"
+
+#: .\src\backend_django\templates\legal\faq.html:45
+msgid "Wir verwenden professionelle Produkte von bewährten Marken:"
+msgstr "Мы используем профессиональные продукты проверенных брендов:"
+
+#: .\src\backend_django\templates\legal\faq.html:47
+msgid "Nagelservice:"
+msgstr "Ногтевой сервис:"
+
+#: .\src\backend_django\templates\legal\faq.html:48
+msgid "Haare:"
+msgstr "Волосы:"
+
+#: .\src\backend_django\templates\legal\faq.html:49
+msgid "Kosmetik:"
+msgstr "Косметика:"
+
+#: .\src\backend_django\templates\legal\faq.html:50
+msgid "Depilation & Körper:"
+msgstr "Депиляция и тело:"
+
+#: .\src\backend_django\templates\legal\faq.html:51
+msgid "Wimpern:"
+msgstr "Ресницы:"
+
+#: .\src\backend_django\templates\legal\faq.html:53
+msgid ""
+"Eine vollständige Übersicht der verwendeten Marken finden Sie auf unserer "
+"Website."
+msgstr "Полный обзор используемых брендов вы найдете на нашем сайте."
+
+#: .\src\backend_django\templates\legal\faq.html:60
+#: .\src\backend_django\templates\legal\faq.html:174
+msgid "Sind Ihre Behandlungen für empfindliche Haut oder Nägel geeignet?"
+msgstr "Подходят ли ваши процедуры для чувствительной кожи или ногтей?"
+
+#: .\src\backend_django\templates\legal\faq.html:64
+msgid ""
+"Ja. Bei der Terminbuchung können individuelle Besonderheiten wie "
+"empfindliche Haut oder spezielle Wünsche angegeben werden."
+msgstr ""
+"Да. При бронировании можно указать индивидуальные особенности, такие как "
+"чувствительная кожа или специальные пожелания."
+
+#: .\src\backend_django\templates\legal\faq.html:65
+msgid ""
+"Der passende Behandlungsablauf und die Materialien werden entsprechend "
+"ausgewählt."
+msgstr ""
+"Соответствующий ход процедуры и материалы будут подобраны индивидуально."
+
+#: .\src\backend_django\templates\legal\faq.html:72
+#: .\src\backend_django\templates\legal\faq.html:182
+msgid "Arbeiten Sie mit Problemhaut oder geschädigten Nägeln?"
+msgstr "Работаете ли вы с проблемной кожей или поврежденными ногтями?"
+
+#: .\src\backend_django\templates\legal\faq.html:76
+msgid ""
+"In unserem Salon werden kosmetische Behandlungen sowie stärkende Systeme für "
+"Nägel angeboten."
+msgstr ""
+"В нашем салоне предлагаются косметологические процедуры, а также системы "
+"укрепления ногтей."
+
+#: .\src\backend_django\templates\legal\faq.html:77
+msgid ""
+"Bei speziellen Fragen oder Unsicherheiten können Sie uns vorab über das "
+"Kontaktformular oder per E‑Mail kontaktieren."
+msgstr ""
+"При возникновении специальных вопросов или сомнений вы можете заранее "
+"связаться с нами через форму обратной связи или по электронной почте."
+
+#: .\src\backend_django\templates\legal\faq.html:84
+#: .\src\backend_django\templates\legal\faq.html:190
+msgid "Ist eine individuelle Beratung möglich?"
+msgstr "Возможна ли индивидуальная консультация?"
+
+#: .\src\backend_django\templates\legal\faq.html:88
+#: .\src\backend_django\templates\legal\faq.html:193
+msgid ""
+"Ja. Мы открыты для консультаций и с удовольствием адаптируем процедуры под "
+"ваши пожелания."
+msgstr ""
+"Да. Мы открыты для консультаций и с удовольствием адаптируем процедуры под "
+"ваши пожелания."
+
+#: .\src\backend_django\templates\legal\faq.html:95
+#: .\src\backend_django\templates\legal\faq.html:198
+msgid "Wie lange dauert eine Behandlung?"
+msgstr "Сколько длится процедура?"
+
+#: .\src\backend_django\templates\legal\faq.html:99
+msgid ""
+"Die ungefähre Dauer jeder Behandlung ist auf der Website im Preisbereich "
+"angegeben."
+msgstr ""
+"Примерная длительность каждой процедуры указана на сайте в разделе цен."
+
+#: .\src\backend_django\templates\legal\faq.html:100
+msgid "Die tatsächliche Zeit kann je nach gewählter Leistung leicht variieren."
+msgstr ""
+"Фактическое время может незначительно варьироваться в зависимости от "
+"выбранной услуги."
+
+#: .\src\backend_django\templates\legal\faq.html:107
+#: .\src\backend_django\templates\legal\faq.html:206
+msgid "Wie lange hält das Ergebnis an?"
+msgstr "Как долго держится результат?"
+
+#: .\src\backend_django\templates\legal\faq.html:111
+msgid "Die Haltbarkeit des Ergebnisses hängt von der jeweiligen Behandlung ab."
+msgstr "Стойкость результата зависит от конкретной процедуры."
+
+#: .\src\backend_django\templates\legal\faq.html:112
+msgid ""
+"Detaillierte Informationen finden Sie auf der Seite der entsprechenden "
+"Dienstleistung."
+msgstr ""
+"Подробную информацию вы найдете на странице соответствующей услуги."
+
+#: .\src\backend_django\templates\legal\faq.html:119
+#: .\src\backend_django\templates\legal\faq.html:214
+msgid "Wie kann ich einen Termin buchen?"
+msgstr "Как я могу забронировать запись?"
+
+#: .\src\backend_django\templates\legal\faq.html:123
+msgid "Die Terminbuchung ist möglich:"
+msgstr "Бронирование записи возможно:"
+
+#: .\src\backend_django\templates\legal\faq.html:125
+msgid "über die Startseite der Website"
+msgstr "через главную страницу сайта"
+
+#: .\src\backend_django\templates\legal\faq.html:126
+msgid "über die Seite eines bestimmten Mitarbeiters"
+msgstr "через страницу конкретного сотрудника"
+
+#: .\src\backend_django\templates\legal\faq.html:128
+msgid ""
+"Sie können entweder einen freien Termin wählen oder gezielt bei einem "
+"bestimmten Spezialisten buchen."
+msgstr ""
+"Вы можете либо выбрать свободное время, либо записаться к конкретному "
+"специалисту."
+
+#: .\src\backend_django\templates\legal\faq.html:135
+#: .\src\backend_django\templates\legal\faq.html:222
+msgid "Gibt es Kontraindikationen für Behandlungen?"
+msgstr "Есть ли противопоказания для процедур?"
+
+#: .\src\backend_django\templates\legal\faq.html:139
+msgid ""
+"Informationen zu möglichen Kontraindikationen sind auf den jeweiligen "
+"Leistungsseiten angegeben."
+msgstr ""
+"Информация о возможных противопоказаниях указана на страницах соответствующих "
+"услуг."
+
+#: .\src\backend_django\templates\legal\faq.html:140
+msgid ""
+"Bei Unsicherheiten empfehlen wir, sich vor der Buchung beraten zu lassen."
+msgstr ""
+"При возникновении сомнений мы рекомендуем проконсультироваться перед "
+"бронированием."
+
+#: .\src\backend_django\templates\legal\faq.html:161
+msgid ""
+"Unser Schönheitssalon bietet Leistungen in mehreren Bereichen an: "
+"Nagelservice, Friseurdienstleistungen, Gesichtskosmetik, Haarentfernung und "
+"Körperpflege, Massage, Wimperнverlängerung."
+msgstr ""
+"Наш салон красоты предлагает услуги в нескольких направлениях: ногтевой "
+"сервис, парикмахерские услуги, косметология лица, эпиляция и уход за телом, "
+"массаж, наращивание ресниц."
+
+#: .\src\backend_django\templates\legal\faq.html:169
+msgid ""
+"Wir verwenden professionelle Produkte von bewährten Marken. Nagelservice: "
+"Ga&Ma, Dark, SAGA, DNKA, Lunamoon. Haare: FR OPTIMA, Luxima, VIART. "
+"Kosmetik: Anubis, Christina, Zemits. Depilation: Italwax, Enova. Wimpern: "
+"Platinum."
+msgstr ""
+"Мы используем профессиональные продукты проверенных брендов. Ногтевой сервис: "
+"Ga&Ma, Dark, SAGA, DNKA, Lunamoon. Волосы: FR OPTIMA, Luxima, VIART. "
+"Косметика: Anubis, Christina, Zemits. Депиляция: Italwax, Enova. Ресницы: "
+"Platinum."
+
+#: .\src\backend_django\templates\legal\faq.html:177
+msgid ""
+"Ja. Bei der Terminbuchung können individuelle Besonderheiten wie "
+"empfindliche Haut oder spezielle Wünsche angegeben werden. Der passende "
+"Behandlungsablauf und die Materialien werden entsprechend ausgewählt."
+msgstr ""
+"Да. При бронировании можно указать индивидуальные особенности, такие как "
+"чувствительная кожа или специальные пожелания. Соответствующий ход процедуры "
+"и материалы будут подобраны индивидуально."
+
+#: .\src\backend_django\templates\legal\faq.html:185
+msgid ""
+"In unserem Salon werden kosmetische Behandlungen sowie stärkende Systeme für "
+"Nägel angeboten. Bei speziellen Fragen können Sie uns vorab kontaktieren."
+msgstr ""
+"В нашем салоне предлагаются косметологические процедуры, а также системы "
+"укрепления ногтей. При возникновении специальных вопросов вы можете "
+"связаться с нами заранее."
+
+#: .\src\backend_django\templates\legal\faq.html:201
+msgid ""
+"Die ungefähre Dauer jeder Behandlung ist auf der Website im Preisbereich "
+"angegeben. Die tatsächliche Zeit kann je nach gewählter Leistung leicht "
+"variieren."
+msgstr ""
+"Примерная длительность каждой процедуры указана на сайте в разделе цен. "
+"Фактическое время может незначительно варьироваться в зависимости от "
+"выбранной услуги."
+
+#: .\src\backend_django\templates\legal\faq.html:209
+msgid ""
+"Die Haltbarkeit des Ergebnisses hängt von der jeweiligen Behandlung ab. "
+"Detaillierte Informationen finden Sie auf der Seite der entsprechenden "
+"Dienstleistung."
+msgstr ""
+"Стойкость результата зависит от конкретной процедуры. Подробную информацию вы "
+"найдете на странице соответствующей услуги."
+
+#: .\src\backend_django\templates\legal\faq.html:217
+msgid ""
+"Die Terminbuchung ist möglich über die Startseite der Website oder über die "
+"Seite eines bestimmten Mitarbeiters."
+msgstr ""
+"Бронирование записи возможно через главную страницу сайта или через страницу "
+"конкретного сотрудника."
+
+#: .\src\backend_django\templates\legal\faq.html:225
+msgid ""
+"Informationen zu möglichen Kontraindikationen sind auf den jeweiligen "
+"Leistungsseiten angegeben. Bei Unsicherheiten empfehlen wir, sich vor der "
+"Buchung beraten zu lassen."
+msgstr ""
+"Информация о возможных противопоказаниях указана на страницах соответствующих "
+"услуг. При возникновении сомнений мы рекомендуем проконсультироваться перед "
+"бронированием."
+
+#: .\src\backend_django\templates\services\detail.html:14
 msgid "LILY BEAUTY SALON"
 msgstr "LILY BEAUTY SALON"
 
-#: .\templates\services\detail.html:33
+#: .\src\backend_django\templates\services\detail.html:34
 msgid "Preise"
 msgstr "Цены"
 
-#: .\templates\services\detail.html:64
+#: .\src\backend_django\templates\services\detail.html:65
 msgid "Keine Dienstleistungen gefunden."
 msgstr "Услуги не найдены."
 
-#: .\templates\services\detail.html:73
+#: .\src\backend_django\templates\services\detail.html:74
 msgid "Ihre Experten"
 msgstr "Ваши эксперты"
 
-#: .\templates\services\services.html:11
+#: .\src\backend_django\templates\services\services.html:11
 msgid "Preisliste"
 msgstr "Прайс-лист"
 
-#: .\templates\services\services.html:12
+#: .\src\backend_django\templates\services\services.html:12
 msgid "AKTUELLE PREISE"
 msgstr "АКТУАЛЬНЫЕ ЦЕНЫ"
 
-#: .\templates\services\services.html:63
+#: .\src\backend_django\templates\services\services.html:63
 msgid "Mehr über"
 msgstr "Подробнее о"
 
-#: .\templates\team\team.html:12
+#: .\src\backend_django\templates\team\team.html:6
+msgid "Team | LILY Beauty Salon"
+msgstr "Команда | LILY Beauty Salon"
+
+#: .\src\backend_django\templates\team\team.html:10
+msgid "Lernen Sie unsere Experten kennen."
+msgstr "Познакомьтесь с нашими экспертами."
+
+#: .\src\backend_django\templates\team\team.html:18
 msgid "Unser Team"
 msgstr "Наша команда"
 
-#: .\templates\team\team.html:13
+#: .\src\backend_django\templates\team\team.html:19
 msgid "SCHÖNHEITSEXPERTEN"
 msgstr "ЭКСПЕРТЫ КРАСОТЫ"
 
-#: .\templates\team\team.html:55
+#: .\src\backend_django\templates\team\team.html:35
+msgid "Founder & Master"
+msgstr "Основатель и Мастер"
+
+#: .\src\backend_django\templates\team\team.html:64
 msgid "Unsere Meister"
 msgstr "Наши мастера"
 
-#: .\templates\team\team.html:85
+#: .\src\backend_django\templates\team\team.html:75
+msgid "Buchen"
+msgstr "Записаться"
+
+#: .\src\backend_django\templates\team\team.html:95
 msgid "Bewerben"
 msgstr "Подать заявку"

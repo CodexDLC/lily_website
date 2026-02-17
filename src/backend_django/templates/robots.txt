@@ -9,6 +9,6 @@ Allow: /*/llms.txt
 Disallow: /admin/
 Disallow: /api/
 Disallow: /static/
-Disallow: /media/
+
 
 Sitemap: https://lily-salon.de/sitemap.xml
