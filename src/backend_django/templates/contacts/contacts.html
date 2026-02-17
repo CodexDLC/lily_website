@@ -28,7 +28,7 @@
                     {% trans "LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellem Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern auch ein innerer Zustand des Selbstvertrauens." %}
                 </p>
                 <p class="about-text">
-                    {% trans "Unsere Meister verwenden nur Premium-Materialien (Wella, L'Oreal, Luxio) und moderne Techniken, um Ihre natürliche Einzigartigkeit zu unterstreichen." %}
+                    {% trans "Unsere Meister verwenden nur Premium-Materialien von führenden Marken wie Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona und weitere, um Ihre natürliche Einzigartigkeit zu unterstreichen." %}
                 </p>
                 <p class="about-text" style="color: var(--color-gold); font-style: italic; margin-top: 30px;">
                     "{% trans "Ihre Schönheit ist unsere Kunst." %}"
@@ -49,14 +49,14 @@
         <div class="bottom-section">
 
             <!-- Left: Details -->
-            <address class="contacts-details"> {# Изменено с div на address #}
+            <address class="contacts-details">
 
                 <div style="margin-bottom: 30px;">
                     <span class="label">{% trans "Unsere Adresse" %}</span>
                     <span class="value">
-                        <a href="{{ settings.google_maps_link }}" target="_blank" style="border-bottom: 1px dashed rgba(255,255,255,0.3);">
-                            {{ settings.address_street }}<br>
-                            {{ settings.address_city }}
+                        <a href="{{ site_settings.google_maps_link }}" target="_blank" rel="noopener noreferrer" style="border-bottom: 1px dashed rgba(255,255,255,0.3);">
+                            {{ site_settings.address_street }}<br>
+                            {{ site_settings.address_postal_code }} {{ site_settings.address_locality }}
                         </a>
                     </span>
                 </div>
@@ -64,23 +64,23 @@
                 <div style="margin-bottom: 30px;">
                     <span class="label">{% trans "Telefon" %}</span>
                     <span class="value">
-                        <a href="tel:{{ settings.phone }}">{{ settings.phone }}</a>
+                        <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a>
                     </span>
                 </div>
 
                 <div style="margin-bottom: 30px;">
                     <span class="label">{% trans "E-Mail" %}</span>
                     <span class="value">
-                        <a href="mailto:{{ settings.email }}">{{ settings.email }}</a>
+                        <a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a>
                     </span>
                 </div>
 
                 <div>
                     <span class="label">{% trans "Öffnungszeiten" %}</span>
                     <span class="value" style="font-size: 16px; line-height: 1.6;">
-                        Mo-Fr: {{ settings.working_hours_weekdays }}<br>
-                        Sa: {{ settings.working_hours_saturday }}<br>
-                        So: {{ settings.working_hours_sunday }}
+                        Mo-Fr: {{ site_settings.working_hours_weekdays }}<br>
+                        Sa: {{ site_settings.working_hours_saturday }}<br>
+                        So: {{ site_settings.working_hours_sunday }}
                     </span>
                 </div>
 
@@ -100,8 +100,8 @@
                     </iframe>
                 </div>
 
-                {% if settings.google_maps_link %}
-                <a href="{{ settings.google_maps_link }}" target="_blank" class="btn-navigate">
+                {% if site_settings.google_maps_link %}
+                <a href="{{ site_settings.google_maps_link }}" target="_blank" rel="noopener noreferrer" class="btn-navigate">
                     📍 {% trans "Route planen" %}
                 </a>
                 {% endif %}

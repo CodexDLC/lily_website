@@ -1,0 +1,97 @@
+{% load i18n %}
+
+{% if active_promo %}
+<!-- Promo Notification Widget -->
+<div id="promoWidget"
+     data-promo-id="{{ active_promo.id }}"
+     data-delay="{{ active_promo.display_delay|default:5 }}"
+     style="display: none;">
+
+    <!-- Floating Button -->
+    <button id="promoFloatingButton"
+            class="promo-floating-button"
+            style="background-color: {{ active_promo.button_color|default:'#003831' }}; color: {{ active_promo.text_color|default:'#ffffff' }};"
+            aria-label="{% trans 'Promotion anzeigen' %}">
+        {{ active_promo.button_text }}
+    </button>
+
+    <!-- Modal Overlay -->
+    <div id="promoModal" class="promo-modal" role="dialog" aria-modal="true">
+        <div class="promo-modal-content" style="background-color: {{ active_promo.button_color|default:'#003831' }};">
+            <button id="promoModalClose" class="promo-modal-close" aria-label="{% trans 'Schließen' %}">&times;</button>
+
+            <div class="promo-modal-header">
+                <h2 class="promo-modal-title">{{ active_promo.title }}</h2>
+            </div>
+
+            <div class="promo-modal-body">
+                {% if active_promo.image %}
+                    <img src="{{ active_promo.image.url }}" alt="{{ active_promo.title }}" class="promo-modal-image">
+                {% endif %}
+
+                <div class="promo-modal-description">
+                    {{ active_promo.description|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+/**
+ * Minimal JS for Promo Widget
+ * Handles visibility, localStorage and tracking
+ */
+(function() {
+    const widget = document.getElementById('promoWidget');
+    if (!widget) return;
+
+    const promoId = widget.dataset.promoId;
+    const delay = parseInt(widget.dataset.delay) * 1000;
+    const STORAGE_KEY = 'lily_promo_seen_notifications';
+
+    // Check if already seen
+    const seen = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    if (seen.includes(parseInt(promoId))) return;
+
+    const btn = document.getElementById('promoFloatingButton');
+    const modal = document.getElementById('promoModal');
+    const closeBtn = document.getElementById('promoModalClose');
+
+    const trackAction = (action) => {
+        fetch(`/api/v1/promos/${promoId}/track-${action}/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+        }).catch((error) => console.error(`[PromoWidget] Failed to track ${action}:`, error));
+    };
+
+    const openModal = () => {
+        modal.classList.add('active');
+        trackAction('click');
+    };
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        widget.remove();
+        const currentSeen = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        if (!currentSeen.includes(parseInt(promoId))) {
+            currentSeen.push(parseInt(promoId));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(currentSeen));
+        }
+    };
+
+    // Initialize with delay
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            widget.style.display = 'block';
+            trackAction('view');
+        }, Math.max(delay, 3000)); // At least 3s delay for performance
+    });
+
+    btn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
+})();
+</script>
+{% endif %}

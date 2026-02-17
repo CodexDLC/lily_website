@@ -35,11 +35,17 @@ def print_error(msg):
     print(f"{Colors.RED}❌ {msg}{Colors.ENDC}")
 
 
-def run_command(command, cwd=PROJECT_ROOT, capture_output=False):
+def run_command(command, cwd=PROJECT_ROOT, capture_output=False, env=None):
     """Runs a system command and returns result."""
+    current_env = os.environ.copy()
+    if env:
+        current_env.update(env)
+
     try:
         shell = isinstance(command, str)
-        result = subprocess.run(command, cwd=cwd, shell=shell, check=True, text=True, capture_output=capture_output)
+        result = subprocess.run(
+            command, cwd=cwd, shell=shell, check=True, text=True, capture_output=capture_output, env=current_env
+        )
         return True, result.stdout
     except subprocess.CalledProcessError as e:
         return False, e.stdout if capture_output else str(e)
@@ -49,9 +55,10 @@ def run_command(command, cwd=PROJECT_ROOT, capture_output=False):
 
 
 def docker_compose(args):
-    # Добавляем -p для изоляции проекта
+    # Передаем CONTAINER_PREFIX для уникальных имен контейнеров
+    env = {"CONTAINER_PREFIX": TEST_PROJECT_NAME}
     cmd = f"docker-compose -p {TEST_PROJECT_NAME} -f {COMPOSE_FILE} {args}"
-    return run_command(cmd)
+    return run_command(cmd, env=env)
 
 
 def cleanup_docker():
@@ -114,9 +121,9 @@ def run_docker_validation():
         time.sleep(15)
 
         # 6. Get Backend Container ID
-        # Важно: ps тоже должен использовать -p
+        env = {"CONTAINER_PREFIX": TEST_PROJECT_NAME}
         _, output = run_command(
-            f"docker-compose -p {TEST_PROJECT_NAME} -f {COMPOSE_FILE} ps -q backend", capture_output=True
+            f"docker-compose -p {TEST_PROJECT_NAME} -f {COMPOSE_FILE} ps -q backend", capture_output=True, env=env
         )
         container_id = output.strip()
         if not container_id:

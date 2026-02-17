@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from django.views.generic import FormView
+from django_ratelimit.decorators import ratelimit
 from features.system.models.site_settings import SiteSettings
 from features.system.selectors.seo import SeoSelector
 
@@ -7,6 +9,7 @@ from ..forms import ContactForm
 from ..services.contact_service import ContactService
 
 
+@method_decorator(ratelimit(key="ip", rate="5/5m", method="POST", block=True), name="post")
 class ContactsView(FormView):
     template_name = "contacts/contacts.html"
     form_class = ContactForm
@@ -19,7 +22,7 @@ class ContactsView(FormView):
         if "form" not in context:
             context["form"] = self.get_form()
 
-        context["settings"] = SiteSettings.load()
+        context["site_settings"] = SiteSettings.load()
         context["seo"] = SeoSelector.get_seo("contacts")
         return context
 
