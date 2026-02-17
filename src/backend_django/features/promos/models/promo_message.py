@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from features.system.models.mixins import TimestampMixin
+from features.system.services.images import optimize_image
 
 
 class PromoMessage(TimestampMixin, models.Model):
@@ -146,6 +147,17 @@ class PromoMessage(TimestampMixin, models.Model):
             raise ValidationError({"ends_at": _("End date must be after start date")})
 
     def save(self, *args, **kwargs):
-        """Run validation before saving."""
+        """Run validation and optimize image before saving."""
         self.full_clean()
+
+        # Optimize image if it exists
+        if self.image:
+            # Check if image is new or changed
+            if not self.pk:
+                optimize_image(self.image, max_width=1080)
+            else:
+                old_instance = PromoMessage.objects.filter(pk=self.pk).first()
+                if old_instance and old_instance.image != self.image:
+                    optimize_image(self.image, max_width=1080)
+
         super().save(*args, **kwargs)

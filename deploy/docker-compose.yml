@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: lily_website-db
+    container_name: ${CONTAINER_PREFIX:-lily_website}-db
     ports:
       - "5432:5432"
     volumes:
@@ -20,7 +20,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: lily_website-redis
+    container_name: ${CONTAINER_PREFIX:-lily_website}-redis
     env_file:
       - ../.env
     command: >
@@ -42,7 +42,7 @@ services:
     build:
       context: ..
       dockerfile: deploy/backend/Dockerfile
-    container_name: lily_website-backend
+    container_name: ${CONTAINER_PREFIX:-lily_website}-backend
     ports:
       - "8000:8000"
     env_file:
@@ -71,7 +71,7 @@ services:
     build:
       context: ..
       dockerfile: deploy/bot/Dockerfile
-    container_name: lily_website-telegram_bot
+    container_name: ${CONTAINER_PREFIX:-lily_website}-telegram_bot
     env_file:
       - ../.env
     volumes:
@@ -90,7 +90,7 @@ services:
     build:
       context: ..
       dockerfile: deploy/worker/Dockerfile
-    container_name: lily_website-notification_worker
+    container_name: ${CONTAINER_PREFIX:-lily_website}-notification_worker
     command: arq src.workers.notification_worker.worker.WorkerSettings
     env_file:
       - ../.env
@@ -111,7 +111,7 @@ services:
     build:
       context: ..
       dockerfile: deploy/nginx/Dockerfile.local
-    container_name: lily_website-nginx
+    container_name: ${CONTAINER_PREFIX:-lily_website}-nginx
     ports:
       - "8080:80"
     volumes:
@@ -126,7 +126,7 @@ services:
 
   mailpit:
     image: axllent/mailpit:v1.21
-    container_name: lily_website-mailpit
+    container_name: ${CONTAINER_PREFIX:-lily_website}-mailpit
     ports:
       - "8025:8025"  # Web UI
       - "1025:1025"  # SMTP server
@@ -146,4 +146,5 @@ volumes:
 
 networks:
   lily_website-network:
+    name: ${CONTAINER_PREFIX:-lily_website}-network
     driver: bridge

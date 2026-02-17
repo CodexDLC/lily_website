@@ -11,13 +11,11 @@
 
     <!-- Name (First + Last) -->
     <div class="form-group" style="margin-bottom: 20px;">
-        <!-- Visual Label for the group -->
         <span style="color: var(--color-gold); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px;">
             {% trans "Name" %}
         </span>
         <div class="contact-input-group" style="display: flex; gap: 20px;">
             <div style="flex: 1;">
-                <!-- Hidden Label for Accessibility -->
                 <label for="{{ form.first_name.id_for_label }}" style="position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0;">
                     {{ form.first_name.label }}
                 </label>
@@ -84,13 +82,28 @@
         {% endif %}
     </div>
 
-    <!-- Marketing Consent -->
-    <div class="form-group" style="margin-bottom: 30px; display: flex; align-items: flex-start; gap: 10px;">
-        <div style="position: relative; top: 2px;">
-             {{ form.consent_marketing }}
-        </div>
-        <label for="{{ form.consent_marketing.id_for_label }}" style="color: var(--color-gold); font-size: 14px; cursor: pointer; line-height: 1.4; font-weight: 300;">
-            {{ form.consent_marketing.label }}
+    <!-- DSGVO Consent (Mandatory) -->
+    <div class="form-group" style="margin-bottom: 20px;">
+        <label class="checkbox-container">
+            {{ form.dsgvo_consent }}
+            <span class="checkmark"></span>
+            <span class="checkbox-text">
+                {{ form.dsgvo_consent.label|safe }} *
+            </span>
+        </label>
+        {% if form.dsgvo_consent.errors %}
+        <div style="color: #ff6b6b; font-size: 12px; margin-top: 5px;">{{ form.dsgvo_consent.errors }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Marketing Consent (Optional) -->
+    <div class="form-group" style="margin-bottom: 30px;">
+        <label class="checkbox-container">
+            {{ form.consent_marketing }}
+            <span class="checkmark"></span>
+            <span class="checkbox-text">
+                {{ form.consent_marketing.label }}
+            </span>
         </label>
     </div>
 

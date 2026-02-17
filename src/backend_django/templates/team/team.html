@@ -2,8 +2,13 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{{ seo.seo_title|default:_("Team | LILY Beauty Salon") }}{% endblock %}
-{% block meta_description %}{{ seo.seo_description|default:_("Lernen Sie unsere Experten kennen.") }}{% endblock %}
+{% block title %}
+    {% if seo.seo_title %}{{ seo.seo_title }}{% else %}{% trans "Team | LILY Beauty Salon" %}{% endif %}
+{% endblock %}
+
+{% block meta_description %}
+    {% if seo.seo_description %}{{ seo.seo_description }}{% else %}{% trans "Lernen Sie unsere Experten kennen." %}{% endif %}
+{% endblock %}
 
 {% block content %}
 {% include "team/_schema_person.html" %}
@@ -77,15 +82,15 @@
                 {% endfor %}
 
                 <!-- HIRING BLOCK (If enabled) -->
-                {% if settings.hiring_active %}
+                {% if site_settings.hiring_active %}
                 <article class="master-card hiring-card" style="border: 1px dashed var(--color-gold); background: rgba(237, 208, 113, 0.05);">
                     <div class="master-photo" style="background-color: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;">
                         <span style="font-size: 40px; color: var(--color-gold);">+</span>
                     </div>
                     <div class="master-info">
-                        <h3 class="master-name" style="color: var(--color-gold);">{{ settings.hiring_title }}</h3>
+                        <h3 class="master-name" style="color: var(--color-gold);">{{ site_settings.hiring_title }}</h3>
                         <p class="master-role" style="font-size: 14px; line-height: 1.4; margin-bottom: 15px;">
-                            {{ settings.hiring_text }}
+                            {{ site_settings.hiring_text }}
                         </p>
                         <a href="{% url 'contacts' %}" class="btn-select">{% trans "Bewerben" %}</a>
                     </div>
