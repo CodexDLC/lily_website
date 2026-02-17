@@ -24,7 +24,7 @@
       "working_hours_sunday": "Geschlossen",
       "work_start_weekdays": "08:00:00",
       "work_end_weekdays": "19:00:00",
-      "work_start_saturday": "8:00:00",
+      "work_start_saturday": "08:00:00",
       "work_end_saturday": "14:00:00",
       "price_range": "$$",
       "url_path_contact_form": "/contacts/",
