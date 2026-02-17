@@ -512,6 +512,18 @@ Django = ">=4.2,<6.0"
 prometheus-client = ">=0.7"
 
 [[package]]
+name = "django-ratelimit"
+version = "4.1.0"
+description = "Cache-based rate-limiting for Django."
+optional = false
+python-versions = ">=3.7"
+groups = ["django"]
+files = [
+    {file = "django-ratelimit-4.1.0.tar.gz", hash = "sha256:555943b283045b917ad59f196829530d63be2a39adb72788d985b90c81ba808b"},
+    {file = "django_ratelimit-4.1.0-py2.py3-none-any.whl", hash = "sha256:d047a31cf94d83ef1465d7543ca66c6fc16695559b5f8d814d1b51df15110b92"},
+]
+
+[[package]]
 name = "django-redis"
 version = "5.4.0"
 description = "Full featured redis cache backend for Django."
@@ -2627,4 +2639,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<3.15"
-content-hash = "8e3c7ce7dfc48994345e61de5b290be2f80646162f9ff98d219dd227c7ffde73"
+content-hash = "12dfd46e9c3ed4d5ffba682d96127ec591821b676c2fb5f707f9658e60ce0c9c"
