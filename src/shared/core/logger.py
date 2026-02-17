@@ -1,4 +1,5 @@
 import logging
+import re
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -9,6 +10,42 @@ from src.shared.core.config import CommonSettings
 
 if TYPE_CHECKING:
     from types import FrameType
+
+
+def mask_sensitive_data(text: str) -> str:
+    """
+    Маскирует чувствительные данные в тексте (телефоны, email, пароли, токены).
+    """
+    if not isinstance(text, str):
+        return text
+
+    # 1. Маскируем телефоны (РФ/Германия/Международные)
+    # Пример: +49 176 12345678 -> +49 176 *** 5678
+    phone_pattern = r"(\+?\d{1,3}[\s-]?\d{3})[\s-]?\d{3,}[\s-]?(\d{2,4})"
+    text = re.sub(phone_pattern, r"\1 *** \2", text)
+
+    # 2. Маскируем Email
+    # Пример: user@example.com -> u***@example.com
+    email_pattern = r"([a-zA-Z0-9_.+-])[a-zA-Z0-9_.+-]*@([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)"
+    text = re.sub(email_pattern, r"\1***@\2", text)
+
+    # 3. Маскируем значения ключей (password, token, secret, key, api_key)
+    # Ищет паттерны типа password=value, "token": "value", secret: value
+    sensitive_keys_pattern = (
+        r"(?i)(password|token|secret|api_key|key|authorization|cookie|session_id)"
+        r'([\s:=("]*)'  # Разделители
+        r'([^\s,;}"\']{4,})'  # Само значение (минимум 4 символа, чтобы не маскировать пустые или слишком короткие)
+    )
+    text = re.sub(sensitive_keys_pattern, r"\1\2***", text)
+
+    return text
+
+
+def masking_patcher(record):
+    """
+    Патчер для loguru, который маскирует сообщение перед выводом.
+    """
+    record["message"] = mask_sensitive_data(record["message"])
 
 
 class InterceptHandler(logging.Handler):
@@ -37,7 +74,7 @@ class InterceptHandler(logging.Handler):
 
 def setup_logging(settings: CommonSettings, service_name: str) -> None:
     """
-    Настраивает loguru.
+    Настраивает loguru с маскированием данных.
 
     Args:
         settings: Объект настроек (CommonSettings или наследник).
@@ -45,6 +82,9 @@ def setup_logging(settings: CommonSettings, service_name: str) -> None:
                       Используется для создания подпапки в логах.
     """
     logger.remove()
+
+    # Применяем маскирование ко всем логам через patcher
+    logger.configure(patcher=masking_patcher)
 
     # Формируем пути к логам: logs/backend/debug.log или logs/02_telegram_bot/debug.log
     base_log_dir = Path(settings.log_dir) / service_name
