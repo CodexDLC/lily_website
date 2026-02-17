@@ -39,27 +39,27 @@
 
         <div class="bento-grid">
 
-            <!-- Hair (Large) -->
-            {% if bento.hair %}
-            <a href="{% url 'service_detail' slug=bento.hair.slug %}" class="bento-card card-large"
-               style="background-image: url('{% if bento.hair.image %}{{ bento.hair.image.url }}{% else %}https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=1200{% endif %}'); background-position: center top;">
+            <!-- Nails (Large) - Main Strength -->
+            {% if bento.nails %}
+            <a href="{% url 'service_detail' slug=bento.nails.slug %}" class="bento-card card-large"
+               style="background-image: url('{% if bento.nails.image %}{{ bento.nails.image.url }}{% else %}https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=1200{% endif %}'); background-position: center center;">
                 <div class="card-overlay">
-                    <h3>{{ bento.hair.title }}</h3>
-                    <p class="bento-card-desc">{{ bento.hair.description|truncatechars:50 }}</p>
+                    <h3>{{ bento.nails.title }}</h3>
+                    <p class="bento-card-desc">{{ bento.nails.description|truncatechars:50 }}</p>
                     <span class="arrow">→</span>
-                    {% include "home/includes/_bento_badge.html" with item=bento.hair %}
+                    {% include "home/includes/_bento_badge.html" with item=bento.nails %}
                 </div>
             </a>
             {% endif %}
 
-            <!-- Nails -->
-            {% if bento.nails %}
-            <a href="{% url 'service_detail' slug=bento.nails.slug %}" class="bento-card"
-               style="background-image: url('{% if bento.nails.image %}{{ bento.nails.image.url }}{% else %}https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600{% endif %}');">
+            <!-- Brows & Lashes (Eyes) - High Priority -->
+            {% if bento.eyes %}
+            <a href="{% url 'service_detail' slug=bento.eyes.slug %}" class="bento-card"
+               style="background-image: url('{% if bento.eyes.image %}{{ bento.eyes.image.url }}{% else %}https://images.unsplash.com/photo-1587776100527-86f34351a668?auto=format&fit=crop&w=600{% endif %}');">
                 <div class="card-overlay">
-                    <h3>{{ bento.nails.title }}</h3>
-                    <p class="bento-card-desc">{{ bento.nails.description|truncatechars:40 }}</p>
-                    {% include "home/includes/_bento_badge.html" with item=bento.nails %}
+                    <h3>{{ bento.eyes.title }}</h3>
+                    <p class="bento-card-desc">{{ bento.eyes.description|truncatechars:40 }}</p>
+                    {% include "home/includes/_bento_badge.html" with item=bento.eyes %}
                 </div>
             </a>
             {% endif %}
@@ -76,14 +76,14 @@
             </a>
             {% endif %}
 
-            <!-- Brows & Lashes (Eyes) -->
-            {% if bento.eyes %}
-            <a href="{% url 'service_detail' slug=bento.eyes.slug %}" class="bento-card"
-               style="background-image: url('{% if bento.eyes.image %}{{ bento.eyes.image.url }}{% else %}https://images.unsplash.com/photo-1587776100527-86f34351a668?auto=format&fit=crop&w=600{% endif %}');">
+            <!-- Hair (Small) - Coming Soon / Secondary -->
+            {% if bento.hair %}
+            <a href="{% url 'service_detail' slug=bento.hair.slug %}" class="bento-card"
+               style="background-image: url('{% if bento.hair.image %}{{ bento.hair.image.url }}{% else %}https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=600{% endif %}'); background-position: center top;">
                 <div class="card-overlay">
-                    <h3>{{ bento.eyes.title }}</h3>
-                    <p class="bento-card-desc">{{ bento.eyes.description|truncatechars:40 }}</p>
-                    {% include "home/includes/_bento_badge.html" with item=bento.eyes %}
+                    <h3>{{ bento.hair.title }}</h3>
+                    <p class="bento-card-desc">{{ bento.hair.description|truncatechars:40 }}</p>
+                    {% include "home/includes/_bento_badge.html" with item=bento.hair %}
                 </div>
             </a>
             {% endif %}
