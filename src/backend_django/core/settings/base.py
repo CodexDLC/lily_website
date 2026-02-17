@@ -113,6 +113,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.i18n",
                 "features.system.context_processors.site_settings",
+                "features.promos.context_processors.active_promo",
             ],
         },
     },
@@ -290,6 +291,10 @@ CACHES = {
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
+
+# --- Ratelimit ---
+RATELIMIT_USE_CACHE = "default"
+RATELIMIT_VIEW = "features.main.views.legal.ratelimit_view"
 
 # ═══════════════════════════════════════════
 # Internationalization

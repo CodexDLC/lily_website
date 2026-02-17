@@ -16,6 +16,7 @@
 @import url('components/forms.css');
 @import url('components/wizard.css');
 @import url('components/utils.css');
+@import url('components/promo-notification.css');
 
 /* Pages */
 @import url('pages/home.css');

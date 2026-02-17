@@ -19,7 +19,7 @@ class ContactForm(forms.Form):
             attrs={
                 "class": "input-line",
                 "placeholder": _("Vorname"),
-                "autocomplete": "given-name",  # <--- Added
+                "autocomplete": "given-name",
             }
         ),
     )
@@ -31,7 +31,7 @@ class ContactForm(forms.Form):
             attrs={
                 "class": "input-line",
                 "placeholder": _("Nachname"),
-                "autocomplete": "family-name",  # <--- Added
+                "autocomplete": "family-name",
             }
         ),
     )
@@ -46,7 +46,7 @@ class ContactForm(forms.Form):
             attrs={
                 "class": "input-line",
                 "placeholder": _("Nummer oder E-Mail"),
-                "autocomplete": "tel",  # Default to tel, browser handles mixed well usually
+                "autocomplete": "tel",
             }
         ),
     )
@@ -59,6 +59,15 @@ class ContactForm(forms.Form):
         label=_("Nachricht"),
         widget=forms.Textarea(attrs={"class": "input-line", "rows": 4, "placeholder": _("Ihre Nachricht...")}),
         required=False,
+    )
+
+    dsgvo_consent = forms.BooleanField(
+        label=_(
+            'Ich habe die <a href="/datenschutz/" target="_blank" rel="noopener noreferrer" style="color: var(--color-gold); text-decoration: underline;">Datenschutzerklärung</a> gelesen und erkläre mich mit der Verarbeitung meiner Daten einverstanden.'
+        ),
+        required=True,
+        initial=False,
+        widget=forms.CheckboxInput(attrs={"class": "checkbox-custom"}),
     )
 
     consent_marketing = forms.BooleanField(
