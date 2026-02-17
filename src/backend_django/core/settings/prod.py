@@ -19,7 +19,11 @@ DEBUG = os.environ.get("DEBUG", "False").lower() in ("true", "1", "yes")
 if not DEBUG:
     # Trust X-Forwarded-Proto header from Nginx reverse proxy
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-    SECURE_SSL_REDIRECT = True
+
+    # We disable Django-level redirect because Nginx handles it.
+    # This prevents 301 errors during internal Docker communication (e.g., Bot -> Backend)
+    SECURE_SSL_REDIRECT = False
+
     SECURE_HSTS_SECONDS = 31_536_000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
