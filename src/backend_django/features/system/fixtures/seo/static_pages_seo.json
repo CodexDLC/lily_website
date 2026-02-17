@@ -1,23 +1,33 @@
 {
   "home": {
-    "seo_title_de": "Nagelstudio & Beauty Salon LILY | Köthen",
+    "seo_title_de": "Nagelstudio & Schönheitssalon LILY Köthen | Termin online buchen",
     "seo_title_ru": "Салон красоты LILY | Кётен | Маникюр и Косметология",
     "seo_title_uk": "Салон краси LILY | Кетен | Манікюр та Косметологія",
     "seo_title_en": "Nagelstudio & Beauty Salon LILY | Köthen",
-    "seo_description_de": "Ihr exklusives Nagelstudio & Beauty Salon in Köthen. Professionelle Maniküre, Pediküre, Kosmetik und Wimpernverlängerung. Qualität mit ukrainischer Gastfreundschaft.",
-    "seo_description_ru": "Ваш эксклюзивный салон красоты в Кётене. Профессиональный маникюр, педикюр, косметология и наращивание ресниц. Качество с украинским гостеприимством.",
-    "seo_description_uk": "Ваш ексклюзивний салон краси в Кетені. Професійний манікюр, педикюр, косметологія та нарощування вій. Якість з українською гостинністю.",
-    "seo_description_en": "Your exclusive nail studio & beauty salon in Köthen. Professional manicure, pedicure, cosmetics, and eyelash extensions. Quality with Ukrainian hospitality."
+    "seo_description_de": "Ihr exklusiver Schönheitssalon & Nagelstudio in Köthen. Professionelle Maniküre, Pediküre, Kosmetik и Wimpernverlängerung. Jetzt Termin online buchen!",
+    "seo_description_ru": "Ваш эксклюзивный салон красоты в Кётене. Профессиональный маникюр, педикюр, косметология и наращивание ресниц. Запись онлайн.",
+    "seo_description_uk": "Ваш ексклюзивний салон краси в Кетені. Професійний манікюр, педикюр, косметологія та нарощування вій. Запис онлайн.",
+    "seo_description_en": "Your exclusive nail studio & beauty salon in Köthen. Professional manicure, pedicure, cosmetics, and eyelash extensions. Book your appointment online!"
   },
   "services_index": {
-    "seo_title_de": "Leistungen: Maniküre, Pediküre & Kosmetik | LILY Köthen",
-    "seo_title_ru": "Услуги: Маникюр, Педикюр и Косметология | LILY Кётен",
-    "seo_title_uk": "Послуги: Манікюр, Педикюр та Косметологія | LILY Кетен",
-    "seo_title_en": "Services: Manicure, Pedicure & Cosmetics | LILY Köthen",
-    "seo_description_de": "Entdecken Sie unsere Services: Von Nageldesign und Maniküre bis hin zu Wimpernverlängerung und Kosmetik. High-End Qualität in Köthen.",
-    "seo_description_ru": "Откройте для себя наши услуги: от дизайна ногтей и маникюра до наращивания ресниц и косметологии. Качество High-End в Кётене.",
-    "seo_description_uk": "Відкрийте для себе наші послуги: від дизайну нігтів та манікюру до нарощування вій та косметології. Якість High-End у Кетені.",
-    "seo_description_en": "Discover our services: from nail design and manicure to eyelash extensions and cosmetics. High-end quality in Köthen."
+    "seo_title_de": "Leistungen & Preise | Maniküre, Kosmetik & Gutscheine | LILY Köthen",
+    "seo_title_ru": "Услуги и Цены | Маникюр, Косметология и Подарочные сертификаты | LILY Кётен",
+    "seo_title_uk": "Послуги та Ціни | Манікюр, Косметологія та Подарункові сертифікати | LILY Кетен",
+    "seo_title_en": "Services & Prices | Manicure, Cosmetics & Gift Vouchers | LILY Köthen",
+    "seo_description_de": "Entdecken Sie unsere Services: Maniküre, Pediküre, Wimpernverlängerung и Kosmetik. Jetzt Geschenkgutscheine online oder im Salon kaufen. Preise in Köthen.",
+    "seo_description_ru": "Наши услуги: маникюр, педикюр, наращивание ресниц и косметология. Купите подарочные сертификаты онлайн или в салоне. Цены в Кётене.",
+    "seo_description_uk": "Наші послуги: манікюр, педикюр, нарощування вій та косметологія. Купуйте подарункові сертифікати онлайн або в салоні. Ціни в Кетені.",
+    "seo_description_en": "Discover our services: manicure, pedicure, eyelash extensions, and cosmetics. Buy gift vouchers online or at the salon. Prices in Köthen."
+  },
+  "contacts": {
+    "seo_title_de": "Kontakt, Anfahrt & Öffnungszeiten | LILY Beauty Salon Köthen",
+    "seo_title_ru": "Контакты, Адрес и Время работы | LILY Beauty Salon Кётен",
+    "seo_title_uk": "Контакти, Адреса та Час роботи | LILY Beauty Salon Кетен",
+    "seo_title_en": "Contact, Location & Opening Hours | LILY Beauty Salon Köthen",
+    "seo_description_de": "Besuchen Sie uns in der Lohmannstraße 111, Köthen. Hier finden Sie unsere Öffnungszeiten, Anfahrt und Kontaktmöglichkeiten. Wir freuen uns auf Sie!",
+    "seo_description_ru": "Ждем вас по адресу Lohmannstraße 111, Кётен. Время работы, карта проезда и контакты нашего салона.",
+    "seo_description_uk": "Чекаємо на вас за адресою Lohmannstraße 111, Кетен. Час роботи, карта проїзду та контакти нашого салону.",
+    "seo_description_en": "Visit us at Lohmannstraße 111, Köthen. Find our opening hours, location, and contact details here."
   },
   "team": {
     "seo_title_de": "Nageldesigner & Kosmetiker in Köthen | Unser Team",
