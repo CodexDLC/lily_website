@@ -15,12 +15,12 @@
 .about-content h2 {
     font-family: var(--font-serif, serif);
     font-size: 36px;
-    color: #FFFFFF;
+    color: var(--color-white);
     margin-bottom: 20px;
 }
 
 .about-text {
-    color: rgba(255,255,255,0.8);
+    color: var(--color-text-muted);
     line-height: 1.8;
     font-size: 16px;
     margin-bottom: 20px;
@@ -42,7 +42,7 @@
     border: none;
     border-bottom: 1px solid rgba(255,255,255,0.3);
     padding: 12px 0;
-    color: white;
+    color: var(--color-white);
     font-family: var(--font-sans, sans-serif);
     font-size: 14px;
     outline: none;
@@ -60,18 +60,18 @@
 .input-line:-webkit-autofill:focus,
 .input-line:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px #053C35 inset !important;
-    -webkit-text-fill-color: white !important;
+    -webkit-text-fill-color: var(--color-white) !important;
     transition: background-color 5000s ease-in-out 0s;
 }
 
 select.input-line {
-    color: white;
+    color: var(--color-white);
     cursor: pointer;
 }
 
 select.input-line option {
     background-color: #002822;
-    color: white;
+    color: var(--color-white);
 }
 
 textarea.input-line {
@@ -107,13 +107,13 @@ textarea.input-line {
 
 .contacts-details .value {
     font-size: 18px;
-    color: white;
+    color: var(--color-white);
     margin-bottom: 30px;
     display: block;
 }
 
 .contacts-details .value a {
-    color: white;
+    color: var(--color-white);
     text-decoration: none;
     transition: opacity 0.3s;
 }
@@ -160,7 +160,7 @@ textarea.input-line {
 }
 
 .btn-navigate:hover {
-    background-color: white;
+    background-color: var(--color-white);
     color: var(--color-emerald);
 }
 

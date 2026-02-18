@@ -23,9 +23,10 @@ COPY --from=builder /venv /venv
 COPY src/backend_django /app
 COPY deploy/backend/entrypoint.sh /entrypoint.sh
 
-RUN mkdir -p /app/staticfiles /app/mediafiles /app/logs/backend && chown -R appuser:appuser /app
-# Добавляем права на чтение для статических и медиафайлов
-RUN chmod -R 755 /app/staticfiles /app/media
+# Создаем папки, которые реально используются в settings.py
+RUN mkdir -p /app/staticfiles /app/media /app/logs/backend && chown -R appuser:appuser /app
+# Добавляем права на чтение и запись для медиафайлов
+RUN chmod -R 775 /app/media /app/logs/backend
 RUN chmod +x /entrypoint.sh
 
 USER appuser
