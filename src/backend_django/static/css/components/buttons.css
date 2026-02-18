@@ -37,7 +37,7 @@
 }
 
 .btn-submit:hover {
-    background: white;
+    background: var(--color-white);
 }
 
 /* Book Button (for team cards) */
@@ -72,5 +72,5 @@
 }
 
 .btn-navigate:hover {
-    background-color: white;
+    background-color: var(--color-white);
 }

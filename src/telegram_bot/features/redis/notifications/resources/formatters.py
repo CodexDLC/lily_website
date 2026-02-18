@@ -2,9 +2,11 @@ from .dto import BookingNotificationPayload
 from .texts import NotificationsTexts
 
 
-def format_new_booking(payload: BookingNotificationPayload) -> str:
+def format_new_booking(
+    payload: BookingNotificationPayload, email_status: str = "none", twilio_status: str = "none"
+) -> str:
     """
-    Формирует текст уведомления о новой брони.
+    Формирует текст уведомления о новой брони с учетом статусов отправки.
     """
     title = NotificationsTexts.NEW_BOOKING_TITLE.format(client_name=payload.client_name)
 
@@ -16,7 +18,6 @@ def format_new_booking(payload: BookingNotificationPayload) -> str:
     client_notes = payload.client_notes if payload.client_notes else "—"
     price_str = f"{payload.price:g}"
 
-    # Format promo info
     promo_info = ""
     if payload.active_promo_title:
         promo_info = f"🎯 <b>Промо:</b> {payload.active_promo_title}\n"
@@ -34,4 +35,11 @@ def format_new_booking(payload: BookingNotificationPayload) -> str:
         promo_info=promo_info,
     )
 
-    return f"{title}\n\n{details}"
+    # Добавляем блок статусов, если они не "none"
+    status_block = ""
+    if email_status != "none" or twilio_status != "none":
+        e_icon = NotificationsTexts.STATUS_ICONS.get(email_status, "❓")
+        t_icon = NotificationsTexts.STATUS_ICONS.get(twilio_status, "❓")
+        status_block = "\n" + NotificationsTexts.NOTIFICATION_STATUSES.format(email_status=e_icon, twilio_status=t_icon)
+
+    return f"{title}\n\n{details}{status_block}"

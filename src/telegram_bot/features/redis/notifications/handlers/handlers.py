@@ -39,3 +39,37 @@ async def handle_new_appointment_notification(message_data: dict[str, Any], cont
 
     except Exception as e:
         log.critical(f"Notifications | Fatal error in handler: {e}")
+
+
+@notifications_router.message("notification_status")
+async def handle_status_update_notification(message_data: dict[str, Any], container: Any):
+    """
+    Хендлер для обновления статуса отправки (Email/SMS).
+    """
+    try:
+        orchestrator = container.redis_notifications
+        view_sender = container.view_sender
+
+        appointment_id = message_data.get("appointment_id") or message_data.get("confirmation_id")
+        log.info(f"Notifications | Processing 'notification_status' event. ID={appointment_id}")
+
+        if not appointment_id:
+            log.warning("Notifications | No appointment_id in status update.")
+            return
+
+        # 1. Вызываем оркестратор (он сам восстановит текст из кэша)
+        try:
+            view_dto = await orchestrator.handle_status_update(message_data)
+        except Exception as e:
+            log.error(f"Notifications | Orchestrator handle_status_update failed: {e}")
+            return
+
+        if not view_dto:
+            log.debug("Notifications | Status update yielded no changes (DTO is None).")
+            return
+
+        # 2. Отправляем обновление в Telegram
+        await view_sender.send(view_dto)
+
+    except Exception as e:
+        log.critical(f"Notifications | Fatal error in status handler: {e}")

@@ -42,7 +42,7 @@ class AsyncEmailClient:
             "port": self.smtp_port,
             "use_tls": use_ssl,
             "start_tls": start_tls,
-            "timeout": timeout,  # Добавляем таймаут для предотвращения зависания
+            "timeout": timeout,
         }
 
         if self.smtp_user and self.smtp_password:
