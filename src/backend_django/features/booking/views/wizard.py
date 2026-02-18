@@ -86,18 +86,23 @@ class BookingWizardView(TemplateView):
             "client_notes": request.POST.get("client_notes", ""),
         }
 
-        # 2. Create Appointment
+        # 2. Validate State (Check for session expiry/loss)
+        if not state.is_valid_for_submission:
+            log.warning(f"Submission with incomplete state (Session expired?): {state}")
+            # Redirect to start of wizard
+            return redirect("booking_wizard")
+
+        # 3. Create Appointment
         appointment = BookingService.create_appointment(state, form_data)
 
         if not appointment:
             log.error(f"Failed to create appointment for state: {state}")
             # Clear session so user can start fresh
             session_service.clear()
-            # Instead of silently redirecting, raise an error so we can see what's wrong
-            raise ValueError("Failed to create appointment - check logs for details")
+            return render(request, "500.html", status=500)
 
-        # 3. Clear Session
+        # 4. Clear Session
         session_service.clear()
 
-        # 4. Return Success
+        # 5. Return Success
         return render(request, "booking/steps/step_5_success.html", {"appointment": appointment})

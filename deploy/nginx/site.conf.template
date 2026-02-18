@@ -80,6 +80,34 @@ server {
         add_header Access-Control-Allow-Origin "*";
     }
 
+    # === PWA & Root Files Optimization ===
+    location = /sw.js {
+        alias /app/staticfiles/sw.js;
+        add_header Content-Type application/javascript;
+        add_header Service-Worker-Allowed /;
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+        access_log off;
+    }
+
+    location = /manifest.json {
+        alias /app/staticfiles/manifest.json;
+        add_header Content-Type application/json;
+        add_header Cache-Control "public, max-age=3600";
+        access_log off;
+    }
+
+    location = /robots.txt {
+        alias /app/staticfiles/robots.txt;
+        add_header Content-Type text/plain;
+        access_log off;
+    }
+
+    location = /favicon.ico {
+        alias /app/staticfiles/img/favicon/favicon.ico;
+        add_header Cache-Control "public, max-age=86400";
+        access_log off;
+    }
+
     # === API → Backend ===
     location /api/ {
         limit_req zone=api_limit burst=5 nodelay;

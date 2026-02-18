@@ -56,3 +56,15 @@ class BookingState:
                 filtered_data["service_id"] = None
 
         return cls(**filtered_data)
+
+    @property
+    def is_valid_for_submission(self) -> bool:
+        """Checks if state has all required data for creating an appointment."""
+        return all(
+            [
+                self.service_id is not None,
+                self.master_id is not None,
+                self.selected_date is not None,
+                self.selected_time is not None,
+            ]
+        )
