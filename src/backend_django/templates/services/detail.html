@@ -20,7 +20,7 @@
 
         <!-- SEO TEXT -->
         {% if category.content %}
-        <article class="service-seo-section"> {# Изменено с div на article #}
+        <article class="service-seo-section">
             <div class="service-seo-text">
                 {{ category.content|safe }}
             </div>
@@ -87,7 +87,7 @@
         {% endif %}
 
         <div class="service-cta-wrapper">
-            <a href="{% url 'contacts' %}" class="btn-pill">{% trans "Termin buchen" %}</a>
+            <a href="{% url 'booking_wizard' %}" class="btn-pill">{% trans "Termin buchen" %}</a>
         </div>
 
     </div>

@@ -7,6 +7,9 @@
     background-size: cover;
     background-position: center;
     position: relative;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
 }
 
 .hero-service-overlay {
@@ -21,9 +24,10 @@
 .hero-service-content {
     position: relative;
     z-index: 2;
+    text-align: center;
 }
 
-/* SEO Section */
+/* SEO Section (The main text block you mentioned) */
 .service-seo-section {
     padding: 60px 0;
     line-height: 1.8;
@@ -32,34 +36,63 @@
 .service-seo-text {
     max-width: 800px;
     margin: 0 auto;
-    color: var(--color-text-muted);
-    text-align: left; /* Ensure readability for long texts */
+    /* Убираем прозрачность, используем чистый Шампань */
+    color: var(--color-champagne);
+    text-align: left;
+    font-size: 17px; /* Чуть увеличим для солидности */
 }
 
 .service-seo-text p {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.8rem;
 }
 
-.service-seo-text ul {
-    margin-bottom: 1.5rem;
-    padding-left: 1.5rem;
-    list-style-type: disc;
-    color: inherit; /* Inherit muted color from parent */
+/* Стили для заголовков ВНУТРИ текста (h2, h3) */
+.service-seo-text h2,
+.service-seo-text h3 {
+    color: var(--color-gold);
+    font-family: var(--font-serif, serif);
+    margin-top: 2.5rem;
+    margin-bottom: 1.2rem;
+    line-height: 1.3;
 }
 
-.service-seo-text li {
-    margin-bottom: 0.5rem;
-    padding-left: 0.5rem;
-}
+.service-seo-text h2 { font-size: 32px; }
+.service-seo-text h3 { font-size: 24px; }
 
 .service-seo-text strong {
     color: var(--color-gold);
-    font-weight: 600;
+    font-weight: 700;
 }
 
-.service-seo-text em {
+.service-seo-text ul {
+    margin-bottom: 1.8rem;
+    padding-left: 1.2rem;
+    list-style-type: none; /* Уберем стандартные точки */
+}
+
+.service-seo-text li {
+    margin-bottom: 0.8rem;
+    position: relative;
+    padding-left: 20px;
+}
+
+/* Красивый золотой маркер для списков */
+.service-seo-text li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--color-gold);
+}
+
+/* Service List Styles (Small descriptions in price list) */
+.service-desc-small {
+    display: block;
+    font-size: 14px;
+    color: var(--color-champagne);
+    opacity: 0.9;
+    margin-top: 4px;
+    line-height: 1.4;
     font-style: italic;
-    color: var(--color-white); /* Keep emphasis bright if needed, or change to inherit */
 }
 
 /* Masters Block */
@@ -68,28 +101,69 @@
     padding: 40px;
     background: rgba(255, 255, 255, 0.02);
     border-radius: 8px;
+    border: 1px solid rgba(237, 208, 113, 0.1);
 }
 
 .service-masters-title {
     border: none;
     text-align: center;
     font-size: 24px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
-.masters-list {
+.mini-master {
     display: flex;
-    gap: 30px;
-    margin-top: 20px;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(237, 208, 113, 0.1);
 }
 
-.masters-list-centered {
-    justify-content: center;
+.mini-master-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid var(--color-gold);
+}
+
+.mini-master-name {
+    display: block;
+    color: var(--color-white);
+    font-size: 16px;
+}
+
+.mini-master-role {
+    display: block;
+    color: var(--color-gold);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* Service CTA */
 .service-cta-wrapper {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 60px;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+    .service-seo-text {
+        font-size: 16px;
+    }
+    .service-masters-block {
+        padding: 20px;
+    }
+    .masters-list {
+        flex-direction: column;
+        align-items: center;
+    }
+    .mini-master {
+        width: 100%;
+        max-width: 300px;
+    }
 }

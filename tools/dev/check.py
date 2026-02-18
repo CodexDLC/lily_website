@@ -166,6 +166,7 @@ def run_docker_validation():
 
 
 def run_all():
+    os.system("cls" if os.name == "nt" else "clear")
     if not check_linters():
         sys.exit(1)
     if not check_types():

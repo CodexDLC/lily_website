@@ -112,10 +112,14 @@
 
     --color-emerald: #003831;
     --color-gold: #EDD071;
-    --color-text-main: #FFFFFF;
-    --color-text-muted: rgba(255,255,255, 0.7);
-    --color-white: #FFFFFF;
+    --color-champagne: #D1C7B7;
 
+
+    --color-text-main: #F5F5F5;
+    --color-text-muted: rgba(245, 245, 245, 0.7);
+
+
+    --color-white: #F5F5F5;
 
 
     --font-serif: 'Playfair Display', serif;
@@ -187,6 +191,21 @@ body.no-scroll {
 
 
 
+
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    color: var(--color-text-main);
+    font-family: var(--font-sans, sans-serif);
+    line-height: 1.6;
+}
+
+p {
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+}
 
 
 .site-wrapper {
@@ -324,7 +343,7 @@ main {
 .language-select {
     background: transparent;
     border: none;
-    color: white;
+    color: var(--color-text-main);
     opacity: 0.7;
     font-family: inherit;
     font-size: inherit;
@@ -461,7 +480,7 @@ main {
 }
 
 .copyright {
-    color: rgba(255,255,255,0.4);
+    color: var(--color-text-muted);
     font-size: 12px;
     display: none;
 }
@@ -474,14 +493,14 @@ main {
     transform: translate(-50%, -50%);
     z-index: 2;
     font-size: 10px;
-    color: rgba(255,255,255,0.4);
+    color: var(--color-text-muted);
     letter-spacing: 1px;
     text-align: center;
     display: none;
 }
 
 .dev-text {
-    color: rgba(255,255,255,0.7);
+    color: var(--color-text-muted);
 }
 
 .dev-link {
@@ -572,7 +591,7 @@ main {
     width: auto;
     background: none;
     border: none;
-    color: rgba(255,255,255,0.7);
+    color: var(--color-text-muted);
     padding: 0 10px;
     height: 36px;
     line-height: 36px;
@@ -647,7 +666,7 @@ main {
 }
 
 .f-title a:hover {
-    color: white;
+    color: var(--color-white);
 }
 
 .f-col ul {
@@ -656,14 +675,14 @@ main {
 }
 
 .f-col li {
-    color: rgba(255,255,255,0.7);
+    color: var(--color-text-muted);
     font-size: 14px;
     margin-bottom: 8px;
     line-height: 1.5;
 }
 
 .f-col li a {
-    color: rgba(255,255,255,0.7);
+    color: var(--color-text-muted);
     text-decoration: none;
     transition: 0.3s;
 }
@@ -678,12 +697,12 @@ main {
     align-items: flex-start;
     gap: 10px;
     margin-bottom: 15px;
-    color: white;
+    color: var(--color-white);
     font-size: 14px;
 }
 
 .f-row a {
-    color: white;
+    color: var(--color-white);
     text-decoration: none;
     border-bottom: 1px solid transparent;
 }
@@ -722,7 +741,7 @@ main {
 }
 
 .footer-legal-links a {
-    color: white;
+    color: var(--color-white);
     margin: 0 10px;
     text-decoration: none;
     text-transform: uppercase;
@@ -807,7 +826,7 @@ main {
 }
 
 .btn-submit:hover {
-    background: white;
+    background: var(--color-white);
 }
 
 
@@ -842,7 +861,7 @@ main {
 }
 
 .btn-navigate:hover {
-    background-color: white;
+    background-color: var(--color-white);
 }
 
 
@@ -1460,6 +1479,14 @@ textarea.form-input-boxed {
 
 
 
+.promo-floating-button.is-dragging,
+.promo-modal-content.is-dragging {
+    animation: none !important;
+    transition: none !important;
+    opacity: 0.8;
+}
+
+
 .promo-floating-button {
     position: fixed;
     right: 20px;
@@ -1470,26 +1497,26 @@ textarea.form-input-boxed {
 
     min-width: 120px;
     padding: 12px 24px;
-
-
     border-radius: 30px;
-    border: none;
+
+
+    background-color: var(--color-emerald);
+    color: var(--color-white);
+    border: 1px solid var(--color-gold);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    cursor: move;
 
 
     font-family: var(--font-sans, sans-serif);
     font-size: 14px;
     font-weight: 600;
     text-align: center;
+    cursor: move;
+    user-select: none;
+    touch-action: none;
 
 
     animation: pulse 2s ease-in-out infinite;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-
-    user-select: none;
-    touch-action: none;
 }
 
 .promo-floating-button:hover {
@@ -1498,18 +1525,8 @@ textarea.form-input-boxed {
     animation: none;
 }
 
-.promo-floating-button.is-dragging {
-    animation: none;
-    transform: none;
-    transition: none;
-    opacity: 0.8;
-}
-
-
 @keyframes pulse {
-    0%, 100% {
-        transform: translateY(-50%) scale(1);
-    }
+    0%, 100% { transform: translateY(-50%) scale(1); }
     50% {
         transform: translateY(-50%) scale(1.05);
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
@@ -1521,14 +1538,11 @@ textarea.form-input-boxed {
     position: fixed;
     inset: 0;
     z-index: 1600;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(5px);
-
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -1553,44 +1567,22 @@ textarea.form-input-boxed {
     padding: 30px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 
-
     animation: flyIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-
-
     touch-action: none;
-}
-
-.promo-modal-content.is-dragging {
-    animation: none;
-    transition: none;
-    opacity: 0.9;
 }
 
 .promo-modal:not(.active) .promo-modal-content {
     animation: flyOut 0.4s ease forwards;
 }
 
-
 @keyframes flyIn {
-    from {
-        opacity: 0;
-        transform: translateY(30px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes flyOut {
-    from {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-30px) scale(0.95);
-    }
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(-30px) scale(0.95); }
 }
 
 
@@ -1599,19 +1591,13 @@ textarea.form-input-boxed {
     top: 15px;
     right: 15px;
     z-index: 10;
-
     width: 32px;
     height: 32px;
-    padding: 0;
-
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
-
     color: var(--color-white);
     font-size: 20px;
-    line-height: 1;
-
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -1622,11 +1608,11 @@ textarea.form-input-boxed {
     transform: rotate(90deg);
 }
 
-
 .promo-modal-header {
     margin-bottom: 20px;
     padding-right: 40px;
     user-select: none;
+    cursor: move;
 }
 
 .promo-modal-title {
@@ -1634,9 +1620,8 @@ textarea.form-input-boxed {
     font-family: var(--font-serif, serif);
     font-size: 28px;
     font-weight: 700;
-    margin: 0 0 15px 0;
+    margin: 0;
 }
-
 
 .promo-modal-body {
     color: var(--color-text-main);
@@ -1644,46 +1629,6 @@ textarea.form-input-boxed {
     font-size: 16px;
     line-height: 1.6;
 }
-
-.promo-modal-description {
-    margin: 0 0 20px 0;
-}
-
-
-.promo-modal-description p {
-    margin-bottom: 1.2rem;
-}
-
-.promo-modal-description ul {
-    margin-bottom: 1.2rem;
-    padding-left: 1.5rem;
-    list-style-type: disc;
-}
-
-.promo-modal-description li {
-    margin-bottom: 0.5rem;
-}
-
-.promo-modal-description strong,
-.promo-modal-description b {
-    color: var(--color-gold);
-    font-weight: 600;
-}
-
-.promo-modal-description h1,
-.promo-modal-description h2,
-.promo-modal-description h3 {
-    color: var(--color-gold);
-    font-family: var(--font-serif, serif);
-    margin: 1.5rem 0 1rem 0;
-    line-height: 1.2;
-}
-
-.promo-modal-description a {
-    color: var(--color-gold);
-    text-decoration: underline;
-}
-
 
 .promo-modal-image {
     width: 100%;
@@ -1695,59 +1640,21 @@ textarea.form-input-boxed {
 }
 
 
+.promo-modal-description p { margin-bottom: 1.2rem; }
+.promo-modal-description strong { color: var(--color-gold); font-weight: 600; }
+.promo-modal-description a { color: var(--color-gold); text-decoration: underline; }
 
 
 @media (max-width: 1023px) {
-    .promo-floating-button {
-        right: 15px;
-        min-width: 100px;
-        padding: 10px 20px;
-        font-size: 13px;
-    }
-
-    .promo-modal-content {
-        max-width: 450px;
-        padding: 25px;
-    }
-
-    .promo-modal-title {
-        font-size: 24px;
-    }
-
-    .promo-modal-body {
-        font-size: 15px;
-    }
+    .promo-floating-button { right: 15px; padding: 10px 20px; font-size: 13px; }
+    .promo-modal-content { padding: 25px; }
+    .promo-modal-title { font-size: 24px; }
 }
 
-
 @media (max-width: 767px) {
-    .promo-floating-button {
-        right: 10px;
-        min-width: 80px;
-        padding: 10px 16px;
-        font-size: 12px;
-    }
-
-    .promo-modal-content {
-        max-width: 95%;
-        width: 95%;
-        padding: 20px;
-    }
-
-    .promo-modal-title {
-        font-size: 22px;
-        padding-right: 35px;
-    }
-
-    .promo-modal-body {
-        font-size: 14px;
-    }
-
-    .promo-modal-close {
-        width: 28px;
-        height: 28px;
-        font-size: 18px;
-    }
+    .promo-floating-button { right: 10px; padding: 10px 16px; font-size: 12px; }
+    .promo-modal-content { width: 95%; padding: 20px; }
+    .promo-modal-title { font-size: 22px; }
 }
 
 
@@ -1940,13 +1847,14 @@ textarea.form-input-boxed {
 
 .category-desc {
     text-align: center;
-    color: rgba(255,255,255,0.7);
-    font-size: 14px;
+    color: var(--color-champagne);
+    font-size: 15px;
     margin-bottom: 25px;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
     line-height: 1.6;
+    opacity: 0.9;
 }
 
 
@@ -1955,7 +1863,7 @@ textarea.form-input-boxed {
     justify-content: space-between;
     align-items: center;
     padding: 15px 0;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    border-bottom: 1px dashed rgba(245, 245, 245, 0.1);
     transition: 0.2s;
 }
 
@@ -1964,7 +1872,7 @@ textarea.form-input-boxed {
 }
 
 .service-row:hover {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(245, 245, 245, 0.02);
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 4px;
@@ -1984,11 +1892,23 @@ textarea.form-input-boxed {
     font-weight: 500;
 }
 
+
+.service-desc-small {
+    display: block;
+    font-size: 13px;
+    color: var(--color-champagne);
+    font-style: italic;
+    opacity: 0.9;
+    line-height: 1.4;
+    margin-top: 2px;
+}
+
 .name-ua {
     display: block;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--color-champagne);
     font-style: italic;
+    opacity: 0.7;
 }
 
 
@@ -2008,7 +1928,8 @@ textarea.form-input-boxed {
 .meta-time {
     display: block;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--color-champagne);
+    opacity: 0.6;
     margin-top: 4px;
 }
 
@@ -2017,7 +1938,21 @@ textarea.form-input-boxed {
     text-align: center;
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(245, 245, 245, 0.05);
+}
+
+.more-link {
+    color: var(--color-gold);
+    text-decoration: none;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.more-link:hover {
+    color: var(--color-white);
+    letter-spacing: 2px;
 }
 
 
@@ -2028,6 +1963,9 @@ textarea.form-input-boxed {
     background-size: cover;
     background-position: center;
     position: relative;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
 }
 
 .hero-service-overlay {
@@ -2042,6 +1980,7 @@ textarea.form-input-boxed {
 .hero-service-content {
     position: relative;
     z-index: 2;
+    text-align: center;
 }
 
 
@@ -2053,34 +1992,63 @@ textarea.form-input-boxed {
 .service-seo-text {
     max-width: 800px;
     margin: 0 auto;
-    color: var(--color-text-muted);
+
+    color: var(--color-champagne);
     text-align: left;
+    font-size: 17px;
 }
 
 .service-seo-text p {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.8rem;
 }
 
-.service-seo-text ul {
-    margin-bottom: 1.5rem;
-    padding-left: 1.5rem;
-    list-style-type: disc;
-    color: inherit;
+
+.service-seo-text h2,
+.service-seo-text h3 {
+    color: var(--color-gold);
+    font-family: var(--font-serif, serif);
+    margin-top: 2.5rem;
+    margin-bottom: 1.2rem;
+    line-height: 1.3;
 }
 
-.service-seo-text li {
-    margin-bottom: 0.5rem;
-    padding-left: 0.5rem;
-}
+.service-seo-text h2 { font-size: 32px; }
+.service-seo-text h3 { font-size: 24px; }
 
 .service-seo-text strong {
     color: var(--color-gold);
-    font-weight: 600;
+    font-weight: 700;
 }
 
-.service-seo-text em {
+.service-seo-text ul {
+    margin-bottom: 1.8rem;
+    padding-left: 1.2rem;
+    list-style-type: none;
+}
+
+.service-seo-text li {
+    margin-bottom: 0.8rem;
+    position: relative;
+    padding-left: 20px;
+}
+
+
+.service-seo-text li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--color-gold);
+}
+
+
+.service-desc-small {
+    display: block;
+    font-size: 14px;
+    color: var(--color-champagne);
+    opacity: 0.9;
+    margin-top: 4px;
+    line-height: 1.4;
     font-style: italic;
-    color: var(--color-white);
 }
 
 
@@ -2089,30 +2057,71 @@ textarea.form-input-boxed {
     padding: 40px;
     background: rgba(255, 255, 255, 0.02);
     border-radius: 8px;
+    border: 1px solid rgba(237, 208, 113, 0.1);
 }
 
 .service-masters-title {
     border: none;
     text-align: center;
     font-size: 24px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
-.masters-list {
+.mini-master {
     display: flex;
-    gap: 30px;
-    margin-top: 20px;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(237, 208, 113, 0.1);
 }
 
-.masters-list-centered {
-    justify-content: center;
+.mini-master-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid var(--color-gold);
+}
+
+.mini-master-name {
+    display: block;
+    color: var(--color-white);
+    font-size: 16px;
+}
+
+.mini-master-role {
+    display: block;
+    color: var(--color-gold);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 
 .service-cta-wrapper {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 60px;
+}
+
+
+@media (max-width: 767px) {
+    .service-seo-text {
+        font-size: 16px;
+    }
+    .service-masters-block {
+        padding: 20px;
+    }
+    .masters-list {
+        flex-direction: column;
+        align-items: center;
+    }
+    .mini-master {
+        width: 100%;
+        max-width: 300px;
+    }
 }
 
 
@@ -2409,12 +2418,12 @@ textarea.form-input-boxed {
 .about-content h2 {
     font-family: var(--font-serif, serif);
     font-size: 36px;
-    color: #FFFFFF;
+    color: var(--color-white);
     margin-bottom: 20px;
 }
 
 .about-text {
-    color: rgba(255,255,255,0.8);
+    color: var(--color-text-muted);
     line-height: 1.8;
     font-size: 16px;
     margin-bottom: 20px;
@@ -2436,7 +2445,7 @@ textarea.form-input-boxed {
     border: none;
     border-bottom: 1px solid rgba(255,255,255,0.3);
     padding: 12px 0;
-    color: white;
+    color: var(--color-white);
     font-family: var(--font-sans, sans-serif);
     font-size: 14px;
     outline: none;
@@ -2454,18 +2463,18 @@ textarea.form-input-boxed {
 .input-line:-webkit-autofill:focus,
 .input-line:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px #053C35 inset !important;
-    -webkit-text-fill-color: white !important;
+    -webkit-text-fill-color: var(--color-white) !important;
     transition: background-color 5000s ease-in-out 0s;
 }
 
 select.input-line {
-    color: white;
+    color: var(--color-white);
     cursor: pointer;
 }
 
 select.input-line option {
     background-color: #002822;
-    color: white;
+    color: var(--color-white);
 }
 
 textarea.input-line {
@@ -2501,13 +2510,13 @@ textarea.input-line {
 
 .contacts-details .value {
     font-size: 18px;
-    color: white;
+    color: var(--color-white);
     margin-bottom: 30px;
     display: block;
 }
 
 .contacts-details .value a {
-    color: white;
+    color: var(--color-white);
     text-decoration: none;
     transition: opacity 0.3s;
 }
@@ -2554,7 +2563,7 @@ textarea.input-line {
 }
 
 .btn-navigate:hover {
-    background-color: white;
+    background-color: var(--color-white);
     color: var(--color-emerald);
 }
 

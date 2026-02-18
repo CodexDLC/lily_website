@@ -48,6 +48,35 @@ class NotificationsOrchestrator:
             message_thread_id=message_thread_id,
         )
 
+    async def handle_status_update(self, message_data: dict[str, Any]) -> UnifiedViewDTO | None:
+        """
+        Обрабатывает обновление статуса (Email/SMS) от воркера.
+        """
+        appointment_id = message_data.get("appointment_id")
+        channel = message_data.get("channel", "unknown")
+        status = message_data.get("status", "unknown")
+
+        log.info(f"NotificationsOrchestrator | Status update: ID={appointment_id} channel={channel} status={status}")
+
+        # Формируем текст уведомления для админов
+        status_emoji = "✅" if status == "sent" or status == "success" else "❌"
+        status_text = "отправлено" if status == "sent" or status == "success" else f"ошибка ({status})"
+
+        text = (
+            f"{status_emoji} <b>Уведомление клиенту (#{appointment_id})</b>\n"
+            f"Канал: <code>{channel.upper()}</code>\n"
+            f"Статус: <b>{status_text}</b>"
+        )
+
+        # Важно: передаем message_thread_id, чтобы сообщение попало в нужный топик
+        return UnifiedViewDTO(
+            content=ViewResultDTO(text=text),
+            chat_id=self.settings.telegram_admin_channel_id,
+            session_key=f"status_{appointment_id}_{channel}",
+            mode="topic",
+            message_thread_id=self.settings.telegram_notification_topic_id,
+        )
+
     def handle_failure(self, raw_payload: dict[str, Any], error_msg: str) -> UnifiedViewDTO:
         booking_id = raw_payload.get("id", "???")
         text = (
