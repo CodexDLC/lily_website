@@ -1,7 +1,7 @@
 from datetime import date, datetime, time, timedelta
 
 from django.utils import timezone
-from features.booking.models import Appointment, Master
+from features.booking.models import Appointment, Master, MasterDayOff
 from features.system.models.site_settings import SiteSettings
 
 
@@ -37,6 +37,10 @@ class SlotService:
 
     def _get_slots_for_single_master(self, master: Master, date_obj: date, duration_minutes: int) -> list[str]:
         """Calculates slots using 'tight packing' logic."""
+
+        # 0. Check for Day Off exception
+        if MasterDayOff.objects.filter(master=master, date=date_obj).exists():
+            return []
 
         # 1. Get working hours
         working_hours = self._get_working_hours(date_obj)
