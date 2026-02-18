@@ -7,7 +7,8 @@ from pathlib import Path
 
 # --- Configuration ---
 PROJECT_ROOT = Path(__file__).parent.parent.parent
-COMPOSE_FILE = PROJECT_ROOT / "deploy" / "docker-compose.yml"
+# ИСПОЛЬЗУЕМ ТЕСТОВЫЙ ФАЙЛ КОМПОУЗА (с изолированными портами)
+COMPOSE_FILE = PROJECT_ROOT / "deploy" / "docker-compose.test.yml"
 TEST_PROJECT_NAME = "lily-quality-check"  # Уникальное имя для изоляции тестов
 
 

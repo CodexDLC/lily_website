@@ -25,6 +25,14 @@ class TwilioService:
             return "+49" + clean_phone[1:]
         return "+" + clean_phone
 
+    def _is_valid_media_url(self, url: str | None) -> bool:
+        """Проверяет, является ли URL публичным и абсолютным."""
+        if not url:
+            return False
+        # Twilio требует абсолютный URL, начинающийся с http/https
+        # Также игнорируем локальные адреса типа 'backend' или 'localhost'
+        return url.startswith("http") and "localhost" not in url and "backend" not in url
+
     def send_sms(self, to_number: str, message: str) -> bool:
         """Отправка обычного SMS."""
         try:
@@ -69,10 +77,13 @@ class TwilioService:
             from_wa = f"whatsapp:{self.from_number}"
             to_wa = f"whatsapp:{formatted_to}"
 
-            # Явно указываем тип dict[str, Any], чтобы Mypy не ругался на список в media_url
             params: dict[str, Any] = {"from_": from_wa, "to": to_wa, "body": message}
-            if media_url:
+
+            # Используем медиа только если URL валидный
+            if self._is_valid_media_url(media_url):
                 params["media_url"] = [media_url]
+            elif media_url:
+                log.warning(f"TwilioService | Skipping invalid media URL: {media_url}")
 
             sent_message = self.client.messages.create(**params)
             log.info(f"TwilioService | WhatsApp sent. SID: {sent_message.sid}")

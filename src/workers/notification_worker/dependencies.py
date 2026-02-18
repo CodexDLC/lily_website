@@ -16,12 +16,9 @@ from src.workers.notification_worker.services.notification_service import Notifi
 
 
 async def init_arq_service(ctx: dict[str, Any], settings: WorkerSettings) -> None:
-    """
-    Инициализация ArqService для постановки задач из задач (Dispatcher pattern).
-    """
+    """Инициализация ArqService."""
     log.info("Initializing ArqService...")
     try:
-        # Используем настройки Redis из WorkerSettings
         arq_service = ArqService(settings.arq_redis_settings)
         await arq_service.init()
         ctx["arq_service"] = arq_service
@@ -32,9 +29,7 @@ async def init_arq_service(ctx: dict[str, Any], settings: WorkerSettings) -> Non
 
 
 async def close_arq_service(ctx: dict[str, Any], settings: WorkerSettings) -> None:
-    """
-    Закрытие соединения ARQ.
-    """
+    """Закрытие ArqService."""
     arq_service = ctx.get("arq_service")
     if arq_service:
         await arq_service.close()
@@ -42,15 +37,12 @@ async def close_arq_service(ctx: dict[str, Any], settings: WorkerSettings) -> No
 
 
 async def init_stream_manager(ctx: dict[str, Any], settings: WorkerSettings) -> None:
-    """
-    Инициализация StreamManager, используя уже инициализированный RedisService.
-    """
+    """Инициализация StreamManager."""
     log.info("Initializing Stream Manager...")
     try:
         redis_service = ctx.get("redis_service")
         if not redis_service:
-            raise RuntimeError("RedisService not found in context. Ensure init_common_dependencies is called first.")
-
+            raise RuntimeError("RedisService not found in context.")
         stream_manager = StreamManager(redis_service)
         ctx["stream_manager"] = stream_manager
         log.info("Stream Manager initialized successfully.")
@@ -60,17 +52,11 @@ async def init_stream_manager(ctx: dict[str, Any], settings: WorkerSettings) -> 
 
 
 async def init_notification_service(ctx: dict[str, Any], settings: WorkerSettings) -> None:
-    """
-    Инициализация NotificationService с использованием настроек из Redis (Pydantic объект).
-    """
+    """Инициализация NotificationService."""
     log.info("Initializing NotificationService...")
     try:
-        # Получаем объект настроек с типизацией
-        # TC006: Используем кавычки для предотвращения проблем с циклическими импортами в cast
         site_settings = cast("SiteSettingsSchema | None", ctx.get("site_settings"))
-
         if not site_settings:
-            log.warning("Site settings object not found in context, using schema defaults.")
             site_settings = SiteSettingsSchema()
 
         notification_service = NotificationService(
@@ -83,6 +69,7 @@ async def init_notification_service(ctx: dict[str, Any], settings: WorkerSetting
             smtp_password=settings.SMTP_PASSWORD,
             smtp_from_email=settings.SMTP_FROM_EMAIL,
             smtp_use_tls=settings.SMTP_USE_TLS,
+            sendgrid_api_key=settings.SENDGRID_API_KEY,
             url_path_confirm=site_settings.url_path_confirm,
             url_path_cancel=site_settings.url_path_cancel,
             url_path_reschedule=site_settings.url_path_reschedule,
@@ -96,28 +83,27 @@ async def init_notification_service(ctx: dict[str, Any], settings: WorkerSetting
 
 
 async def init_twilio_service(ctx: dict[str, Any], settings: WorkerSettings) -> None:
-    """
-    Инициализация TwilioService.
-    """
+    """Инициализация TwilioService."""
     log.info("Initializing TwilioService...")
     try:
         if not all([settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN, settings.TWILIO_PHONE_NUMBER]):
-            log.warning("Twilio settings are missing. TwilioService will not be available.")
+            log.warning("Twilio settings are missing.")
             ctx["twilio_service"] = None
             return
 
-        # Explicit check for mypy
-        if (
-            settings.TWILIO_ACCOUNT_SID is None
-            or settings.TWILIO_AUTH_TOKEN is None
-            or settings.TWILIO_PHONE_NUMBER is None
-        ):
-            return
+        # Type narrowing for Mypy
+        account_sid = settings.TWILIO_ACCOUNT_SID
+        auth_token = settings.TWILIO_AUTH_TOKEN
+        phone_number = settings.TWILIO_PHONE_NUMBER
+
+        assert account_sid is not None
+        assert auth_token is not None
+        assert phone_number is not None
 
         twilio_service = TwilioService(
-            account_sid=settings.TWILIO_ACCOUNT_SID,
-            auth_token=settings.TWILIO_AUTH_TOKEN,
-            from_number=settings.TWILIO_PHONE_NUMBER,
+            account_sid=account_sid,
+            auth_token=auth_token,
+            from_number=phone_number,
         )
         ctx["twilio_service"] = twilio_service
         log.info("TwilioService initialized successfully.")
@@ -126,17 +112,15 @@ async def init_twilio_service(ctx: dict[str, Any], settings: WorkerSettings) -> 
         raise
 
 
-# Список функций, которые будут выполняться при старте воркера
 STARTUP_DEPENDENCIES: list[DependencyFunction] = [
-    init_common_dependencies,  # Сначала общие (Redis, SiteSettings)
-    init_arq_service,  # Добавлено: инициализация ARQ для подзадач
-    init_stream_manager,  # Затем специфичные для воркера
+    init_common_dependencies,
+    init_arq_service,
+    init_stream_manager,
     init_notification_service,
     init_twilio_service,
 ]
 
-# Список функций, которые будут выполняться при остановке воркера
 SHUTDOWN_DEPENDENCIES: list[DependencyFunction] = [
-    close_arq_service,  # Добавлено: закрытие ARQ
+    close_arq_service,
     close_common_dependencies,
 ]

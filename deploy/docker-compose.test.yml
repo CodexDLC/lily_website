@@ -1,54 +1,150 @@
-# Minimal Docker Compose for testing build and migrations
-# Used by tools/dev/check_docker.ps1 for CI validation
-
 services:
   db:
     image: postgres:16-alpine
-    container_name: lily_test-db
+    container_name: ${CONTAINER_PREFIX:-lily_test}-db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=lily_db
       - POSTGRES_USER=lily_user
       - POSTGRES_PASSWORD=lily_password
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U lily_user -d lily_db"]
-      interval: 5s
-      timeout: 3s
+      interval: 10s
+      timeout: 5s
       retries: 5
     networks:
-      - test-network
+      - lily_test-network
 
   redis:
     image: redis:7-alpine
-    container_name: lily_test-redis
-    command: redis-server --requirepass test_password
+    container_name: ${CONTAINER_PREFIX:-lily_test}-redis
+    env_file:
+      - ../.env
+    command: >
+      sh -c "redis-server --requirepass $${REDIS_PASSWORD} --appendonly yes"
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis_test_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
+      test: ["CMD", "sh", "-c", "REDISCLI_AUTH=${REDIS_PASSWORD} redis-cli ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
     networks:
-      - test-network
+      - lily_test-network
 
   backend:
     build:
       context: ..
       dockerfile: deploy/backend/Dockerfile
-    container_name: lily_test-backend
-    environment:
-      - DATABASE_URL=postgresql://lily_user:lily_password@db:5432/lily_db
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=test_password
-      - SECRET_KEY=test_secret_key_for_ci
-      - DEBUG=False
+    container_name: ${CONTAINER_PREFIX:-lily_test}-backend
+    ports:
+      - "8001:8000"
+    env_file:
+      - ../.env
+    volumes:
+      - ../src/backend_django:/app
+      - ../src/backend_django/media:/app/media
+      - static_test_volume:/app/staticfiles
+      - logs_test_volume:/app/logs
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
     networks:
-      - test-network
+      - lily_test-network
+
+  bot:
+    build:
+      context: ..
+      dockerfile: deploy/bot/Dockerfile
+    container_name: ${CONTAINER_PREFIX:-lily_test}-telegram_bot
+    env_file:
+      - ../.env
+    volumes:
+      - ../src/telegram_bot:/app/src/telegram_bot:ro
+      - ../src/shared:/app/src/shared:ro
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    networks:
+      - lily_test-network
+
+  worker:
+    build:
+      context: ..
+      dockerfile: deploy/worker/Dockerfile
+    container_name: ${CONTAINER_PREFIX:-lily_test}-notification_worker
+    command: arq src.workers.notification_worker.worker.WorkerSettings
+    env_file:
+      - ../.env
+    volumes:
+      - ../src/workers:/app/src/workers:ro
+      - ../src/shared:/app/src/shared:ro
+      - logs_test_volume:/app/logs
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    networks:
+      - lily_test-network
+
+  nginx:
+    build:
+      context: ..
+      dockerfile: deploy/nginx/Dockerfile.local
+    container_name: ${CONTAINER_PREFIX:-lily_test}-nginx
+    ports:
+      - "8081:80"
+    volumes:
+      - ../src/backend_django/media:/app/media:ro
+      - static_test_volume:/app/staticfiles:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - lily_test-network
+
+  mailpit:
+    image: axllent/mailpit:v1.21
+    container_name: ${CONTAINER_PREFIX:-lily_test}-mailpit
+    ports:
+      - "8026:8025"
+      - "1026:1025"
+    environment:
+      - MP_MAX_MESSAGES=500
+      - MP_SMTP_AUTH_ACCEPT_ANY=1
+      - MP_SMTP_AUTH_ALLOW_INSECURE=1
+    restart: unless-stopped
+    networks:
+      - lily_test-network
+
+volumes:
+  postgres_test_data:
+  redis_test_data:
+  static_test_volume:
+  logs_test_volume:
 
 networks:
-  test-network:
+  lily_test-network:
+    name: ${CONTAINER_PREFIX:-lily_test}-network
     driver: bridge
