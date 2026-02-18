@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from urllib.parse import quote
 
-from src.workers.core.email_client import AsyncEmailClient
-from src.workers.core.template_renderer import TemplateRenderer
+from src.workers.core.base_module.email_client import AsyncEmailClient
+from src.workers.core.base_module.template_renderer import TemplateRenderer
 
 
 class NotificationService:

@@ -16,6 +16,11 @@ class WorkerSettings(CommonSettings):
     SMTP_FROM_EMAIL: str
     SMTP_USE_TLS: bool = True
 
+    # --- Twilio ---
+    TWILIO_ACCOUNT_SID: str | None = None
+    TWILIO_AUTH_TOKEN: str | None = None
+    TWILIO_PHONE_NUMBER: str | None = None
+
     # --- Templates ---
     TEMPLATES_DIR: str = "src/workers/templates"
 

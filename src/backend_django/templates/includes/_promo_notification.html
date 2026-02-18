@@ -37,10 +37,6 @@
 </div>
 
 <script>
-/**
- * Persistent Promo Widget Logic
- * Handles visibility, dragging, and session-based auto-open
- */
 (function() {
     const widget = document.getElementById('promoWidget');
     if (!widget) return;
@@ -55,6 +51,9 @@
     const modalHeader = document.getElementById('promoModalHeader');
     const closeBtn = document.getElementById('promoModalClose');
 
+    let isDragging = false;
+    let dragStartTime = 0;
+
     const trackAction = (action) => {
         fetch(`/api/v1/promos/${promoId}/track-${action}/`, {
             method: 'POST',
@@ -65,7 +64,6 @@
     const openModal = (isAuto = false) => {
         modal.classList.add('active');
         if (!isAuto) trackAction('click');
-        // Mark as opened in this session to prevent auto-reopen on refresh
         sessionStorage.setItem(SESSION_KEY, 'true');
     };
 
@@ -73,37 +71,55 @@
         modal.classList.remove('active');
     };
 
-    // Dragging Logic
     function initDrag(el, handle) {
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        let startX = 0, startY = 0;
+
         handle.onmousedown = dragMouseDown;
         handle.ontouchstart = dragMouseDown;
 
         function dragMouseDown(e) {
+            e = e || window.event;
             const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
             const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+
+            startX = clientX;
+            startY = clientY;
             pos3 = clientX;
             pos4 = clientY;
+
+            dragStartTime = Date.now();
+            isDragging = false;
+
             document.onmouseup = closeDragElement;
             document.onmousemove = elementDrag;
             document.ontouchend = closeDragElement;
             document.ontouchmove = elementDrag;
-            el.classList.add('is-dragging');
         }
 
         function elementDrag(e) {
+            e = e || window.event;
             const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
             const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-            pos1 = pos3 - clientX;
-            pos2 = pos4 - clientY;
-            pos3 = clientX;
-            pos4 = clientY;
-            el.style.top = (el.offsetTop - pos2) + "px";
-            el.style.left = (el.offsetLeft - pos1) + "px";
-            el.style.right = 'auto';
-            el.style.bottom = 'auto';
-            el.style.transform = 'none';
-            el.style.margin = '0';
+
+            // If moved more than 5px, consider it a drag
+            if (Math.abs(clientX - startX) > 5 || Math.abs(clientY - startY) > 5) {
+                isDragging = true;
+                el.classList.add('is-dragging');
+            }
+
+            if (isDragging) {
+                pos1 = pos3 - clientX;
+                pos2 = pos4 - clientY;
+                pos3 = clientX;
+                pos4 = clientY;
+                el.style.top = (el.offsetTop - pos2) + "px";
+                el.style.left = (el.offsetLeft - pos1) + "px";
+                el.style.right = 'auto';
+                el.style.bottom = 'auto';
+                el.style.transform = 'none';
+                el.style.margin = '0';
+            }
         }
 
         function closeDragElement() {
@@ -111,32 +127,34 @@
             document.onmousemove = null;
             document.ontouchend = null;
             document.ontouchmove = null;
-            el.classList.remove('is-dragging');
+
+            // Small delay to prevent immediate click after drag
+            setTimeout(() => {
+                el.classList.remove('is-dragging');
+            }, 50);
         }
     }
 
-    // Initialize
     window.addEventListener('load', () => {
-        // Show widget (button) immediately or with small delay
         setTimeout(() => {
             widget.style.display = 'block';
             trackAction('view');
             initDrag(btn, btn);
             initDrag(modalContent, modalHeader);
 
-            // Auto-open modal only if NOT opened in this session yet
             if (!sessionStorage.getItem(SESSION_KEY)) {
                 setTimeout(() => {
-                    if (!modal.classList.contains('active')) {
-                        openModal(true);
-                    }
+                    if (!modal.classList.contains('active')) openModal(true);
                 }, delay);
             }
         }, 1000);
     });
 
-    btn.addEventListener('click', () => {
-        if (!btn.classList.contains('is-dragging')) openModal();
+    btn.addEventListener('click', (e) => {
+        // Only open if we weren't dragging (check time and flag)
+        if (!isDragging && (Date.now() - dragStartTime < 300)) {
+            openModal();
+        }
     });
 
     closeBtn.addEventListener('click', (e) => {

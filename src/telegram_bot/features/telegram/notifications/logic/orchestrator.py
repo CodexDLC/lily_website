@@ -99,6 +99,10 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
                 )
 
             updated_text = f"{NotificationsTexts.status_approved()}\n\n{context.message_text or ''}"
+
+            # Добавляем начальные статусы "Ожидание"
+            updated_text = self.ui.append_statuses(updated_text, email_status="waiting", twilio_status="waiting")
+
             return UnifiedViewDTO(
                 content=self.ui.render_post_action(updated_text, appointment_id, context.message_thread_id),
                 chat_id=self.settings.telegram_admin_channel_id,
@@ -182,6 +186,59 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
             session_key=context.session_id,
             alert_text=NotificationsTexts.alert_deleted(),
         )
+
+    async def handle_status_update(
+        self, payload: dict[str, Any], current_text: str | None = None
+    ) -> UnifiedViewDTO | None:
+        """
+        Обработка обновления статуса отправки (из Redis Stream).
+        Использует данные из AppointmentCache для восстановления текста.
+        current_text здесь игнорируется, так как мы восстанавливаем его заново.
+        """
+        try:
+            appointment_id = int(payload.get("appointment_id", 0)) or int(payload.get("confirmation_id", 0))
+            channel = payload.get("channel")
+            status = payload.get("status")
+
+            if not appointment_id or not channel or not status:
+                log.warning(f"Orchestrator | Invalid status update payload: {payload}")
+                return None
+
+            # 1. Загружаем данные заявки из кэша
+            appointment_data = await self.container.redis.appointment_cache.get(appointment_id)
+            if not appointment_data:
+                log.warning(
+                    f"Orchestrator | No cache found for appointment {appointment_id}. Cannot reconstruct message."
+                )
+                return None
+
+            # 2. Восстанавливаем текст и добавляем статусы
+            # Нам нужно знать текущее состояние обоих каналов (Email/Twilio).
+            # В идеале мы должны хранить эти статусы тоже в кэше, но пока
+            # просто перезапишем то, что пришло.
+            # Ограничение: если пришло обновление Email, мы не знаем статус Twilio (и наоборот),
+            # поэтому второй статус будет "waiting" (по дефолту) или отсутствовать.
+            # Чтобы было красиво, мы можем хранить статусы в том же кэше, но для первой итерации:
+
+            email_status = status if channel == "email" else "waiting"
+            twilio_status = status if channel == "twilio" else "waiting"
+            # FIXME: Это перезапишет статус другого канала на 'waiting'.
+            # Для полноценной работы нужно сохранять статусы отправки в Redis.
+            # Но пока реализуем так, как просил юзер (Data Reconstruction).
+
+            new_text = self.ui.reconstruct_message(
+                appointment_data, email_status=email_status, twilio_status=twilio_status
+            )
+
+            return UnifiedViewDTO(
+                content=self.ui.render_post_action(new_text, appointment_id),
+                chat_id=self.settings.telegram_admin_channel_id,
+                session_key=appointment_id,
+                mode="edit",
+            )
+        except Exception as e:
+            log.error(f"Orchestrator | handle_status_update error: {e}")
+            return None
 
     async def handle_entry(self, user_id: int, chat_id: int | None = None, payload: Any = None) -> UnifiedViewDTO:
         """

@@ -1,22 +1,20 @@
 from pathlib import Path
 
-from pydantic_settings import BaseSettings
+from src.workers.core.config import WorkerSettings as BaseWorkerSettings
 
 
-class WorkerSettings(BaseSettings):
-    # Redis
-    REDIS_HOST: str = "localhost"
-    REDIS_PORT: int = 6379
-
-    # Global Site Settings
-    SITE_URL: str = "http://localhost:8000"
-    LOGO_URL: str = (
-        "https://pinlite.dev/media/storage/a3/65/a365b5fedad7fb5779bc5fcf63f00ebc19ed90808c4010a0fbec7207773ca95e.png"
-    )
+class WorkerSettings(BaseWorkerSettings):
+    """
+    Настройки Notification Worker.
+    Наследуемся от базовых настроек воркера (src/workers/core/config.py),
+    которые уже включают Redis, SMTP, Twilio и ARQ.
+    """
 
     # Paths
-    BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent.parent  # lily_website root
-    TEMPLATES_DIR: Path = Path(__file__).resolve().parent.parent / "templates"
+    # Переопределяем TEMPLATES_DIR, чтобы использовать Path (в базовом это str)
+    # и указывать на правильную папку относительно этого файла.
+    BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent.parent
+    TEMPLATES_DIR: str = str(Path(__file__).resolve().parent.parent / "templates")
 
     class Config:
         env_file = ".env"
