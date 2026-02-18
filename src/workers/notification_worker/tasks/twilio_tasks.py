@@ -3,6 +3,8 @@ from typing import Any, cast
 
 from loguru import logger as log
 
+from src.shared.utils.text import transliterate
+
 from .utils import send_status_update as _send_status_update
 
 
@@ -106,7 +108,7 @@ async def send_appointment_notification(
         time = parts[1] if len(parts) > 1 else ""
 
         template_vars = {
-            "1": notification_service._translit(appointment_data.get("first_name", "Guest")),
+            "1": transliterate(appointment_data.get("first_name", "Guest")),
             "2": date,
             "3": time,
             "4": str(appointment_id),
