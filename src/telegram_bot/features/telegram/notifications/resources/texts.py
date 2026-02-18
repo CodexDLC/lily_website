@@ -77,7 +77,7 @@ class NotificationsTexts:
 
     EMAIL_CONFIRM_TAG = "TERMINBESTÄTIGUNG"
     EMAIL_CONFIRM_SUBJECT = "Terminbestätigung - Lily Beauty Salon"
-    EMAIL_CONFIRM_BODY = "Vielen Gracias für Ihre Buchung. Ihr Termin wurde erfolgreich bestätigt. Wir freuen uns darauf, Sie bei uns begrüßen zu dürfen."
+    EMAIL_CONFIRM_BODY = "Vielen Dank für Ihre Buchung. Ihr Termin wurde erfolgreich bestätigt. Wir freuen uns darauf, Sie bei uns begrüßen zu dürfen."
 
     EMAIL_CANCEL_TAG = "TERMINABSAGE"
     EMAIL_CANCEL_SUBJECT = "Terminstornierung - Lily Beauty Salon"
