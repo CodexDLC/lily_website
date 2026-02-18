@@ -2,6 +2,21 @@
    SITE WRAPPER & CONTAINER
    ========================================= */
 
+/* Global Typography Fixes for Dark Theme Readability */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    color: var(--color-text-main);
+    font-family: var(--font-sans, sans-serif);
+    line-height: 1.6; /* Better spacing */
+}
+
+p {
+    font-weight: 400; /* Ensure enough weight on dark background */
+    margin-bottom: 1.5rem;
+}
+
 /* Site Wrapper (Main Content Box) */
 .site-wrapper {
     max-width: var(--site-max-width);

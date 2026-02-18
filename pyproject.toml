@@ -33,6 +33,7 @@ packages = [
 # Технические зависимости, общие для разных сервисов (бэкенд, бот, воркер)
 [tool.poetry.group.shared.dependencies]
 arq = ">=0.27.0,<0.28.0"
+twilio = "^9.10.2"
 
 [tool.poetry.group.django.dependencies]
 django = ">=5.1,<6.0"
