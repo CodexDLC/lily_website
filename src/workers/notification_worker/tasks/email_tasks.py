@@ -2,8 +2,9 @@ from typing import TYPE_CHECKING, Any, cast
 
 from loguru import logger as log
 
+from src.workers.notification_worker.tasks.utils import send_status_update as _send_status_update
+
 if TYPE_CHECKING:
-    from src.shared.core.manager_redis.manager import StreamManager
     from src.workers.notification_worker.services.notification_service import NotificationService
 
 
@@ -36,28 +37,3 @@ async def send_email_task(
     except Exception as e:
         log.error(f"Failed to send email to {recipient_email}: {e}", exc_info=True)
         await _send_status_update(ctx, appointment_id, "email", "failed")
-
-
-async def _send_status_update(ctx: dict[str, Any], appointment_id: int | None, channel: str, status: str):
-    """
-    Отправка статуса обратно в Redis Stream.
-    """
-    if not appointment_id:
-        return
-
-    stream_manager = cast("StreamManager | None", ctx.get("stream_manager"))
-    if not stream_manager:
-        log.warning("StreamManager not available for status update.")
-        return
-
-    payload = {
-        "type": "notification_status",
-        "appointment_id": appointment_id,
-        "channel": channel,
-        "status": status,
-    }
-    try:
-        await stream_manager.add_event("bot_events", payload)
-        log.info(f"Status update sent: {payload}")
-    except Exception as e:
-        log.error(f"Failed to send status update: {e}")

@@ -21,6 +21,9 @@ class WorkerSettings(CommonSettings):
     TWILIO_AUTH_TOKEN: str | None = None
     TWILIO_PHONE_NUMBER: str | None = None
 
+    # WhatsApp Content Template SID
+    TWILIO_WHATSAPP_TEMPLATE_SID: str = "HXd8c4bef13f103fbd4f0796cd2ad03e8e"
+
     # --- Templates ---
     TEMPLATES_DIR: str = "src/workers/templates"
 
@@ -30,7 +33,6 @@ class WorkerSettings(CommonSettings):
     arq_keep_result: int = 60
 
     # --- Redis (Internal field for ENV) ---
-    # We use Field(alias=...) to allow setting via REDIS_URL in .env
     redis_url_env: str | None = Field(default=None, alias="REDIS_URL")
 
     @property
