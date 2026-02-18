@@ -2,6 +2,33 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.0.7] - 2026-02-18
+### Booking & Optimization
+- **Added:** Master Day Off functionality (blocking specific dates for masters in booking wizard).
+- **Improved:** Performance & Architecture optimization (removed legacy assets, instructions, and scripts).
+- **Fixed:** Enhanced error handling in `site_settings` context processor (Redis/DB fallbacks).
+
+---
+
+## [1.0.0 - 1.0.6] - 2026-02-17
+### Major Release: SEO & Security
+- **Security:** Removed client phone numbers from Telegram notifications (privacy hardening).
+- **SEO:** Ultimate optimization for "Nagelstudio Köthen", "Gutscheine", and "Online Booking".
+- **UI:** Reordered Bento grid to highlight Nails and Eyes as primary services.
+- **Fixed:** Restored Team page layout and styles (v0.9.2 parity).
+- **Fixed:** Resolved Promo Admin CTR display errors and import conflicts.
+
+---
+
+## [0.9.9 - 0.9.17] - 2026-02-16
+### Bot Architecture & i18n
+- **Added:** New Telegram Bot architecture with full internationalization (i18n) support.
+- **Added:** GDPR-compliant GA4/GTM tracking and cookie consent banner.
+- **Fixed:** Critical fixes in booking logic, API authentication, and master selection.
+- **Fixed:** Resolved Ruff linting issues and type-checking warnings.
+
+---
+
 ## [0.9.3] - 2026-02-16
 ### Worker Stability & SMTP Fixes
 - **Added:** Automatic retry mechanism for ARQ workers (5 retries with 10s delay).
