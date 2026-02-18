@@ -65,7 +65,7 @@ class NotificationService:
             dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
             date = dt_obj.strftime("%d.%m.%Y")
             time = dt_obj.strftime("%H:%M")
-        except Exception:  # Исправлено: заменен голый except
+        except (ValueError, TypeError):  # Исправлено: специфичные исключения
             date = dt_str
             time = ""
 
@@ -106,7 +106,7 @@ class NotificationService:
             dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
             context["date"] = dt_obj.strftime("%d.%m.%Y")
             context["time"] = dt_obj.strftime("%H:%M")
-        except Exception:  # Исправлено: заменен голый except
+        except (ValueError, TypeError):  # Исправлено: специфичные исключения
             context["date"] = dt_str
             context["time"] = ""
         context["site_url"] = self.site_url

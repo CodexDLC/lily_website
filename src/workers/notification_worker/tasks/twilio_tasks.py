@@ -115,7 +115,7 @@ async def send_appointment_notification(
             dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
             date = dt_obj.strftime("%d.%m.%Y")
             time = dt_obj.strftime("%H:%M")
-        except Exception:
+        except (ValueError, TypeError):  # Исправлено: специфичные исключения
             parts = dt_str.split(" ")
             date = parts[0] if len(parts) > 0 else dt_str
             time = parts[1] if len(parts) > 1 else ""
