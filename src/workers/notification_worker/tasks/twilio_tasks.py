@@ -1,12 +1,19 @@
 import json
 from datetime import datetime
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from loguru import logger as log
 
 from src.shared.utils.text import transliterate
 
 from .utils import send_status_update as _send_status_update
+
+if TYPE_CHECKING:
+    from src.shared.core.redis_service import RedisService
+    from src.workers.core.base import ArqService
+    from src.workers.core.base_module.twilio_service import TwilioService
+    from src.workers.core.config import WorkerSettings
+    from src.workers.notification_worker.services.notification_service import NotificationService
 
 
 async def send_twilio_task(
@@ -21,11 +28,8 @@ async def send_twilio_task(
     Задача для отправки сообщения через Twilio.
     Логика: WhatsApp Template (без медиа) -> WhatsApp Free (с медиа) -> SMS.
     """
-    from src.workers.core.base_module.twilio_service import TwilioService
-    from src.workers.core.config import WorkerSettings
-
-    twilio_service = cast(TwilioService | None, ctx.get("twilio_service"))
-    settings = cast(WorkerSettings | None, ctx.get("settings"))
+    twilio_service = cast("TwilioService | None", ctx.get("twilio_service"))
+    settings = cast("WorkerSettings | None", ctx.get("settings"))
 
     if not twilio_service:
         log.error("TwilioService not found.")
@@ -69,9 +73,7 @@ async def send_appointment_notification(
     reason_text: str | None = None,
 ) -> None:
     """Автономный диспетчер уведомлений."""
-    from src.shared.core.redis_service import RedisService
-
-    redis_service = cast(RedisService | None, ctx.get("redis_service"))
+    redis_service = cast("RedisService | None", ctx.get("redis_service"))
     if not redis_service:
         return
 
@@ -88,11 +90,8 @@ async def send_appointment_notification(
         log.error(f"Failed to parse JSON from Redis for {appointment_id}: {e}")
         return
 
-    from src.workers.core.base import ArqService
-    from src.workers.notification_worker.services.notification_service import NotificationService
-
-    arq_service = cast(ArqService | None, ctx.get("arq_service"))
-    notification_service = cast(NotificationService | None, ctx.get("notification_service"))
+    arq_service = cast("ArqService | None", ctx.get("arq_service"))
+    notification_service = cast("NotificationService | None", ctx.get("notification_service"))
 
     if not arq_service or not notification_service:
         return
@@ -116,7 +115,7 @@ async def send_appointment_notification(
             dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
             date = dt_obj.strftime("%d.%m.%Y")
             time = dt_obj.strftime("%H:%M")
-        except Exception:  # Исправлено: заменен голый except
+        except Exception:
             parts = dt_str.split(" ")
             date = parts[0] if len(parts) > 0 else dt_str
             time = parts[1] if len(parts) > 1 else ""
