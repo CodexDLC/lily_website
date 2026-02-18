@@ -23,7 +23,7 @@ class NotificationsOrchestrator:
         self.ui = NotificationsUI()
 
     def _get_target_topic(self, payload: BookingNotificationPayload) -> int | None:
-        """Вычисляет ID топика."""
+        """Вычисляет ID топика на основе категории услуги."""
         message_thread_id = self.settings.telegram_notification_topic_id
         if payload.category_slug and self.settings.telegram_topics:
             topic_id = self.settings.telegram_topics.get(payload.category_slug)
@@ -53,7 +53,7 @@ class NotificationsOrchestrator:
     async def handle_status_update(self, message_data: dict[str, Any]) -> UnifiedViewDTO | None:
         """
         Обрабатывает обновление статуса (Email/SMS) от воркера.
-        Сохраняет статусы в кэш, чтобы избежать гонки.
+        Сохраняет статусы в кэш, чтобы избежать гонки и корректно обновить UI.
         """
         appointment_id = message_data.get("appointment_id")
         if not appointment_id:
@@ -66,15 +66,15 @@ class NotificationsOrchestrator:
             return None
 
         # 2. Обновляем статус конкретного канала в данных кэша
-        channel = message_data.get("channel")  # 'email' или 'twilio'
-        status = message_data.get("status")  # 'success', 'failed', etc.
+        channel = message_data.get("channel")
+        status = message_data.get("status")
 
         if channel == "email":
             appointment_cache["email_delivery_status"] = status
         elif channel == "twilio":
             appointment_cache["twilio_delivery_status"] = status
 
-        # 3. Сохраняем обновленные данные обратно в кэш (чтобы следующий статус их увидел)
+        # 3. Сохраняем обновленные данные обратно в кэш
         await self.container.redis.appointment_cache.save(appointment_id, appointment_cache)
 
         try:
@@ -83,14 +83,12 @@ class NotificationsOrchestrator:
             log.error(f"NotificationsOrchestrator | Cache validation error: {e}")
             return None
 
-        # 4. Вычисляем топик
+        # 4. Вычисляем топик и получаем все статусы из кэша
         message_thread_id = self._get_target_topic(payload)
-
-        # 5. Получаем статусы из кэша (с дефолтом 'waiting', если еще не было обновлений)
         email_status = appointment_cache.get("email_delivery_status", "waiting")
         twilio_status = appointment_cache.get("twilio_delivery_status", "waiting")
 
-        # 6. Рендерим ПОЛНУЮ карточку заново
+        # 5. Рендерим ПОЛНУЮ карточку заново с актуальными галочками
         view_result = self.ui.render_notification(
             payload, topic_id=message_thread_id, email_status=email_status, twilio_status=twilio_status
         )
