@@ -5,16 +5,56 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
-from unfold.admin import ModelAdmin
+from unfold.admin import ModelAdmin, TabularInline
 from unfold.decorators import action
 
 from .forms import MasterAdminForm
-from .models import Appointment, Client, Master, MasterCertificate, MasterPortfolio
+from .models import Appointment, Client, Master, MasterCertificate, MasterDayOff, MasterPortfolio
+
+
+class MasterDayOffInline(TabularInline):
+    model = MasterDayOff
+    extra = 1
 
 
 @admin.register(Master)
 class MasterAdmin(ModelAdmin, TranslationAdmin):
     form = MasterAdminForm
+    inlines = [MasterDayOffInline]
+    fieldsets = (
+        (
+            _("Basic Info"),
+            {
+                "fields": ("name", "slug", "photo", "status", "is_owner"),
+            },
+        ),
+        (
+            _("Professional"),
+            {
+                "fields": ("title", "short_description", "bio", "categories", "years_experience"),
+            },
+        ),
+        (
+            _("Contacts"),
+            {
+                "fields": ("phone", "instagram"),
+            },
+        ),
+        (
+            _("System"),
+            {
+                "fields": ("user", "telegram_id", "telegram_username", "order"),
+                "classes": ("collapse",),
+            },
+        ),
+        (
+            _("SEO"),
+            {
+                "fields": ("seo_title", "seo_description", "seo_image"),
+                "classes": ("collapse",),
+            },
+        ),
+    )
     list_display = ["name", "status_badge", "is_owner", "order"]
     list_display_links = ["name"]
     list_filter = ["status", "is_owner"]
