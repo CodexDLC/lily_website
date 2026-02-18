@@ -1475,7 +1475,7 @@ textarea.form-input-boxed {
     border-radius: 30px;
     border: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    cursor: pointer;
+    cursor: move;
 
 
     font-family: var(--font-sans, sans-serif);
@@ -1486,6 +1486,10 @@ textarea.form-input-boxed {
 
     animation: pulse 2s ease-in-out infinite;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+
+    user-select: none;
+    touch-action: none;
 }
 
 .promo-floating-button:hover {
@@ -1494,8 +1498,11 @@ textarea.form-input-boxed {
     animation: none;
 }
 
-.promo-floating-button:active {
-    transform: translateY(-50%) scale(0.98);
+.promo-floating-button.is-dragging {
+    animation: none;
+    transform: none;
+    transition: none;
+    opacity: 0.8;
 }
 
 
@@ -1548,6 +1555,15 @@ textarea.form-input-boxed {
 
 
     animation: flyIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+
+    touch-action: none;
+}
+
+.promo-modal-content.is-dragging {
+    animation: none;
+    transition: none;
+    opacity: 0.9;
 }
 
 .promo-modal:not(.active) .promo-modal-content {
@@ -1582,6 +1598,7 @@ textarea.form-input-boxed {
     position: absolute;
     top: 15px;
     right: 15px;
+    z-index: 10;
 
     width: 32px;
     height: 32px;
@@ -1608,6 +1625,8 @@ textarea.form-input-boxed {
 
 .promo-modal-header {
     margin-bottom: 20px;
+    padding-right: 40px;
+    user-select: none;
 }
 
 .promo-modal-title {
@@ -1616,7 +1635,6 @@ textarea.form-input-boxed {
     font-size: 28px;
     font-weight: 700;
     margin: 0 0 15px 0;
-    padding-right: 30px;
 }
 
 
@@ -1673,6 +1691,7 @@ textarea.form-input-boxed {
     border-radius: 8px;
     margin-bottom: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
 }
 
 
