@@ -84,8 +84,8 @@ def setup_logging(base_dir: Path, config: dict[str, Any]) -> None:
         compression="zip",
         format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
         enqueue=True,  # Асинхронная запись
-        backtrace=True,
-        diagnose=True,
+        backtrace=debug,
+        diagnose=debug,
     )
 
     # 3. Файл errors (JSON для мониторинга)

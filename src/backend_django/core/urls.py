@@ -17,18 +17,15 @@ from django.contrib import admin
 # Импортируем sitemap и наши классы sitemap
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
-from django.views.generic import TemplateView
 
 # Non-i18n patterns (technical URLs, API, etc.)
 urlpatterns = [
     path("i18n/", include("django.conf.urls.i18n")),  # For set_language view
     path("api/", api.urls),
     path("", include("django_prometheus.urls")),  # Prometheus metrics
-    path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sitemaps.views.sitemap"),
-    # PWA files (must be at root for proper scope)
-    path("sw.js", TemplateView.as_view(template_name="sw.js", content_type="application/javascript")),
-    path("manifest.json", TemplateView.as_view(template_name="manifest.json", content_type="application/json")),
+    # PWA files (handled by Nginx in production, but kept here for local dev if needed)
+    # Note: In production, Nginx will intercept these before they reach Django
 ]
 
 # i18n patterns (URLs with language prefix)

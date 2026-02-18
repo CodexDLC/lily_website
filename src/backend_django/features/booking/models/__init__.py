@@ -4,6 +4,7 @@ from .appointment import Appointment
 from .client import Client
 from .master import Master
 from .master_certificate import MasterCertificate
+from .master_day_off import MasterDayOff
 from .master_portfolio import MasterPortfolio
 
 __all__ = [
@@ -11,5 +12,7 @@ __all__ = [
     "Client",
     "Appointment",
     "MasterCertificate",
+    "MasterCertificate",
+    "MasterDayOff",
     "MasterPortfolio",
 ]

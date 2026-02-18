@@ -1,7 +1,7 @@
 from datetime import date, datetime, time, timedelta
 
 from django.utils import timezone
-from features.booking.models import Appointment, Master
+from features.booking.models import Appointment, Master, MasterDayOff
 from features.system.models.site_settings import SiteSettings
 
 
@@ -14,6 +14,12 @@ class SlotService:
     def __init__(self, step_minutes: int = 30):
         # step_minutes is used as a fallback or for grid alignment
         self.step_minutes = step_minutes
+        self._cached_settings: SiteSettings | None = None
+
+    def _get_settings(self) -> SiteSettings:
+        if self._cached_settings is None:
+            self._cached_settings = SiteSettings.load()
+        return self._cached_settings
 
     def get_available_slots(self, masters: Master | list[Master], date_obj: date, duration_minutes: int) -> list[str]:
         if isinstance(masters, Master):
@@ -31,6 +37,10 @@ class SlotService:
 
     def _get_slots_for_single_master(self, master: Master, date_obj: date, duration_minutes: int) -> list[str]:
         """Calculates slots using 'tight packing' logic."""
+
+        # 0. Check for Day Off exception
+        if MasterDayOff.objects.filter(master=master, date=date_obj).exists():
+            return []
 
         # 1. Get working hours
         working_hours = self._get_working_hours(date_obj)
@@ -104,7 +114,7 @@ class SlotService:
         return sorted(list(set(available_slots)))
 
     def _get_working_hours(self, date_obj: date) -> tuple[time, time] | None:
-        settings = SiteSettings.load()
+        settings = self._get_settings()
         weekday = date_obj.weekday()
         if weekday < 5:
             return settings.work_start_weekdays, settings.work_end_weekdays
