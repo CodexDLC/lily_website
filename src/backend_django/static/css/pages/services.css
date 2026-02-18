@@ -76,13 +76,14 @@
 
 .category-desc {
     text-align: center;
-    color: rgba(255,255,255,0.7);
-    font-size: 14px;
+    color: var(--color-champagne); /* Используем Шампань для описания категории */
+    font-size: 15px;
     margin-bottom: 25px;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
     line-height: 1.6;
+    opacity: 0.9;
 }
 
 /* Service Row */
@@ -91,7 +92,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px 0;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    border-bottom: 1px dashed rgba(245, 245, 245, 0.1);
     transition: 0.2s;
 }
 
@@ -100,7 +101,7 @@
 }
 
 .service-row:hover {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(245, 245, 245, 0.02);
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 4px;
@@ -120,11 +121,23 @@
     font-weight: 500;
 }
 
+/* Описание услуги под названием */
+.service-desc-small {
+    display: block;
+    font-size: 13px;
+    color: var(--color-champagne); /* Наш новый благородный цвет */
+    font-style: italic;
+    opacity: 0.9;
+    line-height: 1.4;
+    margin-top: 2px;
+}
+
 .name-ua {
     display: block;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--color-champagne);
     font-style: italic;
+    opacity: 0.7;
 }
 
 /* Service Meta (Price & Time) */
@@ -144,7 +157,8 @@
 .meta-time {
     display: block;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--color-champagne);
+    opacity: 0.6;
     margin-top: 4px;
 }
 
@@ -153,5 +167,19 @@
     text-align: center;
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(245, 245, 245, 0.05);
+}
+
+.more-link {
+    color: var(--color-gold);
+    text-decoration: none;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.more-link:hover {
+    color: var(--color-white);
+    letter-spacing: 2px;
 }

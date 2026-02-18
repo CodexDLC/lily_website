@@ -1,3 +1,6 @@
+from collections.abc import Awaitable, Callable
+from typing import Any
+
 from loguru import logger as log
 from redis.asyncio import from_url
 
@@ -5,8 +8,12 @@ from src.shared.core.manager_redis.site_settings_manager import SiteSettingsMana
 from src.shared.core.redis_service import RedisService
 from src.workers.core.config import WorkerSettings
 
+# Определение типа для функций-зависимостей.
+# Используем Any для настроек, чтобы воркеры могли передавать свои подклассы WorkerSettings.
+DependencyFunction = Callable[[dict[str, Any], Any], Awaitable[None]]
 
-async def init_common_dependencies(ctx: dict, settings: WorkerSettings) -> None:
+
+async def init_common_dependencies(ctx: dict[str, Any], settings: WorkerSettings) -> None:
     """
     Базовая инициализация зависимостей для всех воркеров:
     - Redis клиент и сервис
@@ -36,7 +43,7 @@ async def init_common_dependencies(ctx: dict, settings: WorkerSettings) -> None:
         raise
 
 
-async def close_common_dependencies(ctx: dict, settings: WorkerSettings) -> None:
+async def close_common_dependencies(ctx: dict[str, Any], settings: WorkerSettings) -> None:
     """
     Очистка общих ресурсов.
     Добавлен аргумент settings для соответствия типу DependencyFunction.

@@ -10,23 +10,22 @@
     <!-- Floating Button -->
     <button id="promoFloatingButton"
             class="promo-floating-button"
-            style="background-color: {{ active_promo.button_color|default:'#003831' }}; color: {{ active_promo.text_color|default:'#ffffff' }};"
             aria-label="{% trans 'Promotion anzeigen' %}">
         {{ active_promo.button_text }}
     </button>
 
     <!-- Modal Overlay -->
     <div id="promoModal" class="promo-modal" role="dialog" aria-modal="true">
-        <div class="promo-modal-content" style="background-color: {{ active_promo.button_color|default:'#003831' }};">
+        <div id="promoModalContent" class="promo-modal-content">
             <button id="promoModalClose" class="promo-modal-close" aria-label="{% trans 'Schließen' %}">&times;</button>
 
-            <div class="promo-modal-header">
+            <div id="promoModalHeader" class="promo-modal-header">
                 <h2 class="promo-modal-title">{{ active_promo.title }}</h2>
             </div>
 
             <div class="promo-modal-body">
                 {% if active_promo.image %}
-                    <img src="{{ active_promo.image.url }}" alt="{{ active_promo.title }}" class="promo-modal-image">
+                    <img src="{{ active_promo.image.url }}" alt="{{ active_promo.title }}" class="promo-modal-image" draggable="false">
                 {% endif %}
 
                 <div class="promo-modal-description">
@@ -38,25 +37,22 @@
 </div>
 
 <script>
-/**
- * Minimal JS for Promo Widget
- * Handles visibility, localStorage and tracking
- */
 (function() {
     const widget = document.getElementById('promoWidget');
     if (!widget) return;
 
     const promoId = widget.dataset.promoId;
     const delay = parseInt(widget.dataset.delay) * 1000;
-    const STORAGE_KEY = 'lily_promo_seen_notifications';
-
-    // Check if already seen
-    const seen = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    if (seen.includes(parseInt(promoId))) return;
+    const SESSION_KEY = 'lily_promo_opened_session_' + promoId;
 
     const btn = document.getElementById('promoFloatingButton');
     const modal = document.getElementById('promoModal');
+    const modalContent = document.getElementById('promoModalContent');
+    const modalHeader = document.getElementById('promoModalHeader');
     const closeBtn = document.getElementById('promoModalClose');
+
+    let isDragging = false;
+    let dragStartTime = 0;
 
     const trackAction = (action) => {
         fetch(`/api/v1/promos/${promoId}/track-${action}/`, {
@@ -65,31 +61,107 @@
         }).catch((error) => console.error(`[PromoWidget] Failed to track ${action}:`, error));
     };
 
-    const openModal = () => {
+    const openModal = (isAuto = false) => {
         modal.classList.add('active');
-        trackAction('click');
+        if (!isAuto) trackAction('click');
+        sessionStorage.setItem(SESSION_KEY, 'true');
     };
 
     const closeModal = () => {
         modal.classList.remove('active');
-        widget.remove();
-        const currentSeen = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-        if (!currentSeen.includes(parseInt(promoId))) {
-            currentSeen.push(parseInt(promoId));
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(currentSeen));
-        }
     };
 
-    // Initialize with delay
+    function initDrag(el, handle) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        let startX = 0, startY = 0;
+
+        handle.onmousedown = dragMouseDown;
+        handle.ontouchstart = dragMouseDown;
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+
+            startX = clientX;
+            startY = clientY;
+            pos3 = clientX;
+            pos4 = clientY;
+
+            dragStartTime = Date.now();
+            isDragging = false;
+
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+            document.ontouchend = closeDragElement;
+            document.ontouchmove = elementDrag;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+
+            // If moved more than 5px, consider it a drag
+            if (Math.abs(clientX - startX) > 5 || Math.abs(clientY - startY) > 5) {
+                isDragging = true;
+                el.classList.add('is-dragging');
+            }
+
+            if (isDragging) {
+                pos1 = pos3 - clientX;
+                pos2 = pos4 - clientY;
+                pos3 = clientX;
+                pos4 = clientY;
+                el.style.top = (el.offsetTop - pos2) + "px";
+                el.style.left = (el.offsetLeft - pos1) + "px";
+                el.style.right = 'auto';
+                el.style.bottom = 'auto';
+                el.style.transform = 'none';
+                el.style.margin = '0';
+            }
+        }
+
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+            document.ontouchend = null;
+            document.ontouchmove = null;
+
+            // Small delay to prevent immediate click after drag
+            setTimeout(() => {
+                el.classList.remove('is-dragging');
+            }, 50);
+        }
+    }
+
     window.addEventListener('load', () => {
         setTimeout(() => {
             widget.style.display = 'block';
             trackAction('view');
-        }, Math.max(delay, 3000)); // At least 3s delay for performance
+            initDrag(btn, btn);
+            initDrag(modalContent, modalHeader);
+
+            if (!sessionStorage.getItem(SESSION_KEY)) {
+                setTimeout(() => {
+                    if (!modal.classList.contains('active')) openModal(true);
+                }, delay);
+            }
+        }, 1000);
     });
 
-    btn.addEventListener('click', openModal);
-    closeBtn.addEventListener('click', closeModal);
+    btn.addEventListener('click', (e) => {
+        // Only open if we weren't dragging (check time and flag)
+        if (!isDragging && (Date.now() - dragStartTime < 300)) {
+            openModal();
+        }
+    });
+
+    closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeModal();
+    });
+
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
 })();
