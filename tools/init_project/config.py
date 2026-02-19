@@ -12,9 +12,13 @@ import shutil
 import stat
 from dataclasses import dataclass, field
 from pathlib import Path  # noqa: TCH003
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
-def _on_rmtree_error(func: object, path: str, exc_info: object) -> None:
+def _on_rmtree_error(func: Callable[[str], None], path: str, exc_info: object) -> None:
     """Снимает read-only и повторяет удаление (Windows fix)."""
     os.chmod(path, stat.S_IWRITE)
     func(path)
