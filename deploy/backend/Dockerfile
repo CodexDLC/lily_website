@@ -16,18 +16,18 @@ RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
 # === STAGE 2: Runtime ===
 FROM python:3.13-slim
 WORKDIR /app
-RUN apt-get update && apt-get install -y libpq5 curl && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -u 1000 appuser
+RUN apt-get update && apt-get install -y libpq5 curl && rm -rf /var/lib/apt/lists/* && \
+    useradd -m -u 1000 appuser
 
 COPY --from=builder /venv /venv
 COPY src/backend_django /app
 COPY deploy/backend/entrypoint.sh /entrypoint.sh
 
-# Создаем папки, которые реально используются в settings.py
-RUN mkdir -p /app/staticfiles /app/media /app/logs/backend && chown -R appuser:appuser /app
-# Добавляем права на чтение и запись для медиафайлов
-RUN chmod -R 775 /app/media /app/logs/backend
-RUN chmod +x /entrypoint.sh
+# Оптимизируем слои: создаем папки, меняем владельца и права за один RUN
+RUN mkdir -p /app/staticfiles /app/media /app/logs/backend && \
+    chown -R appuser:appuser /app && \
+    chmod -R 755 /app/media /app/logs/backend && \
+    chmod +x /entrypoint.sh
 
 USER appuser
 

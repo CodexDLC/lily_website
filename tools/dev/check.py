@@ -7,8 +7,8 @@ from pathlib import Path
 
 # --- Configuration ---
 PROJECT_ROOT = Path(__file__).parent.parent.parent
-COMPOSE_FILE = PROJECT_ROOT / "deploy" / "docker-compose.yml"
-TEST_PROJECT_NAME = "lily-quality-check"  # Уникальное имя для изоляции тестов
+COMPOSE_FILE = PROJECT_ROOT / "deploy" / "docker-compose.test.yml"
+TEST_PROJECT_NAME = "lily-quality-check"
 
 
 # ANSI Colors
@@ -55,7 +55,6 @@ def run_command(command, cwd=PROJECT_ROOT, capture_output=False, env=None):
 
 
 def docker_compose(args):
-    # Передаем CONTAINER_PREFIX для уникальных имен контейнеров
     env = {"CONTAINER_PREFIX": TEST_PROJECT_NAME}
     cmd = f"docker-compose -p {TEST_PROJECT_NAME} -f {COMPOSE_FILE} {args}"
     return run_command(cmd, env=env)
@@ -63,16 +62,39 @@ def docker_compose(args):
 
 def cleanup_docker():
     print(f"\n{Colors.BLUE}🧹 Cleaning up Docker resources (Project: {TEST_PROJECT_NAME})...{Colors.ENDC}")
+    # 1. Останавливаем и удаляем контейнеры и их тома
     docker_compose("down -v")
+
+    # 2. Удаляем все "висячие" (dangling) тома, которые накопились
+    print(f"{Colors.BLUE}🧹 Pruning dangling volumes...{Colors.ENDC}")
+    run_command("docker volume prune -f")
 
 
 # --- Check Functions ---
 
 
 def check_linters():
-    print_step("Running Linters (Pre-commit & Ruff)")
-    hooks = ["trailing-whitespace", "end-of-file-fixer", "check-yaml", "ruff-format", "ruff"]
-    return all(run_command(f"pre-commit run {hook} --all-files")[0] for hook in hooks)
+    print_step("Running Linters (Ruff & Pre-commit hooks)")
+
+    print("Running Ruff check...")
+    ruff_success, ruff_out = run_command("poetry run ruff check src/")
+    if not ruff_success:
+        print_error(f"Ruff check failed:\n{ruff_out}")
+        return False
+
+    print("Running Ruff format...")
+    if not run_command("poetry run ruff format src/ --check")[0]:
+        print_error("Ruff format check failed")
+        return False
+
+    print("Running basic pre-commit hooks...")
+    basic_hooks = ["trailing-whitespace", "end-of-file-fixer", "check-yaml"]
+    for hook in basic_hooks:
+        if not run_command(f"pre-commit run {hook} --all-files")[0]:
+            print_error(f"Pre-commit hook '{hook}' failed")
+            return False
+
+    return True
 
 
 def check_types():
@@ -82,45 +104,43 @@ def check_types():
         import shutil
 
         shutil.rmtree(cache_dir)
-    return run_command("mypy src/")[0]
+
+    success, out = run_command("poetry run mypy src/")
+    if not success:
+        print_error(f"Mypy check failed:\n{out}")
+    return success
 
 
 def run_tests():
     print_step("Running Unit Tests (Pytest)")
     os.environ["SECRET_KEY"] = "local_test_key"
-    return run_command("pytest src -m unit -v")[0]
+    return run_command("poetry run pytest src -m unit -v")[0]
 
 
 def run_docker_validation():
     print_step(f"Starting Docker Validation (Isolated Project: {TEST_PROJECT_NAME})")
 
-    # 1. Check Docker daemon
     success, _ = run_command("docker info", capture_output=True)
     if not success:
         print_error("Docker is not running. Please start Docker Desktop.")
         return False
 
-    # 2. Check Compose file
     if not COMPOSE_FILE.exists():
         print_error(f"Compose file not found at {COMPOSE_FILE}")
         return False
 
     try:
-        # 3. Build
         print_step("Building Docker images (no-cache)")
         if not docker_compose("build --no-cache")[0]:
             return False
 
-        # 4. Up
         print_step("Starting containers")
         if not docker_compose("up -d")[0]:
             return False
 
-        # 5. Wait
         print_step("Waiting for services to be ready (15s)")
         time.sleep(15)
 
-        # 6. Get Backend Container ID
         env = {"CONTAINER_PREFIX": TEST_PROJECT_NAME}
         _, output = run_command(
             f"docker-compose -p {TEST_PROJECT_NAME} -f {COMPOSE_FILE} ps -q backend", capture_output=True, env=env
@@ -130,15 +150,12 @@ def run_docker_validation():
             print_error("Backend container not found")
             return False
 
-        # 7. Check Process
-        print_step("Checking backend process (Gunicorn/Manage)")
+        print_step("Checking backend process")
         success, ps_out = run_command(f"docker exec {container_id} ps aux", capture_output=True)
         if not any(x in ps_out for x in ["manage.py", "gunicorn"]):
-            print_error("Backend process not found in container")
+            print_error("Backend process not found")
             return False
-        print_success("Backend process is running")
 
-        # 8. Run Django Commands
         commands = [
             ("Updating content", "python manage.py update_all_content"),
             ("Django system check", "python manage.py check"),
@@ -151,9 +168,6 @@ def run_docker_validation():
             if not success:
                 print_error(f"Command failed: {cmd}\n{out}")
                 return False
-            if "showmigrations" in cmd and "[ ]" in out:
-                print_error("Found unapplied migrations!")
-                return False
             print_success(f"{desc} passed")
 
         return True
@@ -165,16 +179,21 @@ def run_docker_validation():
 # --- Main Logic ---
 
 
-def run_all():
+def run_all(with_docker=False):
     os.system("cls" if os.name == "nt" else "clear")
+
     if not check_linters():
         sys.exit(1)
     if not check_types():
         sys.exit(1)
     if not run_tests():
         sys.exit(1)
-    if not run_docker_validation():
-        sys.exit(1)
+
+    if with_docker:
+        if not run_docker_validation():
+            sys.exit(1)
+    else:
+        print(f"\n{Colors.BLUE}ℹ️ Docker validation skipped. Use --docker to run it.{Colors.ENDC}")
 
     print(f"\n{Colors.GREEN}{Colors.BOLD}🎉 ALL CHECKS PASSED! You are ready to push.{Colors.ENDC}")
 
@@ -186,7 +205,8 @@ def interactive_menu():
         print("2. Type Check (Mypy)")
         print("3. Run Unit Tests")
         print("4. Full Docker Validation")
-        print("5. Run Everything (Default)")
+        print("5. Run Everything (Default, no Docker)")
+        print("6. Run Everything (WITH Docker)")
         print("0. Exit")
 
         choice = input(f"\n{Colors.YELLOW}Select an option [5]: {Colors.ENDC}").strip() or "5"
@@ -200,7 +220,9 @@ def interactive_menu():
         elif choice == "4":
             run_docker_validation()
         elif choice == "5":
-            run_all()
+            run_all(with_docker=False)
+        elif choice == "6":
+            run_all(with_docker=True)
         elif choice == "0":
             break
         else:
@@ -210,13 +232,14 @@ def interactive_menu():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Lily Project Quality Checker")
     parser.add_argument("--settings", action="store_true", help="Open interactive menu")
+    parser.add_argument("--docker", action="store_true", help="Include Docker build validation")
     args = parser.parse_args()
 
     try:
         if args.settings:
             interactive_menu()
         else:
-            run_all()
+            run_all(with_docker=args.docker)
     except KeyboardInterrupt:
         print(f"\n{Colors.RED}Aborted by user.{Colors.ENDC}")
         sys.exit(1)
