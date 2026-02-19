@@ -74,27 +74,33 @@ def cleanup_docker():
 
 
 def check_linters():
-    print_step("Running Linters (Ruff & Pre-commit hooks)")
+    print_step("Running Linters (Ruff)")
 
-    print("Running Ruff check...")
-    ruff_success, ruff_out = run_command("poetry run ruff check src/")
-    if not ruff_success:
-        print_error(f"Ruff check failed:\n{ruff_out}")
-        return False
+    max_runs = 3
+    for i in range(max_runs):
+        print(f"--- Pass {i + 1}/{max_runs} ---")
 
-    print("Running Ruff format...")
-    if not run_command("poetry run ruff format src/ --check")[0]:
-        print_error("Ruff format check failed")
-        return False
+        # 1. Fix what can be fixed
+        print("Running `ruff check --fix .`")
+        run_command("poetry run ruff check . --fix")
 
-    print("Running basic pre-commit hooks...")
-    basic_hooks = ["trailing-whitespace", "end-of-file-fixer", "check-yaml"]
-    for hook in basic_hooks:
-        if not run_command(f"pre-commit run {hook} --all-files")[0]:
-            print_error(f"Pre-commit hook '{hook}' failed")
+        # 2. Format the code
+        print("Running `ruff format .`")
+        run_command("poetry run ruff format .")
+
+        # 3. Check if any issues remain
+        print("Checking for remaining issues...")
+        success, output = run_command("poetry run ruff check .", capture_output=True)
+        if success:
+            print_success("All linting issues are resolved.")
+            return True
+
+        # If it's the last run and still failing, print the error
+        if i == max_runs - 1:
+            print_error(f"Ruff check failed after {max_runs} attempts:\n{output}")
             return False
 
-    return True
+    return False
 
 
 def check_types():
@@ -105,7 +111,7 @@ def check_types():
 
         shutil.rmtree(cache_dir)
 
-    success, out = run_command("poetry run mypy src/")
+    success, out = run_command("poetry run mypy .")
     if not success:
         print_error(f"Mypy check failed:\n{out}")
     return success

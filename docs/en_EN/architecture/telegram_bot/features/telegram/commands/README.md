@@ -1,6 +1,6 @@
 # 📂 Commands Feature
 
-[⬅️ Back](../../README.md) | [🏠 Docs Root](../../../../../../README.md)
+[⬅️ Back](../README.md) | [🏠 Docs Root](../../../../../../README.md)
 
 Handles standard Telegram commands like `/start` and `/help`.
 
@@ -8,5 +8,9 @@ Handles standard Telegram commands like `/start` and `/help`.
 
 | Component | Description |
 |:---|:---|
-| **[📜 Orchestrator](orchestrator.md)** | Start logic and user registration |
-| **[📜 Handlers](handlers.md)** | Command processing |
+| **[📂 Handlers](./handlers/README.md)** | Command processing and routing |
+| **[📂 Logic](./logic/README.md)** | Start logic and user registration |
+| **[📂 Contracts](./contracts/README.md)** | AuthDataProvider protocol |
+| **[📂 UI](./ui/README.md)** | Pure rendering (start screen) |
+| **[📂 Resources](./resources/README.md)** | Texts, keyboards, callbacks |
+| **[📂 Services](./services/README.md)** | Feature-specific services |

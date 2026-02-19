@@ -10,4 +10,4 @@ Features that directly interact with the Telegram API, handling user interface, 
 |:---|:---|
 | **[📂 Bot Menu](./bot_menu/README.md)** | Persistent dashboard and navigation |
 | **[📂 Commands](./commands/README.md)** | Standard commands (/start, /help) |
-| **[📂 Errors](./errors/README.md)** | Centralized error handling and feedback |
+| **[📂 Notifications](./notifications/README.md)** | Admin actions on booking notifications |

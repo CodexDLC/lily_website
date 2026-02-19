@@ -1,22 +1,18 @@
 # 📂 Bot Menu (Dashboard)
 
-[⬅️ Back](../README.md) | [🏠 Docs Root](../../../../../README.md)
+[⬅️ Back](../README.md) | [🏠 Docs Root](../../../../../../README.md)
 
-The `bot_menu` feature is the central hub (Dashboard) of the Telegram Bot. It provides a persistent interface with buttons that allow users to navigate between different installed features.
+The `bot_menu` feature is the central hub (Dashboard) of the Telegram Bot. It provides a persistent interface with buttons that allow users to navigate between different installed features and switch between User and Admin modes.
 
-## 🏗️ Architecture
+## 🗺️ Module Map
 
-Located in: `src/telegram_bot/features/telegram/bot_menu`
-
-### Orchestrator: `BotMenuOrchestrator`
-The core logic coordinator for the dashboard.
-- **Discovery**: Uses `MenuDiscoveryProvider` to find all installed features that want to appear in the menu.
-- **Access Control**: Filters buttons based on user roles (Superuser, Admin, Owner) defined in `BotSettings`.
-- **Navigation**: Handles menu clicks and directs the user to the target feature's state.
-
-### UI: `BotMenuUI`
-Responsible for rendering the dashboard message and keyboard.
-- **Dynamic Keyboard**: Buttons are generated dynamically based on the `MENU_CONFIG` of other features.
+| Component | Description |
+|:---|:---|
+| **[📂 Handlers](./handlers/README.md)** | Entry points and callback processing |
+| **[📂 Logic](./logic/README.md)** | Business logic and orchestrator |
+| **[📂 Contracts](./contracts/README.md)** | Data access interfaces (MenuDiscoveryProvider) |
+| **[📂 UI](./ui/README.md)** | Message rendering and keyboards |
+| **[📂 Resources](./resources/README.md)** | Static texts and constants |
 
 ## 📋 feature_setting.py
 
@@ -30,11 +26,11 @@ GARBAGE_COLLECT = True
 
 ## 🔄 Logic Flow
 
-1.  **Entry**: User triggers the menu (e.g., via `/start` or a "Back to Menu" button).
-2.  **Discovery**: Orchestrator asks `FeatureDiscoveryService` for all registered menu buttons.
-3.  **Filtering**: Orchestrator checks the user's ID against `superuser_ids` and `owner_ids`.
-4.  **Rendering**: `BotMenuUI` creates a keyboard with the allowed buttons.
-5.  **Navigation**: When a button is clicked, the orchestrator returns a `UnifiedViewDTO` that triggers a state transition in the bot.
+1. **Entry**: User triggers the menu (e.g., via `/start`).
+2. **Mode Selection**: Orchestrator determines if the user should see the Admin or User dashboard.
+3. **Discovery & Filtering**: Orchestrator fetches registered buttons and filters them by user permissions.
+4. **Rendering**: `BotMenuUI` creates a keyboard with the allowed buttons.
+5. **Navigation**: When a button is clicked, the orchestrator either switches the dashboard mode or uses the `Director` to move to another feature.
 
 ## 🧩 Menu Integration
 
