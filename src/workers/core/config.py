@@ -16,6 +16,9 @@ class WorkerSettings(CommonSettings):
     SMTP_FROM_EMAIL: str
     SMTP_USE_TLS: bool = True
 
+    # --- SendGrid API (Fallback) ---
+    SENDGRID_API_KEY: str | None = None
+
     # --- Twilio ---
     TWILIO_ACCOUNT_SID: str | None = None
     TWILIO_AUTH_TOKEN: str | None = None
