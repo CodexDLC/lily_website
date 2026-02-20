@@ -1,12 +1,10 @@
 from typing import TYPE_CHECKING, Any
 
-from loguru import logger as log
-
 from src.telegram_bot.core.config import BotSettings
-from src.telegram_bot.services.base import UnifiedViewDTO, ViewResultDTO
+from src.telegram_bot.services.base import UnifiedViewDTO
 
-from ..resources.dto import BookingNotificationPayload
-from ..ui.ui import NotificationsUI
+from .booking_processor import BookingProcessor
+from .contact_processor import ContactProcessor
 
 if TYPE_CHECKING:
     from src.telegram_bot.core.container import BotContainer
@@ -15,99 +13,31 @@ if TYPE_CHECKING:
 class NotificationsOrchestrator:
     """
     Оркестратор для фичи Notifications (Redis Stream events).
+    Тонкий маршрутизатор — делегирует работу процессорам.
     """
 
     def __init__(self, settings: BotSettings, container: "BotContainer"):
         self.settings = settings
         self.container = container
-        self.ui = NotificationsUI()
+        self.booking = BookingProcessor(settings, container)
+        self.contact = ContactProcessor(settings, container)
 
-    def _get_target_topic(self, payload: BookingNotificationPayload) -> int | None:
-        """Вычисляет ID топика на основе категории услуги."""
-        message_thread_id = self.settings.telegram_notification_topic_id
-        if payload.category_slug and self.settings.telegram_topics:
-            topic_id = self.settings.telegram_topics.get(payload.category_slug)
-            if topic_id:
-                message_thread_id = topic_id
-        return message_thread_id
+    # --- Booking ---
 
     def handle_notification(self, raw_payload: dict[str, Any]) -> UnifiedViewDTO:
-        """Обрабатывает входящее уведомление о новой записи."""
-        try:
-            payload = BookingNotificationPayload(**raw_payload)
-        except Exception as e:
-            log.error(f"NotificationsOrchestrator | Validation error: {e}")
-            return self.handle_failure(raw_payload, str(e))
-
-        message_thread_id = self._get_target_topic(payload)
-        view_result = self.ui.render_notification(payload, topic_id=message_thread_id)
-
-        return UnifiedViewDTO(
-            content=view_result,
-            chat_id=self.settings.telegram_admin_channel_id,
-            session_key=payload.id,
-            mode="topic" if message_thread_id else "channel",
-            message_thread_id=message_thread_id,
-        )
+        """Делегирует обработку уведомления о бронировании."""
+        return self.booking.handle_notification(raw_payload)
 
     async def handle_status_update(self, message_data: dict[str, Any]) -> UnifiedViewDTO | None:
-        """
-        Обрабатывает обновление статуса (Email/SMS) от воркера.
-        Сохраняет статусы в кэш, чтобы избежать гонки и корректно обновить UI.
-        """
-        appointment_id = message_data.get("appointment_id")
-        if not appointment_id:
-            return None
-
-        # 1. Достаем текущие данные из кэша
-        appointment_cache = await self.container.redis.appointment_cache.get(appointment_id)
-        if not appointment_cache:
-            log.warning(f"NotificationsOrchestrator | No cache for {appointment_id}.")
-            return None
-
-        # 2. Обновляем статус конкретного канала в данных кэша
-        channel = message_data.get("channel")
-        status = message_data.get("status")
-
-        if channel == "email":
-            appointment_cache["email_delivery_status"] = status
-        elif channel == "twilio":
-            appointment_cache["twilio_delivery_status"] = status
-
-        # 3. Сохраняем обновленные данные обратно в кэш
-        await self.container.redis.appointment_cache.save(appointment_id, appointment_cache)
-
-        try:
-            payload = BookingNotificationPayload(**appointment_cache)
-        except Exception as e:
-            log.error(f"NotificationsOrchestrator | Cache validation error: {e}")
-            return None
-
-        # 4. Вычисляем топик и получаем все статусы из кэша
-        message_thread_id = self._get_target_topic(payload)
-        email_status = appointment_cache.get("email_delivery_status", "waiting")
-        twilio_status = appointment_cache.get("twilio_delivery_status", "waiting")
-
-        # 5. Рендерим ПОЛНУЮ карточку заново с актуальными галочками
-        view_result = self.ui.render_notification(
-            payload, topic_id=message_thread_id, email_status=email_status, twilio_status=twilio_status
-        )
-
-        return UnifiedViewDTO(
-            content=view_result,
-            chat_id=self.settings.telegram_admin_channel_id,
-            session_key=appointment_id,
-            mode="topic" if message_thread_id else "channel",
-            message_thread_id=message_thread_id,
-        )
+        """Делегирует обновление статуса бронирования."""
+        return await self.booking.handle_status_update(message_data)
 
     def handle_failure(self, raw_payload: dict[str, Any], error_msg: str) -> UnifiedViewDTO:
-        booking_id = raw_payload.get("id", "???")
-        text = f"⚠️ <b>Ошибка обработки уведомления #{booking_id}</b>\n<b>Ошибка:</b> {error_msg}"
-        return UnifiedViewDTO(
-            content=ViewResultDTO(text=text),
-            chat_id=self.settings.telegram_admin_channel_id,
-            session_key=f"fail_{booking_id}",
-            mode="topic",
-            message_thread_id=self.settings.telegram_notification_topic_id,
-        )
+        """Делегирует обработку ошибки бронирования."""
+        return self.booking.handle_failure(raw_payload, error_msg)
+
+    # --- Contact ---
+
+    async def handle_contact_notification(self, raw_payload: dict[str, Any]) -> UnifiedViewDTO:
+        """Делегирует обработку уведомления из контактной формы."""
+        return await self.contact.handle_notification(raw_payload)

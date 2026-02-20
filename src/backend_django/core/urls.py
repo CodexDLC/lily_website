@@ -22,6 +22,7 @@ from django.urls import include, path
 urlpatterns = [
     path("i18n/", include("django.conf.urls.i18n")),  # For set_language view
     path("api/", api.urls),
+    path("tma/", include("features.telegram_app.urls", namespace="telegram_app")),
     path("", include("django_prometheus.urls")),  # Prometheus metrics
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sitemaps.views.sitemap"),
     # PWA files (handled by Nginx in production, but kept here for local dev if needed)

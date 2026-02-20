@@ -2,6 +2,7 @@ from redis.asyncio import Redis
 
 from src.shared.core.redis_service import RedisService
 from src.telegram_bot.infrastructure.redis.managers.notifications.appointment_cache import AppointmentCacheManager
+from src.telegram_bot.infrastructure.redis.managers.notifications.contact_cache import ContactCacheManager
 from src.telegram_bot.infrastructure.redis.managers.sender.sender_manager import SenderManager
 
 
@@ -27,3 +28,6 @@ class RedisContainer:
 
         # Менеджер для кэширования данных заявок
         self.appointment_cache = AppointmentCacheManager(self.service)
+
+        # Менеджер для кэширования данных контактных заявок
+        self.contact_cache = ContactCacheManager(self.service)

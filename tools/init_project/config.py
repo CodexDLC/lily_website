@@ -10,11 +10,12 @@ from __future__ import annotations
 import os
 import shutil
 import stat
+from collections.abc import Callable  # noqa: TCH003
 from dataclasses import dataclass, field
 from pathlib import Path  # noqa: TCH003
 
 
-def _on_rmtree_error(func: object, path: str, exc_info: object) -> None:
+def _on_rmtree_error(func: Callable[[str], None], path: str, exc_info: object) -> None:
     """Снимает read-only и повторяет удаление (Windows fix)."""
     os.chmod(path, stat.S_IWRITE)
     func(path)

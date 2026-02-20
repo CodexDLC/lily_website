@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}App{% endblock %}</title>
+    <!-- Telegram Web App Data -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/tma_app.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Initialization common logic -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Tell Telegram app it is ready
+            window.Telegram.WebApp.ready();
+            // Optionally expand to full height
+            window.Telegram.WebApp.expand();
+        });
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>

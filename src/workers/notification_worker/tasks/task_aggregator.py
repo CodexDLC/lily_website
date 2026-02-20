@@ -1,7 +1,7 @@
 from src.workers.core.tasks import CORE_FUNCTIONS
 
 from .email_tasks import send_email_task
-from .notification_tasks import send_booking_notification_task
+from .notification_tasks import send_booking_notification_task, send_contact_notification_task
 from .twilio_tasks import send_appointment_notification, send_twilio_task
 
 # Здесь агрегируются задачи для воркера уведомлений
@@ -9,6 +9,7 @@ from .twilio_tasks import send_appointment_notification, send_twilio_task
 
 FUNCTIONS = [
     send_booking_notification_task,
+    send_contact_notification_task,
     send_email_task,
     send_appointment_notification,
     send_twilio_task,

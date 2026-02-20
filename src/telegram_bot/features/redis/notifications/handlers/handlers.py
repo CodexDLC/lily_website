@@ -73,3 +73,35 @@ async def handle_status_update_notification(message_data: dict[str, Any], contai
 
     except Exception as e:
         log.critical(f"Notifications | Fatal error in status handler: {e}")
+
+
+@notifications_router.message("new_contact_request")
+async def handle_new_contact_request(message_data: dict[str, Any], container: Any):
+    """
+    Хендлер для нового уведомления из контактной формы.
+    """
+    try:
+        orchestrator = container.redis_notifications
+        view_sender = container.view_sender
+        contact_cache = container.redis.contact_cache
+
+        request_id = message_data.get("request_id")
+        log.info(f"Notifications | Processing 'new_contact_request' event. ID={request_id}")
+
+        # 1. Сохраняем данные в кэш Redis для последующего использования (кнопка «Прочитать»)
+        if request_id:
+            await contact_cache.save(request_id, message_data)
+            log.debug(f"Notifications | Contact request {request_id} cached in Redis.")
+
+        # 2. Формируем превью-уведомление (короткий текст + кнопка "Открыть бота")
+        try:
+            view_dto = await orchestrator.handle_contact_notification(message_data)
+        except Exception as e:
+            log.error(f"Notifications | Contact orchestrator failed: {e}")
+            view_dto = orchestrator.contact.handle_failure(message_data, str(e))
+
+        # 3. Отправляем уведомление в Telegram
+        await view_sender.send(view_dto)
+
+    except Exception as e:
+        log.critical(f"Notifications | Fatal error in contact handler: {e}")

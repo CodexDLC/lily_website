@@ -15,7 +15,7 @@ class ContactRequest(TimestampMixin, models.Model):
 
     TOPIC_CHOICES = [
         (TOPIC_GENERAL, _("General Question")),
-        (TOPIC_BOOKING, _("Booking Inquiry")),
+        (TOPIC_BOOKING, _("Questions about Booking")),
         (TOPIC_JOB, _("Job / Career")),
         (TOPIC_OTHER, _("Other")),
     ]

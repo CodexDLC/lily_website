@@ -108,6 +108,10 @@ class ViewSender:
                 pass
 
         try:
+            log.debug(
+                f"ViewSender [{log_prefix}] | Sending message: chat_id={self.chat_id}, "
+                f"thread_id={self.message_thread_id}, text_len={len(view_dto.text)}"
+            )
             sent = await self.bot.send_message(
                 chat_id=self.chat_id,
                 text=view_dto.text,
@@ -116,5 +120,8 @@ class ViewSender:
             )
             return sent.message_id
         except TelegramAPIError as e:
-            log.error(f"ViewSender [{log_prefix}] | Send error: {e}")
+            log.error(
+                f"ViewSender [{log_prefix}] | Send error: {e}. "
+                f"Params: chat_id={self.chat_id}, thread_id={self.message_thread_id}"
+            )
             return None

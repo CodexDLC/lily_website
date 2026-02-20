@@ -44,10 +44,15 @@ def manage_appointment(request, payload: ManageAppointmentRequest):
     """
     appointment = get_object_or_404(Appointment, id=payload.appointment_id)
 
+    from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
+
     if payload.action == "confirm":
         # Подтверждение заявки
         appointment.status = Appointment.STATUS_CONFIRMED
         appointment.save(update_fields=["status", "updated_at"])
+
+        # Sync cache for the notification worker
+        NotificationCacheManager.seed_appointment(appointment.id)
 
         log.info(f"Appointment #{appointment.id} confirmed by Bot admin")
 
@@ -60,6 +65,9 @@ def manage_appointment(request, payload: ManageAppointmentRequest):
         appointment.cancel_reason = payload.cancel_reason or Appointment.CANCEL_REASON_OTHER
         appointment.cancel_note = payload.cancel_note or ""
         appointment.save(update_fields=["status", "cancelled_at", "cancel_reason", "cancel_note", "updated_at"])
+
+        # Sync cache for the notification worker
+        NotificationCacheManager.seed_appointment(appointment.id)
 
         log.info(f"Appointment #{appointment.id} cancelled by admin: {payload.cancel_reason}")
 

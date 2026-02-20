@@ -5,23 +5,23 @@
 {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "@id": "{{ settings.site_base_url }}#organization", {# Dynamic ID from SiteSettings #}
-  "name": "{{ settings.company_name }}",
+  "@id": "{{ site_settings.site_base_url }}#organization", {# Dynamic ID from SiteSettings #}
+  "name": "{{ site_settings.company_name }}",
   "image": "{% static 'img/logo_lily.webp' %}", {# Keeping static for now, assuming no dynamic logo field #}
-  "url": "{{ settings.site_base_url }}", {# Dynamic URL from SiteSettings #}
-  "telephone": "{{ settings.phone }}",
-  "email": "{{ settings.email }}",
+  "url": "{{ site_settings.site_base_url }}", {# Dynamic URL from SiteSettings #}
+  "telephone": "{{ site_settings.phone }}",
+  "email": "{{ site_settings.email }}",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "{{ settings.address_street }}",
-    "addressLocality": "{{ settings.address_locality }}",
-    "postalCode": "{{ settings.address_postal_code }}",
+    "streetAddress": "{{ site_settings.address_street }}",
+    "addressLocality": "{{ site_settings.address_locality }}",
+    "postalCode": "{{ site_settings.address_postal_code }}",
     "addressCountry": "DE" {# Keeping hardcoded, assuming constant #}
   },
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": "{{ settings.latitude }}",
-    "longitude": "{{ settings.longitude }}"
+    "latitude": "{{ site_settings.latitude }}",
+    "longitude": "{{ site_settings.longitude }}"
   },
   "openingHoursSpecification": [
     {
@@ -33,19 +33,19 @@
         "Thursday",
         "Friday"
       ],
-      "opens": "{{ settings.work_start_weekdays|date:"H:i" }}",
-      "closes": "{{ settings.work_end_weekdays|date:"H:i" }}"
+      "opens": "{{ site_settings.work_start_weekdays }}",
+      "closes": "{{ site_settings.work_end_weekdays }}"
     },
     {
       "@type": "OpeningHoursSpecification",
       "dayOfWeek": "Saturday",
-      "opens": "{{ settings.work_start_saturday|date:"H:i" }}",
-      "closes": "{{ settings.work_end_saturday|date:"H:i" }}"
+      "opens": "{{ site_settings.work_start_saturday }}",
+      "closes": "{{ site_settings.work_end_saturday }}"
     }
   ],
-  "priceRange": "{{ settings.price_range }}",
+  "priceRange": "{{ site_settings.price_range }}",
   "sameAs": [
-    "{{ settings.instagram_url }}",
+    "{{ site_settings.instagram_url }}",
     "https://www.facebook.com/lilybeautysalonkoethen/" {# Keeping hardcoded Facebook as no field in SiteSettings #}
   ],
   "potentialAction": {
@@ -53,18 +53,37 @@
     "target": {
       "@type": "EntryPoint",
       "urlTemplate": "{% url 'booking_wizard' %}", {# Using Django's url tag #}
-      "inLanguage": "ru", {# Keeping hardcoded, assuming constant #}
+      "inLanguage": "{{ request.LANGUAGE_CODE }}",
       "actionPlatform": [
         "https://schema.org/DesktopWebPlatform",
         "https://schema.org/MobileWebPlatform"
       ]
     },
-    "name": "Записаться онлайн"
+    "name": "{% trans 'Записаться онлайн' %}"
   },
   "hasOfferCatalog": {
     "@type": "OfferCatalog",
     "name": "Beauty Services",
     "itemListElement": [
+      {% if islands %}
+        {% for island in islands %}
+        {
+          "@type": "OfferCatalog",
+          "name": "{{ island.title }}",
+          "itemListElement": [
+            {% for service in island.services.all %}
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "{{ service.title }}"
+              }
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+          ]
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      {% else %}
       {
         "@type": "OfferCatalog",
         "name": "Hair Services",
@@ -81,13 +100,6 @@
             "itemOffered": {
               "@type": "Service",
               "name": "Hair Coloring"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Hair Treatment"
             }
           }
         ]
@@ -109,69 +121,10 @@
               "@type": "Service",
               "name": "Pedicure"
             }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Nail Extensions"
-            }
-          }
-        ]
-      },
-      {
-        "@type": "OfferCatalog",
-        "name": "Cosmetology",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Facial Treatments"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Skin Cleaning"
-            }
-          }
-        ]
-      },
-      {
-        "@type": "OfferCatalog",
-        "name": "Brows & Lashes",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Brow Shaping"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Lash Extensions"
-            }
-          }
-        ]
-      },
-      {
-        "@type": "OfferCatalog",
-        "name": "Depilation",
-        "itemListElement": [
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Hair Removal"
-            }
           }
         ]
       }
+      {% endif %}
     ]
   }
 }
