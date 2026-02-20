@@ -46,6 +46,11 @@ SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "http://127.0.0.1:8000/")
 if not SITE_BASE_URL.endswith("/"):
     SITE_BASE_URL += "/"
 
+# Canonical domain for SEO (no trailing slash)
+CANONICAL_DOMAIN = os.environ.get("CANONICAL_DOMAIN", "https://lily-salon.de")
+if CANONICAL_DOMAIN.endswith("/"):
+    CANONICAL_DOMAIN = CANONICAL_DOMAIN[:-1]
+
 domain = urlparse(SITE_BASE_URL).netloc
 if domain:
     clean_domain = domain.split(":")[0]
@@ -77,6 +82,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sitemaps",
     "core",
     "features.main",
     "features.system",
@@ -115,6 +121,7 @@ TEMPLATES = [
                 "django.template.context_processors.i18n",
                 "features.system.context_processors.site_settings",
                 "features.promos.context_processors.active_promo",
+                "core.context_processors.seo_settings",
             ],
         },
     },

@@ -1,59 +1,47 @@
-# 📜 Orchestrator
+# 📄 Notifications Orchestrator (Redis)
 
-[⬅️ Back](./README.md) | [🏠 Docs Root](../../../../../../README.md)
+[⬅️ Back](../README.md) | [🏠 Docs Root](../../../../../../README.md)
 
-This module defines the `NotificationsOrchestrator` class, which is responsible for processing incoming notification payloads from Redis Streams, validating them, and preparing them for delivery to the appropriate Telegram chat or topic.
+The `NotificationsOrchestrator` is the central logic hub for handling events coming from the Redis Stream. It manages the lifecycle of a notification from the moment it is received from the backend until it is updated with delivery statuses from workers.
 
-## `NotificationsOrchestrator` Class
+## 🛠️ Core Responsibilities
 
-The `NotificationsOrchestrator` handles the business logic for the Notifications feature, ensuring that notifications are correctly formatted and routed.
+Located in: `src/telegram_bot/features/redis/notifications/logic/orchestrator.py`
 
-### Initialization (`__init__`)
+### 1. `handle_notification(raw_payload: dict[str, Any]) -> UnifiedViewDTO`
 
-```python
-def __init__(self, settings: BotSettings):
-```
-Initializes the `NotificationsOrchestrator`.
+Processes new booking events from the backend.
 
-*   `settings` (`BotSettings`): An instance of `BotSettings` containing bot-specific configurations, such as Telegram channel IDs and topic IDs.
+*   **Validation**: Converts raw dictionary data into a `BookingNotificationPayload` DTO.
+*   **Topic Routing**: Uses `_get_target_topic` to determine which Telegram Topic (forum thread) the message should be sent to, based on the service category.
+*   **Rendering**: Calls `NotificationsUI.render_notification` to generate the initial message.
+*   **Output**: Returns a `UnifiedViewDTO` with `mode="topic"` or `mode="channel"`.
 
-**Key Components Initialized:**
-*   `self.settings`: Stores the application settings.
-*   `self.ui`: An instance of `NotificationsUI`, responsible for rendering the notification messages.
+### 2. `handle_status_update(message_data: dict[str, Any]) -> UnifiedViewDTO | None`
 
-### `handle_notification` Method
+Processes delivery reports (Email/SMS) from autonomous workers.
 
-```python
-def handle_notification(self, raw_payload: dict[str, Any]) -> UnifiedViewDTO:
-```
-Processes an incoming raw notification payload, validates it, and prepares a `UnifiedViewDTO` for sending.
+*   **State Persistence**:
+    1.  Retrieves the current booking data from `AppointmentCache` (Redis).
+    2.  Updates the specific channel status (`email_delivery_status` or `twilio_delivery_status`).
+    3.  Saves the updated state back to the cache.
+*   **UI Synchronization**:
+    *   Re-renders the **entire** notification card using the updated cache data.
+    *   This ensures that "checkmarks" (✅) for delivery statuses are updated in real-time without losing other information.
+*   **Mode**: Returns a `UnifiedViewDTO` with `mode="edit"` to update the existing message in Telegram.
 
-*   `raw_payload` (dict[str, Any]): The raw dictionary data received from the Redis Stream, expected to conform to the `BookingNotificationPayload` structure.
+### 3. `_get_target_topic(payload: BookingNotificationPayload) -> int | None`
 
-**Process:**
-1.  **Payload Validation:** Attempts to validate the `raw_payload` against the `BookingNotificationPayload` Pydantic model.
-2.  **Failure Handling:** If validation fails, it calls `handle_failure` to generate an error notification.
-3.  **UI Rendering:** If validation is successful, it uses `self.ui.render_notification` to generate the visual content of the notification.
-4.  **Target Determination:** Determines the `target_chat_id` (admin channel) and `message_thread_id` (topic) based on `BotSettings` and the notification's `category_slug`.
-5.  **DTO Creation:** Constructs a `UnifiedViewDTO` containing the rendered content, target chat/topic information, and a session key.
+Helper method to map `category_slug` to a specific `message_thread_id` using the bot's settings.
 
-**Returns:**
-A `UnifiedViewDTO` object ready for dispatch by the `ViewSender`.
+## 🧩 Data Flow: Status Updates
 
-### `handle_failure` Method
+1.  **Worker** sends a status update to the Redis Stream (e.g., `channel="email", status="sent"`).
+2.  **RedisStreamProcessor** routes the message to this orchestrator.
+3.  **Orchestrator** updates the `AppointmentCache`.
+4.  **Orchestrator** triggers a message edit in Telegram with the updated UI (e.g., showing a checkmark next to "Email").
 
-```python
-def handle_failure(self, raw_payload: dict[str, Any], error_msg: str) -> UnifiedViewDTO:
-```
-Generates a `UnifiedViewDTO` for a notification processing failure. This is used when an incoming notification payload cannot be validated or processed correctly.
+## 📝 Related Components
 
-*   `raw_payload` (dict[str, Any]): The original raw payload that caused the failure.
-*   `error_msg` (str): A string describing the validation or processing error.
-
-**Process:**
-1.  Extracts the `booking_id` from the `raw_payload` for identification.
-2.  Constructs a descriptive error message indicating the failure.
-3.  Creates a `UnifiedViewDTO` with the error message, targeting the admin channel and notification topic.
-
-**Returns:**
-A `UnifiedViewDTO` object representing the failure notification.
+*   **[📄 BookingNotificationPayload](../resources/dto.md)**: The data structure for notifications.
+*   **[📄 NotificationsUI](../ui/ui.md)**: Responsible for the visual representation of statuses.
