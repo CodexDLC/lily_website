@@ -19,6 +19,7 @@ notifications-alert-rejected = Anfrage abgelehnt
 notifications-alert-cancelled = Abgebrochen
 notifications-alert-deleted = Nachricht gelöscht
 notifications-error-api = ⚠️ Server-Verbindungsfehler
+notifications-error-contact-notfound = ⚠️ <b>Anfragetext nicht gefunden (veraltet).</b>{"\n\n"}Bitte suchen Sie in der Admin-Konsole danach.
 
 # Buttons
 notifications-btn-delete = 🗑 Aus Feed löschen
