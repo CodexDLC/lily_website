@@ -12,6 +12,7 @@ CSS Compiler для LILY Beauty Salon
     pip install csscompressor
 """
 
+import json
 import re
 from pathlib import Path
 
@@ -158,15 +159,34 @@ def main():
     project_root = Path(__file__).parent.parent.parent
     css_dir = project_root / "src" / "backend_django" / "static" / "css"
 
-    base_css = css_dir / "base.css"
-    app_css = css_dir / "app.css"
+    config_path = css_dir / "compiler_config.json"
 
-    if not base_css.exists():
-        print(f"❌ Файл не найден: {base_css}")
-        return
+    if not config_path.exists():
+        print(f"❌ Файл конфигурации не найден: {config_path}")
+        print("Создаю конфигурацию по умолчанию...")
+        default_config = {"base.css": "app.css"}
+        with open(config_path, "w", encoding="utf-8") as f:
+            json.dump(default_config, f, indent=4)
+        config_data = default_config
+    else:
+        try:
+            with open(config_path, encoding="utf-8") as f:
+                config_data = json.load(f)
+        except json.JSONDecodeError as e:
+            print(f"❌ Ошибка парсинга {config_path}: {e}")
+            return
 
-    # Компилируем с удалением комментариев (сохраняя читаемость)
-    compile_css(base_css, app_css, minify=False, remove_comments_only=True)
+    for source_file, output_file in config_data.items():
+        base_css = css_dir / source_file
+        app_css = css_dir / output_file
+
+        if not base_css.exists():
+            print(f"⚠️ Пропущен {source_file}: файл не найден")
+            continue
+
+        print(f"\n--- Обработка: {source_file} -> {output_file} ---")
+        # Компилируем с удалением комментариев (сохраняя читаемость)
+        compile_css(base_css, app_css, minify=False, remove_comments_only=True)
 
 
 if __name__ == "__main__":

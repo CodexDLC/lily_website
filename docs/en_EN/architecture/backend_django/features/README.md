@@ -19,3 +19,4 @@ Organizing the backend into features (Django apps) helps to:
 | **[📂 Main Feature](./main/README.md)** | Core website pages, views, and static content. |
 | **[📂 System Feature](./system/README.md)** | System-wide services, models (e.g., tags, mixins), and configurations. |
 | **[📂 Booking Feature](./booking/README.md)** | Business logic for appointment booking and management. |
+| **[📱 Telegram App Feature](./telegram_app/README.md)** | Integration with Telegram Mini Apps for admin tasks (answering requests). |

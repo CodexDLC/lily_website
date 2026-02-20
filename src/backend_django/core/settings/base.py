@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     "features.system",
     "features.booking",
     "features.promos",
+    "features.telegram_app",
     "ninja",
 ]
 

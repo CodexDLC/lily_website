@@ -1,0 +1,35 @@
+{% extends "telegram_app/tma_base.html" %}
+
+{% block title %}Reply to Request{% endblock %}
+
+{% block content %}
+<div id="form-container">
+    <h2>Reply to Request #{{ req_id }}</h2>
+    <p style="color: var(--hint-color); font-size: 14px; margin-bottom: 20px;">
+        Type your response below. It will be sent via email to the client.
+    </p>
+
+    <form id="reply-form">
+        <!-- Hidden data -->
+        <input type="hidden" id="req_id" value="{{ req_id }}">
+
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" value="Re: Your request (LILY Beauty)" required>
+
+        <label for="reply_text">Message</label>
+        <textarea id="reply_text" name="reply_text" rows="6" placeholder="Write your message here..."
+            required></textarea>
+    </form>
+</div>
+
+<div id="success-message" class="hidden" style="text-align: center; margin-top: 40px;">
+    <h2 style="color: var(--btn-color);">✅ Sent!</h2>
+    <p>The reply has been successfully queued for sending.</p>
+</div>
+{% endblock %}
+
+{% load static %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/telegram_app.js' %}"></script>
+{% endblock %}

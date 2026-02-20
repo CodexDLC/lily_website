@@ -24,3 +24,10 @@ class NotificationsTexts:
 
     BTN_APPROVE = "✅ Подтвердить"
     BTN_REJECT = "❌ Отклонить"
+
+    # --- Contact Form ---
+    CONTACT_PREVIEW_TITLE = "📋 <b>Новая заявка с сайта</b>"
+    CONTACT_PREVIEW_TEXT = "📋 <b>Новая заявка с сайта</b>\n\nНажмите «Прочитать» для просмотра."
+
+    BTN_READ_CONTACT = "📖 Прочитать"
+    BTN_REPLY_CONTACT = "✉️ Ответить"

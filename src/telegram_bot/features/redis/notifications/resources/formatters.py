@@ -43,3 +43,11 @@ def format_new_booking(
         status_block = "\n" + NotificationsTexts.NOTIFICATION_STATUSES.format(email_status=e_icon, twilio_status=t_icon)
 
     return f"{title}\n\n{details}{status_block}"
+
+
+def format_contact_preview() -> str:
+    """
+    Формирует короткий текст превью контактной заявки.
+    Полный текст — из Redis-кеша при нажатии «Прочитать».
+    """
+    return NotificationsTexts.CONTACT_PREVIEW_TEXT

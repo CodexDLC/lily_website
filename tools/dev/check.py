@@ -10,6 +10,9 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 COMPOSE_FILE = PROJECT_ROOT / "deploy" / "docker-compose.test.yml"
 TEST_PROJECT_NAME = "lily-quality-check"
 
+# Directories to check
+CHECK_DIRS = "src/ tools/"
+
 
 # ANSI Colors
 class Colors:
@@ -74,31 +77,53 @@ def cleanup_docker():
 
 
 def check_linters():
-    print_step("Running Linters (Ruff)")
+    print_step("Running Linters (Ruff & Pre-commit hooks)")
 
-    max_runs = 3
-    for i in range(max_runs):
-        print(f"--- Pass {i + 1}/{max_runs} ---")
+    # --- Auto-fixing and formatting with Ruff ---
+    print("Attempting to auto-fix Ruff issues...")
+    fix_success, fix_out = run_command(f"poetry run ruff check {CHECK_DIRS} --fix", capture_output=True)
+    if not fix_success:
+        print_error(f"Ruff auto-fix command failed:\n{fix_out}")
+        return False
+    if "Fixed" in fix_out:
+        print_success("Ruff auto-fixed some issues.")
+    else:
+        print("No Ruff issues to auto-fix.")
 
-        # 1. Fix what can be fixed
-        print("Running `ruff check --fix .`")
-        run_command("poetry run ruff check . --fix")
+    print("Attempting to auto-format with Ruff...")
+    format_success, format_out = run_command(f"poetry run ruff format {CHECK_DIRS}", capture_output=True)
+    if not format_success:
+        print_error(f"Ruff auto-format command failed:\n{format_out}")
+        return False
+    if "Formatted" in format_out:
+        print_success("Ruff auto-formatted some files.")
+    else:
+        print("No files needed Ruff formatting.")
 
-        # 2. Format the code
-        print("Running `ruff format .`")
-        run_command("poetry run ruff format .")
+    # --- Verification checks after auto-fixing/formatting ---
+    print("Verifying Ruff check (no fixable issues remaining)...")
+    ruff_check_success, ruff_check_out = run_command(f"poetry run ruff check {CHECK_DIRS}", capture_output=True)
+    if not ruff_check_success:
+        print_error(f"Ruff check failed (unfixable issues or issues after fix):\n{ruff_check_out}")
+        return False
+    print_success("Ruff check passed.")
 
-        # 3. Check if any issues remain
-        print("Checking for remaining issues...")
-        success, output = run_command("poetry run ruff check .", capture_output=True)
-        if success:
-            print_success("All linting issues are resolved.")
-            return True
+    print("Verifying Ruff format (no formatting issues remaining)...")
+    ruff_format_check_success, ruff_format_check_out = run_command(
+        f"poetry run ruff format {CHECK_DIRS} --check", capture_output=True
+    )
+    if not ruff_format_check_success:
+        print_error(f"Ruff format check failed (files still need formatting):\n{ruff_format_check_out}")
+        return False
+    print_success("Ruff format check passed.")
 
-        # If it's the last run and still failing, print the error
-        if i == max_runs - 1:
-            print_error(f"Ruff check failed after {max_runs} attempts:\n{output}")
+    print("Running basic pre-commit hooks...")
+    basic_hooks = ["trailing-whitespace", "end-of-file-fixer", "check-yaml"]
+    for hook in basic_hooks:
+        if not run_command(f"pre-commit run {hook} --all-files")[0]:
+            print_error(f"Pre-commit hook '{hook}' failed")
             return False
+    print_success("Basic pre-commit hooks passed.")
 
     return False
 
@@ -111,7 +136,7 @@ def check_types():
 
         shutil.rmtree(cache_dir)
 
-    success, out = run_command("poetry run mypy .")
+    success, out = run_command(f"poetry run mypy {CHECK_DIRS}", capture_output=True)
     if not success:
         print_error(f"Mypy check failed:\n{out}")
     return success

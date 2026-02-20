@@ -38,6 +38,13 @@ class SiteSettings(models.Model):
     instagram_url = models.URLField(_("Instagram URL"), blank=True, default="https://instagram.com/manikure_kothen")
     telegram_url = models.URLField(_("Telegram URL"), blank=True)
     whatsapp_url = models.URLField(_("WhatsApp URL"), blank=True)
+    telegram_bot_username = models.CharField(
+        _("Telegram Bot Username"),
+        max_length=100,
+        blank=True,
+        default="codexen_test_bot",
+        help_text=_("Username of the bot without @ (e.g., lily_beauty_bot)"),
+    )
 
     # --- Working Hours (Display Strings) ---
     working_hours_weekdays = models.CharField(_("Mo-Fr (Display)"), max_length=100, default="09:00 - 18:00")
@@ -108,10 +115,10 @@ class SiteSettings(models.Model):
 
         super().save(*args, **kwargs)
 
-        # Сохраняем настройки в Redis после сохранения в БД
-        from features.system.services.redis_site_settings import save_site_settings_to_redis
+        # Сохраняем настройки        # Sync to Redis for the Bot
+        from features.system.redis_managers.site_settings_manager import SiteSettingsManager
 
-        save_site_settings_to_redis(self)
+        SiteSettingsManager.save_to_redis(self)
 
     @classmethod
     def load(cls):
