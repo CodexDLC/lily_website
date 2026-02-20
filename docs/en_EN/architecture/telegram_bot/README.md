@@ -8,11 +8,13 @@ Documentation and development plans for the Telegram Bot application located in 
 
 | Component | Description |
 |:---|:---|
-| **[📂 Core Infrastructure](./core/README.md)** | DI Container, Configuration, Settings, and Middleware |
+| **[📂 Core Infrastructure](./core/README.md)** | DI Container, Configuration, and Settings |
 | **[📂 Features (Modules)](./features/README.md)** | Modular business logic (Menu, Commands) |
 | **[📂 Services](./services/README.md)** | Shared services (Director, FSM, Sender, Animation) |
+| **[📂 Infrastructure](./infrastructure/README.md)** | API Routes, Migrations, Models, Redis, Repositories |
+| **[📂 Middlewares](./middlewares/README.md)** | Throttling, Security, User Validation, I18n |
 | **[📂 Resources](./resources/README.md)** | Templates, Texts, and Keyboards |
-| **[🗺️ Roadmap](./roadmap.md)** | Development plan and future features |
+| **[📂 Tasks](./tasks/README.md)** | Architectural plans and task lists |
 
 ## 🏗️ Project Structure
 
@@ -22,34 +24,16 @@ Below is the structure of the `src/telegram_bot` directory.
 
 ```text
 src/telegram_bot/
- ┣ 📂 core                  # Infrastructure Layer
- ┃ ┣ 📜 api_client.py       # Base HTTP Client (Abstract)
- ┃ ┣ 📜 config.py           # Environment Configuration (Pydantic)
- ┃ ┣ 📜 container.py        # DI Container (Services & Features assembly)
- ┃ ┣ 📜 factory.py          # Bot & Dispatcher Factory
- ┃ ┣ 📜 garbage_collector.py# Dynamic FSM Garbage Collector
- ┃ ┣ 📜 routers.py          # Router Auto-Discovery & Assembly
- ┃ ┗ 📜 settings.py         # INSTALLED_FEATURES & Middleware config
- ┃
+ ┣ 📂 core                  # Core Architecture (DI, Config, Settings)
  ┣ 📂 features              # Modular Features (Plugins)
- ┃ ┣ 📂 bot_menu            # Core Feature: Dashboard
- ┃ ┣ 📂 commands            # Core Feature: /start, /help
- ┃ ┗ 📂 errors              # Core Feature: Error Handling
- ┃
- ┣ 📂 services              # Shared Services
- ┃ ┣ 📂 director            # Navigation & Scene Management
- ┃ ┣ 📂 sender              # ViewSender (Smart Message Editing)
- ┃ ┣ 📂 fsm                 # State Managers & Base Classes
- ┃ ┣ 📂 feature_discovery   # Auto-discovery service (Menu, GC)
- ┃
- ┗ 📜 [app_telegram.py](./app_telegram.md) # Entry Point (Polling)
+ ┃ ┣ 📂 redis               # Redis-based features (Notifications, Errors)
+ ┃ ┗ 📂 telegram            # Telegram-based features (Menu, Commands)
+ ┣ 📂 infrastructure        # Data Access & System Layer
+ ┣ 📂 middlewares           # Update processing pipeline
+ ┣ 📂 resources             # Static assets (Templates, Locales)
+ ┣ 📂 services              # Shared Business Services
+ ┗ 📜 app_telegram.py       # Entry Point (Polling)
 ```
-
-## 🛠️ Management Scripts
-
-| Component | Description |
-|:---|:---|
-| **[📜 Feature Management Script](./manage_script.md)** | CLI tool for creating new features |
 
 ## 📦 Key Concepts
 

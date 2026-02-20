@@ -2,7 +2,6 @@ services:
   backend:
     image: ${DOCKER_IMAGE_BACKEND}
     container_name: lily_website-backend
-    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 2 --timeout 90
     env_file: .env
     volumes:
       - uploads:/app/media

@@ -8,4 +8,7 @@ This directory defines the base module structure and common dependencies for wor
 
 | Component | Description |
 |:---|:---|
-| **[📜 Dependencies](./dependencies.md)** | Defines common dependencies and their providers for worker modules |
+| **[📜 Dependencies](./dependencies.md)** | Common dependency providers for worker modules |
+| **[📜 Email Client](./email_client.md)** | Async SMTP email client (`AsyncEmailClient`) |
+| **[📜 Template Renderer](./template_renderer.md)** | Jinja2 template rendering service |
+| **[📜 Twilio Service](./twilio_service.md)** | SMS and WhatsApp via Twilio API |

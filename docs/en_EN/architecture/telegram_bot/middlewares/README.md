@@ -12,3 +12,4 @@ This directory contains Aiogram middlewares, which are functions or classes that
 | **[📜 Container](./container.md)** | Middleware for injecting the DI container into handlers |
 | **[📜 Throttling](./throttling.md)** | Middleware for preventing flood attacks and rate limiting |
 | **[📜 User Validation](./user_validation.md)** | Middleware for validating and preparing user data |
+| **[📜 I18n Middleware](./i18n_middleware.md)** | Middleware for managing user locales via FSM (Redis) |
