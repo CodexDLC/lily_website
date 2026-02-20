@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-17 18:01+0100\n"
+"POT-Creation-Date: 2026-02-20 17:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,51 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\src\backend_django\features\booking\admin.py:23
+#: .\src\backend_django\features\booking\admin.py:26
+#: .\src\backend_django\features\main\admin.py:21
+#: .\src\backend_django\features\main\admin.py:60
+#, fuzzy
+#| msgid "Basic Information"
+msgid "Basic Info"
+msgstr "Grundinformationen"
+
+#: .\src\backend_django\features\booking\admin.py:32
+#, fuzzy
+#| msgid "Professional Title"
+msgid "Professional"
+msgstr "Berufsbezeichnung"
+
+#: .\src\backend_django\features\booking\admin.py:38
+#, fuzzy
+#| msgid "Contact"
+msgid "Contacts"
+msgstr "Kontakt"
+
+#: .\src\backend_django\features\booking\admin.py:44
+#: .\src\backend_django\features\main\admin.py:33
+#: .\src\backend_django\features\main\admin.py:78
+msgid "System"
+msgstr ""
+
 #: .\src\backend_django\features\booking\admin.py:51
+#: .\src\backend_django\features\main\admin.py:40
+#: .\src\backend_django\features\main\admin.py:85
+msgid "SEO"
+msgstr "SEO"
+
+#: .\src\backend_django\features\booking\admin.py:63
+#: .\src\backend_django\features\booking\admin.py:91
 #: .\src\backend_django\features\booking\models\appointment.py:62
 #: .\src\backend_django\features\booking\models\client.py:76
 #: .\src\backend_django\features\promos\admin.py:95
 msgid "Status"
 msgstr "Status"
 
-#: .\src\backend_django\features\booking\admin.py:66
+#: .\src\backend_django\features\booking\admin.py:106
 msgid "Promo"
 msgstr ""
 
-#: .\src\backend_django\features\booking\admin.py:75
+#: .\src\backend_django\features\booking\admin.py:115
 msgid "Mark as Confirmed"
 msgstr "Als bestätigt markieren"
 
@@ -499,8 +531,8 @@ msgstr "Scan oder Foto des Zertifikats (empfohlen: 1200x900px)"
 #: .\src\backend_django\features\booking\models\master_portfolio.py:52
 #: .\src\backend_django\features\promos\admin.py:101
 #: .\src\backend_django\features\promos\admin.py:108
-#: .\src\backend_django\features\promos\models\promo_message.py:31
-#: .\src\backend_django\features\promos\models\promo_message.py:132
+#: .\src\backend_django\features\promos\models\promo_message.py:32
+#: .\src\backend_django\features\promos\models\promo_message.py:133
 #: .\src\backend_django\features\system\models\mixins.py:35
 msgid "Active"
 msgstr "Aktiv"
@@ -518,6 +550,26 @@ msgstr "Meister-Zertifikat"
 msgid "Master Certificates"
 msgstr "Meister-Zertifikate"
 
+#: .\src\backend_django\features\booking\models\master_day_off.py:13
+msgid "Date"
+msgstr ""
+
+#: .\src\backend_django\features\booking\models\master_day_off.py:14
+msgid "Reason"
+msgstr ""
+
+#: .\src\backend_django\features\booking\models\master_day_off.py:18
+#, fuzzy
+#| msgid "Master"
+msgid "Master Day Off"
+msgstr "Meister"
+
+#: .\src\backend_django\features\booking\models\master_day_off.py:19
+#, fuzzy
+#| msgid "Masters"
+msgid "Master Days Off"
+msgstr "Meister"
+
 #: .\src\backend_django\features\booking\models\master_portfolio.py:25
 #: .\src\backend_django\features\main\models\service.py:114
 msgid "Portfolio Image"
@@ -528,7 +580,7 @@ msgid "Example of master's work (recommended: 1200x1200px)"
 msgstr "Beispiel der Arbeit des Meisters (empfohlen: 1200x1200px)"
 
 #: .\src\backend_django\features\booking\models\master_portfolio.py:32
-#: .\src\backend_django\features\promos\models\promo_message.py:20
+#: .\src\backend_django\features\promos\models\promo_message.py:21
 #: .\src\backend_django\features\system\admin.py:53
 msgid "Description"
 msgstr "Beschreibung"
@@ -583,6 +635,16 @@ msgstr "Termin"
 #: .\src\backend_django\features\booking\selectors\wizard.py:165
 msgid "Bestätigung"
 msgstr "Bestätigung"
+
+#: .\src\backend_django\features\main\admin.py:27
+#: .\src\backend_django\features\main\admin.py:72
+#: .\src\backend_django\features\promos\admin.py:34
+msgid "Content"
+msgstr "Inhalt"
+
+#: .\src\backend_django\features\main\admin.py:66
+msgid "Pricing & Duration"
+msgstr ""
 
 #: .\src\backend_django\features\main\forms.py:11
 msgid "Telefon / WhatsApp"
@@ -677,7 +739,7 @@ msgstr "Depilation"
 
 #: .\src\backend_django\features\main\models\category.py:22
 #: .\src\backend_django\features\main\models\service.py:25
-#: .\src\backend_django\features\promos\models\promo_message.py:18
+#: .\src\backend_django\features\promos\models\promo_message.py:19
 msgid "Title"
 msgstr "Titel"
 
@@ -703,7 +765,7 @@ msgstr ""
 #: .\src\backend_django\features\main\models\category.py:33
 #: .\src\backend_django\features\main\models\service.py:59
 #: .\src\backend_django\features\main\models\service.py:101
-#: .\src\backend_django\features\promos\models\promo_message.py:86
+#: .\src\backend_django\features\promos\models\promo_message.py:87
 msgid "Image"
 msgstr "Bild"
 
@@ -751,8 +813,8 @@ msgid "General Question"
 msgstr "Allgemeine Frage"
 
 #: .\src\backend_django\features\main\models\contact_request.py:18
-msgid "Booking Inquiry"
-msgstr "Buchungsanfrage"
+msgid "Questions about Booking"
+msgstr "Fragen zur Buchung"
 
 #: .\src\backend_django\features\main\models\contact_request.py:19
 msgid "Job / Career"
@@ -863,7 +925,7 @@ msgstr "Titel / Beschreibung"
 
 #: .\src\backend_django\features\main\models\service.py:107
 msgid "Optional caption for the image."
-msgstr "Optionale Bildunterschrift."
+msgstr ""
 
 #: .\src\backend_django\features\main\models\service.py:110
 #, fuzzy
@@ -874,10 +936,6 @@ msgstr "Sortierreihenfolge."
 #: .\src\backend_django\features\main\models\service.py:115
 msgid "Portfolio Images"
 msgstr "Portfolio-Bilder"
-
-#: .\src\backend_django\features\promos\admin.py:34
-msgid "Content"
-msgstr "Inhalt"
 
 #: .\src\backend_django\features\promos\admin.py:45
 msgid "Scheduling"
@@ -912,7 +970,7 @@ msgstr ""
 
 #: .\src\backend_django\features\promos\admin.py:102
 #: .\src\backend_django\features\promos\admin.py:109
-#: .\src\backend_django\features\promos\models\promo_message.py:128
+#: .\src\backend_django\features\promos\models\promo_message.py:129
 #, fuzzy
 #| msgid "Rescheduled"
 msgid "Scheduled"
@@ -920,13 +978,13 @@ msgstr "Verschoben"
 
 #: .\src\backend_django\features\promos\admin.py:103
 #: .\src\backend_django\features\promos\admin.py:110
-#: .\src\backend_django\features\promos\models\promo_message.py:130
+#: .\src\backend_django\features\promos\models\promo_message.py:131
 msgid "Expired"
 msgstr ""
 
 #: .\src\backend_django\features\promos\admin.py:104
 #: .\src\backend_django\features\promos\admin.py:111
-#: .\src\backend_django\features\promos\models\promo_message.py:124
+#: .\src\backend_django\features\promos\models\promo_message.py:125
 #, fuzzy
 #| msgid "Active"
 msgid "Inactive"
@@ -962,125 +1020,125 @@ msgstr ""
 msgid "Promos"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:18
+#: .\src\backend_django\features\promos\models\promo_message.py:19
 msgid "Main title of the promotion"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:20
+#: .\src\backend_django\features\promos\models\promo_message.py:21
 msgid "Full description shown in the modal window"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:23
+#: .\src\backend_django\features\promos\models\promo_message.py:24
 msgid "Button Text"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:26
+#: .\src\backend_django\features\promos\models\promo_message.py:27
 msgid "Text displayed on the floating button"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:33
+#: .\src\backend_django\features\promos\models\promo_message.py:34
 msgid ""
 "If unchecked, the notification will not be shown even if within the date "
 "range"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:38
+#: .\src\backend_django\features\promos\models\promo_message.py:39
 #, fuzzy
 #| msgid "Start Date & Time"
 msgid "Start Date"
 msgstr "Startdatum & -zeit"
 
-#: .\src\backend_django\features\promos\models\promo_message.py:40
+#: .\src\backend_django\features\promos\models\promo_message.py:41
 msgid "When to start showing this notification"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:44
+#: .\src\backend_django\features\promos\models\promo_message.py:45
 msgid "End Date"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:45
+#: .\src\backend_django\features\promos\models\promo_message.py:46
 msgid "When to stop showing this notification"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:49
+#: .\src\backend_django\features\promos\models\promo_message.py:50
 msgid "Display Delay (seconds)"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:52
+#: .\src\backend_django\features\promos\models\promo_message.py:53
 msgid "How many seconds to wait after page load before showing the button"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:57
+#: .\src\backend_django\features\promos\models\promo_message.py:58
 #, fuzzy
 #| msgid "Team Page"
 msgid "Target Pages"
 msgstr "Teamseite"
 
-#: .\src\backend_django\features\promos\models\promo_message.py:60
+#: .\src\backend_django\features\promos\models\promo_message.py:61
 msgid ""
 "Comma-separated list of page slugs (e.g., 'home,services,team'). Leave empty "
 "to show on all pages."
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:65
+#: .\src\backend_django\features\promos\models\promo_message.py:66
 msgid "Priority"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:67
+#: .\src\backend_django\features\promos\models\promo_message.py:68
 msgid ""
 "Higher priority promos are shown first if multiple are active (higher number "
 "= higher priority)"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:72
+#: .\src\backend_django\features\promos\models\promo_message.py:73
 msgid "Button Background Color"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:75
+#: .\src\backend_django\features\promos\models\promo_message.py:76
 msgid "Hex color code (e.g., #EDD071)"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:79
+#: .\src\backend_django\features\promos\models\promo_message.py:80
 msgid "Button Text Color"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:82
+#: .\src\backend_django\features\promos\models\promo_message.py:83
 msgid "Hex color code (e.g., #003831)"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:90
+#: .\src\backend_django\features\promos\models\promo_message.py:91
 msgid "Optional image to display in the modal window"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:95
+#: .\src\backend_django\features\promos\models\promo_message.py:96
 msgid "Views Count"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:97
+#: .\src\backend_django\features\promos\models\promo_message.py:98
 msgid "How many times the floating button was displayed"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:101
+#: .\src\backend_django\features\promos\models\promo_message.py:102
 msgid "Clicks Count"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:103
+#: .\src\backend_django\features\promos\models\promo_message.py:104
 msgid "How many times the modal window was opened"
 msgstr ""
 
-#: .\src\backend_django\features\promos\models\promo_message.py:107
+#: .\src\backend_django\features\promos\models\promo_message.py:108
 #, fuzzy
 #| msgid "Notifications"
 msgid "Promo Notification"
 msgstr "Benachrichtigungen"
 
-#: .\src\backend_django\features\promos\models\promo_message.py:108
+#: .\src\backend_django\features\promos\models\promo_message.py:109
 #, fuzzy
 #| msgid "Notifications"
 msgid "Promo Notifications"
 msgstr "Benachrichtigungen"
 
-#: .\src\backend_django\features\promos\models\promo_message.py:146
+#: .\src\backend_django\features\promos\models\promo_message.py:147
 msgid "End date must be after start date"
 msgstr ""
 
@@ -1284,88 +1342,98 @@ msgstr "Telegram URL"
 msgid "WhatsApp URL"
 msgstr "WhatsApp URL"
 
-#: .\src\backend_django\features\system\models\site_settings.py:43
+#: .\src\backend_django\features\system\models\site_settings.py:42
+#, fuzzy
+#| msgid "Telegram Username"
+msgid "Telegram Bot Username"
+msgstr "Telegram-Benutzername"
+
+#: .\src\backend_django\features\system\models\site_settings.py:46
+msgid "Username of the bot without @ (e.g., lily_beauty_bot)"
+msgstr ""
+
+#: .\src\backend_django\features\system\models\site_settings.py:50
 msgid "Mo-Fr (Display)"
 msgstr "Mo-Fr (Anzeige)"
 
-#: .\src\backend_django\features\system\models\site_settings.py:44
+#: .\src\backend_django\features\system\models\site_settings.py:51
 msgid "Saturday (Display)"
 msgstr "Samstag (Anzeige)"
 
-#: .\src\backend_django\features\system\models\site_settings.py:45
+#: .\src\backend_django\features\system\models\site_settings.py:52
 msgid "Sunday (Display)"
 msgstr "Sonntag (Anzeige)"
 
-#: .\src\backend_django\features\system\models\site_settings.py:49
+#: .\src\backend_django\features\system\models\site_settings.py:56
 msgid "Mo-Fr Start"
 msgstr "Mo-Fr Beginn"
 
-#: .\src\backend_django\features\system\models\site_settings.py:50
+#: .\src\backend_django\features\system\models\site_settings.py:57
 msgid "Mo-Fr End"
 msgstr "Mo-Fr Ende"
 
-#: .\src\backend_django\features\system\models\site_settings.py:53
+#: .\src\backend_django\features\system\models\site_settings.py:60
 msgid "Saturday Start"
 msgstr "Samstag Beginn"
 
-#: .\src\backend_django\features\system\models\site_settings.py:54
+#: .\src\backend_django\features\system\models\site_settings.py:61
 msgid "Saturday End"
 msgstr "Samstag Ende"
 
-#: .\src\backend_django\features\system\models\site_settings.py:59
+#: .\src\backend_django\features\system\models\site_settings.py:66
 #, fuzzy
 #| msgid "Price"
 msgid "Price Range"
 msgstr "Preis"
 
-#: .\src\backend_django\features\system\models\site_settings.py:62
+#: .\src\backend_django\features\system\models\site_settings.py:69
 #, fuzzy
 #| msgid "Contact Information"
 msgid "Contact Form URL Path"
 msgstr "Kontaktinformationen"
 
-#: .\src\backend_django\features\system\models\site_settings.py:64
+#: .\src\backend_django\features\system\models\site_settings.py:71
 msgid "Booking Confirm URL Path"
 msgstr ""
 
-#: .\src\backend_django\features\system\models\site_settings.py:67
+#: .\src\backend_django\features\system\models\site_settings.py:74
 msgid "Booking Cancel URL Path"
 msgstr ""
 
-#: .\src\backend_django\features\system\models\site_settings.py:69
+#: .\src\backend_django\features\system\models\site_settings.py:76
 msgid "Booking Reschedule URL Path"
 msgstr ""
 
-#: .\src\backend_django\features\system\models\site_settings.py:73
+#: .\src\backend_django\features\system\models\site_settings.py:80
 msgid "Hiring Active"
 msgstr "Personalbeschaffung aktiv"
 
-#: .\src\backend_django\features\system\models\site_settings.py:75
+#: .\src\backend_django\features\system\models\site_settings.py:82
 msgid "Hiring Title"
 msgstr "Stellentitel"
 
-#: .\src\backend_django\features\system\models\site_settings.py:77
+#: .\src\backend_django\features\system\models\site_settings.py:84
 msgid "Hiring Text"
 msgstr "Stellentext"
 
-#: .\src\backend_django\features\system\models\site_settings.py:82
+#: .\src\backend_django\features\system\models\site_settings.py:89
 msgid "Google Analytics ID"
 msgstr ""
 
-#: .\src\backend_django\features\system\models\site_settings.py:85
+#: .\src\backend_django\features\system\models\site_settings.py:92
 msgid "GA4 Measurement ID (e.g., G-XXXXXXXXXX)"
 msgstr ""
 
-#: .\src\backend_django\features\system\models\site_settings.py:88
+#: .\src\backend_django\features\system\models\site_settings.py:95
 msgid "Google Tag Manager ID"
 msgstr ""
 
-#: .\src\backend_django\features\system\models\site_settings.py:91
+#: .\src\backend_django\features\system\models\site_settings.py:98
 msgid "GTM Container ID (e.g., GTM-XXXXXXX)"
 msgstr ""
 
-#: .\src\backend_django\features\system\models\site_settings.py:95
-#: .\src\backend_django\features\system\models\site_settings.py:96
+#: .\src\backend_django\features\system\models\site_settings.py:102
+#: .\src\backend_django\features\system\models\site_settings.py:103
 msgid "Site Settings"
 msgstr "Seiteneinstellungen"
 
@@ -1384,6 +1452,7 @@ msgstr "Der Server konnte Ihre Anfrage nicht verarbeiten."
 #: .\src\backend_django\templates\500.html:15
 #: .\src\backend_django\templates\booking\cancel_success.html:14
 #: .\src\backend_django\templates\booking\confirm_appointment.html:14
+#: .\src\backend_django\templates\errors\429.html:14
 msgid "Zur Startseite"
 msgstr "Zur Startseite"
 
@@ -1444,13 +1513,6 @@ msgstr ""
 msgid "Nein, zurück zur Startseite"
 msgstr "Zurück zur Startseite"
 
-#: .\src\backend_django\templates\booking\cancel_appointment.html:21
-#: .\src\backend_django\templates\booking\cancel_success.html:17
-#: .\src\backend_django\templates\booking\confirm_appointment.html:17
-#: .\src\backend_django\templates\booking\reschedule_appointment.html:17
-msgid "Debug-Information: Token"
-msgstr ""
-
 #: .\src\backend_django\templates\booking\cancel_success.html:4
 msgid "Termin erfolgreich storniert"
 msgstr ""
@@ -1465,6 +1527,12 @@ msgstr ""
 
 #: .\src\backend_django\templates\booking\cancel_success.html:12
 msgid "Wir hoffen, Sie bald wieder bei uns begrüßen zu dürfen."
+msgstr ""
+
+#: .\src\backend_django\templates\booking\cancel_success.html:17
+#: .\src\backend_django\templates\booking\confirm_appointment.html:17
+#: .\src\backend_django\templates\booking\reschedule_appointment.html:17
+msgid "Debug-Information: Token"
 msgstr ""
 
 #: .\src\backend_django\templates\booking\confirm_appointment.html:4
@@ -1672,7 +1740,7 @@ msgstr "Willkommen bei LILY"
 #: .\src\backend_django\templates\contacts\contacts.html:28
 #, fuzzy
 #| msgid ""
-#| "LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellen "
+#| "LILY Beauty Salon ist ein ort, an dem deutsche Qualität auf individuellen "
 #| "Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, "
 #| "sondern auch ein innerer Zustand des Selbstvertrauens."
 msgid ""
@@ -1731,6 +1799,17 @@ msgid ""
 "Ihre Nachricht wurde gesendet. Wir werden uns in Kürze bei Ihnen melden."
 msgstr ""
 "Ihre Nachricht wurde gesendet. Wir werden uns in Kürze bei Ihnen melden."
+
+#: .\src\backend_django\templates\errors\429.html:4
+#: .\src\backend_django\templates\errors\429.html:10
+msgid "Zu viele Anfragen"
+msgstr ""
+
+#: .\src\backend_django\templates\errors\429.html:12
+msgid ""
+"Bitte warten Sie einen Moment, bevor Sie es erneut versuchen. Wir schützen "
+"unser System vor automatisierten Anfragen."
+msgstr ""
 
 #: .\src\backend_django\templates\home\_schema_home_page.html:71
 #, fuzzy
@@ -1889,13 +1968,17 @@ msgstr "Leistungen"
 msgid "Team"
 msgstr "Team"
 
-#: .\src\backend_django\templates\includes\_promo_notification.html:14
+#: .\src\backend_django\templates\includes\_promo_notification.html:13
 msgid "Promotion anzeigen"
 msgstr ""
 
-#: .\src\backend_django\templates\includes\_promo_notification.html:21
+#: .\src\backend_django\templates\includes\_promo_notification.html:20
 msgid "Schließen"
 msgstr "Schließen"
+
+#: .\src\backend_django\templates\includes\_schema_local_business.html:62
+msgid "Записаться онлайн"
+msgstr ""
 
 #: .\src\backend_django\templates\legal\faq.html:5
 #: .\src\backend_django\templates\legal\faq.html:12
@@ -2222,11 +2305,8 @@ msgstr ""
 msgid "Bewerben"
 msgstr "Bewerben"
 
-#~ msgid "Basic Information"
-#~ msgstr "Grundinformationen"
-
-#~ msgid "Contact"
-#~ msgstr "Kontakt"
+#~ msgid "Optionale Bildunterschrift."
+#~ msgstr "Optionale Bildunterschrift."
 
 #~ msgid "Status & Flags"
 #~ msgstr "Status & Flags"
@@ -2239,9 +2319,6 @@ msgstr "Bewerben"
 
 #~ msgid "QR System (Future)"
 #~ msgstr "QR-System (Zukunft)"
-
-#~ msgid "SEO"
-#~ msgstr "SEO"
 
 #~ msgid "Timestamps"
 #~ msgstr "Zeitstempel"

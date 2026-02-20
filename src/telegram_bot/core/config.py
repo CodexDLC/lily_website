@@ -13,10 +13,11 @@ class BotSettings(CommonSettings):
 
     # --- Bot ---
     bot_token: str
+    secret_key: str = Field(alias="SECRET_KEY")
 
     # --- Channels & Topics ---
     telegram_admin_channel_id: int | None = None
-    telegram_notification_topic_id: int = 1
+    telegram_notification_topic_id: int | None = None
     telegram_topics: dict[str, int] = {}
 
     @field_validator("telegram_topics", mode="before")

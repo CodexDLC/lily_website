@@ -30,3 +30,27 @@ class BookingNotificationPayload(BaseModel):
         if isinstance(v, str):
             return v.lower() in ("true", "1", "yes", "on")
         return bool(v)
+
+
+class ContactNotificationPayload(BaseModel):
+    """
+    Модель данных для уведомления из контактной формы.
+    Обновлена для поддержки богатых данных из Redis.
+    """
+
+    request_id: int
+    first_name: str | None = ""
+    last_name: str | None = ""
+    contact_value: str | None = ""
+    contact_type: str | None = ""
+    topic: str | None = ""
+    message: str | None = ""
+    created_at: str | None = ""
+
+    # Для обратной совместимости, если где-то еще используется 'text'
+    text: str | None = ""
+
+    @field_validator("request_id", mode="before")
+    @classmethod
+    def parse_request_id(cls, v):
+        return int(v)

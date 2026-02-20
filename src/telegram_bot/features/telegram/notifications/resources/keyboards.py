@@ -1,5 +1,6 @@
 from typing import cast
 
+from aiogram.types import WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram_i18n import I18nContext
 
@@ -69,4 +70,33 @@ def build_post_action_kb(appointment_id: int, topic_id: int | None = None):
             action="delete_notification", session_id=appointment_id, topic_id=topic_id
         ).pack(),
     )
+    return builder.as_markup()
+
+
+def build_contact_full_kb(request_id: int | str, signed_url: str | None = None, topic_id: int | None = None):
+    """
+    Клавиатура полного сообщения контактной заявки (Ответить + Удалить).
+    Ефли передан signed_url, кнопка "Ответить" открывает Telegram Web App.
+    """
+    i18n = cast("I18nContext", I18nContext.get_current())
+    builder = InlineKeyboardBuilder()
+
+    if signed_url:
+        builder.button(text="✍️ Ответить", web_app=WebAppInfo(url=signed_url))
+    else:
+        builder.button(
+            text="✉️ Ответить",
+            callback_data=NotificationsCallback(
+                action="reply_contact", session_id=request_id, topic_id=topic_id
+            ).pack(),
+        )
+
+    builder.button(
+        text=i18n.notifications.btn.delete(),
+        callback_data=NotificationsCallback(
+            action="delete_notification", session_id=request_id, topic_id=topic_id
+        ).pack(),
+    )
+
+    builder.adjust(1)
     return builder.as_markup()

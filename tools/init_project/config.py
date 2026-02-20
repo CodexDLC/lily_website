@@ -10,6 +10,7 @@ from __future__ import annotations
 import os
 import shutil
 import stat
+from collections.abc import Callable  # noqa: TCH003
 from dataclasses import dataclass, field
 from pathlib import Path  # noqa: TCH003
 from typing import TYPE_CHECKING

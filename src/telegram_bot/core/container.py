@@ -40,6 +40,13 @@ class BotContainer:
         # --- Redis Layer (Bot Specific) ---
         self.redis = RedisContainer(redis_client)
 
+        # --- Base Services (Shared) ---
+        from src.shared.core.manager_redis.site_settings_manager import SiteSettingsManager
+        from src.telegram_bot.services.url_signer.service import UrlSignerService
+
+        self.site_settings = SiteSettingsManager(self.redis_service, self.settings)
+        self.url_signer = UrlSignerService(self.settings)
+
         # --- Redis Stream Processor (Worker) ---
         consumer_name = f"{RedisStreams.BotEvents.CONSUMER_PREFIX}{socket.gethostname()}"
         self.stream_processor = RedisStreamProcessor(

@@ -2,6 +2,37 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.1.3] - 2026-02-19
+### SEO & Infrastructure Hardening
+- **SEO:** Complete overhaul of `sitemap.xml` generation with full multilingual support (`hreflang`, `x-default`).
+- **SEO:** Enforced `CANONICAL_DOMAIN` (`https://lily-salon.de`) for all sitemap links, canonical tags, and OpenGraph URLs.
+- **Infrastructure:** Configured Nginx to strictly redirect HTTP → HTTPS and `www` → non-`www`.
+- **Dev Tools:** Enhanced `tools/dev/check.py` with auto-fix capabilities and full project scanning.
+- **Fixed:** Resolved `NoReverseMatch` errors in sitemap generation for i18n routes.
+- **Fixed:** Corrected type hints in project initialization scripts (`tools/init_project`).
+- **Fixed:** Deployment issue by removing explicit command for backend to allow `entrypoint.sh` execution.
+- **Fixed:** Service category assignment logic in `load_services` management command.
+
+## [1.1.2] - 2026-02-19
+### Notifications Reliability
+- **Added:** SendGrid API fallback implementation for reliable email delivery.
+- **Added:** Isolated test environment configuration for notification services.
+- **Fixed:** Admin category display issues.
+
+## [1.1.1] - 2026-02-19
+### Dev Experience
+- **Fixed:** Synchronized local development checks (`tools/dev/check.py`) with CI pipeline.
+- **Added:** Automated Docker resource cleanup in dev tools.
+
+## [1.1.0] - 2026-02-18
+### Workers & Promo Architecture
+- **Refactor:** Major reorganization of worker architecture and notification flow.
+- **Added:** Autonomous worker flow with race condition protection for notification statuses.
+- **UI:** Draggable and collapsible Promo Widget implemented with pure CSS/JS.
+- **Fixed:** Notification flow logic to prevent duplicate sends.
+
+---
+
 ## [1.0.7] - 2026-02-18
 ### Booking & Optimization
 - **Added:** Master Day Off functionality (blocking specific dates for masters in booking wizard).

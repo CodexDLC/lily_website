@@ -6,11 +6,12 @@ from loguru import logger as log
 
 from src.telegram_bot.core.api_client import BaseApiClient
 from src.telegram_bot.services.base.base_orchestrator import BaseBotOrchestrator
-from src.telegram_bot.services.base.view_dto import UnifiedViewDTO
+from src.telegram_bot.services.base.view_dto import UnifiedViewDTO, ViewResultDTO
 
 from ..contracts.contract import NotificationsDataProvider
 from ..resources.callbacks import NotificationsCallback
 from ..resources.dto import QueryContext
+from ..resources.keyboards import build_contact_full_kb
 from ..resources.texts import NotificationsTexts
 from ..ui.ui import NotificationsUI
 from .helper.extract_data import extract_context
@@ -36,6 +37,8 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
         super().__init__(expected_state="notifications")
         self.container = container
         self.django_api = django_api
+        self.site_settings = container.site_settings
+        self.url_signer = container.url_signer
         self.ui = NotificationsUI()
 
         if not data_provider:
@@ -76,6 +79,7 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
             ),
             "cancel_reject": self._handler_cancel_reject,
             "delete_notification": self._handler_delete_notification,
+            "read_contact": self._handler_read_contact,
         }
 
         handler = action_map.get(context.action)
@@ -187,6 +191,38 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
             alert_text=NotificationsTexts.alert_deleted(),
         )
 
+    async def _handler_read_contact(self, context: QueryContext) -> UnifiedViewDTO:
+        """Раскрывает превью контактной заявки — показывает полный текст + кнопки."""
+        if context.session_id is None:
+            return UnifiedViewDTO(alert_text="Ошибка: ID заявки не найден")
+
+        # Пытаемся достать полный текст из кэша
+        contact_cache = self.container.redis.contact_cache
+        data = await contact_cache.get(context.session_id)
+
+        full_text = data["text"] if data and "text" in data else NotificationsTexts.error_contact_not_found()
+
+        # Формируем подписанную ссылку для TMA
+        site_base_url = await self.site_settings.get_field("site_base_url") or "https://lily-salon.de"
+        signed_url = self.url_signer.generate_signed_url(
+            base_url=site_base_url, request_id=context.session_id, action="reply"
+        )
+
+        # Для контактов принудительно используем None для топика
+        kb = build_contact_full_kb(
+            request_id=context.session_id,
+            signed_url=signed_url,
+            topic_id=None,
+        )
+
+        return UnifiedViewDTO(
+            content=ViewResultDTO(text=full_text, kb=kb),
+            chat_id=self.settings.telegram_admin_channel_id,
+            session_key=f"contact_{context.session_id}",
+            message_thread_id=None,
+            mode="edit",
+        )
+
     async def handle_status_update(
         self, payload: dict[str, Any], current_text: str | None = None
     ) -> UnifiedViewDTO | None:
@@ -213,18 +249,8 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
                 return None
 
             # 2. Восстанавливаем текст и добавляем статусы
-            # Нам нужно знать текущее состояние обоих каналов (Email/Twilio).
-            # В идеале мы должны хранить эти статусы тоже в кэше, но пока
-            # просто перезапишем то, что пришло.
-            # Ограничение: если пришло обновление Email, мы не знаем статус Twilio (и наоборот),
-            # поэтому второй статус будет "waiting" (по дефолту) или отсутствовать.
-            # Чтобы было красиво, мы можем хранить статусы в том же кэше, но для первой итерации:
-
             email_status = status if channel == "email" else "waiting"
             twilio_status = status if channel == "twilio" else "waiting"
-            # FIXME: Это перезапишет статус другого канала на 'waiting'.
-            # Для полноценной работы нужно сохранять статусы отправки в Redis.
-            # Но пока реализуем так, как просил юзер (Data Reconstruction).
 
             new_text = self.ui.reconstruct_message(
                 appointment_data, email_status=email_status, twilio_status=twilio_status
