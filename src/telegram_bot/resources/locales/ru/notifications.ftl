@@ -19,6 +19,7 @@ notifications-alert-rejected = Заявка отклонена
 notifications-alert-cancelled = Отменено
 notifications-alert-deleted = Сообщение удалено
 notifications-error-api = ⚠️ Ошибка связи с сервером
+notifications-error-contact-notfound = ⚠️ <b>Текст заявки не найден (устарел).</b>{"\n\n"}Попробуйте найти её в админ-панели.
 
 # Buttons
 notifications-btn-delete = 🗑 Удалить из ленты

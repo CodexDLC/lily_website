@@ -200,11 +200,7 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
         contact_cache = self.container.redis.contact_cache
         data = await contact_cache.get(context.session_id)
 
-        if data and "text" in data:
-            full_text = data["text"]
-        else:
-            # Если кэш протух или пуст, показываем ошибку или то, что есть
-            full_text = "⚠️ <b>Текст заявки не найден (устарел).</b>\n\nПопробуйте найти её в админ-панели."
+        full_text = data["text"] if data and "text" in data else NotificationsTexts.error_contact_not_found()
 
         # Формируем подписанную ссылку для TMA
         site_base_url = await self.site_settings.get_field("site_base_url") or "https://lily-salon.de"

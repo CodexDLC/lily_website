@@ -56,6 +56,11 @@ class NotificationsTexts:
     def error_api(cls):
         return cls.get_i18n().notifications.error.api()
 
+    @classmethod
+    def error_contact_not_found(cls):
+        # Исправлено: прямой доступ к contact_notfound, чтобы избежать конфликта с ключевым словом 'not'
+        return cls.get_i18n().notifications.error.contact_notfound()
+
     # === Тексты для Email-уведомлений (немецкий) ===
     EMAIL_REJECT_REASON_BUSY = "Leider ist der gewünschte Termin bereits vergeben. Bitte wählen Sie eine andere Zeit."
     EMAIL_REJECT_REASON_ILL = "Leider muss der Termin aufgrund einer Erkrankung des Masters verschoben werden."
@@ -77,7 +82,7 @@ class NotificationsTexts:
 
     EMAIL_CONFIRM_TAG = "TERMINBESTÄTIGUNG"
     EMAIL_CONFIRM_SUBJECT = "Terminbestätigung - Lily Beauty Salon"
-    EMAIL_CONFIRM_BODY = "Vielen Dank für Ihre Buchung. Ihr Termin wurde erfolgreich bestätigt. Wir freuen uns darauf, Sie bei uns begrüßen zu dürfen."
+    EMAIL_CONFIRM_BODY = "Vielen Dank für Ihre Buchung. Ihr Termin wurde успешно bestätigt. Wir freuen uns darauf, Sie bei uns begrüßen zu dürfen."
 
     EMAIL_CANCEL_TAG = "TERMINABSAGE"
     EMAIL_CANCEL_SUBJECT = "Terminstornierung - Lily Beauty Salon"
