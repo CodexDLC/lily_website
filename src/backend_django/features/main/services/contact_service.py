@@ -39,23 +39,18 @@ class ContactService:
         # 2. Create Request
         request = cast("ContactRequest", ContactRequest.objects.create(client=client, message=message, topic=topic))
 
-        # 3. Send Notification via ARQ (Telegram Bot decides where to send)
-        # Formatted text for the message
-        text = (
-            f"📋 <b>Neue Anfrage von Website</b>\n\n"
-            f"👤 <b>{first_name} {last_name}</b>\n"
-            f"📞 {contact_value} ({contact_type})\n"
-            f"🎯 <b>Thema:</b> {request.get_topic_display()}\n"
-            f"💬 {message}"
-        )
+        # 3. Seed Redis Cache & Send Notification via ARQ
+        from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
 
-        # We pass request_id so the 02_telegram_bot can attach Inline Buttons (Confirm/Cancel)
+        # Seed the rich metadata to Redis for the Bot
+        NotificationCacheManager.seed_contact_request(request.id)
+
         # Suppress exceptions to not fail the request creation
         with suppress(Exception):
             DjangoArqClient.enqueue_job(
-                "send_notification_task",
-                message=text,
+                "send_contact_notification_task",
                 request_id=request.id,
+                # Note: 'message' is removed here, Worker must fetch from Redis
             )
 
         return request

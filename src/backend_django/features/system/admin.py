@@ -97,7 +97,7 @@ class SiteSettingsAdmin(ModelAdmin):
         ),
         (
             _("Social Media"),
-            {"fields": ("instagram_url", "telegram_url", "whatsapp_url")},
+            {"fields": ("instagram_url", "telegram_url", "whatsapp_url", "telegram_bot_username")},
         ),
         (
             _("Working Hours"),

@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 from unfold.admin import ModelAdmin
 
-from .models import Category, PortfolioImage, Service
+from .models import Category, ContactRequest, PortfolioImage, Service
 
 
 @admin.register(Category)
@@ -95,3 +95,11 @@ class ServiceAdmin(ModelAdmin, TranslationAdmin):
 class PortfolioImageAdmin(ModelAdmin):
     list_display = ["title", "service", "order"]
     list_editable = ["order"]
+
+
+@admin.register(ContactRequest)
+class ContactRequestAdmin(ModelAdmin):
+    list_display = ["client", "topic", "is_processed", "created_at"]
+    list_filter = ["topic", "is_processed"]
+    readonly_fields = ["created_at", "updated_at"]
+    search_fields = ["client__first_name", "client__last_name", "message"]

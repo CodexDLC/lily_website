@@ -168,35 +168,17 @@ class BookingService:
     @staticmethod
     def _handle_post_creation(appointment: Appointment, form_data: dict[str, Any]) -> None:
         from core.arq.client import DjangoArqClient
+        from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
 
-        visits_count = Appointment.objects.filter(
-            client=appointment.client, status=Appointment.STATUS_COMPLETED
-        ).count()
-
-        appointment_data = {
-            "id": appointment.id,
-            "client_name": f"{appointment.client.first_name} {appointment.client.last_name}",
-            "first_name": appointment.client.first_name,
-            "last_name": appointment.client.last_name,
-            "client_phone": appointment.client.phone or "не указан",
-            "client_email": appointment.client.email or "не указан",
-            "service_name": appointment.service.title,
-            "master_name": appointment.master.name,
-            "datetime": appointment.datetime_start.strftime("%d.%m.%Y %H:%M"),
-            "duration_minutes": appointment.duration_minutes,  # <--- ДОБАВИЛИ
-            "price": float(appointment.price),
-            "request_call": form_data.get("request_call", False),
-            "client_notes": appointment.client_notes,
-            "visits_count": visits_count,
-            "category_slug": appointment.service.category.slug if appointment.service.category else None,
-            "active_promo_id": appointment.active_promo.id if appointment.active_promo else None,
-            "active_promo_title": appointment.active_promo.title if appointment.active_promo else None,
-        }
+        # Seed the rich metadata to Redis for the Bot/Worker
+        NotificationCacheManager.seed_appointment(
+            appointment.id, extra_data={"request_call": form_data.get("request_call", False)}
+        )
 
         try:
             DjangoArqClient.enqueue_job(
                 "send_booking_notification_task",
-                appointment_data=appointment_data,
+                appointment_id=appointment.id,
             )
         except Exception as e:
             log.error(f"Failed to queue notification: {e}")
