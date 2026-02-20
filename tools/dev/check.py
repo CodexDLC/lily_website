@@ -125,7 +125,7 @@ def check_linters():
             return False
     print_success("Basic pre-commit hooks passed.")
 
-    return True
+    return False
 
 
 def check_types():

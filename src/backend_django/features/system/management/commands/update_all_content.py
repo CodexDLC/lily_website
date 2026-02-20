@@ -15,6 +15,9 @@ class Command(BaseCommand):
         self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Updating Static Pages SEO..."))
         call_command("update_static_seo")
 
+        self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Loading / Updating Services..."))
+        call_command("load_services")
+
         self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Updating Masters Content..."))
         call_command("update_masters")
 
