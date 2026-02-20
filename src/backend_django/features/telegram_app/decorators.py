@@ -34,7 +34,7 @@ def tma_secure_required(view_func):
         if request.method == "POST":
             # Assume initData is sent in POST body or headers
             init_data = request.headers.get("X-Telegram-Init-Data") or request.POST.get("initData")
-            if not init_data or not validate_telegram_init_data(init_data):
+            if not validate_telegram_init_data(init_data):
                 return HttpResponseForbidden("Invalid Telegram authentication data.")
 
         return view_func(request, *args, **kwargs)

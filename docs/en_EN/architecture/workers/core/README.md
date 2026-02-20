@@ -10,6 +10,5 @@ This directory contains the core infrastructure components and base classes for 
 |:---|:---|
 | **[📜 Base](./base.md)** | Base classes and abstract definitions for workers |
 | **[📜 Config](./config.md)** | Configuration settings for the worker application |
-| **[📜 Email Client](./email_client.md)** | Client for sending emails |
-| **[📜 Template Renderer](./template_renderer.md)** | Service for rendering templates |
-| **[📂 Base Module](./base_module/README.md)** | Base module structure and common worker logic |
+| **[📜 Tasks](./tasks.md)** | Core tasks shared by all workers (requeue, retry) |
+| **[📂 Base Module](./base_module/README.md)** | Base module: shared services (Email, Templates, Twilio) |
