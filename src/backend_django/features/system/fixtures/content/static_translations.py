@@ -88,13 +88,13 @@ DATA = {
     "contacts_about_text_1": {
         "de": "LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellem Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern auch ein innerer Zustand des Selbstvertrauens.",
         "ru": "Салон красоты LILY — это место, где немецкое качество встречается с индивидуальным подходом. Мы верим, что красота — это не только внешность, но и внутреннее состояние уверенности.",
-        "uk": "Салон краси LILY — це місце, де німецька якість зустрічається з індивідуальним підходом. Ми віримо, что краса — це не тільки зовнішність, а й внутрішній стан впевненості.",
+        "uk": "Салон краси LILY — це місце, де німецька якість зустрічається з індивідуальним подходом. Ми віримо, что краса — це не тільки зовнішність, а й внутрішній стан впевненості.",
         "en": "LILY Beauty Salon is a place where German quality meets an individual approach. We believe that beauty is not just about appearance, but also an inner state of self-confidence.",
     },
     "contacts_about_text_2": {
-        "de": "Unsere Meister verwenden nur Premium-Materialien von führenden Marken wie Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona und weitere, um Ihre natürliche Einzigartigkeit zu unterstreichen.",
+        "de": "Unsere Meister verwenden nur Premium-Materialien von führenden Marken wie Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona und weitere, um Ihre natürliche Einzigartigkeit zu unterстреichen.",
         "ru": "Наши мастера используют только премиальные материалы от ведущих брендов, таких как Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona и другие, чтобы подчеркнуть вашу природную уникальность.",
-        "uk": "Наші майстри використовують тільки преміальні матеріали від провідних брендів, таких як Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona та інші, щоб підкреслити вашу природну унікальність.",
+        "uk": "Наші майстри використовують тільки преміальні матеріали від провідних брендів, таких как Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona та інші, щоб підкреслити вашу природну унікальність.",
         "en": "Our masters use only premium materials from leading brands such as Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona and others to emphasize your natural uniqueness.",
     },
     "contacts_quote": {
@@ -221,7 +221,7 @@ DATA = {
     "faq_a4_p2": {
         "de": "Bei speziellen Fragen oder Unsicherheiten können Sie uns vorab über das Kontaktformular oder per E‑Mail kontaktieren.",
         "ru": "Если у вас есть особые вопросы или сомнения, вы можете заранее связаться с нами через контактную форму или по электронной почте.",
-        "uk": "Якщо у вас є особливі запитання або сумніви, вы можете заздалегідь зв'язатися з нами через контактну форму або електронною поштою.",
+        "uk": "Якщо у вас є особливі запитання або сумніви, ви можете заздалегідь зв'язатися з нами через контактну форму або електронною поштою.",
         "en": "If you have specific questions or uncertainties, you can contact us in advance via the contact form or by email.",
     },
     "faq_a4_schema": {
@@ -375,18 +375,6 @@ DATA = {
         "uk": "Відкрийте для себе наші б'юті-послуги.",
         "en": "Discover our beauty services.",
     },
-    "services_cta_title": {
-        "de": "Bereit für Ihre Verwandlung?",
-        "ru": "Готовы к преображению?",
-        "uk": "Готові до перетворення?",
-        "en": "Ready for your transformation?",
-    },
-    "services_cta_desc": {
-        "de": "Wählen Sie einen passenden Termin und lassen Sie sich von unseren Profis verwöhnen.",
-        "ru": "Выберите подходящее время и позвольте нашим профессионалам позаботиться о вас.",
-        "uk": "Оберіть зручний час і дозвольте нашим професіоналам подбати про вас.",
-        "en": "Choose a convenient time and let our professionals pamper you.",
-    },
     # --- SERVICE DETAIL ---
     "service_detail_subtitle": {
         "de": "DETAILS & PREISE",
@@ -400,17 +388,10 @@ DATA = {
         "uk": "Ми гарантуємо найвищу якість, гігієну та індивідуальний підхід до кожного клієнта.",
         "en": "We guarantee the highest quality, hygiene, and an individual approach to each client.",
     },
-    # --- CTA SECTION ---
-    "home_cta_title": {
-        "de": "Bereit für Ihre Verwandlung?",
-        "ru": "Готовы к преображению?",
-        "uk": "Готові до перетворення?",
-        "en": "Ready for your transformation?",
-    },
-    "home_cta_desc": {
-        "de": "Wählen Sie einen passenden Termin und lassen Sie sich von unseren Profis verwöhnen.",
-        "ru": "Выберите подходящее время и позвольте нашим профессионалам позаботиться о вас.",
-        "uk": "Оберіть зручний час і дозвольте нашим професіоналам подбати про вас.",
-        "en": "Choose a convenient time and let our professionals pamper you.",
+    "label_service": {
+        "de": "Leistung",
+        "ru": "Услуга",
+        "uk": "Послуга",
+        "en": "Service",
     },
 }
