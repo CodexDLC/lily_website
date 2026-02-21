@@ -1,4 +1,5 @@
 from asgiref.sync import sync_to_async
+from django.utils.translation import gettext_lazy as _
 from features.main.models.contact_request import ContactRequest
 from loguru import logger as log
 
@@ -18,19 +19,19 @@ class DashboardRefreshService:
         # 1. Summary Stats
         summary_categories = []
 
-        # Contact Request Topics
+        # Contact Request Topics (using translations)
         topic_map = {
-            ContactRequest.TOPIC_GENERAL: "Общие вопросы",
-            ContactRequest.TOPIC_BOOKING: "Вопросы по бронированию",
-            ContactRequest.TOPIC_JOB: "Работа / Карьера",
-            ContactRequest.TOPIC_OTHER: "Прочее",
+            ContactRequest.TOPIC_GENERAL: _("General Question"),
+            ContactRequest.TOPIC_BOOKING: _("Questions about Booking"),
+            ContactRequest.TOPIC_JOB: _("Job / Career"),
+            ContactRequest.TOPIC_OTHER: _("Other"),
         }
 
         for topic_id, topic_name in topic_map.items():
             summary_categories.append(
                 {
                     "category_id": topic_id,
-                    "category_name": topic_name,
+                    "category_name": str(topic_name),  # Convert lazy proxy to string
                     "total_count": ContactRequest.objects.filter(topic=topic_id).count(),
                     "unread_count": ContactRequest.objects.filter(topic=topic_id, is_processed=False).count(),
                 }

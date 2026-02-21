@@ -20,10 +20,10 @@ def static_content(request):
     content_dict = cache.get(cache_key)
 
     if content_dict is None:
-        # Fetch all translations from DB
+        # Fetch only required fields from DB for efficiency
         try:
-            translations = StaticTranslation.objects.all()
-            content_dict = {t.key: t.text for t in translations}
+            translations = StaticTranslation.objects.values_list("key", "text")
+            content_dict = dict(translations)
             # Cache for 1 hour
             cache.set(cache_key, content_dict, 3600)
         except Exception:

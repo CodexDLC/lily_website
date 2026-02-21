@@ -696,10 +696,10 @@ msgid ""
 "\">Datenschutzerklärung</a> gelesen und erkläre mich mit der Verarbeitung "
 "meiner Daten einverstanden."
 msgstr ""
-"Я прочитал(а) <a href=\"/datenschutz/\" target=\"_blank\" rel=\"noopener "
+"Ich habe die <a href=\"/datenschutz/\" target=\"_blank\" rel=\"noopener "
 "noreferrer\" style=\"color: var(--color-gold); text-decoration: underline;"
-"\">Политику конфиденциальности</a> и даю согласие на обработку моих данных."
-
+"\">Datenschutzerklärung</a> gelesen und erkläre mich mit der Verarbeitung "
+"meiner Daten einverstanden."
 #: .\src\backend_django\features\main\forms.py:73
 msgid "Ich möchte über Neuigkeiten und Angebote informiert werden."
 msgstr "Ich möchte über Neuigkeiten und Angebote informiert werden."
