@@ -9,6 +9,9 @@ class Command(BaseCommand):
         self.stdout.write(self.style.MIGRATE_HEADING(">>> Updating Site Settings..."))
         call_command("update_site_settings")
 
+        self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Updating Static Translations (DB Content)..."))
+        call_command("update_static_translations")
+
         self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Updating Services SEO..."))
         call_command("update_services_seo")
 
