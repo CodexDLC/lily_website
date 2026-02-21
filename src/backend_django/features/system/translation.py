@@ -2,6 +2,7 @@ from modeltranslation.translator import TranslationOptions, register
 
 from .models.seo import StaticPageSeo
 from .models.site_settings import SiteSettings
+from .models.static_translation import StaticTranslation
 
 
 @register(StaticPageSeo)
@@ -17,5 +18,10 @@ class SiteSettingsTranslationOptions(TranslationOptions):
         "working_hours_weekdays",
         "working_hours_saturday",
         "working_hours_sunday",
-        "address_locality",  # Изменено с "address_city" на "address_locality"
+        "address_locality",
     )
+
+
+@register(StaticTranslation)
+class StaticTranslationOptions(TranslationOptions):
+    fields = ("text",)
