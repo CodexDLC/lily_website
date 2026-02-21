@@ -2,6 +2,16 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.2.0] - 2026-02-21
+### Telegram Mini App & Admin Features
+- **TMA:** Full implementation of Telegram Mini App (TMA) for client interactions (contacts, forms, styles).
+- **Bot:** New `contacts_admin` feature for managing contact requests directly from Telegram.
+- **i18n:** Major refactoring of static content translation. Moved static strings to database (`StaticTranslation` model).
+- **Infrastructure:** New Redis managers for site settings, notifications, and admin dashboard caching.
+- **System:** Expanded `SiteSettings` with social media URLs, logo configuration, and bot integration.
+- **API:** Added secure API routes for admin dashboard and TMA interactions.
+- **Worker:** Enhanced email templates for client replies and receipts.
+
 ## [1.1.3] - 2026-02-19
 ### SEO & Infrastructure Hardening
 - **SEO:** Complete overhaul of `sitemap.xml` generation with full multilingual support (`hreflang`, `x-default`).
