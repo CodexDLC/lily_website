@@ -7,7 +7,36 @@ from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 from unfold.admin import ModelAdmin
 
-from .models import SiteSettings, StaticPageSeo
+from .models.seo import StaticPageSeo
+from .models.site_settings import SiteSettings
+from .models.static_translation import StaticTranslation
+
+
+@admin.register(StaticTranslation)
+class StaticTranslationAdmin(ModelAdmin, TranslationAdmin):
+    """Admin interface for StaticTranslation model."""
+
+    list_display = ["key", "text_preview", "description"]
+    search_fields = ["key", "text", "description"]
+    list_filter = ["key"]
+    ordering = ["key"]
+
+    fieldsets = [
+        (
+            _("Identification"),
+            {"fields": ("key", "description")},
+        ),
+        (
+            _("Translations"),
+            {"fields": ("text",)},
+        ),
+    ]
+
+    @admin.display(description=_("Text Preview"))
+    def text_preview(self, obj):
+        if obj.text:
+            return obj.text[:70] + "..." if len(obj.text) > 70 else obj.text
+        return "—"
 
 
 @admin.register(StaticPageSeo)
@@ -19,7 +48,6 @@ class StaticPageSeoAdmin(ModelAdmin, TranslationAdmin):
     list_filter = ["page_key"]
     search_fields = ["page_key", "seo_title", "seo_description"]
 
-    # SEO Optimization at the TOP
     fieldsets = [
         (
             _("SEO Optimization"),
@@ -71,7 +99,7 @@ class StaticPageSeoAdmin(ModelAdmin, TranslationAdmin):
 
 
 @admin.register(SiteSettings)
-class SiteSettingsAdmin(ModelAdmin):
+class SiteSettingsAdmin(ModelAdmin, TranslationAdmin):
     """Admin interface for SiteSettings model."""
 
     list_display = ["company_name", "phone", "email", "social_status"]
@@ -80,7 +108,7 @@ class SiteSettingsAdmin(ModelAdmin):
     fieldsets = [
         (
             _("General Information"),
-            {"fields": ("company_name", "owner_name", "tax_number")},
+            {"fields": ("company_name", "owner_name", "tax_number", "site_base_url", "logo_url", "price_range")},
         ),
         (
             _("Contact Details"),
@@ -92,12 +120,14 @@ class SiteSettingsAdmin(ModelAdmin):
                     "address_locality",
                     "address_postal_code",
                     "google_maps_link",
+                    "latitude",
+                    "longitude",
                 )
             },
         ),
         (
             _("Social Media"),
-            {"fields": ("instagram_url", "telegram_url", "whatsapp_url", "telegram_bot_username")},
+            {"fields": ("instagram_url", "facebook_url", "telegram_url", "whatsapp_url", "telegram_bot_username")},
         ),
         (
             _("Working Hours"),
@@ -106,6 +136,10 @@ class SiteSettingsAdmin(ModelAdmin):
                     "working_hours_weekdays",
                     "working_hours_saturday",
                     "working_hours_sunday",
+                    "work_start_weekdays",
+                    "work_end_weekdays",
+                    "work_start_saturday",
+                    "work_end_saturday",
                 )
             },
         ),
@@ -114,6 +148,25 @@ class SiteSettingsAdmin(ModelAdmin):
             {
                 "fields": ("google_analytics_id", "google_tag_manager_id"),
                 "description": _("Configure Google Analytics 4 and Tag Manager. Changes take effect immediately."),
+            },
+        ),
+        (
+            _("Hiring / Vacancies"),
+            {
+                "fields": ("hiring_active", "hiring_title", "hiring_text"),
+                "description": _("Control the 'We are hiring' block on the team page."),
+            },
+        ),
+        (
+            _("Technical URL Paths"),
+            {
+                "fields": (
+                    "url_path_contact_form",
+                    "url_path_confirm",
+                    "url_path_cancel",
+                    "url_path_reschedule",
+                ),
+                "description": _("Technical URL templates for various actions."),
             },
         ),
     ]
@@ -126,15 +179,15 @@ class SiteSettingsAdmin(ModelAdmin):
 
     @admin.display(description=_("Social Media"))
     def social_status(self, obj):
-        socials = [obj.instagram_url, obj.telegram_url, obj.whatsapp_url]
+        socials = [obj.instagram_url, obj.facebook_url, obj.telegram_url, obj.whatsapp_url]
         count = sum(1 for s in socials if s)
 
-        if count == 3:
+        if count == 4:
             color_classes = mark_safe("bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400")
-            label = f"✓ All ({count}/3)"
+            label = f"✓ All ({count}/4)"
         elif count > 0:
             color_classes = mark_safe("bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400")
-            label = f"⚠ {count}/3"
+            label = f"⚠ {count}/4"
         else:
             color_classes = mark_safe("bg-gray-100 text-gray-700 dark:bg-gray-500/20 dark:text-gray-400")
             label = "✗ None"

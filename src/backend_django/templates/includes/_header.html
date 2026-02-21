@@ -28,10 +28,10 @@
 
         <!-- Desktop Nav -->
         <nav class="nav-desktop">
-            <a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>{% trans "Startseite" %}</a>
-            <a href="{% url 'services' %}" {% if 'services' in request.path %}class="active"{% endif %}>{% trans "Leistungen" %}</a>
-            <a href="{% url 'team' %}" {% if 'team' in request.path %}class="active"{% endif %}>{% trans "Team" %}</a>
-            <a href="{% url 'contacts' %}" {% if 'contacts' in request.path %}class="active"{% endif %}>{% trans "Kontakt" %}</a>
+            <a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>{% trans "nav_main_home" %}</a>
+            <a href="{% url 'services' %}" {% if 'services' in request.path %}class="active"{% endif %}>{% trans "nav_main_services" %}</a>
+            <a href="{% url 'team' %}" {% if 'team' in request.path %}class="active"{% endif %}>{% trans "nav_main_team" %}</a>
+            <a href="{% url 'contacts' %}" {% if 'contacts' in request.path %}class="active"{% endif %}>{% trans "nav_main_contacts" %}</a>
         </nav>
 
         <!-- Burger Button (Visible on Mobile) -->
@@ -48,10 +48,10 @@
 <div class="mobile-menu-overlay" id="mobileMenu">
     <button class="close-btn" onclick="toggleMenu()" aria-label="Close menu">×</button>
     <nav class="mobile-nav-links">
-        <a href="{% url 'home' %}" onclick="toggleMenu()">{% trans "Startseite" %}</a>
-        <a href="{% url 'services' %}" onclick="toggleMenu()">{% trans "Leistungen" %}</a>
-        <a href="{% url 'team' %}" onclick="toggleMenu()">{% trans "Team" %}</a>
-        <a href="{% url 'contacts' %}" onclick="toggleMenu()">{% trans "Kontakt" %}</a>
+        <a href="{% url 'home' %}" onclick="toggleMenu()">{% trans "nav_main_home" %}</a>
+        <a href="{% url 'services' %}" onclick="toggleMenu()">{% trans "nav_main_services" %}</a>
+        <a href="{% url 'team' %}" onclick="toggleMenu()">{% trans "nav_main_team" %}</a>
+        <a href="{% url 'contacts' %}" onclick="toggleMenu()">{% trans "nav_main_contacts" %}</a>
     </nav>
     <div class="mobile-menu-footer">
         <span class="footer-mobile-brand">{{ site_settings.company_name }}</span>

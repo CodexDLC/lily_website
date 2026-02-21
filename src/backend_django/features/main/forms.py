@@ -8,7 +8,6 @@ from .models import ContactRequest
 
 class ContactForm(forms.Form):
     CONTACT_TYPES = [
-        ("phone", _("Telefon / WhatsApp")),
         ("email", _("E-Mail")),
     ]
 
@@ -45,8 +44,8 @@ class ContactForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": "input-line",
-                "placeholder": _("Nummer oder E-Mail"),
-                "autocomplete": "tel",
+                "placeholder": _("Ihre E-Mail-Adresse"),
+                "autocomplete": "email",
             }
         ),
     )

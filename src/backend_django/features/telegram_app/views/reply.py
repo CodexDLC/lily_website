@@ -3,6 +3,7 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from features.main.models.contact_request import ContactRequest
 
 from ..decorators import tma_secure_required
 from ..services.notification import NotificationService
@@ -32,10 +33,22 @@ def reply_form_view(request):
         if not reply_text:
             return JsonResponse({"status": "error", "message": "Reply text is required"}, status=400)
 
-        # Enqueue the email sending task
-        success = NotificationService.enqueue_reply_email(request_id=req_id, reply_text=reply_text, subject=subject)
+        try:
+            contact_req = ContactRequest.objects.get(id=req_id)
+            recipient_email = contact_req.client.email
+            if not recipient_email:
+                return JsonResponse({"status": "error", "message": "Client has no email address"}, status=400)
+        except ContactRequest.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Request not found"}, status=404)
+
+        # Enqueue the email sending task with full data
+        success = NotificationService.enqueue_reply_email(
+            request_id=req_id, recipient_email=recipient_email, reply_text=reply_text, subject=subject
+        )
 
         if success:
+            contact_req.is_processed = True
+            contact_req.save(update_fields=["is_processed"])
             return JsonResponse({"status": "success", "message": "Reply queued successfully"})
         else:
             return JsonResponse({"status": "error", "message": "Failed to queue reply"}, status=500)

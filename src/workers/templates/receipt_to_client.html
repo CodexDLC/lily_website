@@ -1,0 +1,22 @@
+{% extends "base_email.html" %}
+
+{% block header %}
+{{ data.header_text }}
+{% endblock %}
+
+{% block content %}
+<p>{{ data.greeting }} {{ data.client_name }},</p>
+
+<p>{{ data.body_text }}</p>
+
+<div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #eeeeee;">
+    <h4 style="margin-top: 0; color: #333;">{{ data.quoted_message_label }}:</h4>
+    <p style="margin-bottom: 0; font-style: italic; color: #555;">"{{ data.message_text | linebreaksbr }}"</p>
+</div>
+
+<p>{{ data.contact_hint | safe }}</p>
+
+<p style="margin-top: 30px; color: #888;">
+    {{ data.signature | linebreaksbr }}
+</p>
+{% endblock %}
