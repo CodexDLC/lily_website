@@ -1,0 +1,92 @@
+.contact-card {
+    background-color: var(--tg-theme-bg-color, #ffffff);
+    color: var(--tg-theme-text-color, #000000);
+    border: 1px solid var(--tg-theme-hint-color, #cccccc);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.contact-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--tg-theme-hint-color, #eee);
+    padding-bottom: 8px;
+}
+
+.contact-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.contact-topic {
+    font-size: 12px;
+    background-color: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.contact-message {
+    font-size: 14px;
+    margin-bottom: 15px;
+    white-space: pre-wrap;
+    color: var(--tg-theme-text-color, #333);
+}
+
+.contact-meta {
+    font-size: 12px;
+    color: var(--tg-theme-hint-color, #888);
+    margin-bottom: 15px;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-reply {
+    background-color: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+}
+
+.btn-read {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #f44336;
+    color: white;
+}
+
+.archive-item {
+    padding: 10px;
+    border-bottom: 1px solid var(--tg-theme-hint-color, #eee);
+    cursor: pointer;
+}
+
+.archive-item:last-child {
+    border-bottom: none;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--tg-theme-hint-color, #888);
+}

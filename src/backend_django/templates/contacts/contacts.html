@@ -2,16 +2,16 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{{ seo.seo_title|default:"Kontakt | LILY Beauty Salon" }}{% endblock %}
-{% block meta_description %}{{ seo.seo_description|default:"Kontaktieren Sie uns." }}{% endblock %}
+{% block title %}{{ seo.seo_title|default:content.contacts_meta_title }}{% endblock %}
+{% block meta_description %}{{ seo.seo_description|default:content.contacts_meta_description }}{% endblock %}
 
 {% block content %}
 {% include "contacts/_schema_contact_page.html" %}
 <!-- HERO -->
 <section class="hero-text-block">
     <div class="container">
-        <h1 class="hero-title">{% trans "Kontaktieren Sie uns" %}</h1>
-        <p class="hero-subtitle">{% trans "ÜBER UNS & KONTAKT" %}</p>
+        <h1 class="hero-title">{{ content.contacts_title }}</h1>
+        <p class="hero-subtitle">{{ content.contacts_subtitle }}</p>
     </div>
 </section>
 
@@ -23,15 +23,15 @@
 
             <!-- Left: Text -->
             <div class="about-content">
-                <h2>{% trans "Willkommen bei LILY" %}</h2>
+                <h2>{{ content.contacts_welcome_title }}</h2>
                 <p class="about-text">
-                    {% trans "LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellem Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern auch ein innerer Zustand des Selbstvertrauens." %}
+                    {{ content.contacts_about_text_1 }}
                 </p>
                 <p class="about-text">
-                    {% trans "Unsere Meister verwenden nur Premium-Materialien von führenden Marken wie Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona und weitere, um Ihre natürliche Einzigartigkeit zu unterstreichen." %}
+                    {{ content.contacts_about_text_2 }}
                 </p>
                 <p class="about-text" style="color: var(--color-gold); font-style: italic; margin-top: 30px;">
-                    "{% trans "Ihre Schönheit ist unsere Kunst." %}"
+                    "{{ content.contacts_quote }}"
                 </p>
             </div>
 
@@ -52,7 +52,7 @@
             <address class="contacts-details">
 
                 <div style="margin-bottom: 30px;">
-                    <span class="label">{% trans "Unsere Adresse" %}</span>
+                    <span class="label">{% trans "label_address" %}</span>
                     <span class="value">
                         <a href="{{ site_settings.google_maps_link }}" target="_blank" rel="noopener noreferrer" style="border-bottom: 1px dashed rgba(255,255,255,0.3);">
                             {{ site_settings.address_street }}<br>
@@ -62,21 +62,21 @@
                 </div>
 
                 <div style="margin-bottom: 30px;">
-                    <span class="label">{% trans "Telefon" %}</span>
+                    <span class="label">{% trans "label_phone" %}</span>
                     <span class="value">
                         <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a>
                     </span>
                 </div>
 
                 <div style="margin-bottom: 30px;">
-                    <span class="label">{% trans "E-Mail" %}</span>
+                    <span class="label">{% trans "label_email" %}</span>
                     <span class="value">
                         <a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a>
                     </span>
                 </div>
 
                 <div>
-                    <span class="label">{% trans "Öffnungszeiten" %}</span>
+                    <span class="label">{% trans "label_working_hours" %}</span>
                     <span class="value" style="font-size: 16px; line-height: 1.6;">
                         Mo-Fr: {{ site_settings.working_hours_weekdays }}<br>
                         Sa: {{ site_settings.working_hours_saturday }}<br>
@@ -102,7 +102,7 @@
 
                 {% if site_settings.google_maps_link %}
                 <a href="{{ site_settings.google_maps_link }}" target="_blank" rel="noopener noreferrer" class="btn-navigate">
-                    📍 {% trans "Route planen" %}
+                    📍 {% trans "btn_action_route" %}
                 </a>
                 {% endif %}
             </div>

@@ -76,6 +76,7 @@ data/uploads/
 # Docker & Deploy (local overrides)
 # ═══════════════════════════════════════════
 deploy/.env
+deploy/docker-compose.override.yml
 
 # ═══════════════════════════════════════════
 # Template installer artifacts

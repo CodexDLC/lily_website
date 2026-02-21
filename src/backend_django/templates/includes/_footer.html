@@ -48,7 +48,7 @@
                 </div>
 
                 <!-- Toggle Button -->
-                <button class="footer-toggle-btn" id="footerToggleBtn" aria-label="{% trans 'Toggle Footer' %}">
+                <button class="footer-toggle-btn" id="footerToggleBtn" aria-label="{% trans "btn_ui_toggle_footer" %}">
                     <span class="arrow-icon">↑</span>
                 </button>
             </div>
@@ -67,11 +67,11 @@
                     </div>
                     <div class="f-row" style="margin-top: 15px;">
                         <span class="icon">✉️</span>
-                        <a href="{% url 'contacts' %}" class="more-link">{% trans "Alle Kontakte" %} →</a>
+                        <a href="{% url 'contacts' %}" class="more-link">{% trans "nav_footer_all_contacts" %} →</a>
                     </div>
                     <div style="margin-top: 25px;">
                         <a href="{% url 'booking_wizard' %}" class="btn-pill btn-gold-outline" style="font-size: 14px; padding: 10px 25px;">
-                            {% trans "Termin buchen" %}
+                            {% trans "btn_cta_booking" %}
                         </a>
                     </div>
                 </div>
@@ -79,48 +79,48 @@
                 <!-- Column 2: Hair -->
                 <div class="f-col">
                     <h3 class="f-title">
-                        <a href="{% url 'service_detail' slug='hair' %}">{% trans "Frisuren & Haarpflege" %}</a>
+                        <a href="{% url 'service_detail' slug='hair' %}">{% trans "service_cat_hair" %}</a>
                     </h3>
                     <ul>
-                        <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "Haarschnitte" %}</a></li>
-                        <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "Färben" %}</a></li>
-                        <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "Haarbehandlung" %}</a></li>
-                        <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "Styling" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "service_item_haircuts" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "service_item_coloring" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "service_item_treatment" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='hair' %}">{% trans "service_item_styling" %}</a></li>
                     </ul>
                 </div>
 
                 <!-- Column 3: Nails -->
                 <div class="f-col">
                     <h3 class="f-title">
-                        <a href="{% url 'service_detail' slug='nails' %}">{% trans "Nagelservice" %}</a>
+                        <a href="{% url 'service_detail' slug='nails' %}">{% trans "service_cat_nails" %}</a>
                     </h3>
                     <ul>
-                        <li><a href="{% url 'service_detail' slug='nails' %}">{% trans "Maniküre" %}</a></li>
-                        <li><a href="{% url 'service_detail' slug='nails' %}">{% trans "Pediküre" %}</a></li>
-                        <li><a href="{% url 'service_detail' slug='nails' %}">{% trans "Verlängerung" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='nails' %}">{% trans "service_item_manicure" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='nails' %}">{% trans "service_item_pedicure" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='nails' %}">{% trans "service_item_extension" %}</a></li>
                     </ul>
                 </div>
 
                 <!-- Column 4: Beauty & Care -->
                 <div class="f-col">
                     <h3 class="f-title">
-                        <a href="{% url 'services' %}">{% trans "Schönheit & Pflege" %}</a>
+                        <a href="{% url 'services' %}">{% trans "service_cat_beauty" %}</a>
                     </h3>
                     <ul>
-                        <li><a href="{% url 'service_detail' slug='depilation' %}">{% trans "Epilation" %}</a></li>
-                        <li><a href="{% url 'service_detail' slug='eyes' %}">{% trans "Wimpernverlängerung" %}</a></li>
-                        <li><a href="{% url 'service_detail' slug='eyes' %}">{% trans "Laminierung" %}</a></li>
-                        <li><a href="{% url 'service_detail' slug='body' %}">{% trans "Massage" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='depilation' %}">{% trans "service_item_epilation" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='eyes' %}">{% trans "service_item_lashes" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='eyes' %}">{% trans "service_item_lamination" %}</a></li>
+                        <li><a href="{% url 'service_detail' slug='body' %}">{% trans "service_item_massage" %}</a></li>
                     </ul>
                 </div>
             </div>
             <!-- LEGAL LINKS -->
             <div class="footer-legal-links">
-                <a href="{% url 'impressum' %}">{% trans "Impressum" %}</a>
+                <a href="{% url 'impressum' %}">{% trans "nav_legal_impressum" %}</a>
                 <span class="separator-text">|</span>
-                <a href="{% url 'datenschutz' %}">{% trans "Datenschutz" %}</a>
+                <a href="{% url 'datenschutz' %}">{% trans "nav_legal_privacy" %}</a>
                 <span class="separator-text">|</span>
-                <a href="#" onclick="window.revokeCookieConsent(); return false;">{% trans "Cookie-Einstellungen" %}</a>
+                <a href="#" onclick="window.revokeCookieConsent(); return false;">{% trans "nav_legal_cookies" %}</a>
                 <span class="separator-text">|</span>
                 <a href="{% url 'faq' %}" style="color: var(--color-gold); font-weight: bold;">FAQ</a>
             </div>

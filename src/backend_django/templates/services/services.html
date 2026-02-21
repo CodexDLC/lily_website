@@ -2,14 +2,14 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{{ seo.seo_title|default:"Leistungen | LILY Beauty Salon" }}{% endblock %}
-{% block meta_description %}{{ seo.seo_description|default:"Unsere Leistungen und Preise." }}{% endblock %}
+{% block title %}{{ seo.seo_title|default:content.services_meta_title }}{% endblock %}
+{% block meta_description %}{{ seo.seo_description|default:content.services_meta_description }}{% endblock %}
 
 {% block content %}
 <section class="hero-text-block">
     <div class="container">
-        <h1 class="hero-title">{% trans "Preisliste" %}</h1>
-        <p class="hero-subtitle">{% trans "AKTUELLE PREISE" %}</p>
+        <h1 class="hero-title">{{ content.services_title }}</h1>
+        <p class="hero-subtitle">{{ content.services_subtitle }}</p>
     </div>
 </section>
 
@@ -60,7 +60,7 @@
             <!-- Link to Detail Page -->
             <div class="service-link-wrapper">
                 <a href="{% url 'service_detail' slug=category.slug %}" class="more-link">
-                    {% trans "Mehr über" %} {{ category.title }} →
+                    {% trans "btn_action_more" %} {{ category.title }} →
                 </a>
             </div>
 

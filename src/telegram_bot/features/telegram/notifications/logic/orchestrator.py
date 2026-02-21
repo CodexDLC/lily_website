@@ -270,7 +270,11 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
         """
         Точка входа.
         """
-        return UnifiedViewDTO(alert_text="Фича уведомлений работает только через callback")
+        return UnifiedViewDTO(
+            alert_text="Фича уведомлений работает только через callback",
+            chat_id=chat_id or user_id,
+            session_key=user_id,
+        )
 
     async def render_content(self, payload: Any) -> Any:
         return None

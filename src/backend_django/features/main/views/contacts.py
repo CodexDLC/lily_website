@@ -4,6 +4,7 @@ from django.views.generic import FormView
 from django_ratelimit.decorators import ratelimit
 from features.system.models.site_settings import SiteSettings
 from features.system.selectors.seo import SeoSelector
+from features.telegram_app.services.notification import NotificationService
 
 from ..forms import ContactForm
 from ..services.contact_service import ContactService
@@ -37,6 +38,14 @@ class ContactsView(FormView):
             topic=form.cleaned_data["topic"],
             consent_marketing=form.cleaned_data["consent_marketing"],
         )
+
+        # Trigger auto-receipt email if contact type is email
+        if form.cleaned_data["contact_type"] == "email" and form.cleaned_data["contact_value"]:
+            NotificationService.enqueue_receipt_email(
+                recipient_email=form.cleaned_data["contact_value"],
+                client_name=f"{form.cleaned_data['first_name']} {form.cleaned_data['last_name']}".strip() or "Customer",
+                message_text=form.cleaned_data["message"],
+            )
 
         # HTMX Response
         if self.request.headers.get("HX-Request"):
