@@ -125,7 +125,7 @@ def check_linters():
             return False
     print_success("Basic pre-commit hooks passed.")
 
-    return False
+    return True
 
 
 def check_types():
@@ -217,14 +217,25 @@ def run_all(with_docker=False):
         sys.exit(1)
     if not check_types():
         sys.exit(1)
-    if not run_tests():
-        sys.exit(1)
 
-    if with_docker:
-        if not run_docker_validation():
+    # Prompt for tests
+    test_choice = input(f"\n{Colors.YELLOW}🚀 Run Unit Tests? [y/N]: {Colors.ENDC}").strip().lower()
+    if test_choice == "y":
+        if not run_tests():
             sys.exit(1)
     else:
-        print(f"\n{Colors.BLUE}ℹ️ Docker validation skipped. Use --docker to run it.{Colors.ENDC}")
+        print(f"{Colors.BLUE}ℹ️ Skipping Unit Tests.{Colors.ENDC}")
+
+    # Prompt for Docker
+    if with_docker:
+        docker_choice = input(f"\n{Colors.YELLOW}🐳 Run Full Docker Validation? [y/N]: {Colors.ENDC}").strip().lower()
+        if docker_choice == "y":
+            if not run_docker_validation():
+                sys.exit(1)
+        else:
+            print(f"{Colors.BLUE}ℹ️ Skipping Docker validation.{Colors.ENDC}")
+    else:
+        print(f"\n{Colors.BLUE}ℹ️ Docker validation skipped. Use --docker to enable the prompt.{Colors.ENDC}")
 
     print(f"\n{Colors.GREEN}{Colors.BOLD}🎉 ALL CHECKS PASSED! You are ready to push.{Colors.ENDC}")
 

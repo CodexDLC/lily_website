@@ -10,14 +10,14 @@
     <!-- Floating Button -->
     <button id="promoFloatingButton"
             class="promo-floating-button"
-            aria-label="{% trans 'Promotion anzeigen' %}">
+            aria-label="{% trans 'btn_ui_show_promo' %}">
         {{ active_promo.button_text }}
     </button>
 
     <!-- Modal Overlay -->
     <div id="promoModal" class="promo-modal" role="dialog" aria-modal="true">
         <div id="promoModalContent" class="promo-modal-content">
-            <button id="promoModalClose" class="promo-modal-close" aria-label="{% trans 'Schließen' %}">&times;</button>
+            <button id="promoModalClose" class="promo-modal-close" aria-label="{% trans 'btn_action_close' %}">&times;</button>
 
             <div id="promoModalHeader" class="promo-modal-header">
                 <h2 class="promo-modal-title">{{ active_promo.title }}</h2>

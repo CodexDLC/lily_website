@@ -4,7 +4,6 @@ from aiogram.filters import StateFilter
 
 from src.telegram_bot.core.container import BotContainer
 from src.telegram_bot.services.director.director import Director
-from src.telegram_bot.services.sender.view_sender import ViewSender
 from src.telegram_bot.features.{feature_type}.{feature_key}.feature_setting import {class_name}States
 from src.telegram_bot.features.{feature_type}.{feature_key}.resources.callbacks import {class_name}Callback
 
@@ -26,11 +25,12 @@ async def handle_action(
     orchestrator = container.features["{feature_key}"]
 
     # 2. Инициализируем Директора
-    director = Director(container, state, call.from_user.id)
+    director = Director(container, state, call.from_user.id, chat_id=call.message.chat.id if call.message else None)
     orchestrator.set_director(director)
 
     # 3. Вызываем бизнес-логику
     view_dto = await orchestrator.handle_action(callback_data)
 
     # 4. Отправляем ответ
-    await container.view_sender.send(view_dto)
+    if view_dto and container.view_sender:
+        await container.view_sender.send(view_dto)

@@ -18,10 +18,12 @@ class SiteSettings(models.Model):
     site_base_url = models.URLField(
         _("Site Base URL"), blank=True, help_text=_("If empty, uses value from .env (SITE_BASE_URL)")
     )
-    logo_url = models.URLField(
+    logo_url = models.CharField(
         _("Logo URL"),
+        max_length=500,
         blank=True,
         default="/static/img/logo_lily.webp",
+        help_text=_("Can be an absolute URL or a relative static path."),
     )
 
     # --- Contacts ---
@@ -38,6 +40,7 @@ class SiteSettings(models.Model):
     instagram_url = models.URLField(_("Instagram URL"), blank=True, default="https://instagram.com/manikure_kothen")
     telegram_url = models.URLField(_("Telegram URL"), blank=True)
     whatsapp_url = models.URLField(_("WhatsApp URL"), blank=True)
+    facebook_url = models.URLField(_("Facebook URL"), blank=True)
     telegram_bot_username = models.CharField(
         _("Telegram Bot Username"),
         max_length=100,
