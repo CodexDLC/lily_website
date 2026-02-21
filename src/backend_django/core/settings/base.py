@@ -62,6 +62,10 @@ if domain:
         if www_domain not in ALLOWED_HOSTS:
             ALLOWED_HOSTS.append(www_domain)
 
+if DEBUG:
+    # Allow local tunnels dynamically to ease development
+    ALLOWED_HOSTS.extend([".ngrok-free.app", ".ngrok-free.dev", ".ngrok.io", ".loca.lt"])
+
 # ═══════════════════════════════════════════
 # Application definition
 # ═══════════════════════════════════════════
@@ -120,6 +124,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.i18n",
                 "features.system.context_processors.site_settings",
+                "features.system.context_processors.static_content",
                 "features.promos.context_processors.active_promo",
                 "core.context_processors.seo_settings",
             ],
@@ -232,6 +237,12 @@ UNFOLD = {
                         "link": "/admin/main/service/",
                         "permission": lambda request: request.user.has_perm("main.view_service"),
                     },
+                    {
+                        "title": "Contact Requests",
+                        "icon": "mail",
+                        "link": "/admin/main/contactrequest/",
+                        "permission": lambda request: request.user.has_perm("main.view_contactrequest"),
+                    },
                 ],
             },
             {
@@ -264,6 +275,12 @@ UNFOLD = {
                         "title": "Site Settings",
                         "icon": "settings",
                         "link": "/admin/system/sitesettings/",
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": "Static Translations",
+                        "icon": "translate",
+                        "link": "/admin/system/statictranslation/",
                         "permission": lambda request: request.user.is_superuser,
                     },
                 ],
