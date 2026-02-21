@@ -2,7 +2,7 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{{ category.title|default:_("Leistung") }} | LILY Beauty Salon{% endblock %}
+{% block title %}{{ category.title|default:content.label_service }} | LILY Beauty Salon{% endblock %}
 
 {% block content %}
 {% include "services/_schema_service_detail.html" %}
@@ -11,7 +11,7 @@
     <div class="hero-service-overlay"></div>
     <div class="container hero-service-content">
         <h1 class="hero-title">{{ category.title }}</h1>
-        <p class="hero-subtitle">{{ category.description|default:_("LILY BEAUTY SALON") }}</p>
+        <p class="hero-subtitle">{{ category.description|default:content.service_detail_subtitle }}</p>
     </div>
 </section>
 
@@ -31,7 +31,7 @@
         <div id="priceListContainer">
             <div class="price-block">
                 <div class="category-header">
-                    <h2 class="category-title">{% trans "Preise" %}</h2>
+                    <h2 class="category-title">{% trans "label_price_list" %}</h2>
                 </div>
 
                 {% for service in category.services.all %}
@@ -62,7 +62,7 @@
                 </div>
                 {% empty %}
                 <div class="text-center">
-                    <p>{% trans "Keine Dienstleistungen gefunden." %}</p>
+                    <p>{% trans "msg_no_services_found" %}</p>
                 </div>
                 {% endfor %}
             </div>
@@ -71,7 +71,7 @@
         <!-- MASTERS BLOCK -->
         {% if category.masters.all %}
         <section class="service-masters-block">
-            <h3 class="category-title service-masters-title">{% trans "Ihre Experten" %}</h3>
+            <h3 class="category-title service-masters-title">{% trans "label_your_experts" %}</h3>
             <div class="masters-list masters-list-centered">
                 {% for master in category.masters.all %}
                 <div class="mini-master">
@@ -87,7 +87,7 @@
         {% endif %}
 
         <div class="service-cta-wrapper">
-            <a href="{% url 'booking_wizard' %}" class="btn-pill">{% trans "Termin buchen" %}</a>
+            <a href="{% url 'booking_wizard' %}" class="btn-pill">{% trans "btn_cta_booking" %}</a>
         </div>
 
     </div>

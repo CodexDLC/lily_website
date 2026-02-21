@@ -9,13 +9,9 @@ class {class_name}Orchestrator(BaseBotOrchestrator):
         super().__init__(expected_state="{feature_key}")
         self.ui = {class_name}UI()
 
-    async def handle_entry(self, user_id: int, payload: Any = None) -> UnifiedViewDTO:
-        \"\"\"Вход в фичу (Cold Start). Вызывается Director или handler.\"\"\"
-        # Устанавливаем начальный стейт
-        if self._director:
-            await self.director.state.set_state({class_name}States.main)
-        # Загружаем данные...
-        return await self.render(None)
+    async def handle_entry(self, user_id: int, chat_id: int | None = None, payload: Any = None) -> UnifiedViewDTO:
+        """Вход в фичу (Cold Start). Вызывается Director или handler."""
+        return await self.render(payload=payload)
 
     async def render_content(self, payload: Any) -> Any:
         \"\"\"Отрисовка контента\"\"\"

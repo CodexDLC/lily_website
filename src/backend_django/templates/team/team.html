@@ -3,11 +3,11 @@
 {% load i18n %}
 
 {% block title %}
-    {% if seo.seo_title %}{{ seo.seo_title }}{% else %}{% trans "Team | LILY Beauty Salon" %}{% endif %}
+    {% if seo.seo_title %}{{ seo.seo_title }}{% else %}{% trans "nav_main_team" %} | LILY Beauty Salon{% endif %}
 {% endblock %}
 
 {% block meta_description %}
-    {% if seo.seo_description %}{{ seo.seo_description }}{% else %}{% trans "Lernen Sie unsere Experten kennen." %}{% endif %}
+    {% if seo.seo_description %}{{ seo.seo_description }}{% else %}{{ content.team_meta_description }}{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -15,8 +15,8 @@
 <!-- HERO -->
 <section class="hero-text-block">
     <div class="container">
-        <h1 class="hero-title">{% trans "Unser Team" %}</h1>
-        <p class="hero-subtitle">{% trans "SCHÖNHEITSEXPERTEN" %}</p>
+        <h1 class="hero-title">{{ content.team_title }}</h1>
+        <p class="hero-subtitle">{{ content.team_subtitle }}</p>
     </div>
 </section>
 
@@ -32,7 +32,7 @@
                 <div class="owner-photo" style="background-image: url('{% if owner.photo %}{{ owner.photo.url }}{% else %}{% static 'img/lily.webp' %}{% endif %}');"></div>
 
                 <div class="owner-info">
-                    <div class="owner-badge">{% trans "Founder & Master" %}</div>
+                    <div class="owner-badge">{% trans "label_founder_master" %}</div>
                     <h2 class="owner-name">{{ owner.name }}</h2>
                     <span class="owner-role">{{ owner.title }}</span>
 
@@ -47,9 +47,9 @@
                     {% endif %}
 
                     <div class="owner-buttons">
-                        <a href="{% url 'booking_wizard' %}?master_id={{ owner.id }}" class="btn-pill">{% trans "Termin buchen" %}</a>
+                        <a href="{% url 'booking_wizard' %}?master_id={{ owner.id }}" class="btn-pill">{% trans "btn_cta_booking" %}</a>
                         {% if owner.instagram %}
-                        <a href="https://instagram.com/{{ owner.instagram }}" target="_blank" class="btn-pill btn-instagram-secondary">{% trans "Instagram" %}</a>
+                        <a href="https://instagram.com/{{ owner.instagram }}" target="_blank" class="btn-pill btn-instagram-secondary">Instagram</a>
                         {% endif %}
                     </div>
                 </div>
@@ -61,7 +61,7 @@
     <!-- BLOCK 2: TEAM GRID -->
     <section class="team-section-block">
         <div class="container">
-            <h2 class="section-heading text-center">{% trans "Unsere Meister" %}</h2>
+            <h2 class="section-heading text-center">{{ content.team_masters_title }}</h2>
 
             <div class="team-grid">
                 <!-- Masters Loop -->
@@ -72,7 +72,7 @@
                         <h3 class="master-name">{{ master.name }}</h3>
                         <p class="master-role">{{ master.title }}</p>
                         <div class="master-buttons">
-                            <a href="{% url 'booking_wizard' %}?master_id={{ master.id }}" class="btn-select">{% trans "Buchen" %}</a>
+                            <a href="{% url 'booking_wizard' %}?master_id={{ master.id }}" class="btn-select">{% trans "btn_action_book" %}</a>
                             {% if master.instagram %}
                             <a href="https://instagram.com/{{ master.instagram }}" target="_blank" class="btn-select btn-instagram-card">Instagram</a>
                             {% endif %}
@@ -92,7 +92,7 @@
                         <p class="master-role" style="font-size: 14px; line-height: 1.4; margin-bottom: 15px;">
                             {{ site_settings.hiring_text }}
                         </p>
-                        <a href="{% url 'contacts' %}" class="btn-select">{% trans "Bewerben" %}</a>
+                        <a href="{% url 'contacts' %}" class="btn-select">{% trans "btn_action_apply" %}</a>
                     </div>
                 </article>
                 {% endif %}

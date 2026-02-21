@@ -30,8 +30,14 @@ async def handle_dashboard_callback(
     # 2. Создаем специфичный контекст для меню
     ctx = MenuContext(**base_ctx.model_dump(), action=callback_data.action, target=callback_data.target)
 
-    # 3. Инициализируем Director с chat_id
-    director = Director(container=container, state=state, user_id=ctx.user_id, chat_id=ctx.chat_id)
+    # 3. Инициализируем Director с chat_id и trigger_id
+    director = Director(
+        container=container,
+        state=state,
+        user_id=ctx.user_id,
+        chat_id=ctx.chat_id,
+        trigger_id=call.message.message_id if call.message else None,
+    )
     orchestrator.set_director(director)
 
     # 4. Вызываем оркестратор

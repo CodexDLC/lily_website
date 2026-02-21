@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block title %}{{ seo.seo_title|default:"LILY Beauty Salon | Köthen" }}{% endblock %}
-{% block meta_description %}{{ seo.seo_description|default:"Premium Beauty Salon in Köthen." }}{% endblock %}
+{% block meta_description %}{{ seo.seo_description|default:content.home_hero_uptitle }}{% endblock %}
 
 {% block content %}
 {% include "home/_schema_home_page.html" %}
@@ -11,10 +11,10 @@
 <section class="hero-split">
     <div class="container hero-grid">
         <div class="hero-text-col">
-            <div class="hero-uptitle">{% trans "Premium Beauty Salon" %}</div>
-            <h1 class="hero-heading">{% trans "Die Kunst" %} <br><span class="text-gold">{% trans "Ihrer Schönheit" %}</span></h1>
-            <p class="hero-desc">{% trans "Deutsche Qualitätsstandards treffen auf ukrainische Servicekunst. Wir kreieren Looks, die inspirieren." %}</p>
-            <a href="{% url 'booking_wizard' %}" class="btn-pill">{% trans "Termin buchen" %}</a>
+            <div class="hero-uptitle">{{ content.home_hero_uptitle }}</div>
+            <h1 class="hero-heading">{{ content.home_hero_title_part1 }} <br><span class="text-gold">{{ content.home_hero_title_gold }}</span></h1>
+            <p class="hero-desc">{{ content.home_hero_description }}</p>
+            <a href="{% url 'booking_wizard' %}" class="btn-pill">{% trans "btn_cta_booking" %}</a>
         </div>
         <div class="hero-visual-col">
             <!-- Local Model PNG -->
@@ -33,8 +33,8 @@
 <section class="categories-section">
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">{% trans "Unsere Leistungen" %}</h2>
-            <p class="section-desc">{% trans "Wählen Sie eine Richtung" %}</p>
+            <h2 class="section-title">{{ content.home_services_title }}</h2>
+            <p class="section-desc">{{ content.home_services_subtitle }}</p>
         </div>
 
         <div class="bento-grid">
@@ -99,19 +99,6 @@
                 </div>
             </a>
             {% endif %}
-
-            <!-- Depilation (Hair Removal) -->
-            {% if bento.hair_removal %}
-            <a href="{% url 'service_detail' slug=bento.hair_removal.slug %}" class="bento-card"
-               style="background-image: url('{% if bento.hair_removal.image %}{{ bento.hair_removal.image.url }}{% else %}https://images.unsplash.com/photo-1552693673-1bf958298935?auto=format&fit=crop&w=600{% endif %}');">
-                <div class="card-overlay">
-                    <h3>{{ bento.hair_removal.title }}</h3>
-                    <p class="bento-card-desc">{{ bento.hair_removal.description|truncatechars:40 }}</p>
-                    {% include "home/includes/_bento_badge.html" with item=bento.hair_removal %}
-                </div>
-            </a>
-            {% endif %}
-
         </div>
     </div>
 </section>

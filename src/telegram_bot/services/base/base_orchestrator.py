@@ -39,7 +39,13 @@ class BaseBotOrchestrator:
             return await self.process_response(payload)
 
         content_view = await self.render_content(payload)
-        return UnifiedViewDTO(content=content_view, menu=None)
+        view = UnifiedViewDTO(content=content_view, menu=None)
+
+        if self._director:
+            view.chat_id = self.director.chat_id
+            view.session_key = self.director.user_id
+
+        return view
 
     async def process_response(self, response: CoreResponseDTO) -> UnifiedViewDTO:
         if response.header.next_state and response.header.next_state != self.expected_state:
