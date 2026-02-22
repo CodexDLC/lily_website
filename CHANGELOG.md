@@ -2,6 +2,10 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.2.2] - 2026-02-22
+### Fixed
+- **Migrations:** Resolved `InconsistentMigrationHistory` in `main` app by restoring the correct dependency chain (`0001` -> `0002` -> `0003` -> `0004`).
+
 ## [1.2.1] - 2026-02-22
 ### Legal & Maintenance
 - **Fixed:** Critical localization errors in legal templates (`datenschutz.html`, `impressum.html`). Removed mixed Cyrillic/German text.
