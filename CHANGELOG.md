@@ -2,6 +2,12 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.2.1] - 2026-02-22
+### Legal & Maintenance
+- **Fixed:** Critical localization errors in legal templates (`datenschutz.html`, `impressum.html`). Removed mixed Cyrillic/German text.
+- **Docs:** Fixed markdown table formatting in technical documentation for better rendering.
+- **Optimization:** Refactored cache invalidation logic in `Service` and `PortfolioImage` models (removed redundant keys).
+
 ## [1.2.0] - 2026-02-21
 ### Telegram Mini App & Admin Features
 - **TMA:** Full implementation of Telegram Mini App (TMA) for client interactions (contacts, forms, styles).
