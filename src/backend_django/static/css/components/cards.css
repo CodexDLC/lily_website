@@ -79,6 +79,42 @@
     width: 150px; /* Fixed width to ensure it spans the corner */
 }
 
+/* Price Tag (Bento Card) */
+.bento-price-tag {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 48, 42, 0.8);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--color-gold);
+    border-radius: 4px;
+    padding: 4px 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    color: var(--color-white);
+    font-family: var(--font-sans), sans-serif;
+    transition: all 0.3s ease;
+    z-index: 5;
+}
+
+.bento-card:hover .bento-price-tag {
+    background: var(--color-gold);
+    color: var(--color-emerald);
+}
+
+.price-prefix {
+    font-size: 10px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    font-weight: 600;
+}
+
+.price-value {
+    font-size: 16px;
+    font-weight: 700;
+}
+
 /* Price Block (Floating Card) */
 .price-block {
     padding: 50px 60px;

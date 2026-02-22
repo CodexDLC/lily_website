@@ -17,7 +17,7 @@
     <script src="{% static 'js/htmx.min.js' %}" defer></script>
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
     {% include "includes/_analytics_body.html" %}
 
     <div class="site-wrapper">

@@ -14,4 +14,5 @@ This section contains the design system, UI kit, and user flow documentation for
 | **[🗺️ Page Flow](./page_flow.md)** | Structure and logic of key pages (Home, Team, Services) |
 | **[🗺️ Content Map](./content_map.md)** | Content strategy, localization (i18n), and SEO |
 | **[📅 Booking Flow](./booking_flow.md)** | User scenarios for booking and "Time Tetris" algorithm |
+| **[⚙️ Development Principles](./development_principles.md)** | SEO, Localization (i18n), and Build standards |
 | **[💡 Future Ideas](./future_ideas.md)** | Backlog of concepts and future improvements |
