@@ -13,8 +13,8 @@ def load_initial_data(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("main", "0004_service_is_addon"),
-        ("booking", "0002_initial"),  # Ensure booking models are ready
+        ("main", "0001_initial"),
+        ("booking", "0001_initial"),  # Ensure booking models are ready
         ("system", "0001_initial"),  # Ensure system models are ready
     ]
 
