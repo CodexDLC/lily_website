@@ -1,6 +1,7 @@
 import json
 from typing import Any
 
+from django.utils import timezone
 from django_redis import get_redis_connection
 from loguru import logger as log
 
@@ -37,6 +38,9 @@ class NotificationCacheManager:
                 client=appointment.client, status=Appointment.STATUS_COMPLETED
             ).count()
 
+            # Convert UTC time from DB to local time (Europe/Berlin) before formatting
+            local_dt = timezone.localtime(appointment.datetime_start)
+
             data = {
                 "id": appointment.id,
                 "client_name": f"{appointment.client.first_name} {appointment.client.last_name}",
@@ -46,7 +50,7 @@ class NotificationCacheManager:
                 "client_email": appointment.client.email or "не указан",
                 "service_name": appointment.service.title,
                 "master_name": appointment.master.name,
-                "datetime": appointment.datetime_start.strftime("%d.%m.%Y %H:%M"),
+                "datetime": local_dt.strftime("%d.%m.%Y %H:%M"),
                 "duration_minutes": appointment.duration_minutes,
                 "price": float(appointment.price),
                 "request_call": False,
@@ -62,7 +66,7 @@ class NotificationCacheManager:
 
             key = f"{cls.APPOINTMENT_CACHE_PREFIX}{appointment_id}"
             cls.get_redis_client().set(key, json.dumps(data, ensure_ascii=False), ex=cls.TTL)
-            log.info(f"Seeded appointment cache for ID={appointment_id}")
+            log.info(f"Seeded appointment cache for ID={appointment_id} with local time: {data['datetime']}")
             return True
 
         except Exception as e:
@@ -79,6 +83,9 @@ class NotificationCacheManager:
         try:
             request = ContactRequest.objects.select_related("client").get(id=request_id)
 
+            # Convert UTC time from DB to local time (Europe/Berlin) before formatting
+            local_created_at = timezone.localtime(request.created_at)
+
             data = {
                 "request_id": request.id,
                 "first_name": request.client.first_name,
@@ -87,7 +94,7 @@ class NotificationCacheManager:
                 "contact_type": "phone" if request.client.phone else "email",
                 "topic": request.get_topic_display(),
                 "message": request.message,
-                "created_at": request.created_at.strftime("%d.%m.%Y %H:%M"),
+                "created_at": local_created_at.strftime("%d.%m.%Y %H:%M"),
             }
 
             if extra_data:
@@ -98,7 +105,7 @@ class NotificationCacheManager:
 
             key = f"{cls.CONTACT_CACHE_PREFIX}{request_id}"
             cls.get_redis_client().set(key, json.dumps(data, ensure_ascii=False), ex=cls.TTL)
-            log.info(f"Seeded contact cache for ID={request_id}")
+            log.info(f"Seeded contact cache for ID={request_id} with local time: {data['created_at']}")
             return True
 
         except Exception as e:

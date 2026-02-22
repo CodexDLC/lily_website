@@ -945,6 +945,42 @@ main {
 }
 
 
+.bento-price-tag {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 48, 42, 0.8);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--color-gold);
+    border-radius: 4px;
+    padding: 4px 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    color: var(--color-white);
+    font-family: var(--font-sans), sans-serif;
+    transition: all 0.3s ease;
+    z-index: 5;
+}
+
+.bento-card:hover .bento-price-tag {
+    background: var(--color-gold);
+    color: var(--color-emerald);
+}
+
+.price-prefix {
+    font-size: 10px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    font-weight: 600;
+}
+
+.price-value {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+
 .price-block {
     padding: 50px 60px;
     border-radius: 20px;
@@ -1479,6 +1515,11 @@ textarea.form-input-boxed {
 
 
 
+body.legal-page .promo-floating-button {
+    display: none !important;
+}
+
+
 .promo-floating-button.is-dragging,
 .promo-modal-content.is-dragging {
     animation: none !important;
@@ -1490,8 +1531,7 @@ textarea.form-input-boxed {
 .promo-floating-button {
     position: fixed;
     right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    bottom: 80px;
     z-index: 900;
 
 
@@ -1520,15 +1560,15 @@ textarea.form-input-boxed {
 }
 
 .promo-floating-button:hover {
-    transform: translateY(-50%) scale(1.05);
+    transform: scale(1.05);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
     animation: none;
 }
 
 @keyframes pulse {
-    0%, 100% { transform: translateY(-50%) scale(1); }
+    0%, 100% { transform: scale(1); }
     50% {
-        transform: translateY(-50%) scale(1.05);
+        transform: scale(1.05);
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
     }
 }
@@ -1646,13 +1686,13 @@ textarea.form-input-boxed {
 
 
 @media (max-width: 1023px) {
-    .promo-floating-button { right: 15px; padding: 10px 20px; font-size: 13px; }
+    .promo-floating-button { right: 15px; bottom: 70px; padding: 10px 20px; font-size: 13px; }
     .promo-modal-content { padding: 25px; }
     .promo-modal-title { font-size: 24px; }
 }
 
 @media (max-width: 767px) {
-    .promo-floating-button { right: 10px; padding: 10px 16px; font-size: 12px; }
+    .promo-floating-button { right: 10px; bottom: 60px; padding: 10px 16px; font-size: 12px; }
     .promo-modal-content { width: 95%; padding: 20px; }
     .promo-modal-title { font-size: 22px; }
 }

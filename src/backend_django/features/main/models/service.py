@@ -62,6 +62,11 @@ class Service(TimestampMixin, ActiveMixin, SeoMixin):
     is_hit = models.BooleanField(
         default=False, verbose_name=_("Hit / Popular"), help_text=_("Highlight this service as popular.")
     )
+    is_addon = models.BooleanField(
+        default=False,
+        verbose_name=_("Is Add-on"),
+        help_text=_("If checked, this service will be excluded from 'Price from' calculation on the home page."),
+    )
     order = models.PositiveIntegerField(default=0, verbose_name=_("Order"), help_text=_("Sorting order."))
 
     class Meta:
@@ -76,15 +81,17 @@ class Service(TimestampMixin, ActiveMixin, SeoMixin):
         if self.image:
             optimize_image(self.image, max_width=1200)
         super().save(*args, **kwargs)
+
         # Targeted cache invalidation
-        # Use contextlib.suppress instead of try-except-pass (Ruff SIM105)
         with contextlib.suppress(Exception):
             cache.delete_many(
                 [
                     "active_services_cache",
                     "popular_services_cache",
+                    "home_bento_cache_v5",  # Clear bento grid because price might have changed
                     f"service_detail_{self.slug}",
                     f"category_detail_{self.category.slug}",
+                    f"category_detail_cache_{self.category.slug}",
                 ]
             )
 
@@ -124,4 +131,10 @@ class PortfolioImage(TimestampMixin):
         super().save(*args, **kwargs)
         # Targeted cache invalidation
         with contextlib.suppress(Exception):
-            cache.delete_many([f"service_detail_{self.service.slug}", f"category_detail_{self.service.category.slug}"])
+            cache.delete_many(
+                [
+                    f"service_detail_{self.service.slug}",
+                    f"category_detail_{self.service.category.slug}",
+                    f"category_detail_cache_{self.service.category.slug}",
+                ]
+            )

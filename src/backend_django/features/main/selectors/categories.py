@@ -1,5 +1,5 @@
 from core.cache import get_cached_data
-from django.db.models import Count, Prefetch, Q
+from django.db.models import Count, Min, Prefetch, Q
 from features.booking.models import Master
 
 from ..models import Category, Service
@@ -36,18 +36,22 @@ class CategorySelector:
         """
         Returns active categories for the Home Page Bento Grid.
         Includes active_masters_count to determine 'Coming Soon' status.
+        Annotates with min_price from active services, excluding add-ons.
         """
 
         def fetch():
             return list(
                 Category.objects.filter(is_active=True)
-                .annotate(active_masters_count=Count("masters", filter=Q(masters__status=Master.STATUS_ACTIVE)))
+                .annotate(
+                    active_masters_count=Count("masters", filter=Q(masters__status=Master.STATUS_ACTIVE)),
+                    min_price=Min("services__price", filter=Q(services__is_active=True, services__is_addon=False)),
+                )
                 .only("title", "slug", "image", "bento_group", "is_planned", "description")
                 .order_by("order")
             )
 
-        # Changed cache key to v2 to force refresh with new annotation
-        return get_cached_data("home_bento_cache_v2", fetch)
+        # Changed cache key to v5 to force refresh after is_addon field was added and populated
+        return get_cached_data("home_bento_cache_v5", fetch)
 
     @staticmethod
     def get_for_price_list(bento_group=None):

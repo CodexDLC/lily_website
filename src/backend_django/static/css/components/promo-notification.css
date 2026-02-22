@@ -3,6 +3,11 @@
    Floating button + Modal window for promotions
    ========================================= */
 
+/* ── Hide on Legal Pages ── */
+body.legal-page .promo-floating-button {
+    display: none !important;
+}
+
 /* ── Shared Draggable State ── */
 .promo-floating-button.is-dragging,
 .promo-modal-content.is-dragging {
@@ -15,8 +20,7 @@
 .promo-floating-button {
     position: fixed;
     right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    bottom: 80px; /* Fixed at bottom right */
     z-index: 900;
 
     /* Sizing & Shape */
@@ -45,15 +49,15 @@
 }
 
 .promo-floating-button:hover {
-    transform: translateY(-50%) scale(1.05);
+    transform: scale(1.05);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
     animation: none;
 }
 
 @keyframes pulse {
-    0%, 100% { transform: translateY(-50%) scale(1); }
+    0%, 100% { transform: scale(1); }
     50% {
-        transform: translateY(-50%) scale(1.05);
+        transform: scale(1.05);
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
     }
 }
@@ -171,13 +175,13 @@
 
 /* ── Responsive ── */
 @media (max-width: 1023px) {
-    .promo-floating-button { right: 15px; padding: 10px 20px; font-size: 13px; }
+    .promo-floating-button { right: 15px; bottom: 70px; padding: 10px 20px; font-size: 13px; }
     .promo-modal-content { padding: 25px; }
     .promo-modal-title { font-size: 24px; }
 }
 
 @media (max-width: 767px) {
-    .promo-floating-button { right: 10px; padding: 10px 16px; font-size: 12px; }
+    .promo-floating-button { right: 10px; bottom: 60px; padding: 10px 16px; font-size: 12px; }
     .promo-modal-content { width: 95%; padding: 20px; }
     .promo-modal-title { font-size: 22px; }
 }

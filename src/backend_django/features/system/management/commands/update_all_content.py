@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    help = "Run all content update commands"
+    help = "Run all content update commands and clear cache"
 
     def handle(self, *args, **options):
         self.stdout.write(self.style.MIGRATE_HEADING(">>> Updating Site Settings..."))
@@ -24,4 +24,8 @@ class Command(BaseCommand):
         self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Updating Masters Content..."))
         call_command("update_masters")
 
-        self.stdout.write(self.style.SUCCESS("\nAll updates completed."))
+        # Clear cache at the end to ensure all updates are visible
+        self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Clearing Cache..."))
+        call_command("clear_cache")
+
+        self.stdout.write(self.style.SUCCESS("\nAll updates completed and cache cleared."))
