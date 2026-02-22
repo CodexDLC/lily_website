@@ -1,5 +1,3 @@
-from typing import Any
-
 from ..models import Category
 from ..selectors.categories import CategorySelector
 
@@ -11,29 +9,27 @@ class HomeService:
     """
 
     @staticmethod
-    def get_bento_context() -> dict[str, Any]:
+    def get_bento_context() -> list[Category]:
         """
         Fetches categories and groups them by 'bento_group' for the main page grid.
-
-        Returns:
-            Dict[str, Category]: A dictionary where keys are bento_group slugs
-                                 ('hair', 'nails', etc.) and values are Category objects.
-                                 If multiple categories share a group, the first one (by order) is taken.
+        Returns a list of Category objects, one for each group, with aggregated min_price.
         """
         categories = CategorySelector.get_for_home_bento()
 
-        bento_data: dict[str, Any] = {}
-
-        # Define expected groups to ensure keys exist even if empty
-        expected_groups = [g[0] for g in Category.BENTO_GROUPS]
-        for group in expected_groups:
-            bento_data[group] = None
+        bento_map: dict[str, Category] = {}
 
         for cat in categories:
             group_key = cat.bento_group
 
-            # Logic: If multiple categories have the same group, take the first one (by order)
-            if bento_data.get(group_key) is None:
-                bento_data[group_key] = cat
+            if group_key not in bento_map:
+                bento_map[group_key] = cat
+            else:
+                # Aggregate min_price across all categories in the same group
+                existing_cat = bento_map[group_key]
+                if cat.min_price is not None and (
+                    existing_cat.min_price is None or cat.min_price < existing_cat.min_price
+                ):
+                    existing_cat.min_price = cat.min_price
 
-        return bento_data
+        # Return as a list to allow iteration in template
+        return list(bento_map.values())

@@ -48,10 +48,10 @@ class CategoryAdmin(ModelAdmin, TranslationAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(ModelAdmin, TranslationAdmin):
-    list_display = ["title", "category", "price", "duration", "order", "is_active"]
+    list_display = ["title", "category", "price", "duration", "order", "is_active", "is_addon"]
     list_display_links = ["title"]
-    list_editable = ["price", "duration", "order"]
-    list_filter = ["category", "is_active"]
+    list_editable = ["price", "duration", "order", "is_addon"]
+    list_filter = ["category", "is_active", "is_addon"]
     ordering = ["order", "title"]
     prepopulated_fields = {"slug": ("title",)}
 
@@ -59,7 +59,7 @@ class ServiceAdmin(ModelAdmin, TranslationAdmin):
         (
             _("Basic Info"),
             {
-                "fields": ("title", "slug", "category", "image", "is_active", "is_hit"),
+                "fields": ("title", "slug", "category", "image", "is_active", "is_hit", "is_addon"),
             },
         ),
         (

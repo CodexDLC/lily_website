@@ -51,6 +51,11 @@ class Category(TimestampMixin, ActiveMixin, SeoMixin):
     order = models.PositiveIntegerField(
         default=0, verbose_name=_("Order"), help_text=_("Sorting order (lower numbers come first).")
     )
+    is_planned = models.BooleanField(
+        default=False,
+        verbose_name=_("Planned / Coming Soon"),
+        help_text=_("If checked, shows 'Coming Soon' badge."),
+    )
 
     class Meta:
         verbose_name = _("Category")
@@ -64,8 +69,15 @@ class Category(TimestampMixin, ActiveMixin, SeoMixin):
         if self.image:
             optimize_image(self.image, max_width=1200)
         super().save(*args, **kwargs)
+
         # Targeted cache invalidation
-        cache.delete_many(["active_categories_cache", "bento_grid_cache", f"category_detail_{self.slug}"])
+        cache.delete_many(
+            [
+                "active_categories_cache",
+                "home_bento_cache_v5",  # Clear bento grid on home page
+                f"category_detail_cache_{self.slug}",
+            ]
+        )
 
     def get_absolute_url(self):
         from django.urls import reverse
