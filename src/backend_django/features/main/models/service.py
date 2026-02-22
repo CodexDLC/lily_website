@@ -90,7 +90,6 @@ class Service(TimestampMixin, ActiveMixin, SeoMixin):
                     "popular_services_cache",
                     "home_bento_cache_v5",  # Clear bento grid because price might have changed
                     f"service_detail_{self.slug}",
-                    f"category_detail_{self.category.slug}",
                     f"category_detail_cache_{self.category.slug}",
                 ]
             )
@@ -134,7 +133,6 @@ class PortfolioImage(TimestampMixin):
             cache.delete_many(
                 [
                     f"service_detail_{self.service.slug}",
-                    f"category_detail_{self.service.category.slug}",
                     f"category_detail_cache_{self.service.category.slug}",
                 ]
             )

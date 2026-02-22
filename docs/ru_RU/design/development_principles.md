@@ -36,8 +36,8 @@
 | :--- | :--- |
 | `service_cat_hair` | Прядь / Волосы |
 | `service_cat_nails` | Ногти |
-| `service_item_manicure`| Маникюр |
-| `service_item_coloring`| Окрашивание |
+| `service_item_manicure` | Маникюр |
+| `service_item_coloring` | Окрашивание |
 
 ### 1.2. Контент в БД (StaticTranslation)
 Для текстов, которые часто меняются (Hero-секции, описания услуг), используется модель `StaticTranslation`.

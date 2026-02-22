@@ -36,8 +36,8 @@ Accessed via `{% trans "key" %}`. **Never** insert raw text directly into the `t
 | :--- | :--- |
 | `service_cat_hair` | Hair |
 | `service_cat_nails` | Nails |
-| `service_item_manicure`| Manicure |
-| `service_item_coloring`| Coloring |
+| `service_item_manicure` | Manicure |
+| `service_item_coloring` | Coloring |
 
 ### 1.2. Database Content (StaticTranslation)
 For frequently changing texts (Hero sections, service descriptions), the `StaticTranslation` model is used.
