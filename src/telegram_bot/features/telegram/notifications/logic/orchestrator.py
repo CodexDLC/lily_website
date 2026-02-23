@@ -1,4 +1,5 @@
 import functools
+import json
 from typing import TYPE_CHECKING, Any
 
 from aiogram.types import CallbackQuery
@@ -11,7 +12,7 @@ from src.telegram_bot.services.base.view_dto import UnifiedViewDTO, ViewResultDT
 from ..contracts.contract import NotificationsDataProvider
 from ..resources.callbacks import NotificationsCallback
 from ..resources.dto import QueryContext
-from ..resources.keyboards import build_contact_full_kb
+from ..resources.keyboards import build_contact_full_kb, build_propose_time_kb
 from ..resources.texts import NotificationsTexts
 from ..ui.ui import NotificationsUI
 from .helper.extract_data import extract_context
@@ -80,6 +81,12 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
             "cancel_reject": self._handler_cancel_reject,
             "delete_notification": self._handler_delete_notification,
             "read_contact": self._handler_read_contact,
+            "propose_time": self._handler_propose_time,
+            "propose_slot_0": functools.partial(self._handler_send_proposal, slot_index=0),
+            "propose_slot_1": functools.partial(self._handler_send_proposal, slot_index=1),
+            "propose_slot_2": functools.partial(self._handler_send_proposal, slot_index=2),
+            "propose_slot_3": functools.partial(self._handler_send_proposal, slot_index=3),
+            "propose_slot_4": functools.partial(self._handler_send_proposal, slot_index=4),
         }
 
         handler = action_map.get(context.action)
@@ -265,6 +272,105 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
         except Exception as e:
             log.error(f"Orchestrator | handle_status_update error: {e}")
             return None
+
+    async def _handler_propose_time(self, context: QueryContext) -> UnifiedViewDTO:
+        """Загружает свободные слоты и показывает admin'у меню выбора."""
+        if context.session_id is None:
+            return UnifiedViewDTO(alert_text="Ошибка: ID не найден")
+
+        appointment_id = int(context.session_id)
+        try:
+            slots = await self.service.data_provider.get_available_slots(appointment_id)
+
+            if not slots:
+                return UnifiedViewDTO(
+                    alert_text="Свободных слотов не найдено в ближайшие 7 дней",
+                    chat_id=self.settings.telegram_admin_channel_id,
+                    session_key=appointment_id,
+                )
+
+            # Сохраняем слоты в Redis с TTL 10 минут для последующего выбора
+            propose_key = f"propose:slots:{appointment_id}"
+            await self.container.redis.service.set_value(propose_key, json.dumps(slots, ensure_ascii=False), ttl=600)
+
+            kb = build_propose_time_kb(
+                appointment_id=appointment_id,
+                slots=slots,
+                topic_id=context.message_thread_id,
+            )
+            text = f"📅 <b>Выберите время для предложения клиенту:</b>\n\n{context.message_text or ''}"
+            return UnifiedViewDTO(
+                content=ViewResultDTO(text=text, kb=kb),
+                chat_id=self.settings.telegram_admin_channel_id,
+                session_key=appointment_id,
+                message_thread_id=context.message_thread_id,
+                mode="edit",
+            )
+        except Exception as e:
+            log.error(f"Orchestrator | propose_time error: {e}")
+            return UnifiedViewDTO(
+                alert_text=NotificationsTexts.error_api(),
+                chat_id=self.settings.telegram_admin_channel_id,
+                session_key=appointment_id,
+            )
+
+    async def _handler_send_proposal(self, context: QueryContext, slot_index: int) -> UnifiedViewDTO:
+        """Отправляет предложение клиенту с выбранным слотом."""
+        if context.session_id is None:
+            return UnifiedViewDTO(alert_text="Ошибка: ID не найден")
+
+        appointment_id = int(context.session_id)
+        try:
+            # Достаём сохранённые слоты из Redis
+            propose_key = f"propose:slots:{appointment_id}"
+            raw = await self.container.redis.service.get_value(propose_key)
+            if not raw:
+                return UnifiedViewDTO(
+                    alert_text="Слоты устарели. Нажмите «Другое время» ещё раз.",
+                    chat_id=self.settings.telegram_admin_channel_id,
+                    session_key=appointment_id,
+                )
+
+            slots: list[dict] = json.loads(raw)
+            if slot_index >= len(slots):
+                return UnifiedViewDTO(
+                    alert_text="Слот не найден",
+                    chat_id=self.settings.telegram_admin_channel_id,
+                    session_key=appointment_id,
+                )
+
+            chosen_slot = slots[slot_index]
+            slot_label = chosen_slot.get("label", chosen_slot.get("datetime_str", ""))
+
+            response = await self.service.data_provider.send_reschedule_offer(
+                appointment_id=appointment_id,
+                slots=[slot_label],
+            )
+            if not response.get("success"):
+                return UnifiedViewDTO(
+                    alert_text=f"Ошибка: {response.get('message')}",
+                    chat_id=self.settings.telegram_admin_channel_id,
+                    session_key=appointment_id,
+                )
+
+            updated_text = (
+                f"❌ Отклонено (предложено время)\n📅 Предложено: {slot_label}\n\n{context.message_text or ''}"
+            )
+            return UnifiedViewDTO(
+                content=self.ui.render_post_action(updated_text, appointment_id, context.message_thread_id),
+                chat_id=self.settings.telegram_admin_channel_id,
+                session_key=appointment_id,
+                message_thread_id=context.message_thread_id,
+                mode="edit",
+                alert_text=f"✅ Письмо отправлено: {slot_label}",
+            )
+        except Exception as e:
+            log.error(f"Orchestrator | send_proposal error: {e}")
+            return UnifiedViewDTO(
+                alert_text=NotificationsTexts.error_api(),
+                chat_id=self.settings.telegram_admin_channel_id,
+                session_key=appointment_id,
+            )
 
     async def handle_entry(self, user_id: int, chat_id: int | None = None, payload: Any = None) -> UnifiedViewDTO:
         """

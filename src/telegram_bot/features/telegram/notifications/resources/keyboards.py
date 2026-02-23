@@ -34,6 +34,11 @@ def build_reject_reasons_kb(appointment_id: int, topic_id: int | None = None):
     i18n = cast("I18nContext", I18nContext.get_current())
     builder = InlineKeyboardBuilder()
 
+    builder.button(
+        text="📅 Другое время",
+        callback_data=NotificationsCallback(action="propose_time", session_id=appointment_id, topic_id=topic_id).pack(),
+    )
+
     reasons = [
         ("reject_busy", i18n.notifications.reason.busy()),
         ("reject_ill", i18n.notifications.reason.ill()),
@@ -52,6 +57,32 @@ def build_reject_reasons_kb(appointment_id: int, topic_id: int | None = None):
         callback_data=NotificationsCallback(
             action="cancel_reject", session_id=appointment_id, topic_id=topic_id
         ).pack(),
+    )
+
+    builder.adjust(1)
+    return builder.as_markup()
+
+
+def build_propose_time_kb(appointment_id: int, slots: list[dict], topic_id: int | None = None):
+    """
+    Клавиатура выбора альтернативного слота для предложения клиенту.
+    Показывает до 5 слотов кнопками + кнопку «Назад».
+    """
+    i18n = cast("I18nContext", I18nContext.get_current())
+    builder = InlineKeyboardBuilder()
+
+    for idx, slot in enumerate(slots[:5]):
+        label = slot.get("label", slot.get("datetime_str", f"Slot {idx + 1}"))
+        builder.button(
+            text=f"📅 {label}",
+            callback_data=NotificationsCallback(
+                action=f"propose_slot_{idx}", session_id=appointment_id, topic_id=topic_id
+            ).pack(),
+        )
+
+    builder.button(
+        text=i18n.common.btn.back(),
+        callback_data=NotificationsCallback(action="reject", session_id=appointment_id, topic_id=topic_id).pack(),
     )
 
     builder.adjust(1)
