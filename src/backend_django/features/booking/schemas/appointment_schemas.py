@@ -28,3 +28,32 @@ class ManageAppointmentResponse(BaseModel):
     success: bool
     message: str
     appointment_id: int
+
+
+class SlotItem(BaseModel):
+    """Один доступный слот."""
+
+    label: str
+    datetime_str: str
+
+
+class SlotsResponse(BaseModel):
+    """Список доступных слотов для записи."""
+
+    slots: list[SlotItem]
+    booking_url: str
+
+
+class ProposeRescheduleRequest(BaseModel):
+    """Запрос на предложение альтернативного времени клиенту."""
+
+    appointment_id: int = Field(..., description="ID записи")
+    proposed_slots: list[str] = Field(..., description="Предложенные слоты (список строк label)")
+
+
+class ProposeRescheduleResponse(BaseModel):
+    """Ответ от endpoint предложения альтернативного времени."""
+
+    success: bool
+    message: str
+    appointment_id: int
