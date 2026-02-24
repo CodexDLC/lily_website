@@ -191,11 +191,7 @@ This project enforces **strict markdown standards** to maintain consistency.
 
 ### Validation
 
-Run linter before committing:
-
-```bash
-python scripts/lint_docs.py
-```
+Manually verify documentation against these standards before committing. Ensure breadcrumbs, index entries, and formatting rules (MD047, MD032, MD007) are followed.
 
 See: [MARKDOWN_STANDARDS.md](./MARKDOWN_STANDARDS.md) for full technical specification.
 
@@ -290,7 +286,7 @@ Before submitting documentation:
 - [ ] **Breadcrumbs:** Navigation header added to file
 - [ ] **Index:** File linked in parent folder's `README.md`
 - [ ] **Structure:** Folder structure mirrors code location
-- [ ] **Linting:** `python scripts/lint_docs.py` passes
+- [ ] **Linting:** Manual check of MD047, MD032, MD007 rules
 - [ ] **Links:** All relative links tested and working
 - [ ] **Newline:** File ends with single newline (MD047)
 - [ ] **Lists:** Blank lines before/after lists (MD032)
