@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM nginx:1.29.5-alpine
 
 # Удаляем все стандартные конфиги
 RUN rm /etc/nginx/conf.d/*
