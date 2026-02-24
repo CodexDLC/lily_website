@@ -137,6 +137,7 @@ label {
     display: none;
 }
 
+
 .contact-card {
     background-color: var(--tg-theme-bg-color, #ffffff);
     color: var(--tg-theme-text-color, #000000);
