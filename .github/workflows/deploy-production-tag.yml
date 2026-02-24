@@ -55,11 +55,11 @@ jobs:
           context: .
           file: deploy/backend/Dockerfile
           push: true
+          no-cache: true
           tags: |
             ghcr.io/${{ env.REPO_LOWER }}-backend:latest
             ghcr.io/${{ env.REPO_LOWER }}-backend:${{ env.VERSION }}
             ghcr.io/${{ env.REPO_LOWER }}-backend:${{ github.sha }}
-          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-backend:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-backend:buildcache,mode=max
 
       - name: Build and Push Bot
