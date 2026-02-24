@@ -1,7 +1,7 @@
 import contextlib
 
 from aiogram import Bot
-from aiogram.exceptions import TelegramAPIError
+from aiogram.exceptions import TelegramAPIError, TelegramBadRequest
 from loguru import logger as log
 
 from src.telegram_bot.infrastructure.redis.managers.sender.sender_manager import SenderManager
@@ -101,9 +101,18 @@ class ViewSender:
         if old_message_id:
             try:
                 await self.bot.edit_message_text(
-                    chat_id=self.chat_id, message_id=old_message_id, text=view_dto.text, reply_markup=view_dto.kb
+                    chat_id=self.chat_id,
+                    message_id=old_message_id,
+                    text=view_dto.text,
+                    reply_markup=view_dto.kb,
+                    parse_mode="HTML",
                 )
                 return old_message_id
+            except TelegramBadRequest as e:
+                if "message is not modified" in str(e).lower():
+                    # Сообщение уже актуально — не создаём новое
+                    return old_message_id
+                # Другие ошибки (удалённое сообщение, нет прав и т.д.) — создаём новое
             except TelegramAPIError:
                 pass
 
@@ -117,6 +126,7 @@ class ViewSender:
                 text=view_dto.text,
                 reply_markup=view_dto.kb,
                 message_thread_id=self.message_thread_id,
+                parse_mode="HTML",
             )
             return sent.message_id
         except TelegramAPIError as e:

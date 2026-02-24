@@ -44,10 +44,30 @@ class ClientService:
 
     @staticmethod
     def _normalize_phone(phone: str) -> str:
-        """Strips whitespace and hyphens from a phone number."""
+        """
+        Canonical format: Digits-only E.164 without plus (e.g. 4915...).
+        Logic:
+        1. Strip all non-digits.
+        2. If starts with '0', assume it's a German local number and replace '0' with '49'.
+        3. If it's already a long number (e.g. 11+ digits) not starting with '0',
+           assume it already has a country code.
+        """
         if not phone:
             return ""
-        return phone.strip().replace(" ", "").replace("-", "")
+
+        # 1. Только цифры
+        digits = "".join(filter(str.isdigit, phone))
+
+        if not digits:
+            return ""
+
+        # 2. Обработка местного немецкого формата (0...)
+        if digits.startswith("0") and len(digits) >= 10:
+            return "49" + digits[1:]
+
+        # 3. Обработка формата с плюсом или уже международным кодом
+        # Если номер начинается не на 0 и достаточно длинный, считаем что код уже есть
+        return digits
 
     @staticmethod
     def _find_client(phone: str, email: str) -> Client | None:

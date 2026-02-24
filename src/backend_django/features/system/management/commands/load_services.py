@@ -2,6 +2,7 @@ import json
 
 from django.apps import apps
 from django.conf import settings
+from django.core.cache import cache
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
@@ -23,7 +24,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # 1. Path Configuration
-        # User specified path: src\backend_django\features\system\fixtures\content\service
         fixtures_dir = settings.BASE_DIR / "features" / "system" / "fixtures" / "content" / "service"
 
         if not fixtures_dir.exists():
@@ -42,13 +42,15 @@ class Command(BaseCommand):
 
         updated_count = 0
         created_count = 0
+        skipped_count = 0
         processed_pks = set()
+        affected_category_ids = set()
 
         self.stdout.write(f"Found {len(json_files)} fixture files.")
 
         try:
             with transaction.atomic():
-                # 2. Iterate and Upsert
+                # 2. Iterate and compare
                 for json_file in json_files:
                     self.stdout.write(f"Processing {json_file.name}...")
 
@@ -79,7 +81,6 @@ class Command(BaseCommand):
                                 continue
 
                             # Fix for ForeignKey: rename 'category' to 'category_id'
-                            # because 'category' expects a model instance, but we provide an ID.
                             final_defaults = {}
                             for key, value in fields.items():
                                 if key == "category":
@@ -87,14 +88,31 @@ class Command(BaseCommand):
                                 else:
                                     final_defaults[key] = value
 
-                            obj, created = Service.objects.update_or_create(pk=pk, defaults=final_defaults)
+                            # Check if exists and compare
+                            try:
+                                existing = Service.objects.get(pk=pk)
+                                has_changes = False
+                                for field, new_value in final_defaults.items():
+                                    current_value = getattr(existing, field, None)
+                                    if str(current_value) != str(new_value):
+                                        has_changes = True
+                                        break
 
-                            if created:
+                                if has_changes:
+                                    for field, value in final_defaults.items():
+                                        setattr(existing, field, value)
+                                    existing.save()
+                                    updated_count += 1
+                                    affected_category_ids.add(existing.category_id)
+                                    self.stdout.write(self.style.SUCCESS(f"  [UPDATED] PK {pk}: {existing.title}"))
+                                else:
+                                    skipped_count += 1
+
+                            except Service.DoesNotExist:
+                                Service.objects.create(pk=pk, **final_defaults)
                                 created_count += 1
-                                self.stdout.write(self.style.SUCCESS(f"  [CREATED] PK {pk}: {obj.title}"))
-                            else:
-                                updated_count += 1
-                                # self.stdout.write(f"  [UPDATED] PK {pk}: {obj.title}") # Verbose
+                                affected_category_ids.add(final_defaults.get("category_id"))
+                                self.stdout.write(self.style.SUCCESS(f"  [CREATED] PK {pk}: {fields.get('title')}"))
 
                     except json.JSONDecodeError:
                         self.stdout.write(self.style.ERROR(f"  Error decoding JSON in {json_file.name}"))
@@ -105,6 +123,11 @@ class Command(BaseCommand):
                     to_delete = all_pks - processed_pks
 
                     if to_delete:
+                        # Collect category IDs before deleting
+                        deleted_cat_ids = set(
+                            Service.objects.filter(pk__in=to_delete).values_list("category_id", flat=True)
+                        )
+                        affected_category_ids.update(deleted_cat_ids)
                         count = Service.objects.filter(pk__in=to_delete).delete()[0]
                         self.stdout.write(
                             self.style.WARNING(f"\n[CLEAN] Deleted {count} services not present in fixtures.")
@@ -112,15 +135,30 @@ class Command(BaseCommand):
                     else:
                         self.stdout.write(self.style.SUCCESS("\n[CLEAN] No extraneous services found."))
 
-                # Raise exception if dry run to rollback transaction (just in case, though we didn't write)
-                # Actually standard practice for dry-run is just not calling save(), but here we use logic.
-                # Since we didn't call update_or_create in dry_run, no DB hits.
-
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"An error occurred: {e}"))
             return
 
         if options["dry_run"]:
             self.stdout.write(self.style.SUCCESS("\nDry run complete. No changes made."))
-        else:
-            self.stdout.write(self.style.SUCCESS(f"\nDone! Created: {created_count}, Updated: {updated_count}"))
+            return
+
+        # 4. Invalidate only affected cache keys
+        if affected_category_ids or created_count or updated_count:
+            from features.main.models import Category
+
+            affected_slugs = list(Category.objects.filter(pk__in=affected_category_ids).values_list("slug", flat=True))
+            keys_to_delete = [
+                "home_bento_cache_v5",
+                "bento_groups_cache",
+                "price_list_cache_all",
+            ]
+            for slug in affected_slugs:
+                keys_to_delete.append(f"category_detail_cache_{slug}")
+                keys_to_delete.append(f"price_list_cache_{slug}")
+            cache.delete_many(keys_to_delete)
+            self.stdout.write(self.style.SUCCESS(f"  Cache invalidated for {len(keys_to_delete)} keys."))
+
+        self.stdout.write(
+            self.style.SUCCESS(f"\nDone! Created: {created_count}, Updated: {updated_count}, Skipped: {skipped_count}")
+        )

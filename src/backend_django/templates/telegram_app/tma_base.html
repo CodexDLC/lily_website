@@ -7,13 +7,15 @@
     <title>{% block title %}App{% endblock %}</title>
     <!-- Telegram Web App Data -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- HTMX for dynamic interactions -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/tma_app.css' %}">
     {% block extra_head %}{% endblock %}
 </head>
 
 <body>
-    <div class="container">
+    <div class="tma-container">
         {% block content %}{% endblock %}
     </div>
 

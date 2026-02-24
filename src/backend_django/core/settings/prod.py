@@ -47,6 +47,17 @@ SESSION_COOKIE_DOMAIN = ".lily-salon.de"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"  # noqa: F405
 
+# Adds content hash to filenames (e.g. tma_app.abc123de.css)
+# so nginx can cache forever and browsers always get fresh files on deploy
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+    },
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+}
+
 # ═══════════════════════════════════════════
 # Logging
 # ═══════════════════════════════════════════

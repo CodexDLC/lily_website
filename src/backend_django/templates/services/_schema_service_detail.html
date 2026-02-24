@@ -22,7 +22,7 @@
       "description": "{{ service.description|striptags|truncatechars:100 }}",
       "priceSpecification": {
         "@type": "PriceSpecification",
-        "price": "{{ service.price|default:'0' }}",
+        "price": "{% load l10n %}{% localize off %}{{ service.price|default:'0' }}{% endlocalize %}",
         "priceCurrency": "EUR"
       },
       "url": "{{ request.build_absolute_uri }}"

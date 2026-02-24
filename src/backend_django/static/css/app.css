@@ -2147,6 +2147,40 @@ body.legal-page .promo-floating-button {
 }
 
 
+.bento-crosslinking {
+    padding-top: 0;
+    margin-top: -30px;
+    padding-bottom: 80px;
+}
+
+.bento-grid-mini {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-auto-rows: 180px;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.bento-card-mini {
+    aspect-ratio: 1 / 1;
+}
+
+.card-overlay-mini {
+    padding: 15px;
+    background: linear-gradient(to top, rgba(0, 40, 35, 0.9), transparent);
+}
+
+.card-overlay-mini h3 {
+    font-size: 18px;
+}
+
+
+@media (max-width: 1024px) {
+    .bento-grid-mini {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-auto-rows: 150px;
+    }
+}
+
 @media (max-width: 767px) {
     .service-seo-text {
         font-size: 16px;
@@ -2161,6 +2195,16 @@ body.legal-page .promo-floating-button {
     .mini-master {
         width: 100%;
         max-width: 300px;
+    }
+
+    .bento-grid-mini {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 140px;
+        gap: 10px;
+    }
+
+    .card-overlay-mini h3 {
+        font-size: 16px;
     }
 }
 

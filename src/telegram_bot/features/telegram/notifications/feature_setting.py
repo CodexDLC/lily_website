@@ -8,17 +8,6 @@ class NotificationsStates(StatesGroup):
 STATES = NotificationsStates
 GARBAGE_COLLECT = True
 
-MENU_CONFIG = {
-    "key": "notifications",
-    "text": "✨ Notifications",
-    "icon": "✨",
-    "description": "Управление уведомлениями",
-    "target_state": "notifications",
-    "priority": 50,
-    "is_admin": True,
-    "is_superuser": False,
-}
-
 
 def create_orchestrator(container):
     from src.telegram_bot.core.api_client import BaseApiClient

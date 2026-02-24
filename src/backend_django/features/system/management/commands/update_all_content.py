@@ -24,8 +24,4 @@ class Command(BaseCommand):
         self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Updating Masters Content..."))
         call_command("update_masters")
 
-        # Clear cache at the end to ensure all updates are visible
-        self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Clearing Cache..."))
-        call_command("clear_cache")
-
-        self.stdout.write(self.style.SUCCESS("\nAll updates completed and cache cleared."))
+        self.stdout.write(self.style.SUCCESS("\nAll updates completed. Cache invalidated selectively per change."))
