@@ -67,6 +67,19 @@
             </label>
         </div>
 
+        <!-- Cancellation Policy Checkbox -->
+        <div class="form-group checkbox-group">
+            <label class="checkbox-container">
+                <input type="checkbox" name="cancellation_policy" required>
+                <span class="checkmark"></span>
+                <span class="checkbox-text" style="color: var(--color-white);">
+                    {% trans "cancellation_policy_text_before" %}
+                    <a href="{% url 'buchungsregeln' %}" target="_blank" style="color: var(--color-gold);">{% trans "cancellation_policy_link" %}</a>
+                    {% trans "cancellation_policy_text_after" %}
+                </span>
+            </label>
+        </div>
+
         <!-- Consent Checkbox -->
         <div class="form-group checkbox-group">
             <label class="checkbox-container">

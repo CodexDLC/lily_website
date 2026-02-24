@@ -14,6 +14,10 @@ class FaqView(TemplateView):
     template_name = "legal/faq.html"
 
 
+class BuchungsregelnView(TemplateView):
+    template_name = "legal/buchungsregeln.html"
+
+
 def ratelimit_view(request, exception):
     """View called when ratelimit is exceeded."""
     return render(request, "errors/429.html", status=429)

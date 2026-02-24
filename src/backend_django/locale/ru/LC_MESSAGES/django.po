@@ -1763,6 +1763,18 @@ msgstr ""
 "моей записи."
 
 #: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:84
+msgid "cancellation_policy_text_before"
+msgstr "Я ознакомился(ась) с"
+
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:84
+msgid "cancellation_policy_link"
+msgstr "правилами отмены"
+
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:84
+msgid "cancellation_policy_text_after"
+msgstr "и подтверждаю, что отмена записи менее чем за 24 часа невозможна."
+
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:84
 msgid "Termin verbindlich buchen"
 msgstr "Подтвердить запись"
 

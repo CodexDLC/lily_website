@@ -400,4 +400,71 @@ DATA = {
         "uk": "Дізнатися більше про послуги",
         "en": "Explore more services",
     },
+    # --- BUCHUNGSREGELN PAGE ---
+    "buchungsregeln_title": {
+        "de": "Buchungsregeln & Stornierungsbedingungen",
+        "ru": "Правила бронирования и отмены записи",
+        "uk": "Правила бронювання та скасування запису",
+        "en": "Booking Rules & Cancellation Policy",
+    },
+    "buchungsregeln_s1_title": {
+        "de": "1. Terminbestätigung",
+        "ru": "1. Подтверждение записи",
+        "uk": "1. Підтвердження запису",
+        "en": "1. Appointment Confirmation",
+    },
+    "buchungsregeln_s1_p1": {
+        "de": "Nach Ihrer Online-Buchung erhalten Sie eine Bestätigung Ihres Termins innerhalb von 24 Stunden. Die Bestätigung erfolgt per E-Mail oder SMS an die von Ihnen angegebenen Kontaktdaten.",
+        "ru": "После онлайн-записи вы получите подтверждение в течение 24 часов. Подтверждение будет отправлено на указанный вами адрес электронной почты или номер телефона (SMS).",
+        "uk": "Після онлайн-запису ви отримаєте підтвердження протягом 24 годин. Підтвердження буде надіслано на вказану вами електронну пошту або номер телефону (SMS).",
+        "en": "After your online booking, you will receive a confirmation of your appointment within 24 hours. The confirmation will be sent by email or SMS to the contact details you provided.",
+    },
+    "buchungsregeln_s1_p2": {
+        "de": "Sollten Sie innerhalb von 24 Stunden keine Bestätigung erhalten haben, bitten wir Sie, uns telefonisch oder per E-Mail zu kontaktieren.",
+        "ru": "Если в течение 24 часов подтверждение не пришло, просим связаться с нами по телефону или по e-mail.",
+        "uk": "Якщо протягом 24 годин підтвердження не надійшло, просимо зв'язатися з нами по телефону або e-mail.",
+        "en": "If you have not received a confirmation within 24 hours, please contact us by phone or email.",
+    },
+    "buchungsregeln_s2_title": {
+        "de": "2. Stornierungsbedingungen",
+        "ru": "2. Условия отмены",
+        "uk": "2. Умови скасування",
+        "en": "2. Cancellation Policy",
+    },
+    "buchungsregeln_s2_p1": {
+        "de": "Eine kostenfreie Absage oder Verschiebung Ihres Termins ist bis zu 24 Stunden vor dem vereinbarten Termin möglich.",
+        "ru": "Бесплатная отмена или перенос записи возможны не позднее чем за 24 часа до назначенного времени.",
+        "uk": "Безкоштовне скасування або перенесення запису можливе не пізніше ніж за 24 години до призначеного часу.",
+        "en": "Free cancellation or rescheduling of your appointment is possible up to 24 hours before the scheduled time.",
+    },
+    "buchungsregeln_s2_p2": {
+        "de": "Bei einer Absage weniger als 24 Stunden vor dem Termin oder bei Nichterscheinen gilt der Termin als wahrgenommen. In diesem Fall behalten wir uns vor, eine Ausfallgebühr zu erheben.",
+        "ru": "При отмене менее чем за 24 часа до записи или в случае неявки визит считается состоявшимся. В этом случае мы оставляем за собой право взимать компенсацию за пропущенный сеанс.",
+        "uk": "При скасуванні менш ніж за 24 години до запису або у випадку неявки візит вважається таким, що відбувся. У цьому випадку ми залишаємо за собою право стягувати компенсацію за пропущений сеанс.",
+        "en": "In the event of a cancellation less than 24 hours before the appointment or a no-show, the appointment is considered to have taken place. In this case, we reserve the right to charge a cancellation fee.",
+    },
+    "buchungsregeln_s3_title": {
+        "de": "3. Umbuchung",
+        "ru": "3. Перенос записи",
+        "uk": "3. Перенесення запису",
+        "en": "3. Rescheduling",
+    },
+    "buchungsregeln_s3_p1": {
+        "de": "Terminverschiebungen sind ebenfalls bis zu 24 Stunden vor dem Termin möglich. Bitte kontaktieren Sie uns rechtzeitig, damit wir Ihnen einen alternativen Termin anbieten können.",
+        "ru": "Перенос записи также возможен не позднее чем за 24 часа до визита. Пожалуйста, свяжитесь с нами заблаговременно.",
+        "uk": "Перенесення запису також можливе не пізніше ніж за 24 години до візиту. Будь ласка, зв'яжіться з нами заздалегідь.",
+        "en": "Rescheduling is also possible up to 24 hours before the appointment. Please contact us in advance so we can offer you an alternative time.",
+    },
+    "buchungsregeln_s4_title": {
+        "de": "4. Kontakt",
+        "ru": "4. Контакты",
+        "uk": "4. Контакти",
+        "en": "4. Contact",
+    },
+    "buchungsregeln_s4_p1": {
+        "de": "Bei Fragen zu Ihrer Buchung erreichen Sie uns:",
+        "ru": "По всем вопросам обращайтесь:",
+        "uk": "З усіх питань звертайтесь:",
+        "en": "If you have any questions about your booking, you can reach us:",
+    },
 }

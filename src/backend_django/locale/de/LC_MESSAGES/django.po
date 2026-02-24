@@ -1735,7 +1735,7 @@ msgstr "Bitte wählen Sie ein Datum."
 
 #: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:5
 msgid "Ihre Daten"
-msgstr "Ваши данные"
+msgstr "Ihre Daten"
 
 #: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:36
 msgid "Telefonnummer"
@@ -1748,7 +1748,6 @@ msgstr "Anmerkungen (Optional)"
 #: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:53
 msgid "Bitte teilen Sie uns Ihre Wünsche, Besonderheiten oder Allergien mit..."
 msgstr "Bitte teilen Sie uns Ihre Wünsche, Besonderheiten oder Allergien mit..."
-"Пожалуйста, сообщите нам о ваших пожеланиях, особенностях или аллергиях..."
 
 #: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:65
 msgid "Bitte rufen Sie mich zur Bestätigung an"
@@ -1759,8 +1758,20 @@ msgid ""
 "Ich stimme zu, dass meine Daten gespeichert werden und ich "
 "Benachrichtigungen (SMS/E-Mail) zu meinem Termin erhalte."
 msgstr ""
-"Я согласен(на) на хранение моих данных и получение уведомлений (SMS/Email) о "
-"моей записи."
+"Ich stimme zu, dass meine Daten gespeichert werden und ich "
+"Benachrichtigungen (SMS/E-Mail) zu meinem Termin erhalte."
+
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:84
+msgid "cancellation_policy_text_before"
+msgstr "Ich habe die"
+
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:84
+msgid "cancellation_policy_link"
+msgstr "Stornierungsbedingungen"
+
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:84
+msgid "cancellation_policy_text_after"
+msgstr "gelesen und akzeptiere, dass eine Absage weniger als 24 Stunden vor dem Termin nicht möglich ist."
 
 #: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:84
 msgid "Termin verbindlich buchen"

@@ -17,4 +17,5 @@ urlpatterns = [
     path("impressum/", legal.ImpressumView.as_view(), name="impressum"),
     path("datenschutz/", legal.DatenschutzView.as_view(), name="datenschutz"),
     path("faq/", legal.FaqView.as_view(), name="faq"),
+    path("buchungsregeln/", legal.BuchungsregelnView.as_view(), name="buchungsregeln"),
 ]

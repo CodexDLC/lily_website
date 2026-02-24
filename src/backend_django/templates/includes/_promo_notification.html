@@ -43,7 +43,7 @@
 
     const promoId = widget.dataset.promoId;
     const delay = parseInt(widget.dataset.delay) * 1000;
-    const SESSION_KEY = 'lily_promo_opened_session_' + promoId;
+    const SESSION_KEY = 'lily_promo_auto_shown';
 
     const btn = document.getElementById('promoFloatingButton');
     const modal = document.getElementById('promoModal');
@@ -151,8 +151,7 @@
     });
 
     btn.addEventListener('click', (e) => {
-        // Only open if we weren't dragging (check time and flag)
-        if (!isDragging && (Date.now() - dragStartTime < 300)) {
+        if (!isDragging) {
             openModal();
         }
     });
