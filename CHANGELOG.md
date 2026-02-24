@@ -2,6 +2,19 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.3.0] - 2026-02-24
+### Added
+- **Admin Tools:** Implemented comprehensive case management and manual booking tool in TMA with client history support and past date entry.
+- **Client Service:** Introduced robust E.164 phone normalization logic to prevent duplicate client records.
+- **TMA Appointments:** Added management view for confirming, cancelling, and updating existing appointments directly from Telegram.
+- **Bot:** Added "propose alternative time" flow on appointment rejection.
+- **UI:** Implemented Bento cross-linking on service detail pages and optimized PWA static file serving (`manifest.json`, `sw.js`).
+
+### Fixed
+- **Code Quality:** Resolved multiple Ruff linter errors (E701, N806, SIM105, W291) and optimized cache invalidation for static content.
+- **Security:** Corrected import paths for `tma_secure_required` decorator.
+
+
 ## [1.2.2] - 2026-02-22
 ### Fixed
 - **Migrations:** Resolved `InconsistentMigrationHistory` in `main` app by restoring the correct dependency chain (`0001` -> `0002` -> `0003` -> `0004`).
