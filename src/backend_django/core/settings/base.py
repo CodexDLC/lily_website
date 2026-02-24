@@ -362,7 +362,6 @@ STATICFILES_IGNORE_PATTERNS = [
     "css/adaptive/*",
     "css/components/*",
     "css/pages/*",
-    "css/admin/*",
     "css/tma_app/*",
     "css/base.css",
     "css/tma_base.css",
