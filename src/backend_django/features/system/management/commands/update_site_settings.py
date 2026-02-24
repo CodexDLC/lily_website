@@ -56,6 +56,14 @@ class Command(BaseCommand):
         # Save if there are changes
         if updated_fields:
             site_settings.save()
+            # Update Redis cache with new values
+            try:
+                from features.system.redis_managers.site_settings_manager import SiteSettingsManager
+
+                SiteSettingsManager.save_to_redis(site_settings)
+                self.stdout.write(self.style.SUCCESS("  Redis cache updated."))
+            except Exception as e:
+                self.stdout.write(self.style.WARNING(f"  Could not update Redis cache: {e}"))
             self.stdout.write(self.style.SUCCESS(f"\n✓ Site Settings updated ({len(updated_fields)} fields changed)"))
         else:
             self.stdout.write(self.style.SUCCESS("\n✓ No changes needed (all fields up to date)"))

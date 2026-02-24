@@ -21,7 +21,9 @@ class SlotService:
             self._cached_settings = SiteSettings.load()
         return self._cached_settings
 
-    def get_available_slots(self, masters: Master | list[Master], date_obj: date, duration_minutes: int) -> list[str]:
+    def get_available_slots(
+        self, masters: Master | list[Master], date_obj: date, duration_minutes: int, allow_past: bool = False
+    ) -> list[str]:
         if isinstance(masters, Master):
             masters = [masters]
 
@@ -30,12 +32,14 @@ class SlotService:
 
         all_slots = set()
         for master in masters:
-            master_slots = self._get_slots_for_single_master(master, date_obj, duration_minutes)
+            master_slots = self._get_slots_for_single_master(master, date_obj, duration_minutes, allow_past=allow_past)
             all_slots.update(master_slots)
 
         return sorted(list(all_slots))
 
-    def _get_slots_for_single_master(self, master: Master, date_obj: date, duration_minutes: int) -> list[str]:
+    def _get_slots_for_single_master(
+        self, master: Master, date_obj: date, duration_minutes: int, allow_past: bool = False
+    ) -> list[str]:
         """Calculates slots using 'tight packing' logic."""
 
         # 0. Check for Day Off exception
@@ -94,23 +98,18 @@ class SlotService:
             if (w_end - w_start) < service_delta:
                 continue
 
-            # Tight packing: offer slots starting from the beginning of the window
-            # and also from the end of the window (backwards) to ensure no gaps.
-
             # Forward packing (from start of gap)
             temp_start = w_start
             while temp_start + service_delta <= w_end:
-                if temp_start >= min_allowed_start:
+                if allow_past or temp_start >= min_allowed_start:
                     available_slots.append(temp_start.strftime("%H:%M"))
-                temp_start += service_delta  # Jump by duration to keep packing tight
+                temp_start += service_delta
 
             # Backward packing (from end of gap)
-            # This ensures we offer the "final" possible slot in this window
             final_slot_start = w_end - service_delta
-            if final_slot_start >= min_allowed_start and final_slot_start > w_start:
+            if (allow_past or final_slot_start >= min_allowed_start) and final_slot_start > w_start:
                 available_slots.append(final_slot_start.strftime("%H:%M"))
 
-        # Remove duplicates and sort
         return sorted(list(set(available_slots)))
 
     def _get_working_hours(self, date_obj: date) -> tuple[time, time] | None:

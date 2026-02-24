@@ -7,7 +7,8 @@
 {% block content %}
 {% include "services/_schema_service_detail.html" %}
 <!-- HERO SERVICE -->
-<section class="hero-text-block hero-service-bg" style="background-image: url('{% if category.image %}{{ category.image.url }}{% else %}https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=1200{% endif %}');">
+<section class="hero-text-block hero-service-bg"
+    style="background-image: url('{% if category.image %}{{ category.image.url }}{% else %}https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=1200{% endif %}');">
     <div class="hero-service-overlay"></div>
     <div class="container hero-service-content">
         <h1 class="hero-title">{{ category.title }}</h1>
@@ -45,17 +46,17 @@
                     <div class="service-meta">
                         <span class="meta-price">
                             {% if service.price_info %}
-                                {{ service.price_info }}
+                            {{ service.price_info }}
                             {% else %}
-                                ab {{ service.price }} €
+                            ab {{ service.price }} €
                             {% endif %}
                         </span>
                         <span class="meta-time">
                             ⏱
                             {% if service.duration_info %}
-                                {{ service.duration_info }}
+                            {{ service.duration_info }}
                             {% else %}
-                                {{ service.duration }} min
+                            {{ service.duration }} min
                             {% endif %}
                         </span>
                     </div>
@@ -75,7 +76,9 @@
             <div class="masters-list masters-list-centered">
                 {% for master in category.masters.all %}
                 <div class="mini-master">
-                    <div class="mini-master-avatar" style="background-image: url('{% if master.photo %}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}');"></div>
+                    <div class="mini-master-avatar"
+                        style="background-image: url('{% if master.photo %}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}');">
+                    </div>
                     <div>
                         <strong class="mini-master-name">{{ master.name }}</strong>
                         <span class="mini-master-role">{{ master.title }}</span>
@@ -92,4 +95,6 @@
 
     </div>
 </section>
+
+{% include "services/includes/_bento_crosslinking.html" %}
 {% endblock %}

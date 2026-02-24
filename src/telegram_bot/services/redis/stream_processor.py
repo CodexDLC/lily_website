@@ -43,8 +43,18 @@ class RedisStreamProcessor:
             log.warning("RedisStreamProcessor is already running.")
             return
 
-        # Создаем группу потребителей (если нет)
-        await self.stream_manager.create_group(self.stream_name, self.group_name)
+        # Создаем группу потребителей — retry до 5 раз с паузой
+        for attempt in range(1, 6):
+            try:
+                await self.stream_manager.create_group(self.stream_name, self.group_name)
+                break  # успешно — выходим из цикла
+            except Exception as e:
+                log.warning(f"RedisStreamProcessor | create_group attempt {attempt}/5 failed: {e}")
+                if attempt < 5:
+                    await asyncio.sleep(3)
+                else:
+                    log.error("RedisStreamProcessor | Failed to create group after 5 attempts, giving up.")
+                    return
 
         self.is_running = True
         asyncio.create_task(self._consume_loop())
@@ -79,6 +89,14 @@ class RedisStreamProcessor:
 
             except Exception as e:
                 log.error(f"Error in RedisStreamProcessor loop: {e}")
+                # Если группа исчезла (Redis restart / flush) — пересоздаём
+                if "NOGROUP" in str(e):
+                    log.warning("RedisStreamProcessor | Consumer group missing, recreating...")
+                    try:
+                        await self.stream_manager.create_group(self.stream_name, self.group_name)
+                        log.info("RedisStreamProcessor | Consumer group recreated successfully")
+                    except Exception as create_err:
+                        log.error(f"RedisStreamProcessor | Failed to recreate group: {create_err}")
                 await asyncio.sleep(5)  # Пауза при ошибке
 
     async def _process_single_message(self, message_id: str, data: dict[str, Any]):

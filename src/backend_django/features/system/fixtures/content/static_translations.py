@@ -394,4 +394,10 @@ DATA = {
         "uk": "Послуга",
         "en": "Service",
     },
+    "label_explore_more": {
+        "de": "Weitere Leistungen entdecken",
+        "ru": "Узнать больше об услугах",
+        "uk": "Дізнатися більше про послуги",
+        "en": "Explore more services",
+    },
 }

@@ -9,6 +9,10 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from features.booking.models.appointment import Appointment
 from features.booking.schemas.appointment_schemas import (
+    AppointmentListItem,
+    AppointmentListResponse,
+    CategorySummaryItem,
+    CategorySummaryResponse,
     ManageAppointmentRequest,
     ManageAppointmentResponse,
     ProposeRescheduleRequest,
@@ -190,3 +194,57 @@ def propose_reschedule(request, payload: ProposeRescheduleRequest):
         message="Запись отменена, письмо с предложением отправлено",
         appointment_id=appointment.id,
     )
+
+
+@router.get("/appointments/summary/", response=CategorySummaryResponse)
+def get_appointments_summary(request):
+    """
+    Сводка по категориям услуг: сколько всего/ожидает/завершено.
+
+    Используется Telegram Bot для отображения dashboard записей по категориям.
+    """
+    from features.main.models.category import Category
+
+    categories = Category.objects.filter(is_active=True).order_by("order", "title")
+    result = []
+    for cat in categories:
+        qs = Appointment.objects.filter(service__category=cat)
+        total = qs.count()
+        if total == 0:
+            continue
+        result.append(
+            CategorySummaryItem(
+                category_slug=cat.slug,
+                category_title=cat.title,
+                total=total,
+                pending=qs.filter(status=Appointment.STATUS_PENDING).count(),
+                completed=qs.filter(status=Appointment.STATUS_CONFIRMED).count(),
+            )
+        )
+    return CategorySummaryResponse(categories=result)
+
+
+@router.get("/appointments/list/", response=AppointmentListResponse)
+def get_appointments_list(request, category_slug: str, page: int = 1):
+    """
+    Список записей по категории с пагинацией (10 на страницу).
+
+    Используется Telegram Bot для отображения записей в выбранной категории.
+    """
+    page_size = 10
+    qs = Appointment.objects.filter(service__category__slug=category_slug).order_by("-datetime_start")
+    total = qs.count()
+    pages = max(1, (total + page_size - 1) // page_size)
+    page = max(1, min(page, pages))
+    items_qs = qs[(page - 1) * page_size : page * page_size]
+
+    items = [
+        AppointmentListItem(
+            id=a.id,
+            client_name=a.client.display_name() if a.client else "—",
+            status=a.status,
+            datetime=timezone.localtime(a.datetime_start).strftime("%d.%m.%Y %H:%M"),
+        )
+        for a in items_qs
+    ]
+    return AppointmentListResponse(items=items, total=total, page=page, pages=pages)

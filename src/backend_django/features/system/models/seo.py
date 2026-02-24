@@ -44,4 +44,4 @@ class StaticPageSeo(TimestampMixin, SeoMixin):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         # Targeted cache invalidation
-        cache.delete_many(["seo_static_pages_cache", f"seo_page_{self.page_key}"])
+        cache.delete_many(["seo_static_pages_cache", f"seo_cache_{self.page_key}"])

@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load static %}
+
+<section class="section bento-crosslinking">
+    <div class="container">
+        <div class="category-header">
+            <h2 class="category-title">{{ content.label_explore_more|default:"Explore More Services" }}</h2>
+        </div>
+
+        <div class="bento-grid bento-grid-mini">
+            {% for item in other_categories %}
+            <a href="{% url 'service_detail' slug=item.slug %}" class="bento-card bento-card-mini"
+                style="background-image: url('{% if item.image %}{{ item.image.url }}{% else %}https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=600{% endif %}');">
+                <div class="card-overlay card-overlay-mini">
+                    <h3>{{ item.title }}</h3>
+                    {% include "home/includes/_bento_badge.html" with item=item %}
+                </div>
+            </a>
+            {% empty %}
+            <p class="text-center" style="color: var(--color-gold);">{% trans "No other services available." %}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>

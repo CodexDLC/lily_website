@@ -17,6 +17,7 @@ from django.contrib import admin
 # Импортируем sitemap и наши классы sitemap
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
+from django.views.static import serve
 
 # Non-i18n patterns (technical URLs, API, etc.)
 urlpatterns = [
@@ -25,8 +26,9 @@ urlpatterns = [
     path("tma/", include("features.telegram_app.urls", namespace="telegram_app")),
     path("", include("django_prometheus.urls")),  # Prometheus metrics
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sitemaps.views.sitemap"),
-    # PWA files (handled by Nginx in production, but kept here for local dev if needed)
-    # Note: In production, Nginx will intercept these before they reach Django
+    # PWA files
+    path("manifest.json", serve, {"path": "manifest.json", "document_root": settings.STATICFILES_DIRS[0]}),
+    path("sw.js", serve, {"path": "sw.js", "document_root": settings.STATICFILES_DIRS[0]}),
 ]
 
 # i18n patterns (URLs with language prefix)

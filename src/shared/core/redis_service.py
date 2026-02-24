@@ -336,6 +336,7 @@ class RedisService:
                 log.exception(
                     f"RedisStream | action=create_group status=failed reason='Redis error' stream='{stream_name}' group='{group_name}'"
                 )
+                raise  # пробрасываем ошибку наверх — start_listening должен знать о провале
 
     async def stream_read_group(
         self, stream_name: str, group_name: str, consumer_name: str, count: int = 10

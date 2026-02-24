@@ -57,3 +57,37 @@ class ProposeRescheduleResponse(BaseModel):
     success: bool
     message: str
     appointment_id: int
+
+
+class CategorySummaryItem(BaseModel):
+    """Сводка по одной категории услуг."""
+
+    category_slug: str
+    category_title: str
+    total: int
+    pending: int
+    completed: int
+
+
+class CategorySummaryResponse(BaseModel):
+    """Список категорий со сводкой по записям."""
+
+    categories: list[CategorySummaryItem]
+
+
+class AppointmentListItem(BaseModel):
+    """Краткая информация об одной записи для списка."""
+
+    id: int
+    client_name: str
+    status: str
+    datetime: str
+
+
+class AppointmentListResponse(BaseModel):
+    """Страница списка записей по категории."""
+
+    items: list[AppointmentListItem]
+    total: int
+    page: int
+    pages: int

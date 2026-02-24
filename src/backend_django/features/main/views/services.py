@@ -52,4 +52,8 @@ class ServiceDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # Fetch other active categories for bento cross-linking, excluding the current one
+        current_category = self.get_object()
+        all_categories = CategorySelector.get_for_home_bento()
+        context["other_categories"] = [cat for cat in all_categories if cat.slug != current_category.slug]
         return context
