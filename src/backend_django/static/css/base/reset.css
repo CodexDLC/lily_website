@@ -7,7 +7,7 @@
     font-family: 'Lato';
     font-style: normal;
     font-weight: 400;
-    src: url('../../fonts/lato-v25-latin-regular.woff2') format('woff2');
+    src: url('../fonts/lato-v25-latin-regular.woff2') format('woff2');
     font-display: swap;
 }
 
@@ -15,7 +15,7 @@
     font-family: 'Playfair Display';
     font-style: normal;
     font-weight: 400;
-    src: url('../../fonts/playfair-display-v40-latin-regular.woff2') format('woff2');
+    src: url('../fonts/playfair-display-v40-latin-regular.woff2') format('woff2');
     font-display: swap;
 }
 
