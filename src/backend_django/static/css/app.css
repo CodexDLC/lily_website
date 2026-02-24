@@ -18,7 +18,8 @@
     font-family: 'Lato';
     font-style: normal;
     font-weight: 400;
-    src: url('../../fonts/Lato-Regular.ttf') format('truetype');
+    src: url('../fonts/lato-v25-latin-regular.woff2') format('woff2'),
+         url('../fonts/Lato-Regular.ttf') format('truetype');
     font-display: swap;
 }
 
@@ -27,7 +28,7 @@
     font-family: 'Lato';
     font-style: italic;
     font-weight: 400;
-    src: url('../../fonts/Lato-Italic.ttf') format('truetype');
+    src: url('../fonts/Lato-Italic.ttf') format('truetype');
     font-display: swap;
 }
 
@@ -36,7 +37,7 @@
     font-family: 'Lato';
     font-style: normal;
     font-weight: 700;
-    src: url('../../fonts/Lato-Bold.ttf') format('truetype');
+    src: url('../fonts/Lato-Bold.ttf') format('truetype');
     font-display: swap;
 }
 
@@ -45,7 +46,7 @@
     font-family: 'Lato';
     font-style: italic;
     font-weight: 700;
-    src: url('../../fonts/Lato-BoldItalic.ttf') format('truetype');
+    src: url('../fonts/Lato-BoldItalic.ttf') format('truetype');
     font-display: swap;
 }
 
@@ -54,7 +55,7 @@
     font-family: 'Lato';
     font-style: normal;
     font-weight: 300;
-    src: url('../../fonts/Lato-Light.ttf') format('truetype');
+    src: url('../fonts/Lato-Light.ttf') format('truetype');
     font-display: swap;
 }
 
@@ -65,7 +66,8 @@
     font-family: 'Playfair Display';
     font-style: normal;
     font-weight: 400;
-    src: url('../../fonts/PlayfairDisplay-Regular.ttf') format('truetype');
+    src: url('../fonts/playfair-display-v40-latin-regular.woff2') format('woff2'),
+         url('../fonts/PlayfairDisplay-Regular.ttf') format('truetype');
     font-display: swap;
 }
 
@@ -74,7 +76,7 @@
     font-family: 'Playfair Display';
     font-style: italic;
     font-weight: 400;
-    src: url('../../fonts/PlayfairDisplay-Italic.ttf') format('truetype');
+    src: url('../fonts/PlayfairDisplay-Italic.ttf') format('truetype');
     font-display: swap;
 }
 
@@ -83,7 +85,7 @@
     font-family: 'Playfair Display';
     font-style: normal;
     font-weight: 700;
-    src: url('../../fonts/PlayfairDisplay-Bold.ttf') format('truetype');
+    src: url('../fonts/PlayfairDisplay-Bold.ttf') format('truetype');
     font-display: swap;
 }
 
@@ -92,7 +94,7 @@
     font-family: 'Playfair Display';
     font-style: italic;
     font-weight: 700;
-    src: url('../../fonts/PlayfairDisplay-BoldItalic.ttf') format('truetype');
+    src: url('../fonts/PlayfairDisplay-BoldItalic.ttf') format('truetype');
     font-display: swap;
 }
 
@@ -102,7 +104,7 @@
     font-family: 'Great Vibes';
     font-style: normal;
     font-weight: 400;
-    src: url('../../fonts/GreatVibes-Regular.ttf') format('truetype');
+    src: url('../fonts/GreatVibes-Regular.ttf') format('truetype');
     font-display: swap;
 }
 
@@ -132,23 +134,6 @@
 
 
 
-
-
-@font-face {
-    font-family: 'Lato';
-    font-style: normal;
-    font-weight: 400;
-    src: url('../../fonts/lato-v25-latin-regular.woff2') format('woff2');
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Playfair Display';
-    font-style: normal;
-    font-weight: 400;
-    src: url('../../fonts/playfair-display-v40-latin-regular.woff2') format('woff2');
-    font-display: swap;
-}
 
 
 * {
