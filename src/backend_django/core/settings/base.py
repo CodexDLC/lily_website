@@ -357,6 +357,16 @@ LOCALE_PATHS = [
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_IGNORE_PATTERNS = [
+    "css/base/*",
+    "css/adaptive/*",
+    "css/components/*",
+    "css/pages/*",
+    "css/admin/*",
+    "css/tma_app/*",
+    "css/base.css",
+    "css/tma_base.css",
+]
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
