@@ -2,6 +2,22 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.4.0] - 2026-02-26
+### Added
+- **Cabinet:** Full refactoring of appointment management using **HTMX**. Confirmations, cancellations, and edits now occur without page reloads.
+- **Cabinet:** Extracted appointment card to a reusable partial template `_appointment_card.html`.
+- **Cabinet:** Implemented management dashboard, clients, and masters management sections.
+- **UI:** Added booking rules page (`booking rules`).
+
+### Changed / Refactored
+- **Data Seeding:** Migrated initial data loading from migrations to specialized management commands (`load_main_data`) for deployment stability.
+- **Security:** Enhanced `AdminRequiredMixin` with explicit authentication and role-based redirection logic.
+- **Architecture:** Renamed `profile.py` to `user_profile.py` to avoid shadowing Python's standard library.
+- **Cleanup:** Removed obsolete and redundant JSON fixtures.
+
+### Fixed
+- **i18n:** Corrected German notification texts (removed remaining Cyrillic fragments).
+
 ## [1.3.0] - 2026-02-24
 ### Added
 - **Admin Tools:** Implemented comprehensive case management and manual booking tool in TMA with client history support and past date entry.
