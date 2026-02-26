@@ -41,7 +41,7 @@ Accessed via `{% raw %}{% trans "key" %}{% endraw %}`. **Never** insert raw text
 
 ### 1.2. Database Content (StaticTranslation)
 For frequently changing texts (Hero sections, service descriptions), the `StaticTranslation` model is used.
-- **Template Access**: `{{ content.home_hero_title }}`.
+- **Template Access**: `{% raw %}{{ content.home_hero_title }}{% endraw %}`.
 - **Language Support**: Fields `text_de`, `text_en`, `text_ru`, `text_uk` (via `modeltranslation`).
 
 ---
