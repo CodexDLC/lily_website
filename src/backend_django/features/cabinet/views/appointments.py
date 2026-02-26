@@ -68,10 +68,8 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
             from datetime import timedelta
 
             from features.booking.services.slots import SlotService
-            from features.system.models.site_settings import SiteSettings
 
             slot_service = SlotService()
-            site_settings = SiteSettings.load()
             start_date = timezone.localtime(appointment.datetime_start).date()
             weekday_names = {0: "Mo", 1: "Di", 2: "Mi", 3: "Do", 4: "Fr", 5: "Sa", 6: "So"}
 
@@ -95,29 +93,27 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
 
             return JsonResponse({"status": "ok", "slots": collected})
 
+        # ... (previous code for actions: approve, cancel, propose) ...
+        # (Note: For all actions that modify status, we now return the template)
+
         # 2. APPROVE
         if action == "approve":
             appointment.status = Appointment.STATUS_CONFIRMED
             appointment.save(update_fields=["status", "updated_at"])
-
             NotificationCacheManager.seed_appointment(appointment.id)
             DjangoArqClient.enqueue_job(
                 "send_appointment_notification", appointment_id=appointment.id, status="confirmed"
             )
 
-            return JsonResponse({"status": "ok"})
-
         # 3. REJECT (Cancel)
-        if action == "cancel":
+        elif action == "cancel":
             reason_code = request.POST.get("reason_code")
             reason_text = request.POST.get("reason_text", "")
-
             appointment.status = Appointment.STATUS_CANCELLED
             appointment.cancelled_at = timezone.now()
             appointment.cancel_reason = reason_code or Appointment.CANCEL_REASON_OTHER
             appointment.cancel_note = reason_text
             appointment.save(update_fields=["status", "cancelled_at", "cancel_reason", "cancel_note", "updated_at"])
-
             NotificationCacheManager.seed_appointment(appointment.id)
             DjangoArqClient.enqueue_job(
                 "send_appointment_notification",
@@ -126,57 +122,56 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
                 reason_text=reason_text,
             )
 
-            return JsonResponse({"status": "ok"})
-
         # 4. PROPOSE (Reschedule)
-        if action == "propose":
+        elif action == "propose":
             slot_label = request.POST.get("slot_label")
-
             appointment.status = Appointment.STATUS_CANCELLED
             appointment.cancelled_at = timezone.now()
             appointment.cancel_reason = Appointment.CANCEL_REASON_RESCHEDULE
             appointment.cancel_note = f"Предложено время: {slot_label}"
             appointment.save(update_fields=["status", "cancelled_at", "cancel_reason", "cancel_note", "updated_at"])
-
-            from features.system.models.site_settings import SiteSettings
-
             NotificationCacheManager.seed_appointment(appointment.id)
+            # Enqueue email... (omitted detailed logic here for brevity in Replace, but I'll make sure it's in final)
+            self._send_reschedule_email(appointment, slot_label)
 
-            # Get cache data for email
-            import json
+        # 5. EDIT/SAVE
+        else:
+            new_status = request.POST.get("status")
+            if new_status:
+                appointment.status = new_status
+                appointment.admin_notes = request.POST.get("admin_notes", "")
+                appointment.save()
 
-            redis_client = NotificationCacheManager.get_redis_client()
-            raw = redis_client.get(f"{NotificationCacheManager.APPOINTMENT_CACHE_PREFIX}{appointment.id}")
-            cache_data = json.loads(raw) if raw else {}
-            client_email = cache_data.get("client_email")
+        # RETURN HTMX PARTIAL OR JSON
+        if request.headers.get("HX-Request"):
+            from django.shortcuts import render
 
-            if client_email and client_email != "не указан":
-                site_settings = SiteSettings.load()
-                booking_url = (
-                    f"{site_settings.site_base_url.rstrip('/')}{site_settings.url_path_booking or '/booking/'}"
-                )
+            ctx = self.get_context_data()
+            ctx["appt"] = appointment
+            return render(request, "cabinet/appointments/includes/_appointment_card.html", ctx)
 
-                email_data = {
-                    **cache_data,
-                    "proposed_slots": [slot_label],
-                    "link_reschedule": booking_url,
-                }
-                DjangoArqClient.enqueue_job(
-                    "send_email_task",
-                    recipient_email=client_email,
-                    subject="Terminvorschlag - Lily Beauty Salon",
-                    template_name="reschedule_offer.html",
-                    data=email_data,
-                )
+        return JsonResponse({"status": "ok"})
 
-            return JsonResponse({"status": "ok"})
+    def _send_reschedule_email(self, appointment, slot_label):
+        import json
 
-        # Fallback for old simple status update (if any)
-        new_status = request.POST.get("status")
-        if new_status:
-            appointment.status = new_status
-            appointment.admin_notes = request.POST.get("admin_notes", "")
-            appointment.save()
-            return JsonResponse({"status": "ok"})
+        from core.arq.client import DjangoArqClient
+        from features.system.models.site_settings import SiteSettings
+        from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
 
-        return JsonResponse({"status": "error", "message": "Invalid action"}, status=400)
+        redis_client = NotificationCacheManager.get_redis_client()
+        raw = redis_client.get(f"{NotificationCacheManager.APPOINTMENT_CACHE_PREFIX}{appointment.id}")
+        cache_data = json.loads(raw) if raw else {}
+        client_email = cache_data.get("client_email")
+
+        if client_email and client_email != "не указан":
+            site_settings = SiteSettings.load()
+            booking_url = f"{site_settings.site_base_url.rstrip('/')}{site_settings.url_path_booking or '/booking/'}"
+            email_data = {**cache_data, "proposed_slots": [slot_label], "link_reschedule": booking_url}
+            DjangoArqClient.enqueue_job(
+                "send_email_task",
+                recipient_email=client_email,
+                subject="Terminvorschlag - Lily Beauty Salon",
+                template_name="reschedule_offer.html",
+                data=email_data,
+            )
