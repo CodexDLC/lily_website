@@ -60,6 +60,7 @@ pytest-asyncio = "*"
 pytest-django = "*"
 pre-commit = "*"
 qrcode = ">=7.0,<8.0"
+djlint = "^1.36.4"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -103,3 +104,14 @@ markers = [
     "unit: Unit tests",
     "integration: Integration tests",
 ]
+
+# === djLint ===
+[tool.djlint]
+profile = "django"
+ignore = "H006,H030,H031"
+indent = 2
+use_fast_extend = true
+preserve_leading_space = true
+preserve_blank_lines = true
+line_break_after_multiline_tag = true
+custom_html = "true"

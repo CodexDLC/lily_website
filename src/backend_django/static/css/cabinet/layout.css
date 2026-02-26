@@ -1,0 +1,96 @@
+/* ===================================================
+   Cabinet — Layout (mobile-first)
+   Sidebar drawer on mobile, sticky panel on desktop
+   =================================================== */
+
+.cabinet-body {
+    margin: 0;
+    background: var(--color-emerald);
+    color: var(--color-text-main);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+}
+
+.cabinet-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* === Sidebar — mobile: hidden drawer === */
+.cabinet-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    z-index: 200;
+    background: rgba(0, 40, 35, 0.98);
+    border-right: 1px solid rgba(237, 208, 113, 0.12);
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+}
+
+.cabinet-sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Overlay backdrop */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 199;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* === Main area === */
+.cabinet-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 100vh;
+}
+
+.cabinet-content {
+    flex: 1;
+    padding: 20px 16px 40px;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+/* === Desktop: sidebar always visible === */
+@media (min-width: 1280px) {
+    .cabinet-sidebar {
+        width: 280px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .cabinet-sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        transform: translateX(0);
+        flex-shrink: 0;
+        box-shadow: none;
+    }
+
+    .sidebar-overlay {
+        display: none !important;
+    }
+
+    .cabinet-content {
+        padding: 28px 32px 48px;
+    }
+}

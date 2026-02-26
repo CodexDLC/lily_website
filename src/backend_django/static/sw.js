@@ -1,5 +1,5 @@
-const CACHE_NAME = 'lily-admin-v2';
-const STATIC_CACHE = 'lily-static-v2';
+const CACHE_NAME = 'lily-admin-v3';
+const STATIC_CACHE = 'lily-static-v3';
 
 // Файлы для кэширования при установке
 const STATIC_ASSETS = [
@@ -59,49 +59,40 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // НЕ кешировать API эндпоинты (всегда свежие данные)
+  // Network-only: API — всегда свежие данные
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(fetch(request));
     return;
   }
 
-  // Network-ONLY для админки (НЕ кешировать HTML страницы, только offline fallback)
-  if (url.pathname.startsWith('/admin/') && !url.pathname.match(/\.(css|js|png|jpg|jpeg|webp|svg|woff2?|ttf|eot|ico)$/)) {
+  // Cache-first ТОЛЬКО для настоящей статики (CSS, JS, шрифты, картинки)
+  const isStaticAsset = url.pathname.startsWith('/static/') &&
+    /\.(css|js|woff2?|ttf|eot|png|jpg|jpeg|webp|svg|ico)(\?.*)?$/.test(url.pathname);
+
+  if (isStaticAsset) {
     event.respondWith(
-      fetch(request)
-        .catch(() => {
-          // Только offline fallback, без кеширования контента
-          return caches.match('/static/admin/offline.html');
-        })
-    );
-    return;
-  }
-
-  // Cache-first для статических ресурсов
-  event.respondWith(
-    caches.match(request)
-      .then(cached => {
-        if (cached) {
-          return cached;
-        }
-
+      caches.match(request).then(cached => {
+        if (cached) return cached;
         return fetch(request).then(response => {
-          // Кэшируем только успешные GET запросы
           if (request.method === 'GET' && response.status === 200) {
             const responseClone = response.clone();
-            caches.open(STATIC_CACHE).then(cache => {
-              cache.put(request, responseClone);
-            });
+            caches.open(STATIC_CACHE).then(cache => cache.put(request, responseClone));
           }
           return response;
         });
       })
-      .catch(() => {
-        // Возвращаем offline страницу для HTML запросов
-        if (request.headers.get('accept').includes('text/html')) {
-          return caches.match('/static/admin/offline.html');
-        }
-      })
+    );
+    return;
+  }
+
+  // Network-only для всех HTML-страниц (кабинет, admin, booking и т.д.)
+  // Данные всегда должны быть актуальными
+  event.respondWith(
+    fetch(request).catch(() => {
+      if (request.headers.get('accept') && request.headers.get('accept').includes('text/html')) {
+        return caches.match('/static/admin/offline.html');
+      }
+    })
   );
 });
 

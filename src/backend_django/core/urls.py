@@ -9,7 +9,7 @@ from core.sitemaps import sitemaps  # Импортируем словарь site
 from core.views import LLMSTextView
 from django.conf import settings
 
-# Импортируем i18n_patterns и LLMSTextView
+# Импортируем i18n_patterns
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -23,7 +23,6 @@ from django.views.static import serve
 urlpatterns = [
     path("i18n/", include("django.conf.urls.i18n")),  # For set_language view
     path("api/", api.urls),
-    path("tma/", include("features.telegram_app.urls", namespace="telegram_app")),
     path("", include("django_prometheus.urls")),  # Prometheus metrics
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sitemaps.views.sitemap"),
     # PWA files
@@ -34,6 +33,7 @@ urlpatterns = [
 # i18n patterns (URLs with language prefix)
 urlpatterns += i18n_patterns(
     path("admin/", admin.site.urls),
+    path("cabinet/", include("features.cabinet.urls", namespace="cabinet")),
     # SEO & AI Files (localized versions if needed, or handled by view logic)
     path("llms.txt", LLMSTextView.as_view()),
     # Features

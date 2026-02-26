@@ -1,0 +1,261 @@
+{% extends cabinet_base_template|default:"cabinet/base_cabinet.html" %}
+{% load static i18n %}
+{% block title %}{% if is_admin %}{% trans "Appointments" %}{% else %}{% trans "My Appointments" %}{% endif %}{% endblock title %}
+{% block topbar_title %}{% if is_admin %}{% trans "Appointments" %}{% else %}{% trans "My Appointments" %}{% endif %}{% endblock topbar_title %}
+{% block content %}
+
+
+<!-- Status filter bar -->
+<div class="filter-bar">
+    <a href="{% url 'cabinet:appointments' %}" class="filter-btn {% if not status_filter %}active{% endif %}">
+        {% trans "All" %}
+    </a>
+    {% for code, label in status_choices %}
+    <a href="?status={{ code }}" class="filter-btn {% if status_filter == code %}active{% endif %}">
+        {{ label }}
+    </a>
+    {% endfor %}
+</div>
+
+<div class="results-count">{% trans "Found: " %}{{ total_count }}</div>
+
+<!-- Appointments list -->
+<div class="cards-grid">
+    {% for appt in page_obj %}
+    <div class="cabinet-card" id="appt-{{ appt.id }}">
+
+        <div class="card-header-row">
+            <div class="card-header-left">
+                <span class="card-client-name">{{ appt.client.display_name }}</span>
+                <span class="status-badge status-{{ appt.status }}">{{ appt.get_status_display }}</span>
+            </div>
+            <div class="card-header-right">
+                <span class="card-datetime">
+                    {{ appt.datetime_start|date:"d.m.Y" }}
+                    {{ appt.datetime_start|time:"H:i" }}
+                </span>
+                {% if is_admin %}
+                <button class="btn-card-edit" onclick="toggleEdit('{{ appt.id }}')">✏️</button>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card-meta">
+            <span class="card-meta-item">💅 {{ appt.service.title }}</span>
+            <span class="card-meta-item">👤 {{ appt.master.name }}</span>
+            <span class="card-meta-item">📱 {{ appt.client.phone }}</span>
+            <span class="card-meta-item">💰 {{ appt.price }} €</span>
+            {% if appt.client_notes %}
+            <span class="card-meta-item" title="{{ appt.client_notes }}">📝 {% trans "Has note" %}</span>
+            {% endif %}
+        </div>
+
+        {% if is_admin %}
+        <!-- Inline edit panel (Admin only) -->
+        <div class="card-edit-panel" id="edit-{{ appt.id }}">
+            <div class="card-edit-row">
+                <select class="card-edit-select" id="status-{{ appt.id }}">
+                    {% for code, label in status_choices %}
+                    <option value="{{ code }}" {% if appt.status == code %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% if appt.admin_notes %}
+            <textarea class="card-edit-textarea" id="notes-{{ appt.id }}"
+                placeholder="{% trans "Admin Notes (Admin only)" %}">{{ appt.admin_notes }}</textarea>
+            {% else %}
+            <textarea class="card-edit-textarea" id="notes-{{ appt.id }}"
+                placeholder="{% trans "Admin Notes (Admin only)" %}"></textarea>
+            {% endif %}
+            <div class="card-actions">
+                <button class="btn-card-save" onclick="saveEdit('{{ appt.id }}')">{% trans "Save" %}</button>
+                <button class="btn-card-edit" onclick="toggleEdit('{{ appt.id }}')">{% trans "Cancel" %}</button>
+            </div>
+        </div>
+
+        <!-- NEW: Management Row (Approve/Reject/Reschedule) -->
+        {% if appt.status == 'pending' or appt.status == 'confirmed' %}
+        <div class="card-mgmt-row" id="mgmt-row-{{ appt.id }}">
+            <button class="btn-mgmt btn-approve" onclick="approveAppt('{{ appt.id }}')">
+                ✅ {% trans "Approve" %}
+            </button>
+            <button class="btn-mgmt btn-reject" onclick="toggleMgmtPanel('reasons-{{ appt.id }}')">
+                ❌ {% trans "Reject" %}
+            </button>
+            <button class="btn-mgmt btn-reschedule" onclick="loadSlots('{{ appt.id }}')">
+                📅 {% trans "Reschedule" %}
+            </button>
+        </div>
+
+        <!-- Reasons Panel -->
+        <div id="reasons-{{ appt.id }}" class="mgmt-panel">
+            <span class="mgmt-panel-title">{% trans "Select Reason (German Notification)" %}</span>
+            <div class="mgmt-grid">
+                <button class="mgmt-btn" onclick="rejectAppt('{{ appt.id }}', 'master_busy', 'Leider ist der gewünschte Termin bereits vergeben.')">
+                    🕒 {% trans "Master Busy" %}
+                </button>
+                <button class="mgmt-btn" onclick="rejectAppt('{{ appt.id }}', 'master_ill', 'Leider muss der Termin aufgrund einer Erkrankung verschoben werden.')">
+                    🤒 {% trans "Master Ill" %}
+                </button>
+                <button class="mgmt-btn" onclick="rejectAppt('{{ appt.id }}', 'no_materials', 'Leider fehlen derzeit die notwendigen Materialien.')">
+                    📦 {% trans "No Materials" %}
+                </button>
+                <button class="mgmt-btn" onclick="rejectAppt('{{ appt.id }}', 'client_blacklist', 'Leider können wir Ihre Anfrage не принять.')">
+                    🚫 {% trans "Blacklist" %}
+                </button>
+            </div>
+        </div>
+
+        <!-- Slots Panel -->
+        <div id="slots-{{ appt.id }}" class="mgmt-panel">
+            <span class="mgmt-panel-title">{% trans "Select New Time" %}</span>
+            <div id="slots-grid-{{ appt.id }}" class="mgmt-grid">
+                <!-- Slots will be loaded here via JS -->
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+
+    </div>
+    {% empty %}
+    <div class="today-empty">{% trans "No records found" %}</div>
+    {% endfor %}
+</div>
+
+<!-- Pagination (same) -->
+{% if page_obj.has_other_pages %}
+<div class="cabinet-pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}"
+        class="page-btn">←</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+    <span class="page-btn current">{{ num }}</span>
+    {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %} <a
+        href="?page={{ num }}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="page-btn">{{ num
+        }}</a>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if status_filter %}&status={{ status_filter }}{% endif %}"
+            class="page-btn">→</a>
+        {% endif %}
+</div>
+{% endif %}
+{% endblock content %}
+
+{% block scripts %}
+{% if is_admin %}
+<script>
+    function toggleEdit(id) {
+        const panel = document.getElementById('edit-' + id);
+        panel.classList.toggle('open');
+    }
+
+    function toggleMgmtPanel(panelId) {
+        const panel = document.getElementById(panelId);
+        const isOpen = panel.classList.contains('open');
+        // Close other mgmt panels in this card if any
+        const card = panel.closest('.cabinet-card');
+        card.querySelectorAll('.mgmt-panel').forEach(p => p.classList.remove('open'));
+        if (!isOpen) panel.classList.add('open');
+    }
+
+    function approveAppt(id) {
+        if (!confirm('{% trans "Confirm this appointment?" %}')) return;
+        const data = new FormData();
+        data.append('id', id);
+        data.append('action', 'approve');
+        data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch('{% url "cabinet:appointments" %}', { method: 'POST', body: data })
+            .then(r => r.json())
+            .then(res => res.status === 'ok' ? window.location.reload() : alert('Error: ' + res.message))
+            .catch(() => alert('Network error'));
+    }
+
+    function rejectAppt(id, reasonCode, reasonText) {
+        if (!confirm('{% trans "Cancel this appointment and notify client?" %}')) return;
+        const data = new FormData();
+        data.append('id', id);
+        data.append('action', 'cancel');
+        data.append('reason_code', reasonCode);
+        data.append('reason_text', reasonText);
+        data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch('{% url "cabinet:appointments" %}', { method: 'POST', body: data })
+            .then(r => r.json())
+            .then(res => res.status === 'ok' ? window.location.reload() : alert('Error: ' + res.message))
+            .catch(() => alert('Network error'));
+    }
+
+    function loadSlots(id) {
+        const grid = document.getElementById('slots-grid-' + id);
+        grid.innerHTML = '<div class="loading-spinner"></div>';
+        toggleMgmtPanel('slots-' + id);
+
+        const data = new FormData();
+        data.append('id', id);
+        data.append('action', 'get_slots');
+        data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch('{% url "cabinet:appointments" %}', { method: 'POST', body: data })
+            .then(r => r.json())
+            .then(res => {
+                if (res.status === 'ok') {
+                    grid.innerHTML = '';
+                    if (res.slots.length === 0) {
+                        grid.innerHTML = '<span style="font-size:12px; color:#aaa;">{% trans "No slots found" %}</span>';
+                        return;
+                    }
+                    res.slots.forEach(slot => {
+                        const btn = document.createElement('button');
+                        btn.className = 'mgmt-btn';
+                        btn.textContent = slot.label;
+                        btn.onclick = () => proposeReschedule(id, slot.label, slot.datetime_str);
+                        grid.appendChild(btn);
+                    });
+                } else {
+                    grid.innerHTML = '<span style="color:#f87171;">Error loading slots</span>';
+                }
+            })
+            .catch(() => grid.innerHTML = 'Network error');
+    }
+
+    function proposeReschedule(id, label, dt_str) {
+        if (!confirm('{% trans "Send reschedule proposal with this slot?" %}')) return;
+        const data = new FormData();
+        data.append('id', id);
+        data.append('action', 'propose');
+        data.append('slot_label', label);
+        data.append('slot_datetime', dt_str);
+        data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch('{% url "cabinet:appointments" %}', { method: 'POST', body: data })
+            .then(r => r.json())
+            .then(res => res.status === 'ok' ? window.location.reload() : alert('Error: ' + res.message))
+            .catch(() => alert('Network error'));
+    }
+
+    function saveEdit(id) {
+        const status = document.getElementById('status-' + id).value;
+        const notes = document.getElementById('notes-' + id).value;
+        const data = new FormData();
+        data.append('id', id);
+        data.append('status', status);
+        data.append('admin_notes', notes);
+        data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch('{% url "cabinet:appointments" %}', { method: 'POST', body: data })
+            .then(r => r.json())
+            .then(result => result.status === 'ok' ? window.location.reload() : alert('Error: ' + result.message))
+            .catch(() => alert('Network error'));
+    }
+</script>
+{% endif %}
+{% endblock scripts %}

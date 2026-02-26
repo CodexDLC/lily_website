@@ -25,7 +25,7 @@ class MasterAdmin(ModelAdmin, TranslationAdmin):
         (
             _("Basic Info"),
             {
-                "fields": ("name", "slug", "photo", "status", "is_owner"),
+                "fields": ("name", "slug", "photo", "status", "is_owner", "is_public"),
             },
         ),
         (
@@ -55,9 +55,10 @@ class MasterAdmin(ModelAdmin, TranslationAdmin):
             },
         ),
     )
-    list_display = ["name", "status_badge", "is_owner", "order"]
+    filter_horizontal = ["categories"]
+    list_display = ["name", "status_badge", "is_owner", "is_public", "order"]
     list_display_links = ["name"]
-    list_filter = ["status", "is_owner"]
+    list_filter = ["status", "is_owner", "is_public"]
     search_fields = ["name"]
 
     @admin.display(description=_("Status"))

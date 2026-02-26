@@ -13,7 +13,7 @@ The system is designed based on `Django Translation`. We support 4 languages.
     *   **RU (Russian) / UA (Ukrainian):** Potentially main communication languages (depends on target audience).
     *   **EN (English):** Additional.
 *   **Technical Implementation:**
-    *   All static text (menu, buttons, headings) is wrapped in translation tags `&#123;% trans "Text" %&#125;`.
+    *   All static text (menu, buttons, headings) is wrapped in translation tags `{% raw %}{% trans "Text" %}{% endraw %}`.
     *   Dynamic content (service descriptions, master bios) is stored in the database with duplicated fields (e.g., `description_de`, `description_ru`).
 
 ## 2. "Clean Media" Rule (No Embedded Text)

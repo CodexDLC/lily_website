@@ -1,0 +1,101 @@
+/* ===================================================
+   Cabinet — Dashboard stats & widgets
+   =================================================== */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+@media (min-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+}
+
+/* === Stat cards === */
+.stat-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(237, 208, 113, 0.1);
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+@media (min-width: 768px) {
+    .stat-card {
+        padding: 16px 14px;
+        gap: 6px;
+    }
+}
+
+.stat-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(237, 208, 113, 0.2);
+}
+
+.stat-card-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+@media (min-width: 768px) {
+    .stat-card-icon { font-size: 20px; }
+}
+
+.stat-card-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-gold);
+    line-height: 1.1;
+    font-family: var(--font-serif);
+}
+
+@media (min-width: 768px) {
+    .stat-card-value { font-size: 26px; }
+}
+
+.stat-card-label {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(209, 199, 183, 0.6);
+}
+
+@media (min-width: 768px) {
+    .stat-card-label { font-size: 11px; letter-spacing: 0.08em; }
+}
+
+/* Highlight variants */
+.stat-card--alert .stat-card-value {
+    color: #f59e0b;
+}
+
+.stat-card--success .stat-card-value {
+    color: #4ade80;
+}
+
+/* === Today's appointments section === */
+.section-heading {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(209, 199, 183, 0.5);
+    margin-bottom: 12px;
+    margin-top: 28px;
+}
+
+.today-empty {
+    color: rgba(209, 199, 183, 0.4);
+    font-size: 14px;
+    padding: 20px 0;
+    text-align: center;
+}

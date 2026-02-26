@@ -81,24 +81,20 @@ def check_linters():
 
     # --- Auto-fixing and formatting with Ruff ---
     print("Attempting to auto-fix Ruff issues...")
-    fix_success, fix_out = run_command(f"poetry run ruff check {CHECK_DIRS} --fix", capture_output=True)
+    # Changed capture_output to False to see output in real-time
+    fix_success, _ = run_command(f"poetry run ruff check {CHECK_DIRS} --fix", capture_output=False)
     if not fix_success:
-        print_error(f"Ruff auto-fix command failed:\n{fix_out}")
+        print_error("Ruff auto-fix command failed.")
         return False
-    if "Fixed" in fix_out:
-        print_success("Ruff auto-fixed some issues.")
-    else:
-        print("No Ruff issues to auto-fix.")
+    print_success("Ruff auto-fix completed.")
 
     print("Attempting to auto-format with Ruff...")
-    format_success, format_out = run_command(f"poetry run ruff format {CHECK_DIRS}", capture_output=True)
+    # Changed capture_output to False to see output in real-time
+    format_success, _ = run_command(f"poetry run ruff format {CHECK_DIRS}", capture_output=False)
     if not format_success:
-        print_error(f"Ruff auto-format command failed:\n{format_out}")
+        print_error("Ruff auto-format command failed.")
         return False
-    if "Formatted" in format_out:
-        print_success("Ruff auto-formatted some files.")
-    else:
-        print("No files needed Ruff formatting.")
+    print_success("Ruff auto-format completed.")
 
     # --- Verification checks after auto-fixing/formatting ---
     print("Verifying Ruff check (no fixable issues remaining)...")
@@ -120,7 +116,8 @@ def check_linters():
     print("Running basic pre-commit hooks...")
     basic_hooks = ["trailing-whitespace", "end-of-file-fixer", "check-yaml"]
     for hook in basic_hooks:
-        if not run_command(f"pre-commit run {hook} --all-files")[0]:
+        # Added 'poetry run' to ensure pre-commit is found in the virtual environment
+        if not run_command(f"poetry run pre-commit run {hook} --all-files")[0]:
             print_error(f"Pre-commit hook '{hook}' failed")
             return False
     print_success("Basic pre-commit hooks passed.")

@@ -9,7 +9,7 @@ This document is the primary technical standard of the project. It contains comp
 We use a hybrid system: interface strings in `.po` files and marketing content in the database.
 
 ### 1.1. Key System (UI)
-Accessed via `{% trans "key" %}`. **Never** insert raw text directly into the `trans` tag.
+Accessed via `{% raw %}{% trans "key" %}{% endraw %}`. **Never** insert raw text directly into the `trans` tag.
 
 #### Group: Navigation (`nav_`)
 | Key | Context |

@@ -1,0 +1,29 @@
+{% load static i18n %}{% get_current_language as LANG_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANG_CODE }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{% block title %}{% trans "Login" %}{% endblock %} — LILY</title>
+    <meta name="theme-color" content="#003831">
+
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon/favicon.ico' %}">
+
+    <link rel="preload" href="{% static 'fonts/lato-v25-latin-regular.woff2' %}" as="font" type="font/woff2"
+        crossorigin>
+    <link rel="preload" href="{% static 'fonts/playfair-display-v40-latin-regular.woff2' %}" as="font"
+        type="font/woff2" crossorigin>
+
+    <link rel="stylesheet" href="{% static 'css/cabinet_app.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="cabinet-body">
+    {% block content %}{% endblock %}
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

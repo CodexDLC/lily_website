@@ -1,4 +1,5 @@
 {
     "base.css": "app.css",
-    "tma_base.css": "tma_app.css"
+    "tma_base.css": "tma_app.css",
+    "cabinet.css": "cabinet_app.css"
 }
