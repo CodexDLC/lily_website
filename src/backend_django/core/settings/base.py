@@ -371,9 +371,11 @@ STATICFILES_IGNORE_PATTERNS = [
     "css/base/*",
     "css/adaptive/*",
     "css/components/*",
+    "css/cabinet/*",
     "css/pages/*",
     "css/tma_app/*",
     "css/base.css",
+    "css/cabinet.css",
     "css/tma_base.css",
 ]
 MEDIA_URL = "/media/"
