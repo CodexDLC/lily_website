@@ -166,8 +166,8 @@ def run_docker_validation():
         if not docker_compose("up -d")[0]:
             return False
 
-        print_step("Waiting for services to be ready (15s)")
-        time.sleep(15)
+        print_step("Waiting for services to be ready (60s)")
+        time.sleep(60)
 
         env = {"CONTAINER_PREFIX": TEST_PROJECT_NAME}
         _, output = run_command(

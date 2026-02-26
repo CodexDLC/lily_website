@@ -16,7 +16,7 @@ RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
 # === STAGE 2: Runtime ===
 FROM python:3.13-slim
 WORKDIR /app
-RUN apt-get update && apt-get install -y libpq5 curl && rm -rf /var/lib/apt/lists/* && \
+RUN apt-get update && apt-get install -y libpq5 curl procps && rm -rf /var/lib/apt/lists/* && \
     useradd -m -u 1000 appuser
 
 COPY --from=builder /venv /venv
