@@ -298,7 +298,7 @@ class MasterAdmin(TranslationAdmin):
     <img src="{{ master.photo.url }}" alt="{{ master.name }}">
     <h2>{{ master.name }}</h2>
     <p>{{ master.bio }}</p>
-    <a href="{{ master.get_absolute_url }}" class="btn-pill">{% trans "View Profile" %}</a>
+    <a href="{{ master.get_absolute_url }}" class="btn-pill">{% raw %}{% trans "View Profile" %}{% endraw %}</a>
 </section>
 {% endfor %}
 
@@ -309,7 +309,7 @@ class MasterAdmin(TranslationAdmin):
         <img src="{{ master.photo.url }}" alt="{{ master.name }}">
         <h3>{{ master.name }}</h3>
         <p class="master-title">{{ master.title }}</p>
-        <a href="{{ master.get_absolute_url }}">{% trans "View Profile" %}</a>
+        <a href="{{ master.get_absolute_url }}">{% raw %}{% trans "View Profile" %}{% endraw %}</a>
     </div>
     {% endfor %}
 </div>

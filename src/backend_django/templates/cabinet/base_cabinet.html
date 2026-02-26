@@ -1,0 +1,89 @@
+{% load static i18n %}{% get_current_language as LANG_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANG_CODE }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{% block title %}Кабинет{% endblock title %} — LILY</title>
+    <meta name="theme-color" content="#003831">
+
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon/favicon.ico' %}">
+
+    <!-- Fonts -->
+    <link rel="preload" href="{% static 'fonts/lato-v25-latin-regular.woff2' %}" as="font" type="font/woff2"
+        crossorigin>
+    <link rel="preload" href="{% static 'fonts/playfair-display-v40-latin-regular.woff2' %}" as="font" type="font/woff2"
+        crossorigin>
+
+    <!-- Cabinet CSS -->
+    <link rel="stylesheet" href="{% static 'css/cabinet_app.css' %}">
+
+    <!-- Alpine.js with Collapse plugin -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Critical inline styles (prevent FOUC) -->
+
+
+    {% block extra_css %}{% endblock extra_css %}
+</head>
+
+<body class="cabinet-body" x-data="{ sidebarOpen: false }">
+
+    <!-- Mobile overlay -->
+    <div class="sidebar-overlay" :class="{ 'active': sidebarOpen }" @click="sidebarOpen = false"></div>
+
+    <div class="cabinet-layout">
+
+        <!-- Sidebar -->
+        <aside class="cabinet-sidebar" :class="{ 'open': sidebarOpen }" id="cabinet-sidebar">
+            <div class="sidebar-header">
+                <button class="sidebar-close-btn" @click="sidebarOpen = false" aria-label="Закрыть меню">✕</button>
+            </div>
+            {% include "cabinet/includes/_sidebar.html" %}
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="cabinet-main">
+            <!-- Top Header -->
+            {% include "cabinet/includes/_topbar.html" %}
+
+            <div class="cabinet-content" id="cabinet-content">
+                {% block content %}{% endblock content %}
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- HTMX -->
+    <script src="{% static 'js/htmx.min.js' %}" defer></script>
+
+    <!-- Sidebar active link sync -->
+    <script>
+        document.body.addEventListener('htmx:afterSettle', function(evt) {
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                const linkPath = new URL(link.getAttribute('href'), window.location.origin).pathname;
+                if (currentPath === linkPath) {
+                    link.classList.add('active');
+                    // Also open the parent group if it's a sublist
+                    const group = link.closest('.nav-group');
+                    if (group) {
+                        // We use Alpine.js for groups, but we can helper it here
+                        // by finding the header and clicking it if not active,
+                        // or better, use an Alpine event.
+                    }
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        });
+    </script>
+
+    {% block scripts %}{% endblock scripts %}
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+/* ===================================================
+   Cabinet — Entry point CSS
+   Compiled: python tools/static/css_compiler.py
+   Output: cabinet_app.css
+   =================================================== */
+
+/* Base (shared with app.css) */
+@import url('base/variables.css');
+@import url('base/reset.css');
+@import url('base/fonts.css');
+@import url('components/buttons.css');
+@import url('components/forms.css');
+@import url('components/utils.css');
+/* @import url('base/footer.css'); */
+
+/* Cabinet-specific */
+@import url('cabinet/layout.css');
+@import url('cabinet/sidebar.css');
+@import url('cabinet/topbar.css');
+@import url('cabinet/dashboard.css');
+@import url('cabinet/cards.css');
+@import url('cabinet/auth.css');

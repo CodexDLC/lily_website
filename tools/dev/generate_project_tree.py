@@ -43,8 +43,9 @@ def generate_tree(root_path, target_dir, ignore_dirs, ignore_extensions, output_
 def main():
     # Настройки
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(current_dir)
-    output_filename = os.path.join(project_root, "../../project_structure.txt")
+    # Идем на два уровня вверх: tools/dev -> tools -> lily_website
+    project_root = os.path.dirname(os.path.dirname(current_dir))
+    output_filename = os.path.normpath(os.path.join(project_root, "project_structure.txt"))
 
     ignore_dirs = {
         ".git",

@@ -1,0 +1,113 @@
+{% load i18n %}
+
+<nav class="sidebar-nav" x-data="{ activeGroup: localStorage.getItem('sidebarGroup') || 'booking' }"
+    x-init="$watch('activeGroup', val => localStorage.setItem('sidebarGroup', val))">
+
+    {% if request.user.is_staff %}
+
+    <!-- GROUP: BOOKING -->
+    <div class="nav-group">
+        <div class="nav-group-header" @click="activeGroup = (activeGroup === 'booking' ? null : 'booking')">
+            <span>{% trans "Booking" %}</span>
+            <svg class="nav-group-arrow" :class="{ 'rotate-180': activeGroup === 'booking' }" viewBox="0 0 24 24">
+                <path d="M7 10l5 5 5-5z" />
+            </svg>
+        </div>
+        <div class="nav-sublist" x-show="activeGroup === 'booking'" x-collapse>
+            <a href="{% url 'cabinet:dashboard' %}" hx-get="{% url 'cabinet:dashboard' %}" hx-target="#cabinet-content"
+                hx-push-url="true" class="sidebar-link {% if active_section == 'dashboard' %}active{% endif %}">
+                <span class="sidebar-icon">📊</span>
+                {% trans "Dashboard" %}
+            </a>
+            <a href="{% url 'cabinet:appointments' %}" hx-get="{% url 'cabinet:appointments' %}"
+                hx-target="#cabinet-content" hx-push-url="true"
+                class="sidebar-link {% if active_section == 'appointments' %}active{% endif %}">
+                <span class="sidebar-icon">📅</span>
+                {% trans "Appointments" %}
+            </a>
+            <a href="{% url 'cabinet:appointments_create' %}" hx-get="{% url 'cabinet:appointments_create' %}"
+                hx-target="#cabinet-content" hx-push-url="true"
+                class="sidebar-link {% if active_section == 'appointments_create' %}active{% endif %}">
+                <span class="sidebar-icon">➕</span>
+                {% trans "New Appointment" %}
+            </a>
+        </div>
+    </div>
+
+    <!-- GROUP: CRM -->
+    <div class="nav-group">
+        <div class="nav-group-header" @click="activeGroup = (activeGroup === 'crm' ? null : 'crm')">
+            <span>{% trans "CRM" %}</span>
+            <svg class="nav-group-arrow" :class="{ 'rotate-180': activeGroup === 'crm' }" viewBox="0 0 24 24">
+                <path d="M7 10l5 5 5-5z" />
+            </svg>
+        </div>
+        <div class="nav-sublist" x-show="activeGroup === 'crm'" x-collapse>
+            <a href="{% url 'cabinet:clients' %}" hx-get="{% url 'cabinet:clients' %}" hx-target="#cabinet-content"
+                hx-push-url="true" class="sidebar-link {% if active_section == 'clients' %}active{% endif %}">
+                <span class="sidebar-icon">👥</span>
+                {% trans "Clients" %}
+            </a>
+            <a href="{% url 'cabinet:masters' %}" hx-get="{% url 'cabinet:masters' %}" hx-target="#cabinet-content"
+                hx-push-url="true" class="sidebar-link {% if active_section == 'masters' %}active{% endif %}">
+                <span class="sidebar-icon">💅</span>
+                {% trans "Masters" %}
+            </a>
+        </div>
+    </div>
+
+    <!-- GROUP: SETTINGS (Admin Only) -->
+    {% if request.user.is_superuser %}
+    <div class="nav-group">
+        <div class="nav-group-header" @click="activeGroup = (activeGroup === 'settings' ? null : 'settings')">
+            <span>{% trans "Settings" %}</span>
+            <svg class="nav-group-arrow" :class="{ 'rotate-180': activeGroup === 'settings' }" viewBox="0 0 24 24">
+                <path d="M7 10l5 5 5-5z" />
+            </svg>
+        </div>
+        <div class="nav-sublist" x-show="activeGroup === 'settings'" x-collapse>
+            <a href="{% url 'cabinet:services' %}" hx-get="{% url 'cabinet:services' %}" hx-target="#cabinet-content"
+                hx-push-url="true" class="sidebar-link {% if active_section == 'services' %}active{% endif %}">
+                <span class="sidebar-icon">⚙️</span>
+                {% trans "Services" %}
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    {% endif %}
+
+    <!-- GROUP: MY CABINET (Available to everyone) -->
+    <div class="nav-group">
+        <div class="nav-group-header" @click="activeGroup = (activeGroup === 'personal' ? null : 'personal')">
+            <span>{% trans "My Cabinet" %}</span>
+            <svg class="nav-group-arrow" :class="{ 'rotate-180': activeGroup === 'personal' }" viewBox="0 0 24 24">
+                <path d="M7 10l5 5 5-5z" />
+            </svg>
+        </div>
+        <div class="nav-sublist" x-show="activeGroup === 'personal'" x-collapse>
+            <a href="{% url 'cabinet:appointments' %}?scope=personal" hx-get="{% url 'cabinet:appointments' %}?scope=personal"
+                hx-target="#cabinet-content" hx-push-url="true"
+                class="sidebar-link {% if active_section == 'my_appointments' %}active{% endif %}">
+                <span class="sidebar-icon">📅</span>
+                {% trans "My Appointments" %}
+            </a>
+            <a href="{% url 'cabinet:profile' %}" hx-get="{% url 'cabinet:profile' %}" hx-target="#cabinet-content"
+                hx-push-url="true" class="sidebar-link {% if active_section == 'profile' %}active{% endif %}">
+                <span class="sidebar-icon">👤</span>
+                {% trans "Profile" %}
+            </a>
+        </div>
+    </div>
+
+</nav>
+
+<div class="sidebar-footer">
+    <form action="{% url 'cabinet:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="sidebar-link sidebar-link-logout">
+            <span class="sidebar-icon">🚪</span>
+            {% trans "Sign Out" %}
+        </button>
+    </form>
+</div>

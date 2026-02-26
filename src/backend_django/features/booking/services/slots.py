@@ -42,7 +42,11 @@ class SlotService:
     ) -> list[str]:
         """Calculates slots using 'tight packing' logic."""
 
-        # 0. Check for Day Off exception
+        # 0. Check master's personal work schedule (if set)
+        if master.work_days and date_obj.weekday() not in master.work_days:
+            return []
+
+        # 0b. Check for Day Off exception
         if MasterDayOff.objects.filter(master=master, date=date_obj).exists():
             return []
 

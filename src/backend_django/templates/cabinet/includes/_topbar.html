@@ -1,0 +1,129 @@
+{% load static i18n %}
+{% get_current_language as LANG_CODE %}
+{% get_available_languages as LANGUAGES %}
+{% get_language_info_list for LANGUAGES as languages %}
+<header class="cabinet-topbar">
+    <div class="topbar-row">
+
+        <!-- Left: Logo & Toggle -->
+        <div class="topbar-left">
+            <!-- Mobile Sidebar Toggle -->
+            <button class="mobile-sidebar-toggle" @click="sidebarOpen = true" aria-label="{% trans "Open Menu" %}">
+                ☰
+            </button>
+
+            <a href="{% url "home" %}" class="cabinet-logo-link" title="{% trans "Back to Site" %}">
+                <img src="{% static "img/logo_lily.webp" %}" alt="LILY" class="cabinet-logo-img">
+                <span class="cabinet-brand-name">LILY <span class="cabinet-brand-suffix">Cabinet</span></span>
+            </a>
+        </div>
+
+        <!-- Center: Page Title -->
+        <div class="topbar-center">
+            <h1 class="page-title" id="topbar-title">{% block topbar_title %}{% endblock topbar_title %}</h1>
+        </div>
+
+        <!-- Right: Language + User Profile -->
+        <div class="topbar-right">
+
+            <!-- Language Switcher -->
+            <div class="topbar-lang">
+                <button class="topbar-lang-btn" onclick="toggleLangMenu(event)">
+                    {% if LANG_CODE == 'uk' %}UA{% else %}{{ LANG_CODE|upper }}{% endif %} ▾
+                </button>
+                <div class="topbar-lang-menu" id="langMenu">
+                    {% for language in languages %}
+                    {% if language.code != LANG_CODE %}
+                    <form action="{% url 'set_language' %}" method="post" class="lang-form">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                        <input name="language" type="hidden" value="{{ language.code }}">
+                        <button type="submit" class="topbar-lang-option">
+                            {% if language.code == 'uk' %}UA{% else %}{{ language.code|upper }}{% endif %}
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="user-profile-dropdown">
+                <button class="user-profile-btn" onclick="toggleProfileMenu()">
+                    <div class="user-avatar">
+                        {% if user.first_name %}
+                        {{ user.first_name|first|upper }}
+                        {% else %}
+                        {{ user.username|first|upper }}
+                        {% endif %}
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">
+                            {% if user.first_name %}
+                            {{ user.first_name }}
+                            {% else %}
+                            {{ user.username }}
+                            {% endif %}
+                        </span>
+                        <span class="user-role">
+                            {% if user.is_staff %}{% trans "Staff" %}{% else %}{% trans "Client" %}{% endif %}
+                        </span>
+                    </div>
+                    <svg class="dropdown-arrow" viewBox="0 0 24 24">
+                        <path d="M7 10l5 5 5-5z" />
+                    </svg>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div class="profile-menu" id="profileMenu">
+                    <a href="{% url 'cabinet:profile' %}" class="profile-menu-item">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                        {% trans "My Profile" %}
+                    </a>
+                    <a href="{% url 'home' %}" class="profile-menu-item">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                        </svg>
+                        {% trans "Back to Site" %}
+                    </a>
+                    <div class="menu-divider"></div>
+                    <form action="{% url 'cabinet:logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="profile-menu-item logout-btn">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" />
+                            </svg>
+                            {% trans "Sign Out" %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</header>
+
+<script>
+    function toggleProfileMenu() {
+        document.getElementById('profileMenu').classList.toggle('active');
+        document.getElementById('langMenu').classList.remove('active');
+    }
+
+    function toggleLangMenu(e) {
+        e.stopPropagation();
+        document.getElementById('langMenu').classList.toggle('active');
+        document.getElementById('profileMenu').classList.remove('active');
+    }
+
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.user-profile-dropdown')) {
+            document.getElementById('profileMenu').classList.remove('active');
+        }
+        if (!event.target.closest('.topbar-lang')) {
+            document.getElementById('langMenu').classList.remove('active');
+        }
+    });
+</script>

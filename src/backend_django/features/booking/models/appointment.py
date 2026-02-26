@@ -89,12 +89,23 @@ class Appointment(TimestampMixin, models.Model):
     CANCEL_REASON_CLIENT = "client"
     CANCEL_REASON_MASTER = "master"
     CANCEL_REASON_RESCHEDULE = "reschedule"
+
+    # Bot-specific reasons (German notifications)
+    CANCEL_REASON_MASTER_BUSY = "master_busy"
+    CANCEL_REASON_MASTER_ILL = "master_ill"
+    CANCEL_REASON_NO_MATERIALS = "no_materials"
+    CANCEL_REASON_BLACKLIST = "client_blacklist"
+
     CANCEL_REASON_OTHER = "other"
 
     CANCEL_REASON_CHOICES = [
         (CANCEL_REASON_CLIENT, _("Cancelled by Client")),
         (CANCEL_REASON_MASTER, _("Cancelled by Master")),
         (CANCEL_REASON_RESCHEDULE, _("Rescheduled")),
+        (CANCEL_REASON_MASTER_BUSY, _("Master is busy")),
+        (CANCEL_REASON_MASTER_ILL, _("Master is ill")),
+        (CANCEL_REASON_NO_MATERIALS, _("Missing materials")),
+        (CANCEL_REASON_BLACKLIST, _("Client in blacklist")),
         (CANCEL_REASON_OTHER, _("Other")),
     ]
 

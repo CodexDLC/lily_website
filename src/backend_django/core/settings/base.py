@@ -46,6 +46,16 @@ SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "http://127.0.0.1:8000/")
 if not SITE_BASE_URL.endswith("/"):
     SITE_BASE_URL += "/"
 
+# CSRF: include the configured site URL + common local dev ports
+CSRF_TRUSTED_ORIGINS = [SITE_BASE_URL.rstrip("/")]
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS += [
+        "http://127.0.0.1:8000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8080",
+        "http://localhost:8080",
+    ]
+
 # Canonical domain for SEO (no trailing slash)
 CANONICAL_DOMAIN = os.environ.get("CANONICAL_DOMAIN", "https://lily-salon.de")
 if CANONICAL_DOMAIN.endswith("/"):
@@ -92,7 +102,7 @@ INSTALLED_APPS = [
     "features.system",
     "features.booking",
     "features.promos",
-    "features.telegram_app",
+    "features.cabinet",
     "ninja",
 ]
 
@@ -100,12 +110,12 @@ MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django.middleware.locale.LocaleMiddleware",
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
@@ -354,7 +364,7 @@ LOCALE_PATHS = [
 # Static & Media
 # ═══════════════════════════════════════════
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_IGNORE_PATTERNS = [

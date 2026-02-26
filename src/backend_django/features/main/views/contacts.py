@@ -4,7 +4,7 @@ from django.views.generic import FormView
 from django_ratelimit.decorators import ratelimit
 from features.system.models.site_settings import SiteSettings
 from features.system.selectors.seo import SeoSelector
-from features.telegram_app.services.notification import NotificationService
+from features.system.services.notification import NotificationService
 
 from ..forms import ContactForm
 from ..services.contact_service import ContactService

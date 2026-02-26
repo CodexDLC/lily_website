@@ -3,16 +3,29 @@
    ========================================= */
 :root {
     /* Colors */
-    --color-emerald: #003831;       /* Фон сайта */
-    --color-gold: #EDD071;          /* Акценты, цены, заголовки */
-    --color-champagne: #D1C7B7;     /* Вторичный текст, описания (Luxury Beige) */
+    --color-emerald: #003831;
+    /* Фон сайта */
+    --color-gold: #EDD071;
+    /* Акценты, цены, заголовки */
+    --color-champagne: #D1C7B7;
+    /* Вторичный текст, описания (Luxury Beige) */
 
     /* Typography Colors */
-    --color-text-main: #F5F5F5;     /* Soft white */
+    --color-text-main: #F5F5F5;
+    /* Soft white */
     --color-text-muted: rgba(245, 245, 245, 0.7);
 
     /* UI Elements White */
     --color-white: #F5F5F5;
+
+    /* Status Colors */
+    --color-danger: #f87171;
+    /* Warning/Logout */
+    --color-danger-hover: #ef4444;
+    --color-danger-rgb: 248, 113, 113;
+    --color-error-bg: #fde8e8;
+    /* Error messages */
+    --color-error-text: #c53030;
 
     /* Typography */
     --font-serif: 'Playfair Display', serif;

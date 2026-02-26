@@ -1,17 +1,12 @@
-{% load i18n %}
-{% get_current_language as CURRENT_LANGUAGE %}
-{% get_available_languages as LANGUAGES %}
+{% load i18n_urls %}
 
 {% comment %}
     This template generates hreflang tags for multilingual SEO.
     It uses CANONICAL_DOMAIN to ensure all links point to the primary domain.
 {% endcomment %}
 
-{% comment %} Extract the base path without the current language prefix {% endcomment %}
-{% with request.path|slice:"3:" as base_path %}
-    {% for lang_code, lang_name in LANGUAGES %}
-        <link rel="alternate" hreflang="{{ lang_code }}" href="{{ CANONICAL_DOMAIN }}/{{ lang_code }}{{ base_path }}" />
-    {% endfor %}
-    {% comment %} x-default should point to the default language version. {% endcomment %}
-    <link rel="alternate" hreflang="x-default" href="{{ CANONICAL_DOMAIN }}/de{{ base_path }}" />
-{% endwith %}
+{% for lang_code, lang_name in LANGUAGES %}
+<link rel="alternate" hreflang="{{ lang_code }}" href="{{ CANONICAL_DOMAIN }}{% translate_url lang_code %}" />
+{% endfor %}
+{% comment %} x-default should point to the default language version. {% endcomment %}
+<link rel="alternate" hreflang="x-default" href="{{ CANONICAL_DOMAIN }}{% translate_url 'de' %}" />

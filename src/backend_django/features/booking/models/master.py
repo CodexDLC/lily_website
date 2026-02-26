@@ -102,6 +102,23 @@ class Master(TimestampMixin, SeoMixin, models.Model):
 
     is_featured = models.BooleanField(default=False, verbose_name=_("Featured Master"))
 
+    is_public = models.BooleanField(
+        default=True,
+        db_index=True,
+        verbose_name=_("Visible on Site"),
+        help_text=_("If unchecked, master participates in booking but is not shown publicly or on the team page"),
+    )
+
+    # === Work Schedule ===
+    # List of weekday numbers: 0=Mon, 1=Tue, 2=Wed, 3=Thu, 4=Fri, 5=Sat, 6=Sun
+    # Default: Mon–Sat
+    work_days = models.JSONField(
+        default=list,
+        blank=True,
+        verbose_name=_("Working Days"),
+        help_text=_("List of weekday numbers the master works (0=Mon … 6=Sun)"),
+    )
+
     # === Display Order ===
     order = models.PositiveIntegerField(
         default=0, verbose_name=_("Display Order"), help_text=_("Lower numbers appear first")

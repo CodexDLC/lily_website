@@ -1,0 +1,41 @@
+{% load i18n %}
+<div id="clients-list">
+{% for client in page_obj %}
+<div class="cabinet-card">
+    <div class="card-header-row">
+        <div class="card-header-left">
+            <span class="card-client-name">{{ client.display_name }}</span>
+            <span class="status-badge status-{{ client.status }}">{{ client.get_status_display }}</span>
+        </div>
+        <span style="font-size: 12px; color: rgba(209,199,183,0.45);">
+            {{ client.created_at|date:"d.m.Y" }}
+        </span>
+    </div>
+    <div class="card-meta">
+        {% if client.phone %}<span class="card-meta-item">📱 {{ client.phone }}</span>{% endif %}
+        {% if client.email %}<span class="card-meta-item">✉️ {{ client.email }}</span>{% endif %}
+        {% if client.instagram %}<span class="card-meta-item">📸 {{ client.instagram }}</span>{% endif %}
+    </div>
+</div>
+{% empty %}
+<div class="today-empty">{% trans "No clients found" %}</div>
+{% endfor %}
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="cabinet-pagination" hx-boost="true" hx-target="#clients-list" hx-select="#clients-list" hx-swap="outerHTML">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}{% if search %}&q={{ search }}{% endif %}" class="page-btn">←</a>
+    {% endif %}
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <span class="page-btn current">{{ num }}</span>
+        {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+        <a href="?page={{ num }}{% if search %}&q={{ search }}{% endif %}" class="page-btn">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}{% if search %}&q={{ search }}{% endif %}" class="page-btn">→</a>
+    {% endif %}
+</div>
+{% endif %}

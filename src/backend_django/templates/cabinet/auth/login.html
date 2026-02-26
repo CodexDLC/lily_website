@@ -1,0 +1,44 @@
+{% extends "cabinet/base_auth.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Login" %} — LILY{% endblock title %}
+
+{% block content %}
+<div class="cabinet-form-wrapper">
+    <div class="cabinet-form-box">
+        <div class="cabinet-form-logo">
+            <img src="{% static 'img/logo_lily.webp' %}" alt="LILY Beauty" class="login-logo-img">
+        </div>
+        <p class="cabinet-form-subtitle">{% trans "Please sign in to continue" %}</p>
+
+        {% if error %}
+        <div class="cabinet-form-error">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="cabinet-form-group">
+                <label class="cabinet-form-label" for="username">{% trans "Username or Email" %}</label>
+                <input class="cabinet-form-input" type="text" id="username" name="username" autocomplete="username" required
+                    autofocus placeholder="">
+            </div>
+
+            <div class="cabinet-form-group">
+                <label class="cabinet-form-label" for="password">{% trans "Password" %}</label>
+                <input class="cabinet-form-input" type="password" id="password" name="password" autocomplete="current-password"
+                    required placeholder="">
+            </div>
+
+            <button class="cabinet-form-submit" type="submit">{% trans "Sign In" %}</button>
+        </form>
+
+        <div class="registration-note">
+            <strong>{% trans "No account yet?" %}</strong>
+            {% trans "Public registration is currently closed. If you are a client, please use the magic link sent to your email or SMS." %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

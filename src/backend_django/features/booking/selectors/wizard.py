@@ -64,8 +64,11 @@ def get_step_2_context(state: BookingState) -> dict[str, Any] | None:
     def fetch():
         try:
             service = Service.objects.get(id=state.service_id)
+            # Only public masters shown in the selection UI
             masters = list(
-                Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE).order_by("order")
+                Master.objects.filter(
+                    categories=service.category, status=Master.STATUS_ACTIVE, is_public=True
+                ).order_by("order")
             )
             return {"selected_service": service, "masters": masters, "service_id": state.service_id}
         except Service.DoesNotExist:
