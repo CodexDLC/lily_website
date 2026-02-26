@@ -47,7 +47,7 @@ class NotificationService:
                     "header_text": _("Wir haben Ihre Anfrage erhalten!"),
                     "greeting": _("Hallo"),
                     "body_text": _(
-                        "Vielen Dank für Ihre Nachricht an LILY Beauty Salon. Wir haben Ihre Anfrage успешно получили и ответим вам как можно скорее."
+                        "Vielen Dank für Ihre Nachricht an LILY Beauty Salon. Wir haben Ihre Anfrage erfolgreich erhalten und werden uns so schnell wie möglich bei Ihnen melden."
                     ),
                     "quoted_message_label": _("Ihre Nachricht"),
                     "contact_hint": _(
