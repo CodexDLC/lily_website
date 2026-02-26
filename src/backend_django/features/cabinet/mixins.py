@@ -58,11 +58,12 @@ class AdminRequiredMixin(CabinetAccessMixin):
     """Only staff users can access this view. Clients are redirected to appointments."""
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return self.handle_no_permission()
         if not request.user.is_staff:
-            return redirect("cabinet:appointments")
-        return super(CabinetAccessMixin, self).dispatch(request, *args, **kwargs)
+            # If user is not authenticated, the parent's dispatch will handle it.
+            # If they are authenticated but not staff, redirect them.
+            if request.user.is_authenticated:
+                return redirect("cabinet:appointments")
+        return super().dispatch(request, *args, **kwargs)
 
 
 class HtmxCabinetMixin:
