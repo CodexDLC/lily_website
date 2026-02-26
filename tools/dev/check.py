@@ -10,8 +10,8 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 COMPOSE_FILE = PROJECT_ROOT / "deploy" / "docker-compose.test.yml"
 TEST_PROJECT_NAME = "lily-quality-check"
 
-# Directories to check
-CHECK_DIRS = "src/ tools/"
+# Directories to check for Python tools (Ruff, Mypy)
+PYTHON_DIRS = "src/ tools/"
 
 
 # ANSI Colors
@@ -82,7 +82,7 @@ def check_linters():
     # --- Auto-fixing and formatting with Ruff ---
     print("Attempting to auto-fix Ruff issues...")
     # Changed capture_output to False to see output in real-time
-    fix_success, _ = run_command(f"poetry run ruff check {CHECK_DIRS} --fix", capture_output=False)
+    fix_success, _ = run_command(f"poetry run ruff check {PYTHON_DIRS} --fix", capture_output=False)
     if not fix_success:
         print_error("Ruff auto-fix command failed.")
         return False
@@ -90,7 +90,7 @@ def check_linters():
 
     print("Attempting to auto-format with Ruff...")
     # Changed capture_output to False to see output in real-time
-    format_success, _ = run_command(f"poetry run ruff format {CHECK_DIRS}", capture_output=False)
+    format_success, _ = run_command(f"poetry run ruff format {PYTHON_DIRS}", capture_output=False)
     if not format_success:
         print_error("Ruff auto-format command failed.")
         return False
@@ -98,7 +98,7 @@ def check_linters():
 
     # --- Verification checks after auto-fixing/formatting ---
     print("Verifying Ruff check (no fixable issues remaining)...")
-    ruff_check_success, ruff_check_out = run_command(f"poetry run ruff check {CHECK_DIRS}", capture_output=True)
+    ruff_check_success, ruff_check_out = run_command(f"poetry run ruff check {PYTHON_DIRS}", capture_output=True)
     if not ruff_check_success:
         print_error(f"Ruff check failed (unfixable issues or issues after fix):\n{ruff_check_out}")
         return False
@@ -106,7 +106,7 @@ def check_linters():
 
     print("Verifying Ruff format (no formatting issues remaining)...")
     ruff_format_check_success, ruff_format_check_out = run_command(
-        f"poetry run ruff format {CHECK_DIRS} --check", capture_output=True
+        f"poetry run ruff format {PYTHON_DIRS} --check", capture_output=True
     )
     if not ruff_format_check_success:
         print_error(f"Ruff format check failed (files still need formatting):\n{ruff_format_check_out}")
@@ -114,7 +114,16 @@ def check_linters():
     print_success("Ruff format check passed.")
 
     print("Running basic pre-commit hooks...")
-    basic_hooks = ["trailing-whitespace", "end-of-file-fixer", "check-yaml"]
+    # These hooks will check all files (including .md and .json) based on .pre-commit-config.yaml
+    basic_hooks = [
+        "trailing-whitespace",
+        "end-of-file-fixer",
+        "check-yaml",
+        "check-json",
+        "markdownlint",
+        "bandit",
+        "detect-secrets",
+    ]
     for hook in basic_hooks:
         # Added 'poetry run' to ensure pre-commit is found in the virtual environment
         if not run_command(f"poetry run pre-commit run {hook} --all-files")[0]:
@@ -133,7 +142,8 @@ def check_types():
 
         shutil.rmtree(cache_dir)
 
-    success, out = run_command(f"poetry run mypy {CHECK_DIRS}", capture_output=True)
+    # Mypy should only check Python directories
+    success, out = run_command(f"poetry run mypy {PYTHON_DIRS}", capture_output=True)
     if not success:
         print_error(f"Mypy check failed:\n{out}")
     return success
@@ -141,7 +151,7 @@ def check_types():
 
 def run_tests():
     print_step("Running Unit Tests (Pytest)")
-    os.environ["SECRET_KEY"] = "local_test_key"
+    os.environ["SECRET_KEY"] = "local_test_key"  # pragma: allowlist secret
     return run_command("poetry run pytest src -m unit -v")[0]
 
 

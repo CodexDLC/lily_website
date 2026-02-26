@@ -1,3 +1,4 @@
+import secrets
 import uuid
 
 from django.contrib.auth import get_user_model
@@ -169,9 +170,8 @@ class Master(TimestampMixin, SeoMixin, models.Model):
     def save(self, *args, **kwargs):
         """Generate access codes on creation"""
         if not self.bot_access_code:
-            import random
-
-            self.bot_access_code = f"LILY{random.randint(1000, 9999)}"
+            # Use secrets for cryptographically strong random numbers (Bandit B311)
+            self.bot_access_code = f"LILY{secrets.randbelow(9000) + 1000}"
 
         if not self.qr_token:
             self.qr_token = uuid.uuid4().hex[:16].upper()
@@ -182,7 +182,7 @@ class Master(TimestampMixin, SeoMixin, models.Model):
                 # Check if file is actually a new upload (not a path string)
                 if hasattr(self.photo, "file"):
                     optimize_image(self.photo, max_width=800)
-            except Exception:
+            except Exception:  # nosec: B110
                 pass
 
         super().save(*args, **kwargs)

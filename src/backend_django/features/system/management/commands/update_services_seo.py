@@ -43,7 +43,7 @@ class Command(BaseCommand):
                     if current_value != new_value:
                         setattr(service, field, new_value)
                         has_changes = True
-                except Exception:
+                except Exception:  # nosec: B112
                     continue
 
             if has_changes:

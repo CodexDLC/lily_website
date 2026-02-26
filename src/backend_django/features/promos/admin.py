@@ -111,6 +111,7 @@ class PromoMessageAdmin(ModelAdmin, TranslationAdmin):
             _("Inactive"): "•",
         }
 
+        # nosec: B308, B703 - Admin-only status coloring
         color_classes = mark_safe(colors.get(status, "bg-gray-100 text-gray-700"))
         icon = icons.get(status, "•")
 

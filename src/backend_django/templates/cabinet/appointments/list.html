@@ -24,7 +24,6 @@
     {% for appt in page_obj %}
         {% include "cabinet/appointments/includes/_appointment_card.html" %}
     {% empty %}
-    {% empty %}
     <div class="today-empty">{% trans "No records found" %}</div>
     {% endfor %}
 </div>

@@ -114,5 +114,5 @@ class FeatureDiscoveryService:
             redis_router = getattr(module, "redis_router", None)
             if redis_router and isinstance(redis_router, RedisRouter):
                 bot_redis_dispatcher.include_router(redis_router)
-        except Exception:
+        except Exception:  # nosec: B110
             pass

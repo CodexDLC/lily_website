@@ -86,7 +86,7 @@ class Command(BaseCommand):
                 try:
                     cache.delete_many(list(set(cache_keys_to_delete)))
                     self.stdout.write(self.style.SUCCESS("Cache invalidated."))
-                except Exception:
+                except Exception:  # nosec: B110
                     pass
 
             self.stdout.write(self.style.SUCCESS(f"\nSuccessfully updated {len(masters_to_update)} masters."))

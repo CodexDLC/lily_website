@@ -1,8 +1,8 @@
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 # Настраиваем Jinja2 на текущую папку
 file_loader = FileSystemLoader(".")
-env = Environment(loader=file_loader)
+env = Environment(loader=file_loader, autoescape=select_autoescape(["html", "xml"]))
 
 # Тестовые данные (имитация того, что пришлет воркер)
 context = {

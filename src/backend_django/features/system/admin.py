@@ -73,7 +73,7 @@ class StaticPageSeoAdmin(ModelAdmin, TranslationAdmin):
 
         return format_html(
             '<span class="font-bold {}">{}</span> <small class="opacity-50">({} chars)</small>',
-            mark_safe(color_class),
+            mark_safe(color_class),  # nosec: B308
             title[:50] + "..." if len(title) > 50 else title,
             length,
         )
@@ -82,6 +82,7 @@ class StaticPageSeoAdmin(ModelAdmin, TranslationAdmin):
     def has_description(self, obj):
         if obj.seo_description:
             length = len(obj.seo_description)
+            # nosec: B308
             color_classes = mark_safe("bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400")
             return format_html(
                 '<span class="px-2 py-1 rounded-md text-xs font-medium {}">✓ {} chars</span>',
@@ -93,6 +94,7 @@ class StaticPageSeoAdmin(ModelAdmin, TranslationAdmin):
     @admin.display(description=_("OG Image"))
     def has_image(self, obj):
         if obj.seo_image:
+            # nosec: B308
             color_classes = mark_safe("bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400")
             return format_html('<span class="px-2 py-1 rounded-md text-xs font-medium {}">✓ Yes</span>', color_classes)
         return format_html('<span class="text-gray-400 text-xs">✗ No</span>')
@@ -183,12 +185,15 @@ class SiteSettingsAdmin(ModelAdmin, TranslationAdmin):
         count = sum(1 for s in socials if s)
 
         if count == 4:
+            # nosec: B308
             color_classes = mark_safe("bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400")
             label = f"✓ All ({count}/4)"
         elif count > 0:
+            # nosec: B308
             color_classes = mark_safe("bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400")
             label = f"⚠ {count}/4"
         else:
+            # nosec: B308
             color_classes = mark_safe("bg-gray-100 text-gray-700 dark:bg-gray-500/20 dark:text-gray-400")
             label = "✗ None"
 

@@ -67,6 +67,7 @@ class MasterAdmin(ModelAdmin, TranslationAdmin):
             "active": "bg-green-500/20 text-green-700 dark:text-green-400",
             "vacation": "bg-orange-500/20 text-orange-700 dark:text-orange-400",
         }
+        # nosec: B308, B703 - Admin-only status coloring
         color_classes = mark_safe(colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400"))
         return format_html(
             '<span class="px-2 py-1 rounded-md text-xs font-medium {}">{}</span>',
@@ -97,6 +98,7 @@ class AppointmentAdmin(ModelAdmin):
             "completed": "bg-blue-500/20 text-blue-700 dark:text-blue-400",
             "cancelled": "bg-red-500/20 text-red-700 dark:text-red-400",
         }
+        # nosec: B308, B703 - Admin-only status coloring
         color_classes = mark_safe(colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400"))
         return format_html(
             '<span class="px-2 py-1 rounded-md text-xs font-medium {}">{}</span>',
