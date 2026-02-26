@@ -65,7 +65,11 @@ class SlotService:
         appointments = Appointment.objects.filter(
             master=master,
             datetime_start__date=date_obj,
-            status__in=[Appointment.STATUS_PENDING, Appointment.STATUS_CONFIRMED],
+            status__in=[
+                Appointment.STATUS_PENDING,
+                Appointment.STATUS_CONFIRMED,
+                Appointment.STATUS_RESCHEDULE_PROPOSED,
+            ],
         ).order_by("datetime_start")
 
         # Create a list of busy intervals [start, end] as datetimes

@@ -1,9 +1,11 @@
 """
-API endpoints для управления записями из Telegram Bot.
+API endpoints for managing appointments from Telegram Bot.
 """
 
+import re
 from datetime import timedelta
 
+from core.logger import log
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -13,6 +15,8 @@ from features.booking.schemas.appointment_schemas import (
     AppointmentListResponse,
     CategorySummaryItem,
     CategorySummaryResponse,
+    ExpireRescheduleRequest,
+    ExpireRescheduleResponse,
     ManageAppointmentRequest,
     ManageAppointmentResponse,
     ProposeRescheduleRequest,
@@ -22,16 +26,14 @@ from features.booking.schemas.appointment_schemas import (
 )
 from features.booking.services.slots import SlotService
 from features.system.models.site_settings import SiteSettings
-from loguru import logger as log
 from ninja import Router
 from ninja.security import APIKeyHeader
 
 
 class BotApiKey(APIKeyHeader):
     """
-    X-API-Key аутентификация для Telegram Bot.
-
-    Проверяет наличие общего ключа между Bot и Django (BOT_API_KEY).
+    X-API-Key authentication for Telegram Bot.
+    Checks for a shared key between Bot and Django (BOT_API_KEY).
     """
 
     param_name = "X-API-Key"
@@ -49,32 +51,29 @@ router = Router(auth=BotApiKey())
 @router.post("/appointments/manage/", response=ManageAppointmentResponse)
 def manage_appointment(request, payload: ManageAppointmentRequest):
     """
-    Universal endpoint для управления записью из Telegram Bot.
+    Universal endpoint for managing appointments from Telegram Bot.
+    Protected by X-API-Key authentication.
 
-    Защищен X-API-Key аутентификацией.
-
-    Поддерживает действия:
-    - confirm: подтверждение заявки
-    - cancel: отклонение заявки
+    Supported actions:
+    - confirm: confirm the appointment
+    - cancel: reject the appointment
     """
+    log.debug(f"API: Booking | Action: Manage | appt_id={payload.appointment_id} | action={payload.action}")
     appointment = get_object_or_404(Appointment, id=payload.appointment_id)
 
     from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
 
     if payload.action == "confirm":
-        # Подтверждение заявки
         appointment.status = Appointment.STATUS_CONFIRMED
         appointment.save(update_fields=["status", "updated_at"])
 
         # Sync cache for the notification worker
         NotificationCacheManager.seed_appointment(appointment.id)
 
-        log.info(f"Appointment #{appointment.id} confirmed by Bot admin")
-
-        return ManageAppointmentResponse(success=True, message="Заявка подтверждена", appointment_id=appointment.id)
+        log.info(f"API: Booking | Action: ConfirmSuccess | appt_id={appointment.id}")
+        return ManageAppointmentResponse(success=True, message="Appointment confirmed", appointment_id=appointment.id)
 
     elif payload.action == "cancel":
-        # Отклонение заявки
         appointment.status = Appointment.STATUS_CANCELLED
         appointment.cancelled_at = timezone.now()
         appointment.cancel_reason = payload.cancel_reason or Appointment.CANCEL_REASON_OTHER
@@ -84,28 +83,27 @@ def manage_appointment(request, payload: ManageAppointmentRequest):
         # Sync cache for the notification worker
         NotificationCacheManager.seed_appointment(appointment.id)
 
-        log.info(f"Appointment #{appointment.id} cancelled by admin: {payload.cancel_reason}")
+        log.info(f"API: Booking | Action: CancelSuccess | appt_id={appointment.id} | reason={payload.cancel_reason}")
+        return ManageAppointmentResponse(success=True, message="Appointment cancelled", appointment_id=appointment.id)
 
-        return ManageAppointmentResponse(success=True, message="Заявка отклонена", appointment_id=appointment.id)
-
+    log.warning(f"API: Booking | Action: Manage | status=UnknownAction | action={payload.action}")
     return ManageAppointmentResponse(
-        success=False, message=f"Неизвестное действие: {payload.action}", appointment_id=appointment.id
+        success=False, message=f"Unknown action: {payload.action}", appointment_id=appointment.id
     )
 
 
 @router.get("/slots/", response=SlotsResponse)
 def get_available_slots(request, appointment_id: int):
     """
-    Возвращает доступные слоты для записи начиная с даты отменяемой записи.
-
-    Используется Telegram Bot при предложении альтернативного времени клиенту.
-    Ищет до 5 слотов в диапазоне 7 дней начиная с даты оригинальной записи.
+    Returns available slots for booking starting from the date of the cancelled appointment.
+    Used by Telegram Bot when proposing alternative time to the client.
+    Searches for up to 5 slots within a 7-day range starting from the original appointment date.
     """
+    log.debug(f"API: Booking | Action: GetSlots | appt_id={appointment_id}")
     appointment = get_object_or_404(Appointment, id=appointment_id)
     slot_service = SlotService()
 
     site_settings = SiteSettings.load()
-    booking_url = ""
     url_path = getattr(site_settings, "url_path_booking", None) or "/booking/"
     site_base_url = getattr(site_settings, "site_base_url", "") or ""
     booking_url = f"{site_base_url.rstrip('/')}{url_path}"
@@ -132,66 +130,97 @@ def get_available_slots(request, appointment_id: int):
             datetime_str = f"{check_date.strftime('%d.%m.%Y')} {time_str}"
             collected.append(SlotItem(label=label, datetime_str=datetime_str))
 
+    log.info(f"API: Booking | Action: GetSlotsSuccess | appt_id={appointment_id} | count={len(collected)}")
     return SlotsResponse(slots=collected, booking_url=booking_url)
 
 
 @router.post("/appointments/propose/", response=ProposeRescheduleResponse)
 def propose_reschedule(request, payload: ProposeRescheduleRequest):
     """
-    Отменяет запись (причина: reschedule) и отправляет клиенту email
-    с предложением альтернативного времени и ссылкой на booking.
-
-    Вызывается из Telegram Bot когда admin выбирает слот для предложения.
+    Cancels the appointment (reason: reschedule) and sends an email to the client
+    with a proposal for alternative time and a link to booking.
+    Called from Telegram Bot when admin selects a slot to propose.
     """
+    log.debug(f"API: Booking | Action: ProposeReschedule | appt_id={payload.appointment_id}")
     appointment = get_object_or_404(Appointment, id=payload.appointment_id)
+
+    from features.cabinet.services.appointment_service import AppointmentService
+
+    if not payload.proposed_slots:
+        log.warning(f"API: Booking | Action: ProposeReschedule | status=NoSlots | appt_id={appointment.id}")
+        return ProposeRescheduleResponse(
+            success=False,
+            message="No slots proposed",
+            appointment_id=appointment.id,
+        )
+
+    slot_label = payload.proposed_slots[0]
+
+    # Try to parse DD.MM and HH:MM
+    match = re.search(r"(\d{2}\.\d{2}).*um\s+(\d{2}:\d{2})", slot_label)
+    if not match:
+        log.error(f"API: Booking | Action: ProposeReschedule | status=InvalidFormat | label={slot_label}")
+        return ProposeRescheduleResponse(
+            success=False,
+            message="Invalid slot format",
+            appointment_id=appointment.id,
+        )
+
+    date_part, time_part = match.groups()
+    current_year = timezone.now().year
+    datetime_str = f"{date_part}.{current_year} {time_part}"
+
+    try:
+        AppointmentService.propose_reschedule(appointment=appointment, datetime_str=datetime_str, slot_label=slot_label)
+        log.info(f"API: Booking | Action: ProposeSuccess | appt_id={appointment.id} | slot={slot_label}")
+    except Exception as e:
+        log.error(f"API: Booking | Action: ProposeFailed | appt_id={appointment.id} | error={e}")
+        return ProposeRescheduleResponse(
+            success=False,
+            message=str(e),
+            appointment_id=appointment.id,
+        )
+
+    return ProposeRescheduleResponse(
+        success=True,
+        message="Appointment cancelled, new slot proposed, task enqueued",
+        appointment_id=appointment.id,
+    )
+
+
+@router.post("/appointments/expire/", response=ExpireRescheduleResponse)
+def expire_reschedule(request, payload: ExpireRescheduleRequest):
+    """
+    Cancels an appointment if it is still in RESCHEDULE_PROPOSED
+    or PENDING status after 24 hours.
+    Called from Telegram Bot (via ARQ command).
+    """
+    log.debug(f"API: Booking | Action: Expire | appt_id={payload.appointment_id}")
+    appointment = get_object_or_404(Appointment, id=payload.appointment_id)
+
+    # If it is not in proposed status, that means it was already interacted with
+    if appointment.status not in [Appointment.STATUS_RESCHEDULE_PROPOSED, Appointment.STATUS_PENDING]:
+        log.info(f"API: Booking | Action: ExpireIgnore | appt_id={appointment.id} | status={appointment.status}")
+        return ExpireRescheduleResponse(
+            success=True,
+            message="Appointment already confirmed or cancelled",
+            appointment_id=appointment.id,
+        )
 
     appointment.status = Appointment.STATUS_CANCELLED
     appointment.cancelled_at = timezone.now()
-    appointment.cancel_reason = Appointment.CANCEL_REASON_RESCHEDULE
-    appointment.cancel_note = "Предложено альтернативное время"
+    appointment.cancel_reason = Appointment.CANCEL_REASON_OTHER
+    appointment.cancel_note = "Expired after 24h of no response to proposal."
     appointment.save(update_fields=["status", "cancelled_at", "cancel_reason", "cancel_note", "updated_at"])
-
-    import json
 
     from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
 
     NotificationCacheManager.seed_appointment(appointment.id)
 
-    redis_client = NotificationCacheManager.get_redis_client()
-    raw = redis_client.get(f"{NotificationCacheManager.APPOINTMENT_CACHE_PREFIX}{appointment.id}")
-    cache_data: dict = json.loads(raw) if raw else {}
-    client_email = cache_data.get("client_email") or ""
-
-    if client_email and client_email != "не указан":
-        site_settings = SiteSettings.load()
-        url_path = getattr(site_settings, "url_path_booking", None) or "/booking/"
-        site_base_url = getattr(site_settings, "site_base_url", "") or ""
-        booking_url = f"{site_base_url.rstrip('/')}{url_path}"
-
-        email_data = {
-            **cache_data,
-            "proposed_slots": payload.proposed_slots,
-            "link_reschedule": booking_url,
-        }
-
-        try:
-            from core.arq.client import DjangoArqClient
-
-            DjangoArqClient.enqueue_job(
-                "send_email_task",
-                recipient_email=client_email,
-                subject="Terminvorschlag - Lily Beauty Salon",
-                template_name="reschedule_offer.html",
-                data=email_data,
-            )
-            log.info(f"Reschedule offer email enqueued for appointment #{appointment.id} to {client_email}")
-        except Exception as e:
-            log.error(f"Failed to enqueue reschedule offer email for appointment #{appointment.id}: {e}")
-
-    log.info(f"Appointment #{appointment.id} marked as reschedule by Bot admin")
-    return ProposeRescheduleResponse(
+    log.info(f"API: Booking | Action: ExpireSuccess | appt_id={appointment.id}")
+    return ExpireRescheduleResponse(
         success=True,
-        message="Запись отменена, письмо с предложением отправлено",
+        message="Unconfirmed appointment cancelled (timeout)",
         appointment_id=appointment.id,
     )
 
@@ -199,10 +228,10 @@ def propose_reschedule(request, payload: ProposeRescheduleRequest):
 @router.get("/appointments/summary/", response=CategorySummaryResponse)
 def get_appointments_summary(request):
     """
-    Сводка по категориям услуг: сколько всего/ожидает/завершено.
-
-    Используется Telegram Bot для отображения dashboard записей по категориям.
+    Summary by service categories: total/pending/completed.
+    Used by Telegram Bot for dashboard display.
     """
+    log.debug("API: Booking | Action: GetSummary")
     from features.main.models.category import Category
 
     categories = Category.objects.filter(is_active=True).order_by("order", "title")
@@ -221,16 +250,17 @@ def get_appointments_summary(request):
                 completed=qs.filter(status=Appointment.STATUS_CONFIRMED).count(),
             )
         )
+    log.info(f"API: Booking | Action: GetSummarySuccess | categories_count={len(result)}")
     return CategorySummaryResponse(categories=result)
 
 
 @router.get("/appointments/list/", response=AppointmentListResponse)
 def get_appointments_list(request, category_slug: str, page: int = 1):
     """
-    Список записей по категории с пагинацией (10 на страницу).
-
-    Используется Telegram Bot для отображения записей в выбранной категории.
+    List of appointments by category with pagination (10 per page).
+    Used by Telegram Bot to display appointments in a selected category.
     """
+    log.debug(f"API: Booking | Action: GetList | category={category_slug} | page={page}")
     page_size = 10
     qs = Appointment.objects.filter(service__category__slug=category_slug).order_by("-datetime_start")
     total = qs.count()
@@ -247,4 +277,5 @@ def get_appointments_list(request, category_slug: str, page: int = 1):
         )
         for a in items_qs
     ]
+    log.info(f"API: Booking | Action: GetListSuccess | category={category_slug} | total={total}")
     return AppointmentListResponse(items=items, total=total, page=page, pages=pages)

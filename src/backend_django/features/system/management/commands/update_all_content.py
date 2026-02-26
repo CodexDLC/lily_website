@@ -1,3 +1,4 @@
+from core.logger import log
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
@@ -6,25 +7,34 @@ class Command(BaseCommand):
     help = "Run all content update commands and clear cache"
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.MIGRATE_HEADING(">>> Updating Site Settings..."))
-        call_command("update_site_settings")
+        log.info("Command: update_all_content | Action: Start")
 
-        self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Updating Static Translations (DB Content)..."))
-        call_command("update_static_translations")
+        try:
+            log.debug("Command: update_all_content | Action: SubCommand | name=update_site_settings")
+            call_command("update_site_settings")
 
-        self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Updating Services SEO..."))
-        call_command("update_services_seo")
+            log.debug("Command: update_all_content | Action: SubCommand | name=update_static_translations")
+            call_command("update_static_translations")
 
-        self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Updating Static Pages SEO..."))
-        call_command("update_static_seo")
+            log.debug("Command: update_all_content | Action: SubCommand | name=update_services_seo")
+            call_command("update_services_seo")
 
-        self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Loading Main App Initial Data (Categories)..."))
-        call_command("load_main_data")
+            log.debug("Command: update_all_content | Action: SubCommand | name=update_static_seo")
+            call_command("update_static_seo")
 
-        self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Loading / Updating Services from System Fixtures..."))
-        call_command("load_services")
+            log.debug("Command: update_all_content | Action: SubCommand | name=load_main_data")
+            call_command("load_main_data")
 
-        self.stdout.write(self.style.MIGRATE_HEADING("\n>>> Updating Masters Content..."))
-        call_command("update_masters")
+            log.debug("Command: update_all_content | Action: SubCommand | name=load_services")
+            call_command("load_services")
 
-        self.stdout.write(self.style.SUCCESS("\nAll updates completed. Cache invalidated selectively per change."))
+            log.debug("Command: update_all_content | Action: SubCommand | name=update_masters")
+            call_command("update_masters")
+
+            log.info("Command: update_all_content | Action: Success")
+            self.stdout.write(self.style.SUCCESS("\nAll updates completed. Cache invalidated selectively per change."))
+
+        except Exception as e:
+            log.error(f"Command: update_all_content | Action: Failed | error={e}")
+            self.stdout.write(self.style.ERROR(f"Update failed: {e}"))
+            raise

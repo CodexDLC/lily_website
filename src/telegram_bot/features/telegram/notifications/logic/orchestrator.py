@@ -353,16 +353,13 @@ class NotificationsOrchestrator(BaseBotOrchestrator):
                     session_key=appointment_id,
                 )
 
-            updated_text = (
-                f"❌ Отклонено (предложено время)\n📅 Предложено: {slot_label}\n\n{context.message_text or ''}"
-            )
+            # Return a DTO that deletes the current message since a new appointment ID
+            # was generated for the reschedule offer.
             return UnifiedViewDTO(
-                content=self.ui.render_post_action(updated_text, appointment_id, context.message_thread_id),
+                clean_history=True,
                 chat_id=self.settings.telegram_admin_channel_id,
                 session_key=appointment_id,
-                message_thread_id=context.message_thread_id,
-                mode="edit",
-                alert_text=f"✅ Письмо отправлено: {slot_label}",
+                alert_text=f"✅ Запрос на перенос отправлен: {slot_label}. Создана новая запись.",
             )
         except Exception as e:
             log.error(f"Orchestrator | send_proposal error: {e}")

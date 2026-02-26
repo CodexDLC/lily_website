@@ -1,3 +1,4 @@
+from core.logger import log
 from django.http import Http404
 from django.views.generic import DetailView, TemplateView
 
@@ -15,10 +16,12 @@ class ServicesIndexView(TemplateView):
     template_name = "services/services.html"
 
     def get_context_data(self, **kwargs):
+        log.debug("View: ServicesIndexView | Action: GetContext")
         context = super().get_context_data(**kwargs)
 
         # Get bento_group filter from query params (optional)
         bento_filter = self.request.GET.get("bento", None)
+        log.debug(f"View: ServicesIndexView | Action: Filtering | bento={bento_filter}")
 
         # Get islands (categories grouped by bento_group)
         context["islands"] = CategorySelector.get_for_price_list(bento_group=bento_filter)
@@ -29,6 +32,7 @@ class ServicesIndexView(TemplateView):
         # Filter info for template
         context["bento_filter"] = bento_filter
 
+        log.info(f"View: ServicesIndexView | Action: Success | islands_count={len(context['islands'])}")
         return context
 
 
@@ -45,8 +49,11 @@ class ServiceDetailView(DetailView):
 
     def get_object(self, queryset=None):
         slug = self.kwargs.get(self.slug_url_kwarg)
+        log.debug(f"View: ServiceDetailView | Action: GetObject | slug={slug}")
+
         category = CategorySelector.get_detail(slug)
         if not category:
+            log.warning(f"View: ServiceDetailView | Action: NotFound | slug={slug}")
             raise Http404("Category not found")
         return category
 
@@ -56,4 +63,6 @@ class ServiceDetailView(DetailView):
         current_category = self.get_object()
         all_categories = CategorySelector.get_for_home_bento()
         context["other_categories"] = [cat for cat in all_categories if cat.slug != current_category.slug]
+
+        log.info(f"View: ServiceDetailView | Action: Success | slug={current_category.slug}")
         return context

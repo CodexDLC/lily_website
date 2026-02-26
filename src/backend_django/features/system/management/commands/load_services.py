@@ -1,5 +1,6 @@
 import json
 
+from core.logger import log
 from django.apps import apps
 from django.conf import settings
 from django.core.cache import cache
@@ -23,18 +24,19 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        log.info(f"Command: load_services | Action: Start | clean={options['clean']} | dry_run={options['dry_run']}")
+
         # 1. Path Configuration
         fixtures_dir = settings.BASE_DIR / "features" / "system" / "fixtures" / "content" / "service"
 
         if not fixtures_dir.exists():
+            log.error(f"Command: load_services | Action: Failed | error=Directory not found | path={fixtures_dir}")
             self.stdout.write(self.style.ERROR(f"Directory not found: {fixtures_dir}"))
-            self.stdout.write(
-                self.style.WARNING("Please ensure you created the 'service' subdirectory and moved JSONs there.")
-            )
             return
 
         json_files = list(fixtures_dir.glob("*.json"))
         if not json_files:
+            log.warning(f"Command: load_services | Action: NoFixturesFound | path={fixtures_dir}")
             self.stdout.write(self.style.WARNING(f"No JSON files found in {fixtures_dir}"))
             return
 
@@ -46,21 +48,21 @@ class Command(BaseCommand):
         processed_pks = set()
         affected_category_ids = set()
 
-        self.stdout.write(f"Found {len(json_files)} fixture files.")
+        log.debug(f"Command: load_services | Action: ProcessingFiles | count={len(json_files)}")
 
         try:
             with transaction.atomic():
                 # 2. Iterate and compare
                 for json_file in json_files:
-                    self.stdout.write(f"Processing {json_file.name}...")
+                    log.debug(f"Command: load_services | Action: ReadFile | file={json_file.name}")
 
                     try:
                         with open(json_file, encoding="utf-8") as f:
                             data = json.load(f)
 
                         if not isinstance(data, list):
-                            self.stdout.write(
-                                self.style.WARNING(f"  Skipping {json_file.name}: Expected list, got {type(data)}")
+                            log.warning(
+                                f"Command: load_services | Action: SkipFile | file={json_file.name} | reason=NotAList"
                             )
                             continue
 
@@ -77,7 +79,9 @@ class Command(BaseCommand):
                             processed_pks.add(pk)
 
                             if options["dry_run"]:
-                                self.stdout.write(f"  [DRY-RUN] would process PK {pk}: {fields.get('title')}")
+                                log.debug(
+                                    f"Command: load_services | Action: DryRun | pk={pk} | title={fields.get('title')}"
+                                )
                                 continue
 
                             # Fix for ForeignKey: rename 'category' to 'category_id'
@@ -104,7 +108,9 @@ class Command(BaseCommand):
                                     existing.save()
                                     updated_count += 1
                                     affected_category_ids.add(existing.category_id)
-                                    self.stdout.write(self.style.SUCCESS(f"  [UPDATED] PK {pk}: {existing.title}"))
+                                    log.info(
+                                        f"Command: load_services | Action: Updated | pk={pk} | title={existing.title}"
+                                    )
                                 else:
                                     skipped_count += 1
 
@@ -112,10 +118,12 @@ class Command(BaseCommand):
                                 Service.objects.create(pk=pk, **final_defaults)
                                 created_count += 1
                                 affected_category_ids.add(final_defaults.get("category_id"))
-                                self.stdout.write(self.style.SUCCESS(f"  [CREATED] PK {pk}: {fields.get('title')}"))
+                                log.info(
+                                    f"Command: load_services | Action: Created | pk={pk} | title={fields.get('title')}"
+                                )
 
-                    except json.JSONDecodeError:
-                        self.stdout.write(self.style.ERROR(f"  Error decoding JSON in {json_file.name}"))
+                    except json.JSONDecodeError as e:
+                        log.error(f"Command: load_services | Action: JSONError | file={json_file.name} | error={e}")
 
                 # 3. Clean up (Optional)
                 if options["clean"] and not options["dry_run"]:
@@ -123,24 +131,22 @@ class Command(BaseCommand):
                     to_delete = all_pks - processed_pks
 
                     if to_delete:
-                        # Collect category IDs before deleting
                         deleted_cat_ids = set(
                             Service.objects.filter(pk__in=to_delete).values_list("category_id", flat=True)
                         )
                         affected_category_ids.update(deleted_cat_ids)
                         count = Service.objects.filter(pk__in=to_delete).delete()[0]
-                        self.stdout.write(
-                            self.style.WARNING(f"\n[CLEAN] Deleted {count} services not present in fixtures.")
-                        )
+                        log.warning(f"Command: load_services | Action: CleanUp | deleted_count={count}")
                     else:
-                        self.stdout.write(self.style.SUCCESS("\n[CLEAN] No extraneous services found."))
+                        log.debug("Command: load_services | Action: CleanUp | status=NoExtraneous")
 
         except Exception as e:
+            log.error(f"Command: load_services | Action: Failed | error={e}")
             self.stdout.write(self.style.ERROR(f"An error occurred: {e}"))
             return
 
         if options["dry_run"]:
-            self.stdout.write(self.style.SUCCESS("\nDry run complete. No changes made."))
+            log.info("Command: load_services | Action: DryRunComplete")
             return
 
         # 4. Invalidate only affected cache keys
@@ -156,9 +162,10 @@ class Command(BaseCommand):
             for slug in affected_slugs:
                 keys_to_delete.append(f"category_detail_cache_{slug}")
                 keys_to_delete.append(f"price_list_cache_{slug}")
-            cache.delete_many(keys_to_delete)
-            self.stdout.write(self.style.SUCCESS(f"  Cache invalidated for {len(keys_to_delete)} keys."))
 
-        self.stdout.write(
-            self.style.SUCCESS(f"\nDone! Created: {created_count}, Updated: {updated_count}, Skipped: {skipped_count}")
+            cache.delete_many(keys_to_delete)
+            log.info(f"Command: load_services | Action: CacheInvalidated | keys_count={len(keys_to_delete)}")
+
+        log.info(
+            f"Command: load_services | Action: Success | created={created_count} | updated={updated_count} | skipped={skipped_count}"
         )

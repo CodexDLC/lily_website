@@ -1,9 +1,6 @@
-import logging
-
 from core.arq.client import DjangoArqClient
+from core.logger import log
 from django.utils.translation import gettext as _
-
-logger = logging.getLogger(__name__)
 
 
 class NotificationService:
@@ -16,6 +13,9 @@ class NotificationService:
         """
         Enqueues a task in ARQ to send the reply email directly.
         """
+        log.debug(
+            f"Service: NotificationService | Action: EnqueueReply | request_id={request_id} | recipient={recipient_email}"
+        )
         try:
             DjangoArqClient.enqueue_job(
                 "send_email_task",
@@ -24,9 +24,10 @@ class NotificationService:
                 template_name="reply_to_client.html",
                 data={"request_id": request_id, "reply_text": reply_text},
             )
+            log.info(f"Service: NotificationService | Action: Success | request_id={request_id}")
             return True
         except Exception as e:
-            logger.error(f"Failed to enqueue reply email for request {request_id}: {e}")
+            log.error(f"Service: NotificationService | Action: Failed | request_id={request_id} | error={e}")
             return False
 
     @staticmethod
@@ -34,6 +35,9 @@ class NotificationService:
         """
         Enqueues an automatic receipt confirmation email to the client.
         """
+        log.debug(
+            f"Service: NotificationService | Action: EnqueueReceipt | recipient={recipient_email} | client={client_name}"
+        )
         try:
             subject = _("Wir haben Ihre Anfrage erhalten | LILY Beauty")
             DjangoArqClient.enqueue_job(
@@ -56,7 +60,8 @@ class NotificationService:
                     "signature": _("Mit freundlichen Grüßen,\nIhr LILY Beauty Team"),
                 },
             )
+            log.info(f"Service: NotificationService | Action: Success | recipient={recipient_email}")
             return True
         except Exception as e:
-            logger.error(f"Failed to enqueue receipt email for {recipient_email}: {e}")
+            log.error(f"Service: NotificationService | Action: Failed | recipient={recipient_email} | error={e}")
             return False

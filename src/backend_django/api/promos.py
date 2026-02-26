@@ -7,6 +7,7 @@ Public endpoints (no authentication required):
 - POST /{id}/track-click/ - Track promo click
 """
 
+from core.logger import log
 from features.promos.models import PromoMessage
 from features.promos.services import PromoService
 from ninja import Router, Schema
@@ -65,18 +66,15 @@ class TrackResponse(Schema):
 def get_active_promo(request, page: str | None = None):
     """
     Get the currently active promo for a specific page.
-
-    Args:
-        page: Page slug (e.g., 'home', 'services', 'team'). Optional.
-
-    Returns:
-        PromoMessageResponse if active promo found, 404 otherwise.
     """
+    log.debug(f"API: Promos | Action: GetActive | page={page}")
     promo = PromoService.get_active_promo(page_slug=page)
 
     if not promo:
+        log.debug(f"API: Promos | Action: GetActive | status=NotFound | page={page}")
         return 404, {"detail": "No active promos"}
 
+    log.info(f"API: Promos | Action: GetActive | status=Success | promo_id={promo.id} | page={page}")
     return 200, PromoMessageResponse.from_promo_message(promo, request)
 
 
@@ -84,17 +82,15 @@ def get_active_promo(request, page: str | None = None):
 def track_view(request, promo_id: int):
     """
     Track that a promo was viewed (floating button shown).
-
-    Args:
-        promo_id: ID of the promo message.
-
-    Returns:
-        TrackResponse with success status.
     """
+    log.debug(f"API: Promos | Action: TrackView | promo_id={promo_id}")
+
     if not PromoService.is_promo_active(promo_id):
+        log.warning(f"API: Promos | Action: TrackView | status=Failed | promo_id={promo_id} | reason=NotActive")
         raise HttpError(404, "Promo not found or not active")
 
     PromoService.track_view(promo_id)
+    log.info(f"API: Promos | Action: TrackView | status=Success | promo_id={promo_id}")
 
     return TrackResponse(success=True, message="View tracked")
 
@@ -103,16 +99,14 @@ def track_view(request, promo_id: int):
 def track_click(request, promo_id: int):
     """
     Track that a promo was clicked (modal opened).
-
-    Args:
-        promo_id: ID of the promo message.
-
-    Returns:
-        TrackResponse with success status.
     """
+    log.debug(f"API: Promos | Action: TrackClick | promo_id={promo_id}")
+
     if not PromoService.is_promo_active(promo_id):
+        log.warning(f"API: Promos | Action: TrackClick | status=Failed | promo_id={promo_id} | reason=NotActive")
         raise HttpError(404, "Promo not found or not active")
 
     PromoService.track_click(promo_id)
+    log.info(f"API: Promos | Action: TrackClick | status=Success | promo_id={promo_id}")
 
     return TrackResponse(success=True, message="Click tracked")

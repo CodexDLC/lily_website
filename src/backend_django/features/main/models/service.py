@@ -1,5 +1,4 @@
-import contextlib
-
+from core.logger import log
 from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -78,21 +77,27 @@ class Service(TimestampMixin, ActiveMixin, SeoMixin):
         return self.title
 
     def save(self, *args, **kwargs):
+        log.debug(f"Model: Service | Action: Save | slug={self.slug} | id={self.id}")
+
         if self.image:
+            log.debug(f"Model: Service | Action: OptimizeImage | slug={self.slug}")
             optimize_image(self.image, max_width=1200)
+
         super().save(*args, **kwargs)
 
         # Targeted cache invalidation
-        with contextlib.suppress(Exception):
-            cache.delete_many(
-                [
-                    "active_services_cache",
-                    "popular_services_cache",
-                    "home_bento_cache_v5",  # Clear bento grid because price might have changed
-                    f"service_detail_{self.slug}",
-                    f"category_detail_cache_{self.category.slug}",
-                ]
-            )
+        try:
+            cache_keys = [
+                "active_services_cache",
+                "popular_services_cache",
+                "home_bento_cache_v5",
+                f"service_detail_{self.slug}",
+                f"category_detail_cache_{self.category.slug}",
+            ]
+            cache.delete_many(cache_keys)
+            log.info(f"Model: Service | Action: Success | slug={self.slug} | cache_cleared={len(cache_keys)}")
+        except Exception as e:
+            log.error(f"Model: Service | Action: CacheError | slug={self.slug} | error={e}")
 
 
 class PortfolioImage(TimestampMixin):
@@ -125,14 +130,20 @@ class PortfolioImage(TimestampMixin):
         return f"Image for {self.service.title}"
 
     def save(self, *args, **kwargs):
+        log.debug(f"Model: PortfolioImage | Action: Save | service={self.service.slug}")
+
         if self.image:
             optimize_image(self.image, max_width=1600)
+
         super().save(*args, **kwargs)
+
         # Targeted cache invalidation
-        with contextlib.suppress(Exception):
-            cache.delete_many(
-                [
-                    f"service_detail_{self.service.slug}",
-                    f"category_detail_cache_{self.service.category.slug}",
-                ]
-            )
+        try:
+            cache_keys = [
+                f"service_detail_{self.service.slug}",
+                f"category_detail_cache_{self.service.category.slug}",
+            ]
+            cache.delete_many(cache_keys)
+            log.info(f"Model: PortfolioImage | Action: Success | service={self.service.slug}")
+        except Exception as e:
+            log.error(f"Model: PortfolioImage | Action: CacheError | service={self.service.slug} | error={e}")

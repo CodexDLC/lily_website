@@ -27,39 +27,41 @@ class NotificationCacheManager:
         """
         Fetches appointment data and saves a JSON snapshot to Redis.
         """
+        from django.utils import translation
         from features.booking.models.appointment import Appointment
 
         try:
-            appointment = Appointment.objects.select_related(
-                "client", "master", "service", "service__category", "active_promo"
-            ).get(id=appointment_id)
+            with translation.override("de"):
+                appointment = Appointment.objects.select_related(
+                    "client", "master", "service", "service__category", "active_promo"
+                ).get(id=appointment_id)
 
-            visits_count = Appointment.objects.filter(
-                client=appointment.client, status=Appointment.STATUS_COMPLETED
-            ).count()
+                visits_count = Appointment.objects.filter(
+                    client=appointment.client, status=Appointment.STATUS_COMPLETED
+                ).count()
 
-            # Convert UTC time from DB to local time (Europe/Berlin) before formatting
-            local_dt = timezone.localtime(appointment.datetime_start)
+                # Convert UTC time from DB to local time (Europe/Berlin) before formatting
+                local_dt = timezone.localtime(appointment.datetime_start)
 
-            data = {
-                "id": appointment.id,
-                "client_name": f"{appointment.client.first_name} {appointment.client.last_name}",
-                "first_name": appointment.client.first_name,
-                "last_name": appointment.client.last_name,
-                "client_phone": appointment.client.phone or "не указан",
-                "client_email": appointment.client.email or "не указан",
-                "service_name": appointment.service.title,
-                "master_name": appointment.master.name,
-                "datetime": local_dt.strftime("%d.%m.%Y %H:%M"),
-                "duration_minutes": appointment.duration_minutes,
-                "price": float(appointment.price),
-                "request_call": False,
-                "client_notes": appointment.client_notes or "",
-                "visits_count": visits_count,
-                "category_slug": appointment.service.category.slug if appointment.service.category else None,
-                "active_promo_id": appointment.active_promo.id if appointment.active_promo else None,
-                "active_promo_title": appointment.active_promo.title if appointment.active_promo else None,
-            }
+                data = {
+                    "id": appointment.id,
+                    "client_name": f"{appointment.client.first_name} {appointment.client.last_name}",
+                    "first_name": appointment.client.first_name,
+                    "last_name": appointment.client.last_name,
+                    "client_phone": appointment.client.phone or "",
+                    "client_email": appointment.client.email or "",
+                    "service_name": appointment.service.title,
+                    "master_name": appointment.master.name,
+                    "datetime": local_dt.strftime("%d.%m.%Y %H:%M"),
+                    "duration_minutes": appointment.duration_minutes,
+                    "price": float(appointment.price),
+                    "request_call": False,
+                    "client_notes": appointment.client_notes or "",
+                    "visits_count": visits_count,
+                    "category_slug": appointment.service.category.slug if appointment.service.category else None,
+                    "active_promo_id": appointment.active_promo.id if appointment.active_promo else None,
+                    "active_promo_title": appointment.active_promo.title if appointment.active_promo else None,
+                }
 
             if extra_data:
                 data.update(extra_data)
@@ -90,7 +92,7 @@ class NotificationCacheManager:
                 "request_id": request.id,
                 "first_name": request.client.first_name,
                 "last_name": request.client.last_name,
-                "contact_value": request.client.phone or request.client.email or "не указан",
+                "contact_value": request.client.phone or request.client.email or "n/a",
                 "contact_type": "phone" if request.client.phone else "email",
                 "topic": request.get_topic_display(),
                 "message": request.message,

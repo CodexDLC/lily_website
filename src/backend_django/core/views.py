@@ -1,3 +1,4 @@
+from core.logger import log
 from django.conf import settings
 from django.template.exceptions import TemplateDoesNotExist
 from django.utils import translation
@@ -9,6 +10,7 @@ class LLMSTextView(TemplateView):
 
     def get_template_names(self):
         current_language = translation.get_language()
+        log.debug(f"View: LLMSTextView | Action: GetTemplate | lang={current_language}")
         return [f"llms_{current_language}.txt"]
 
     def render_to_response(self, context, **response_kwargs):
@@ -16,6 +18,9 @@ class LLMSTextView(TemplateView):
         try:
             return super().render_to_response(context, **response_kwargs)
         except TemplateDoesNotExist:
+            log.warning(
+                f"View: LLMSTextView | Action: Fallback | lang={translation.get_language()} | fallback={settings.LANGUAGE_CODE}"
+            )
             # Fallback to default language (e.g., German) if specific language template not found
             return TemplateView.as_view(template_name=f"llms_{settings.LANGUAGE_CODE}.txt", content_type="text/plain")(
                 self.request

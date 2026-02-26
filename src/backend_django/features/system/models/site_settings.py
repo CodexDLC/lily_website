@@ -76,7 +76,9 @@ class SiteSettings(models.Model):
     url_path_cancel = models.CharField(
         _("Booking Cancel URL Path"), max_length=255, default="/appointments/cancel/{token}/"
     )
-    url_path_reschedule = models.CharField(_("Booking Reschedule URL Path"), max_length=255, default="/booking/")
+    url_path_reschedule = models.CharField(
+        _("Booking Reschedule URL Path"), max_length=255, default="/cabinet/appointments/reschedule/{token}/"
+    )
 
     # --- Hiring / Vacancies ---
     hiring_active = models.BooleanField(

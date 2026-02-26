@@ -49,6 +49,7 @@ class Appointment(TimestampMixin, models.Model):
     STATUS_COMPLETED = "completed"
     STATUS_CANCELLED = "cancelled"
     STATUS_NO_SHOW = "no_show"
+    STATUS_RESCHEDULE_PROPOSED = "reschedule_proposed"
 
     STATUS_CHOICES = [
         (STATUS_PENDING, _("Pending Confirmation")),
@@ -56,10 +57,11 @@ class Appointment(TimestampMixin, models.Model):
         (STATUS_COMPLETED, _("Completed")),
         (STATUS_CANCELLED, _("Cancelled")),
         (STATUS_NO_SHOW, _("No Show")),
+        (STATUS_RESCHEDULE_PROPOSED, _("Reschedule Proposed")),
     ]
 
     status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING, db_index=True, verbose_name=_("Status")
+        max_length=30, choices=STATUS_CHOICES, default=STATUS_PENDING, db_index=True, verbose_name=_("Status")
     )
 
     # === Booking Source ===
@@ -175,7 +177,7 @@ class Appointment(TimestampMixin, models.Model):
                 master=self.master,
                 datetime_start__lt=self.datetime_end,
                 datetime_start__gt=self.datetime_start - timedelta(minutes=self.duration_minutes or 60),
-                status__in=[self.STATUS_PENDING, self.STATUS_CONFIRMED],
+                status__in=[self.STATUS_PENDING, self.STATUS_CONFIRMED, self.STATUS_RESCHEDULE_PROPOSED],
             ).exists()
 
             if conflicts:

@@ -7,17 +7,17 @@
 <!-- Stat cards -->
 <div class="dashboard-grid">
 
-    <div class="stat-card {% if pending_count > 0 %}stat-card--alert{% endif %}">
+    <a href="{% url 'cabinet:appointments' %}?status=pending" class="stat-card {% if pending_count > 0 %}stat-card--alert{% endif %}">
         <div class="stat-card-icon">⏳</div>
         <div class="stat-card-value">{{ pending_count }}</div>
         <div class="stat-card-label">{% trans "Pending" %}</div>
-    </div>
+    </a>
 
-    <div class="stat-card stat-card--success">
+    <a href="{% url 'cabinet:appointments' %}?date=today" class="stat-card stat-card--success">
         <div class="stat-card-icon">✅</div>
         <div class="stat-card-value">{{ today_confirmed }}</div>
         <div class="stat-card-label">{% trans "Today" %}</div>
-    </div>
+    </a>
 
     <div class="stat-card">
         <div class="stat-card-icon">💰</div>
@@ -25,11 +25,16 @@
         <div class="stat-card-label">{% trans "Month Revenue" %}</div>
     </div>
 
-    <div class="stat-card">
+    <a href="{% url 'cabinet:clients' %}" class="stat-card">
         <div class="stat-card-icon">👤</div>
-        <div class="stat-card-value">{{ new_clients_week }}</div>
-        <div class="stat-card-label">{% trans "New this week" %}</div>
-    </div>
+        <div class="stat-card-value-group">
+            <span class="stat-card-value">{{ total_clients_count }}</span>
+            {% if new_clients_week > 0 %}
+            <span class="stat-card-trend" title="{% trans 'New this week' %}">+{{ new_clients_week }}</span>
+            {% endif %}
+        </div>
+        <div class="stat-card-label">{% trans "Clients" %}</div>
+    </a>
 
 </div>
 

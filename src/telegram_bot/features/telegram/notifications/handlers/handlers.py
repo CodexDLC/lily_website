@@ -1,5 +1,6 @@
 from aiogram import Router
 from aiogram.types import CallbackQuery
+from loguru import logger
 
 from src.telegram_bot.core.container import BotContainer
 from src.telegram_bot.services.director.director import Director
@@ -14,21 +15,31 @@ async def handle_action_approve(
     call: CallbackQuery, callback_data: NotificationsCallback, state, container: BotContainer
 ):
     """
-    Единый хендлер для всех callback-действий уведомлений.
+    Unified handler for all notification callback actions.
     """
+    user_id = call.from_user.id
+    logger.info(
+        f"Bot: Notifications | Action: Callback | user_id={user_id} | action={callback_data.action} | session_id={callback_data.session_id}"
+    )
+
     await call.answer()
 
     orchestrator = container.features.get("notifications")
     if not orchestrator:
+        logger.error("Bot: Notifications | Action: Callback | error=OrchestratorNotFound")
         return
 
-    # Инициализируем Директора (хотя в этой фиче навигация пока не используется)
-    director = Director(container, state, call.from_user.id)
-    orchestrator.set_director(director)
+    try:
+        # Initialize Director
+        director = Director(container, state, user_id)
+        orchestrator.set_director(director)
 
-    # Вызываем бизнес-логику
-    view_dto = await orchestrator.handle_action(callback_data, call)
+        # Call business logic
+        view_dto = await orchestrator.handle_action(callback_data, call)
 
-    # Отправляем ответ через ViewSender
-    if container.view_sender:
-        await container.view_sender.send(view_dto)
+        # Send response via ViewSender
+        if container.view_sender:
+            await container.view_sender.send(view_dto)
+            logger.debug(f"Bot: Notifications | Action: CallbackSuccess | user_id={user_id}")
+    except Exception as e:
+        logger.error(f"Bot: Notifications | Action: CallbackFailed | user_id={user_id} | error={e}")

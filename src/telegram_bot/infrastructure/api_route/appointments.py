@@ -28,3 +28,14 @@ class AppointmentsApiProvider:
             "GET",
             f"/api/v1/booking/appointments/list/?category_slug={category_slug}&page={page}",
         )
+
+    async def expire_reschedule(self, appointment_id: int) -> dict:
+        """
+        Отправляет команду на истечение срока переноса записи.
+        """
+        log.debug(f"AppointmentsApiProvider | Requesting expire reschedule for ID={appointment_id}")
+        return await self.api_client._request(
+            "POST",
+            "/api/v1/booking/appointments/expire/",
+            json={"appointment_id": appointment_id},
+        )

@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 
+from core.logger import log
 from django.db.models import Sum
 from django.utils import timezone
 from django.views.generic import TemplateView
@@ -12,6 +13,7 @@ class DashboardView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
     template_name = "cabinet/dashboard/index.html"
 
     def get_context_data(self, **kwargs):
+        log.debug(f"View: DashboardView | Action: GetContext | user={self.request.user.id}")
         ctx = super().get_context_data(**kwargs)
         ctx["active_section"] = "dashboard"
         from features.booking.models import Appointment, Client
@@ -20,6 +22,7 @@ class DashboardView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
         month_start = today.replace(day=1)
         week_ago = today - timedelta(days=7)
 
+        # Statistics
         ctx["today_confirmed"] = Appointment.objects.filter(
             datetime_start__date=today, status=Appointment.STATUS_CONFIRMED
         ).count()
@@ -31,6 +34,7 @@ class DashboardView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
             ).aggregate(total=Sum("price"))["total"]
             or 0
         )
+        ctx["total_clients_count"] = Client.objects.count()
         ctx["new_clients_week"] = Client.objects.filter(created_at__date__gte=week_ago).count()
 
         # Upcoming appointments today
@@ -39,5 +43,9 @@ class DashboardView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
             .exclude(status=Appointment.STATUS_CANCELLED)
             .select_related("client", "master", "service")
             .order_by("datetime_start")
+        )
+
+        log.info(
+            f"View: DashboardView | Action: Success | pending={ctx['pending_count']} | today_confirmed={ctx['today_confirmed']}"
         )
         return ctx

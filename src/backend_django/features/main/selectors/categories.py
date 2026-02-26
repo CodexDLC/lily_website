@@ -1,4 +1,5 @@
 from core.cache import get_cached_data
+from core.logger import log
 from django.db.models import Count, Min, Prefetch, Q
 from features.booking.models import Master
 
@@ -17,8 +18,10 @@ class CategorySelector:
         """
         Returns categories grouped by bento_group for displaying bento cards on home page.
         """
+        log.debug("Selector: CategorySelector | Action: GetBentoGroups")
 
         def fetch():
+            log.debug("Selector: CategorySelector | Action: FetchDB | target=BentoGroups")
             categories = (
                 Category.objects.filter(is_active=True)
                 .only("title", "slug", "image", "bento_group", "is_planned", "description", "order")
@@ -38,8 +41,10 @@ class CategorySelector:
         Includes active_masters_count to determine 'Coming Soon' status.
         Annotates with min_price from active services, excluding add-ons.
         """
+        log.debug("Selector: CategorySelector | Action: GetForHomeBento")
 
         def fetch():
+            log.debug("Selector: CategorySelector | Action: FetchDB | target=HomeBento")
             return list(
                 Category.objects.filter(is_active=True)
                 .annotate(
@@ -58,8 +63,10 @@ class CategorySelector:
         """
         Returns list of categories with their services.
         """
+        log.debug(f"Selector: CategorySelector | Action: GetForPriceList | bento_group={bento_group}")
 
         def fetch():
+            log.debug(f"Selector: CategorySelector | Action: FetchDB | target=PriceList | group={bento_group}")
             services_prefetch = Prefetch(
                 "services",
                 queryset=Service.objects.filter(is_active=True).order_by("order", "title"),
@@ -77,8 +84,10 @@ class CategorySelector:
         """
         Returns a single category with all its services and masters.
         """
+        log.debug(f"Selector: CategorySelector | Action: GetDetail | slug={slug}")
 
         def fetch():
+            log.debug(f"Selector: CategorySelector | Action: FetchDB | target=CategoryDetail | slug={slug}")
             try:
                 services_prefetch = Prefetch(
                     "services",
@@ -94,6 +103,7 @@ class CategorySelector:
                     .get(slug=slug)
                 )
             except Category.DoesNotExist:
+                log.warning(f"Selector: CategorySelector | Action: NotFound | slug={slug}")
                 return None
 
         return get_cached_data(f"category_detail_cache_{slug}", fetch)

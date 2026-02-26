@@ -97,6 +97,7 @@ class AppointmentAdmin(ModelAdmin):
             "confirmed": "bg-green-500/20 text-green-700 dark:text-green-400",
             "completed": "bg-blue-500/20 text-blue-700 dark:text-blue-400",
             "cancelled": "bg-red-500/20 text-red-700 dark:text-red-400",
+            "reschedule_proposed": "bg-purple-500/20 text-purple-700 dark:text-purple-400",
         }
         # nosec: B308, B703 - Admin-only status coloring
         color_classes = mark_safe(colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400"))

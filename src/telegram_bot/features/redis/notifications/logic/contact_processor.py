@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 
 class ContactProcessor:
     """
-    Процессор для обработки уведомлений из контактной формы.
-    Отправляет превью-сообщение с кнопкой "Открыть бота" в основной чат (General).
+    Processor for handling contact form notifications.
+    Sends a preview message with an "Open Bot" button to the main channel (General).
     """
 
     def __init__(self, settings: BotSettings, container: "BotContainer"):
@@ -23,31 +23,35 @@ class ContactProcessor:
         self.container = container
 
     async def handle_notification(self, raw_payload: dict[str, Any]) -> UnifiedViewDTO:
-        """Обрабатывает входящее уведомление из контактной формы."""
+        """Processes incoming contact form notification."""
         from ..resources.dto import ContactNotificationPayload
+
+        log.debug(f"Bot: ContactProcessor | Action: HandleNotification | request_id={raw_payload.get('request_id')}")
 
         try:
             payload = ContactNotificationPayload(**raw_payload)
         except Exception as e:
-            log.error(f"ContactProcessor | Validation error: {e}")
+            log.error(f"Bot: ContactProcessor | Action: ValidationFailed | error={e} | payload={raw_payload}")
             return self.handle_failure(raw_payload, str(e))
 
         request_id = payload.request_id
 
-        # Для контактных форм принудительно используем General (без топика)
+        # For contact forms, we force use General (no topic)
         message_thread_id = None
 
         # Fetch bot user name dynamically
         bot_username = await self.container.site_settings.get_field("telegram_bot_username")
         if not bot_username or not str(bot_username).strip():
+            log.warning("Bot: ContactProcessor | Action: GetBotUsername | status=NotFound | using_fallback")
             bot_username = ""  # fallback
 
-        # Краткое превью в канал (текст берется из Texts)
+        # Short preview for the channel
         text = format_contact_preview()
 
-        # Кнопки: «Открыть бота» и «Удалить»
+        # Buttons: "Open Bot" and "Delete"
         kb = build_contact_preview_kb(request_id=request_id, bot_username=bot_username, topic_id=message_thread_id)
 
+        log.info(f"Bot: ContactProcessor | Action: Success | request_id={request_id}")
         return UnifiedViewDTO(
             content=ViewResultDTO(text=text, kb=kb),
             chat_id=self.settings.telegram_admin_channel_id,
@@ -58,7 +62,8 @@ class ContactProcessor:
 
     def handle_failure(self, raw_payload: dict[str, Any], error_msg: str) -> UnifiedViewDTO:
         request_id = raw_payload.get("request_id", "???")
-        text = f"⚠️ <b>Ошибка обработки заявки #{request_id}</b>\n<b>Ошибка:</b> {error_msg}"
+        log.error(f"Bot: ContactProcessor | Action: FailureHandled | request_id={request_id} | error={error_msg}")
+        text = f"⚠️ <b>Error processing contact request #{request_id}</b>\n<b>Error:</b> {error_msg}"
         return UnifiedViewDTO(
             content=ViewResultDTO(text=text),
             chat_id=self.settings.telegram_admin_channel_id,

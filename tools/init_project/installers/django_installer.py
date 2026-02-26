@@ -14,7 +14,7 @@ Flow:
   - settings/ папка (base_module/dev/prod) вместо settings.py
   - features/ вместо apps в корне
   - views/ и models/ как папки, не файлы
-  - selectors/ слой для чтения данных
+  - selector/ слой для чтения данных
 """
 
 from __future__ import annotations
@@ -93,10 +93,10 @@ class DjangoInstaller(BaseInstaller):
     # ─────────────────────────────────────────
 
     def _create_feature_main(self, backend_dir: Path, project_name: str) -> None:
-        """Создаёт features/main/ — стартовая feature с views/ и selectors/."""
+        """Создаёт features/main/ — стартовая feature с views/ и selector/."""
         feat_dir = backend_dir / "features" / "main"
         views_dir = feat_dir / "views"
-        selectors_dir = feat_dir / "selectors"
+        selectors_dir = feat_dir / "selector"
         migrations_dir = feat_dir / "migrations"
 
         for d in [views_dir, selectors_dir, migrations_dir]:
@@ -130,13 +130,13 @@ class DjangoInstaller(BaseInstaller):
         (views_dir / "__init__.py").write_text("", encoding="utf-8")
         self._render(tpl / "home_view.py.tpl", views_dir / "home.py", project_name)
 
-        # selectors/__init__.py
+        # selector/__init__.py
         (selectors_dir / "__init__.py").write_text("", encoding="utf-8")
 
         # migrations/__init__.py
         (migrations_dir / "__init__.py").write_text("", encoding="utf-8")
 
-        print("    ✅ features/main/ (views/, selectors/, urls)")
+        print("    ✅ features/main/ (views/, selector/, urls)")
 
     def _create_feature_system(self, backend_dir: Path, project_name: str) -> None:
         """Создаёт features/system/ — сервисные модели (mixins, tags и т.д.)."""

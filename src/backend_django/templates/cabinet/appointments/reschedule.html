@@ -1,0 +1,67 @@
+{% extends cabinet_base_template|default:"cabinet/base_cabinet.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Reschedule Appointment" %}{% endblock title %}
+
+{% block content %}
+    <div class="cabinet-card mx-auto reschedule-card-wide" id="reschedule-main-card">
+        <h2 class="mb-4 text-center font-serif italic text-gold-italic">
+            {% trans "Reschedule Appointment" %}
+        </h2>
+
+        {% if not valid_token %}
+            <div class="alert alert-danger text-center">
+                {{ error_message|default:"Извините, эта ссылка уже недействительна или время истекло." }}
+            </div>
+        {% else %}
+            <div class="reschedule-info text-center reschedule-info-box">
+                <h4 class="proposed-time-title">
+                    {% trans "Proposed Time" %}
+                </h4>
+
+                <div class="info-stack">
+                    <div class="info-item">
+                        <span class="info-label">{% trans "Service" %}</span>
+                        <span class="info-value-large">{{ appointment.service.title }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">{% trans "Master" %}</span>
+                        <span class="info-value-large">{{ appointment.master.name }}</span>
+                    </div>
+                </div>
+
+                <div class="proposed-slot-container">
+                    <span class="slot-highlight">{{ proposed_slot }}</span>
+                </div>
+            </div>
+
+            <!-- Option 1: Confirm proposed -->
+            <form hx-post="{% url 'cabinet:reschedule_appointment' token %}" hx-target="#reschedule-main-card" class="text-center">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="confirm">
+                <button type="submit" class="btn-confirm-main">
+                    {% trans "CONFIRM PROPOSED TIME" %}
+                </button>
+            </form>
+
+            <div class="separator-container d-flex align-items-center justify-content-center">
+                <div class="separator-line"></div>
+                <span class="separator-text">{% trans "OR" %}</span>
+                <div class="separator-line"></div>
+            </div>
+
+            <!-- Option 2: Choose another time -->
+            <div class="text-center">
+                <button class="btn-ghost-pill"
+                        hx-get="{% url 'cabinet:reschedule_appointment' token %}"
+                        hx-vals='{"action": "load_calendar"}'
+                        hx-target="#reschedule-picker">
+                    📅 {% trans "CHOOSE ANOTHER TIME" %}
+                </button>
+            </div>
+
+            <!-- HTMX target for calendar and slots -->
+            <div id="reschedule-picker" class="mt-4"></div>
+        {% endif %}
+    </div>
+{% endblock content %}
