@@ -33,7 +33,25 @@
         {% csrf_token %}
         <input type="hidden" name="id" value="{{ appt.id }}">
         <div class="card-edit-row">
-            <select class="card-edit-select" name="status" id="status-{{ appt.id }}">
+            <select class="card-edit-select" name="status" id="status-{{ appt.id }}"
+                    onchange="
+                        const colors = {
+                            'pending': {bg: '#f59e0b', color: '#fff'},
+                            'confirmed': {bg: '#4ade80', color: '#000'},
+                            'completed': {bg: '#94a3b8', color: '#fff'},
+                            'cancelled': {bg: '#f87171', color: '#fff'},
+                            'reschedule_proposed': {bg: '#a855f7', color: '#fff'}
+                        };
+                        const s = colors[this.value];
+                        if(s) {
+                            this.style.backgroundColor = s.bg;
+                            this.style.color = s.color;
+                        } else {
+                            this.style.backgroundColor = '';
+                            this.style.color = '';
+                        }
+                    "
+            >
                 {% for code, label in status_choices %}
                 <option value="{{ code }}" {% if appt.status == code %}selected{% endif %}>
                     {{ label }}
@@ -43,6 +61,14 @@
         </div>
         <textarea class="card-edit-textarea" name="admin_notes" id="notes-{{ appt.id }}"
             placeholder="{% trans "Admin Notes (Admin only)" %}">{{ appt.admin_notes|default:"" }}</textarea>
+
+        <script>
+            // Set initial color when edit panel is opened
+            setTimeout(() => {
+                const el = document.getElementById('status-{{ appt.id }}');
+                if (el && el.onchange) { el.onchange(); }
+            }, 50);
+        </script>
         <div class="card-actions">
             <button type="submit" class="btn-card-save">{% trans "Save" %}</button>
             <button type="button" class="btn-card-edit" onclick='toggleEdit("{{ appt.id }}")'>{% trans "Cancel" %}</button>
@@ -55,9 +81,9 @@
         <button class="btn-mgmt btn-approve"
                 hx-post="{% url 'cabinet:appointments' %}"
                 hx-vals='{"id": "{{ appt.id }}", "action": "approve"}'
+                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                 hx-target="#appt-{{ appt.id }}"
-                hx-swap="outerHTML"
-                hx-confirm="{% trans "Confirm this appointment?" %}">
+                hx-swap="outerHTML">
             ✅ {% trans "Approve" %}
         </button>
         <button class="btn-mgmt btn-reject" onclick="toggleMgmtPanel('reasons-{{ appt.id }}')">
@@ -75,22 +101,26 @@
             {% with appt_id=appt.id %}
             <button class="mgmt-btn" hx-post="{% url "cabinet:appointments" %}"
                     hx-vals='{"id": "{{ appt_id }}", "action": "cancel", "reason_code": "master_busy", "reason_text": "Leider ist der gewünschte Termin bereits vergeben."}'
-                    hx-target="#appt-{{ appt_id }}" hx-swap="outerHTML" hx-confirm="{% trans "Cancel this appointment and notify client?" %}">
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                    hx-target="#appt-{{ appt_id }}" hx-swap="outerHTML">
                 🕒 {% trans "Master Busy" %}
             </button>
             <button class="mgmt-btn" hx-post="{% url "cabinet:appointments" %}"
                     hx-vals='{"id": "{{ appt_id }}", "action": "cancel", "reason_code": "master_ill", "reason_text": "Leider muss der Termin aufgrund einer Erkrankung verschoben werden."}'
-                    hx-target="#appt-{{ appt_id }}" hx-swap="outerHTML" hx-confirm="{% trans "Cancel this appointment and notify client?" %}">
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                    hx-target="#appt-{{ appt_id }}" hx-swap="outerHTML">
                 🤒 {% trans "Master Ill" %}
             </button>
             <button class="mgmt-btn" hx-post="{% url "cabinet:appointments" %}"
                     hx-vals='{"id": "{{ appt_id }}", "action": "cancel", "reason_code": "no_materials", "reason_text": "Leider fehlen derzeit die notwendigen Materialien."}'
-                    hx-target="#appt-{{ appt_id }}" hx-swap="outerHTML" hx-confirm="{% trans "Cancel this appointment and notify client?" %}">
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                    hx-target="#appt-{{ appt_id }}" hx-swap="outerHTML">
                 📦 {% trans "No Materials" %}
             </button>
             <button class="mgmt-btn" hx-post="{% url "cabinet:appointments" %}"
-                    hx-vals='{"id": "{{ appt_id }}", "action": "cancel", "reason_code": "client_blacklist", "reason_text": "Leider können wir Ihre Anfrage nicht annehmen."}'
-                    hx-target="#appt-{{ appt_id }}" hx-swap="outerHTML" hx-confirm="{% trans "Cancel this appointment and notify client?" %}">
+                    hx-vals='{"id": "{{ appt_id }}", "action": "cancel", "reason_code": "client_blacklist", "reason_text": "Leider können wir Ihre Anfrage не принимать."}'
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                    hx-target="#appt-{{ appt_id }}" hx-swap="outerHTML">
                 🚫 {% trans "Blacklist" %}
             </button>
             {% endwith %}

@@ -5,6 +5,7 @@ from loguru import logger as log
 from src.telegram_bot.core.config import BotSettings
 from src.telegram_bot.services.base import UnifiedViewDTO, ViewResultDTO
 
+from ..contracts.contract import AppointmentsDataProvider
 from ..resources.dto import BookingNotificationPayload
 from ..ui.ui import NotificationsUI
 
@@ -14,17 +15,23 @@ if TYPE_CHECKING:
 
 class BookingProcessor:
     """
-    Процессор для обработки уведомлений о бронировании.
-    Вынесен из NotificationsOrchestrator для разделения ответственности.
+    Processor for handling booking notifications.
+    Separated from NotificationsOrchestrator for better responsibility division.
     """
 
-    def __init__(self, settings: BotSettings, container: "BotContainer"):
+    def __init__(
+        self,
+        settings: BotSettings,
+        container: "BotContainer",
+        appointments_provider: AppointmentsDataProvider | None = None,
+    ):
         self.settings = settings
         self.container = container
         self.ui = NotificationsUI()
+        self.appointments_provider = appointments_provider
 
     def _get_target_topic(self, payload: BookingNotificationPayload) -> int | None:
-        """Вычисляет ID топика на основе категории услуги."""
+        """Calculates topic ID based on service category."""
         message_thread_id = self.settings.telegram_notification_topic_id
         if payload.category_slug and self.settings.telegram_topics:
             topic_id = self.settings.telegram_topics.get(payload.category_slug)
@@ -33,16 +40,18 @@ class BookingProcessor:
         return message_thread_id
 
     def handle_notification(self, raw_payload: dict[str, Any]) -> UnifiedViewDTO:
-        """Обрабатывает входящее уведомление о новой записи."""
+        """Processes incoming notification about a new booking."""
+        log.debug(f"Bot: BookingProcessor | Action: HandleNotification | appt_id={raw_payload.get('id')}")
         try:
             payload = BookingNotificationPayload(**raw_payload)
         except Exception as e:
-            log.error(f"BookingProcessor | Validation error: {e}")
+            log.error(f"Bot: BookingProcessor | Action: ValidationFailed | error={e} | payload={raw_payload}")
             return self.handle_failure(raw_payload, str(e))
 
         message_thread_id = self._get_target_topic(payload)
         view_result = self.ui.render_notification(payload, topic_id=message_thread_id)
 
+        log.info(f"Bot: BookingProcessor | Action: Success | appt_id={payload.id} | topic={message_thread_id}")
         return UnifiedViewDTO(
             content=view_result,
             chat_id=self.settings.telegram_admin_channel_id,
@@ -53,47 +62,55 @@ class BookingProcessor:
 
     async def handle_status_update(self, message_data: dict[str, Any]) -> UnifiedViewDTO | None:
         """
-        Обрабатывает обновление статуса (Email/SMS) от воркера.
-        Сохраняет статусы в кэш, чтобы избежать гонки и корректно обновить UI.
+        Handles status updates (Email/SMS) from the worker.
+        Saves statuses to cache to avoid race conditions and correctly update UI.
         """
         appointment_id = message_data.get("appointment_id")
-        if not appointment_id:
-            return None
-
-        # 1. Достаем текущие данные из кэша
-        appointment_cache = await self.container.redis.appointment_cache.get(appointment_id)
-        if not appointment_cache:
-            log.warning(f"BookingProcessor | No cache for {appointment_id}.")
-            return None
-
-        # 2. Обновляем статус конкретного канала в данных кэша
         channel = message_data.get("channel")
         status = message_data.get("status")
 
+        log.debug(
+            f"Bot: BookingProcessor | Action: StatusUpdate | appt_id={appointment_id} | channel={channel} | status={status}"
+        )
+
+        if not appointment_id:
+            log.warning("Bot: BookingProcessor | Action: StatusUpdate | error=NoAppointmentID")
+            return None
+
+        # 1. Get current data from cache
+        appointment_cache = await self.container.redis.appointment_cache.get(appointment_id)
+        if not appointment_cache:
+            log.warning(f"Bot: BookingProcessor | Action: StatusUpdate | error=NoCacheFound | appt_id={appointment_id}")
+            return None
+
+        # 2. Update specific channel status in cache data
         if channel == "email":
             appointment_cache["email_delivery_status"] = status
         elif channel == "twilio":
             appointment_cache["twilio_delivery_status"] = status
 
-        # 3. Сохраняем обновленные данные обратно в кэш
+        # 3. Save updated data back to cache
         await self.container.redis.appointment_cache.save(appointment_id, appointment_cache)
 
         try:
             payload = BookingNotificationPayload(**appointment_cache)
         except Exception as e:
-            log.error(f"BookingProcessor | Cache validation error: {e}")
+            log.error(f"Bot: BookingProcessor | Action: CacheValidationFailed | appt_id={appointment_id} | error={e}")
             return None
 
-        # 4. Вычисляем топик и получаем все статусы из кэша
+        # 4. Calculate topic and get all statuses from cache
         message_thread_id = self._get_target_topic(payload)
         email_status = appointment_cache.get("email_delivery_status", "waiting")
         twilio_status = appointment_cache.get("twilio_delivery_status", "waiting")
 
-        # 5. Рендерим ПОЛНУЮ карточку заново с актуальными галочками
+        # 5. Re-render FULL card with actual status icons
         view_result = self.ui.render_notification(
             payload, topic_id=message_thread_id, email_status=email_status, twilio_status=twilio_status
         )
 
+        log.info(
+            f"Bot: BookingProcessor | Action: UIUpdated | appt_id={appointment_id} | email={email_status} | twilio={twilio_status}"
+        )
         return UnifiedViewDTO(
             content=view_result,
             chat_id=self.settings.telegram_admin_channel_id,
@@ -104,7 +121,8 @@ class BookingProcessor:
 
     def handle_failure(self, raw_payload: dict[str, Any], error_msg: str) -> UnifiedViewDTO:
         booking_id = raw_payload.get("id", "???")
-        text = f"⚠️ <b>Ошибка обработки уведомления #{booking_id}</b>\n<b>Ошибка:</b> {error_msg}"
+        log.error(f"Bot: BookingProcessor | Action: FailureHandled | appt_id={booking_id} | error={error_msg}")
+        text = f"⚠️ <b>Error processing notification #{booking_id}</b>\n<b>Error:</b> {error_msg}"
         return UnifiedViewDTO(
             content=ViewResultDTO(text=text),
             chat_id=self.settings.telegram_admin_channel_id,
@@ -112,3 +130,27 @@ class BookingProcessor:
             mode="topic",
             message_thread_id=self.settings.telegram_notification_topic_id,
         )
+
+    async def handle_expire_reschedule(self, raw_payload: dict[str, Any]) -> None:
+        """
+        Logic for handling expired reschedule time.
+        Sends API request to Django to cancel the pending booking.
+        """
+        appointment_id = raw_payload.get("appointment_id")
+        log.info(f"Bot: BookingProcessor | Action: ExpireReschedule | appt_id={appointment_id}")
+
+        if not appointment_id:
+            log.warning("Bot: BookingProcessor | Action: ExpireReschedule | error=NoAppointmentID")
+            return
+
+        if not self.appointments_provider:
+            log.error("Bot: BookingProcessor | Action: ExpireReschedule | error=ProviderNotFound")
+            return
+
+        try:
+            # Send expiration command to Django API
+            response = await self.appointments_provider.expire_reschedule(appointment_id)
+            log.info(f"Bot: BookingProcessor | Action: ExpireSuccess | appt_id={appointment_id} | response={response}")
+        except Exception as e:
+            log.error(f"Bot: BookingProcessor | Action: ExpireFailed | appt_id={appointment_id} | error={e}")
+            raise

@@ -139,15 +139,30 @@ class NotificationService:
             context["link_cancel"] = f"{self.site_url}{self.url_path_cancel.format(token=action_token)}"
         else:
             context["link_cancel"] = "#"
-        if self.url_path_reschedule:
-            path = (
-                self.url_path_reschedule if self.url_path_reschedule.startswith("/") else f"/{self.url_path_reschedule}"
-            )
-            context["link_reschedule"] = f"{self.site_url}{path}"
-            context["link_calendar"] = f"{self.site_url}{path}"
-        else:
-            context["link_reschedule"] = "#"
-            context["link_calendar"] = "#"
+        if "link_reschedule" not in context:
+            if self.url_path_reschedule and action_token:
+                # Allows formatting with {token} like url_path_confirm does
+                path = self.url_path_reschedule.format(token=action_token)
+                path = path if path.startswith("/") else f"/{path}"
+                context["link_reschedule"] = f"{self.site_url}{path}"
+                context["link_calendar"] = f"{self.site_url}{path}"
+            elif self.url_path_reschedule:
+                # Fallback if no action_token is present but we have a url path
+                path = self.url_path_reschedule
+                path = path if path.startswith("/") else f"/{path}"
+                context["link_reschedule"] = f"{self.site_url}{path}"
+                context["link_calendar"] = f"{self.site_url}{path}"
+            else:
+                context["link_reschedule"] = "#"
+                context["link_calendar"] = "#"
+        if "email_button_text" not in context:
+            if data.get("is_reschedule_offer"):
+                context["email_button_text"] = "Vorschlag akzeptieren"
+            elif "/cancel/" in str(context.get("link_cancel", "")):
+                context["email_button_text"] = "Neuen Termin buchen"
+            else:
+                context["email_button_text"] = "Termin bestätigen"
+
         return context
 
     async def send_notification(self, email: str, subject: str, template_name: str, data: dict):

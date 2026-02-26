@@ -1,13 +1,13 @@
 {% extends "base_email.html" %}
 
 {% block header %}
-Reply to Your Request
-{% endblock %}
+Antwort auf Ihre Anfrage
+{% endblock header %}
 
 {% block content %}
 <p>{{ data.reply_text | linebreaksbr }}</p>
 
 <p>--<br>
-    Best regards,<br>
-    LILY Beauty Team</p>
-{% endblock %}
+    Mit freundlichen Grüßen,<br>
+    Ihr LILY Beauty Team</p>
+{% endblock content %}

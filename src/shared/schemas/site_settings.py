@@ -38,9 +38,9 @@ class SiteSettingsSchema(BaseModel):
 
     # Технические пути
     url_path_contact_form: str = Field(default="/contacts/")
-    url_path_confirm: str = Field(default="/appointments/confirm/{token}/")
-    url_path_cancel: str = Field(default="/appointments/cancel/{token}/")
-    url_path_reschedule: str = Field(default="/booking/")
+    url_path_confirm: str = Field(default="/cabinet/appointments/confirm/{token}/")
+    url_path_cancel: str = Field(default="/cabinet/appointments/cancel/{token}/")
+    url_path_reschedule: str = Field(default="/cabinet/appointments/reschedule/{token}/")
 
     # Прочее
     price_range: str = Field(default="$$")

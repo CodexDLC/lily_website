@@ -14,27 +14,27 @@ if TYPE_CHECKING:
 
 def mask_sensitive_data(text: str) -> str:
     """
-    Маскирует чувствительные данные в тексте (телефоны, email, пароли, токены).
+    Masks sensitive data in text (phones, emails, passwords, tokens).
     """
     if not isinstance(text, str):
         return text
 
-    # 1. Маскируем телефоны (РФ/Германия/Международные)
-    # Пример: +49 176 12345678 -> +49 176 *** 5678
+    # 1. Mask phones (RU/DE/International)
+    # Example: +49 176 12345678 -> +49 176 *** 5678
     phone_pattern = r"(\+?\d{1,3}[\s-]?\d{3})[\s-]?\d{3,}[\s-]?(\d{2,4})"
     text = re.sub(phone_pattern, r"\1 *** \2", text)
 
-    # 2. Маскируем Email
-    # Пример: user@example.com -> u***@example.com
+    # 2. Mask Emails
+    # Example: user@example.com -> u***@example.com
     email_pattern = r"([a-zA-Z0-9_.+-])[a-zA-Z0-9_.+-]*@([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)"
     text = re.sub(email_pattern, r"\1***@\2", text)
 
-    # 3. Маскируем значения ключей (password, token, secret, key, api_key)
-    # Ищет паттерны типа password=value, "token": "value", secret: value
+    # 3. Mask sensitive keys (password, token, secret, key, api_key)
+    # Looks for patterns like password=value, "token": "value", secret: value
     sensitive_keys_pattern = (
         r"(?i)(password|token|secret|api_key|key|authorization|cookie|session_id)"
-        r'([\s:=("]*)'  # Разделители
-        r'([^\s,;}"\']{4,})'  # Само значение (минимум 4 символа, чтобы не маскировать пустые или слишком короткие)
+        r'([\s:=("]*)'  # Separators
+        r'([^\s,;}"\']{4,})'  # The value itself (min 4 chars to avoid masking empty or too short values)
     )
     text = re.sub(sensitive_keys_pattern, r"\1\2***", text)
 
@@ -43,18 +43,18 @@ def mask_sensitive_data(text: str) -> str:
 
 def masking_patcher(record):
     """
-    Патчер для loguru, который маскирует сообщение перед выводом.
+    Loguru patcher that masks the message before output.
     """
     record["message"] = mask_sensitive_data(record["message"])
 
 
 class InterceptHandler(logging.Handler):
     """
-    Перехватывает стандартные сообщения `logging` и направляет их в `loguru`.
+    Intercepts standard `logging` messages and redirects them to `loguru`.
     """
 
     def emit(self, record: logging.LogRecord) -> None:
-        """Перенаправляет запись лога в loguru."""
+        """Redirects log record to loguru."""
         try:
             level: str | int = logger.level(record.levelname).name
         except ValueError:
@@ -74,25 +74,25 @@ class InterceptHandler(logging.Handler):
 
 def setup_logging(settings: CommonSettings, service_name: str) -> None:
     """
-    Настраивает loguru с маскированием данных.
+    Configures loguru with data masking.
 
     Args:
-        settings: Объект настроек (CommonSettings или наследник).
-        service_name: Имя сервиса ('backend' или '02_telegram_bot').
-                      Используется для создания подпапки в логах.
+        settings: Settings object (CommonSettings or descendant).
+        service_name: Service name ('backend' or '02_telegram_bot').
+                      Used for creating a subfolder in logs.
     """
     logger.remove()
 
-    # Применяем маскирование ко всем логам через patcher
+    # Apply masking to all logs via patcher
     logger.configure(patcher=masking_patcher)
 
-    # Формируем пути к логам: logs/backend/debug.log или logs/02_telegram_bot/debug.log
+    # Form log paths: logs/backend/debug.log or logs/02_telegram_bot/debug.log
     base_log_dir = Path(settings.log_dir) / service_name
 
     log_file_debug = base_log_dir / "debug.log"
     log_file_errors = base_log_dir / "errors.json"
 
-    # Консольный вывод (общий формат)
+    # Console output (common format)
     logger.add(
         sink=sys.stdout,
         level=settings.log_level_console.upper(),
@@ -106,7 +106,7 @@ def setup_logging(settings: CommonSettings, service_name: str) -> None:
         ),
     )
 
-    # Файл debug
+    # Debug file
     logger.add(
         sink=str(log_file_debug),
         level=settings.log_level_file.upper(),
@@ -115,7 +115,7 @@ def setup_logging(settings: CommonSettings, service_name: str) -> None:
         format="{time} | {level: <8} | {name}:{function}:{line} - {message}",
     )
 
-    # Файл errors (JSON)
+    # Errors file (JSON)
     logger.add(
         sink=str(log_file_errors),
         level="ERROR",
@@ -124,16 +124,16 @@ def setup_logging(settings: CommonSettings, service_name: str) -> None:
         compression="zip",
     )
 
-    # Перехват стандартного logging
+    # Intercept standard logging
     logging.basicConfig(handlers=[InterceptHandler()], level=0)
 
-    # Перехват логов библиотек
+    # Intercept library logs
     logging.getLogger("uvicorn.access").handlers = [InterceptHandler()]
     logging.getLogger("uvicorn.error").handlers = [InterceptHandler()]
     logging.getLogger("arq").handlers = [InterceptHandler()]
     logging.getLogger("arq.worker").handlers = [InterceptHandler()]
 
-    # Настройка уровней для библиотек
+    # Configure levels for libraries
     logging.getLogger("aiogram").setLevel(logging.INFO)
     logging.getLogger("sqlalchemy").setLevel(logging.WARNING)
     logging.getLogger("httpx").setLevel(logging.WARNING)

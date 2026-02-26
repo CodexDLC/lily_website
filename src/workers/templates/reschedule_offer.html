@@ -1,9 +1,8 @@
 {% extends "base_email.html" %}
 
-{% block title %}{{ email_subject | default('Terminvorschlag') }}{% endblock %}
+{% block title %}{{ email_subject or 'Terminvorschlag' }}{% endblock title %}
 
 {% block content %}
-    <!-- ТЭГ-МЕТКА (оранжевый для предложения переноса) -->
     <tr>
         <td align="center" style="padding-bottom: 30px;">
             <table border="0" cellpadding="0" cellspacing="0">
@@ -18,68 +17,56 @@
         </td>
     </tr>
 
-    <!-- ПРИВЕТСТВИЕ -->
     <tr>
         <td align="center" style="padding-bottom: 20px; color: #333333; font-family: 'Georgia', serif; font-size: 24px; line-height: 1.3;">
             {{ greeting }}
         </td>
     </tr>
 
-    <!-- ОСНОВНОЙ ТЕКСТ -->
     <tr>
         <td align="center" style="padding-bottom: 30px; color: #555555; font-family: Arial, sans-serif; font-size: 17px; line-height: 1.6;">
-            Leider müssen wir Ihren Termin am <strong>{{ date }} um {{ time }} Uhr</strong> absagen.
-            Wir entschuldigen uns für die Unannehmlichkeiten.<br><br>
-            Wir möchten Ihnen jedoch gerne einen neuen Termin anbieten.
-            Folgende Zeiten wären für uns möglich:
+            Wir freuen uns, Ihnen einen neuen Termin für Ihre Behandlung anbieten zu können.
+            Bitte bestätigen Sie diesen innerhalb von 24 Stunden.
         </td>
     </tr>
 
-    <!-- БЛОК ПРЕДЛОЖЕННЫХ СЛОТОВ -->
-    {% if proposed_slots %}
     <tr>
         <td style="padding-bottom: 30px;">
             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                     <td bgcolor="#fff8ed" style="padding: 20px; border-left: 4px solid #e07b00; border-radius: 4px;">
-                        <p style="margin: 0 0 8px 0; color: #e07b00; font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">Freie Termine</p>
-                        {% for slot in proposed_slots %}
-                        <p style="margin: 0 0 6px 0; color: #333333; font-family: Arial, sans-serif; font-size: 16px;">
-                            📅 {{ slot }}
+                        <p style="margin: 0 0 8px 0; color: #e07b00; font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">Neuer Termin</p>
+                        <p style="margin: 0 0 6px 0; color: #333333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold;">
+                            📅 {{ date }} um {{ time }} Uhr
                         </p>
-                        {% endfor %}
                     </td>
                 </tr>
             </table>
         </td>
     </tr>
-    {% endif %}
 
-    <!-- БЛОК ДЕТАЛЕЙ ОТМЕНЁННОЙ ЗАПИСИ -->
     <tr>
         <td bgcolor="#f9f9f9" style="padding: 30px; border: 1px solid #eeeeee; border-radius: 8px;">
             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
-                    <td style="padding-bottom: 10px; color: #888888; font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Stornierter Termin</td>
+                    <td style="padding-bottom: 10px; color: #888888; font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Behandlungsdetails</td>
                 </tr>
                 <tr>
                     <td style="color: #555555; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.5;">
-                        <strong>Behandlung:</strong> {{ service_name }}<br>
-                        <strong>Datum:</strong> {{ date }} um {{ time }}
+                        <strong>Behandlung:</strong> {{ service_name }}
                     </td>
                 </tr>
             </table>
         </td>
     </tr>
 
-    <!-- КНОПКА "ЗАПИСAТЬСЯ НА НОВОЕ ВРЕМЯ" -->
     <tr>
         <td align="center" style="padding-top: 50px;">
             <table border="0" cellspacing="0" cellpadding="0">
                 <tr>
                     <td align="center" style="border-radius: 6px;" bgcolor="#003831">
                         <a href="{{ link_reschedule }}" target="_blank" style="font-size: 16px; font-family: Arial, sans-serif; color: #edd071; text-decoration: none; padding: 15px 40px; border-radius: 6px; border: 1px solid #edd071; display: inline-block; font-weight: bold;">
-                            Neuen Termin buchen
+                            {{ email_button_text | default('Termin bestätigen') }}
                         </a>
                     </td>
                 </tr>
@@ -87,14 +74,12 @@
         </td>
     </tr>
 
-    <!-- РАЗДЕЛИТЕЛЬ -->
     <tr><td height="40" style="font-size: 0; line-height: 0;">&nbsp;</td></tr>
 
-    <!-- ПОДПИСЬ -->
     <tr>
         <td align="center" style="color: #888888; font-family: Arial, sans-serif; font-size: 14px;">
             Wir freuen uns darauf, Sie bald wieder bei uns begrüßen zu dürfen.<br>
             <strong style="color: #003831;">Ihr LILY Beauty Team</strong>
         </td>
     </tr>
-{% endblock %}
+{% endblock content %}

@@ -18,3 +18,10 @@
 @import url('cabinet/topbar.css');
 @import url('cabinet/dashboard.css');
 @import url('cabinet/cards.css');
+@import url('cabinet/calendar.css');
+
+.reschedule-container {
+    max-width: 600px;
+    margin: 0 auto;
+    color: var(--text-color);
+}

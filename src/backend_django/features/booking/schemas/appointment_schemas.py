@@ -59,6 +59,20 @@ class ProposeRescheduleResponse(BaseModel):
     appointment_id: int
 
 
+class ExpireRescheduleRequest(BaseModel):
+    """Запрос на отмену неоплаченной/неподтвержденной брони (по истечению времени)."""
+
+    appointment_id: int = Field(..., description="ID записи")
+
+
+class ExpireRescheduleResponse(BaseModel):
+    """Ответ от endpoint отмены неоплаченной/неподтвержденной брони."""
+
+    success: bool
+    message: str
+    appointment_id: int
+
+
 class CategorySummaryItem(BaseModel):
     """Сводка по одной категории услуг."""
 

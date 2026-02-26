@@ -105,3 +105,28 @@ async def handle_new_contact_request(message_data: dict[str, Any], container: An
 
     except Exception as e:
         log.critical(f"Notifications | Fatal error in contact handler: {e}")
+
+
+@notifications_router.message("expire_reschedule")
+async def handle_expire_reschedule(message_data: dict[str, Any], container: Any):
+    """
+    Хендлер для события "истекло время на подтверждение переноса записи".
+    Делегирует работу оркестратору, который отправляет API запрос в Django.
+    """
+    try:
+        orchestrator = container.redis_notifications
+
+        appointment_id = message_data.get("appointment_id")
+        log.info(f"Notifications | Processing 'expire_reschedule' event. ID={appointment_id}")
+
+        if not appointment_id:
+            log.warning("Notifications | No appointment_id in expire_reschedule.")
+            return
+
+        try:
+            await orchestrator.handle_expire_reschedule(message_data)
+        except Exception as e:
+            log.error(f"Notifications | Orchestrator handle_expire_reschedule failed: {e}")
+
+    except Exception as e:
+        log.critical(f"Notifications | Fatal error in expire_reschedule handler: {e}")

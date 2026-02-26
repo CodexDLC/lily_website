@@ -1,3 +1,4 @@
+from core.logger import log
 from django.core.cache import cache
 from django.core.management.base import BaseCommand
 from features.system.fixtures.content.static_translations import DATA
@@ -10,12 +11,14 @@ class Command(BaseCommand):
     help = "Update or create static translations in the database from fixtures file"
 
     def handle(self, *args, **options):
-        self.stdout.write("Updating Static Translations from fixtures...")
+        log.info("Command: update_static_translations | Action: Start")
 
         count_created = 0
         count_updated = 0
         count_skipped = 0
         has_any_changes = False
+
+        log.debug(f"Command: update_static_translations | Action: ProcessingKeys | count={len(DATA)}")
 
         for key, translations in DATA.items():
             obj, created = StaticTranslation.objects.get_or_create(key=key)
@@ -28,6 +31,7 @@ class Command(BaseCommand):
                 obj.save()
                 count_created += 1
                 has_any_changes = True
+                log.debug(f"Command: update_static_translations | Action: Created | key={key}")
             else:
                 changed_fields = []
                 for lang, text in translations.items():
@@ -42,14 +46,21 @@ class Command(BaseCommand):
                     obj.save()
                     count_updated += 1
                     has_any_changes = True
+                    log.debug(
+                        f"Command: update_static_translations | Action: Updated | key={key} | fields={changed_fields}"
+                    )
                 else:
                     count_skipped += 1
 
         if has_any_changes:
             keys_to_delete = [f"static_content_{lang}" for lang in LANGUAGES]
             cache.delete_many(keys_to_delete)
+            log.info(f"Command: update_static_translations | Action: CacheInvalidated | keys={keys_to_delete}")
             self.stdout.write(self.style.SUCCESS("  Cache invalidated for static_content_* keys."))
 
+        log.info(
+            f"Command: update_static_translations | Action: Success | created={count_created} | updated={count_updated} | skipped={count_skipped}"
+        )
         self.stdout.write(
             self.style.SUCCESS(
                 f"Successfully processed {len(DATA)} keys. "

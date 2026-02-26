@@ -9,6 +9,7 @@ from .views.auth import CabinetLoginView, CabinetLogoutView, MagicLinkView
 from .views.clients import ClientsView
 from .views.dashboard import DashboardView
 from .views.masters import MastersView
+from .views.reschedule import RescheduleAppointmentView
 from .views.services import ServicesView
 from .views.user_profile import ProfileView
 
@@ -34,4 +35,6 @@ urlpatterns = [
     path("services/", ServicesView.as_view(), name="services"),
     # Client sections
     path("profile/", ProfileView.as_view(), name="profile"),
+    # Reschedule flow via token (public with token logic)
+    path("appointments/reschedule/<str:token>/", RescheduleAppointmentView.as_view(), name="reschedule_appointment"),
 ]

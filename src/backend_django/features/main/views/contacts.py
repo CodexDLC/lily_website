@@ -1,3 +1,4 @@
+from core.logger import log
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.generic import FormView
@@ -17,6 +18,7 @@ class ContactsView(FormView):
     success_url = "/contacts/"
 
     def get_context_data(self, **kwargs):
+        log.debug("View: ContactsView | Action: GetContext")
         context = super().get_context_data(**kwargs)
 
         # Ensure form is in context
@@ -28,7 +30,11 @@ class ContactsView(FormView):
         return context
 
     def form_valid(self, form):
-        # Create request via Service
+        log.info(
+            f"View: ContactsView | Action: FormValid | client={form.cleaned_data['first_name']} | type={form.cleaned_data['contact_type']}"
+        )
+
+        # Create request via Service (Original logic, will 500 if fails)
         ContactService.create_request(
             first_name=form.cleaned_data["first_name"],
             last_name=form.cleaned_data["last_name"],
@@ -49,11 +55,13 @@ class ContactsView(FormView):
 
         # HTMX Response
         if self.request.headers.get("HX-Request"):
+            log.debug("View: ContactsView | Action: HTMXResponse | status=Success")
             return render(self.request, "contacts/partials/success_message.html")
 
         return super().form_valid(form)
 
     def form_invalid(self, form):
+        log.warning(f"View: ContactsView | Action: FormInvalid | errors={form.errors.as_json()}")
         if self.request.headers.get("HX-Request"):
             return render(self.request, "contacts/partials/form.html", {"form": form})
         return super().form_invalid(form)

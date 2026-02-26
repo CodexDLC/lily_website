@@ -16,15 +16,17 @@ async def send_email_task(
     data: dict[str, Any],
 ):
     """
-    Задача для отправки email через ARQ.
+    Task for sending email via ARQ.
     """
-    log.info(f"Sending email to {recipient_email} with subject '{subject}' using template '{template_name}'")
+    log.info(
+        f"Task: send_email_task | Action: Start | recipient={recipient_email} | subject={subject} | template={template_name}"
+    )
 
     notification_service = cast("NotificationService | None", ctx.get("notification_service"))
     appointment_id = data.get("id")
 
     if not notification_service:
-        log.error("NotificationService not found in worker context!")
+        log.error("Task: send_email_task | Action: Failed | error=NotificationServiceMissing")
         await _send_status_update(ctx, appointment_id, "email", "failed")
         return
 
@@ -32,8 +34,8 @@ async def send_email_task(
         await notification_service.send_notification(
             email=recipient_email, subject=subject, template_name=template_name, data=data
         )
-        log.success(f"Email sent successfully to {recipient_email}")
+        log.info(f"Task: send_email_task | Action: Success | recipient={recipient_email}")
         await _send_status_update(ctx, appointment_id, "email", "success")
     except Exception as e:
-        log.error(f"Failed to send email to {recipient_email}: {e}", exc_info=True)
+        log.error(f"Task: send_email_task | Action: Failed | recipient={recipient_email} | error={e}")
         await _send_status_update(ctx, appointment_id, "email", "failed")

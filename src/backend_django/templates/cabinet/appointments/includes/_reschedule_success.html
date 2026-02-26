@@ -1,0 +1,9 @@
+{% load i18n %}
+<div class="alert alert-success mt-4">
+    <h4 class="alert-heading">✅ Запись успешно подтверждена!</h4>
+    <p>Ждем вас <strong>{{ appointment.datetime_start|date:"d.m.Y H:i" }}</strong>.</p>
+    <p>Мастер: {{ appointment.master.name }}</p>
+    <hr>
+    <p class="mb-0">Вы можете просмотреть свои записи в кабинете.</p>
+</div>
+<a href="{% url 'cabinet:appointments' %}" class="btn btn-primary mt-3">Перейти в кабинет</a>

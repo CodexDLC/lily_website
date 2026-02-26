@@ -25,44 +25,46 @@ async def send_twilio_task(
     variables: dict[str, str] | None = None,
 ) -> None:
     """
-    Задача для отправки сообщения через Twilio.
-    Логика: WhatsApp Template (без медиа) -> WhatsApp Free (с медиа) -> SMS.
+    Task for sending a message via Twilio.
+    Logic: WhatsApp Template (no media) -> WhatsApp Free (with media) -> SMS.
     """
+    log.info(f"Task: send_twilio_task | Action: Start | phone={phone_number} | appt_id={appointment_id}")
+
     twilio_service = cast("TwilioService | None", ctx.get("twilio_service"))
     settings = cast("WorkerSettings | None", ctx.get("settings"))
 
     if not twilio_service:
-        log.error("TwilioService not found.")
+        log.error("Task: send_twilio_task | Action: Failed | error=TwilioServiceMissing")
         await _send_status_update(ctx, appointment_id, "twilio", "failed")
         return
 
-    # 1. Попытка отправить WhatsApp Template
+    # 1. Attempt WhatsApp Template
     if variables and settings and settings.TWILIO_WHATSAPP_TEMPLATE_SID:
-        log.info(f"Attempting WhatsApp Template {settings.TWILIO_WHATSAPP_TEMPLATE_SID} to {phone_number}")
+        log.debug(f"Task: send_twilio_task | Action: TryWhatsAppTemplate | sid={settings.TWILIO_WHATSAPP_TEMPLATE_SID}")
         wa_success = twilio_service.send_whatsapp_template(
             to_number=phone_number, content_sid=settings.TWILIO_WHATSAPP_TEMPLATE_SID, variables=variables
         )
         if wa_success:
-            log.info("WhatsApp Template sent successfully.")
+            log.info(f"Task: send_twilio_task | Action: Success | type=WhatsAppTemplate | phone={phone_number}")
             await _send_status_update(ctx, appointment_id, "twilio", "success")
             return
 
-    # 2. Попытка отправить обычный WhatsApp
-    log.info(f"Attempting Free-form WhatsApp to {phone_number}")
+    # 2. Attempt Free-form WhatsApp
+    log.debug(f"Task: send_twilio_task | Action: TryWhatsAppFree | phone={phone_number}")
     wa_success = twilio_service.send_whatsapp(phone_number, message, media_url=media_url)
     if wa_success:
-        log.info("Free-form WhatsApp sent successfully.")
+        log.info(f"Task: send_twilio_task | Action: Success | type=WhatsAppFree | phone={phone_number}")
         await _send_status_update(ctx, appointment_id, "twilio", "success")
         return
 
-    # 3. Фолбек на SMS
-    log.warning("WhatsApp failed. Falling back to SMS.")
+    # 3. Fallback to SMS
+    log.warning(f"Task: send_twilio_task | Action: FallbackToSMS | phone={phone_number}")
     sms_success = twilio_service.send_sms(phone_number, message)
     if sms_success:
-        log.info("Fallback SMS sent successfully.")
+        log.info(f"Task: send_twilio_task | Action: Success | type=SMS | phone={phone_number}")
         await _send_status_update(ctx, appointment_id, "twilio", "success")
     else:
-        log.error("Fallback SMS also failed.")
+        log.error(f"Task: send_twilio_task | Action: Failed | type=SMS | phone={phone_number}")
         await _send_status_update(ctx, appointment_id, "twilio", "failed")
 
 
@@ -72,33 +74,40 @@ async def send_appointment_notification(
     status: str,
     reason_text: str | None = None,
 ) -> None:
-    """Автономный диспетчер уведомлений."""
+    """Autonomous notification dispatcher."""
+    log.info(f"Task: send_appointment_notification | Action: Start | appt_id={appointment_id} | status={status}")
+
     redis_service = cast("RedisService | None", ctx.get("redis_service"))
     if not redis_service:
+        log.error("Task: send_appointment_notification | Action: Failed | error=RedisServiceMissing")
         return
 
     cache_key = f"notifications:cache:{appointment_id}"
     raw_data = await redis_service.get_value(cache_key)
 
     if not raw_data:
-        log.warning(f"No data in Redis for appointment {appointment_id}. Skipping.")
+        log.warning(
+            f"Task: send_appointment_notification | Action: Skip | reason=NoCacheFound | appt_id={appointment_id}"
+        )
         return
 
     try:
         appointment_data = json.loads(raw_data) if isinstance(raw_data, str) else raw_data
     except Exception as e:
-        log.error(f"Failed to parse JSON from Redis for {appointment_id}: {e}")
+        log.error(f"Task: send_appointment_notification | Action: ParseError | appt_id={appointment_id} | error={e}")
         return
 
     arq_service = cast("ArqService | None", ctx.get("arq_service"))
     notification_service = cast("NotificationService | None", ctx.get("notification_service"))
 
     if not arq_service or not notification_service:
+        log.error("Task: send_appointment_notification | Action: Failed | error=ServicesMissing")
         return
 
     # Email...
     email = appointment_data.get("client_email")
     if email and email.lower() != "не указан":
+        log.debug(f"Task: send_appointment_notification | Action: EnqueueEmail | email={email}")
         await arq_service.enqueue_job(
             "send_email_task",
             recipient_email=email,
@@ -110,12 +119,13 @@ async def send_appointment_notification(
     # Twilio (WhatsApp/SMS)...
     phone = appointment_data.get("client_phone")
     if status == "confirmed" and phone:
+        log.debug(f"Task: send_appointment_notification | Action: EnqueueTwilio | phone={phone}")
         dt_str = str(appointment_data.get("datetime", ""))
         try:
             dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
             date = dt_obj.strftime("%d.%m.%Y")
             time = dt_obj.strftime("%H:%M")
-        except (ValueError, TypeError):  # Исправлено: специфичные исключения
+        except (ValueError, TypeError):
             parts = dt_str.split(" ")
             date = parts[0] if len(parts) > 0 else dt_str
             time = parts[1] if len(parts) > 1 else ""
@@ -138,3 +148,5 @@ async def send_appointment_notification(
             variables=template_vars,
             media_url=logo_url,
         )
+
+    log.info(f"Task: send_appointment_notification | Action: Success | appt_id={appointment_id}")

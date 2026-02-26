@@ -12,13 +12,12 @@ This roadmap organizes development tasks by **domain** (feature area). It reflec
 |:---|:---:|:---:|:---:|
 | **[✅ Booking System Core](#-booking-system-core)** | ✅ Done | 100% | Critical |
 | **[✅ Booking Wizard UI (HTMX)](#-booking-wizard-ui-htmx)** | ✅ Done | 100% | Critical |
-| **[📝 Notifications & Background Tasks](#-notifications--background-tasks)** | 🔄 In Progress | 20% | High |
-| **[📝 Telegram Bot Integration](#-telegram-bot-integration)** | 📝 Ready | 0% | High |
+| **[🔄 Notifications & Background Tasks](#-notifications--background-tasks)** | 🔄 In Progress | 20% | High |
 | **[🔐 QR Finalization (Future)](#-qr-finalization-future)** | 📝 Design | 5% | Medium |
 | **[🎨 Frontend & Design](#-frontend--design)** | ✅ Done | 90% | Critical |
 | **[📄 Content Pages](#-content-pages)** | ✅ Done | 95% | Critical |
-| **[🌐 Localization (i18n)](#-localization-i18n)** | 🔄 In Progress | 40% | High |
-| **[🔍 SEO & Analytics](#-seo--analytics)** | 🔄 In Progress | 30% | High |
+| **[✅ Localization (i18n)](#-localization-i18n)** | ✅ Done | 90% | High |
+| **[✅ SEO & Analytics](#-seo--analytics)** | ✅ Done | 100% | High |
 | **[⚙️ Admin & Backend](#️-admin--backend)** | 🔄 In Progress | 60% | Medium |
 
 ---
@@ -54,7 +53,7 @@ This roadmap organizes development tasks by **domain** (feature area). It reflec
 
 ---
 
-## 📝 Notifications & Background Tasks
+## 🔄 Notifications & Background Tasks
 
 **Goal:** Inform users and admins about booking status via Email and background tasks.
 **Status:** 20% - Basic structure exists. Background tasks (ARQ) are not implemented.
@@ -65,21 +64,6 @@ This roadmap organizes development tasks by **domain** (feature area). It reflec
 - [ ] **[ARQ]** Create a background task for sending appointment reminders (e.g., 24 hours before).
 - [x] **[Email]** Basic email notification functions exist in `services/notifications.py`.
 - [ ] Create and translate all required email templates (`booking_approved`, `booking_rejected`, etc.).
-
----
-
-## 📝 Telegram Bot Integration
-
-**Goal:** Connect Django booking system with a Telegram Bot for admin and client interactions.
-**Status:** 0% - Not implemented. Requires a dedicated API and bot-side logic.
-
-### Tasks
-- [ ] **[TASK-501]** Create a REST API for the bot (e.g., using Django Ninja).
-- [ ] **[TASK-502]** Implement bot authentication (e.g., shared secret or token).
-- [ ] **[TASK-503]** Expose booking endpoints (`/api/bot/book`, `/api/bot/cancel`).
-- [ ] **[TASK-504]** Sync Client records between the bot and Django.
-- [ ] **[TASK-506]** Add `telegram_id` field to Client and Master models.
-- [ ] Implement bot-side logic for handling user interactions.
 
 ---
 
@@ -124,10 +108,10 @@ This roadmap organizes development tasks by **domain** (feature area). It reflec
 - [ ] Optimize Lighthouse scores (Performance 90+).
 
 ---
-## 🌐 Localization (i18n)
+## ✅ Localization (i18n)
 
 **Goal:** Full 4-language support (DE, RU, UK, EN).
-**Status:** 40% - Technical setup is done, content translation is in progress.
+**Status:** ✅ Done | 90% - Technical setup is done, content translation is in progress.
 
 ### Tasks
 - [x] Configure `django-modeltranslation`.
@@ -135,18 +119,19 @@ This roadmap organizes development tasks by **domain** (feature area). It reflec
 - [ ] **[TASK-401]** Translate all static text.
 - [ ] **[TASK-402]** Add language switcher to header.
 - [ ] **[TASK-403]** Configure URL localization (`/de/`, `/ru/`, etc.).
+- [ ] Final localization audit and bug fixing (UI/UX tweaks).
 
 ---
-## 🔍 SEO & Analytics
+## ✅ SEO & Analytics
 
 **Goal:** Optimize for search engines and implement tracking.
-**Status:** 30% - Basic SEO structure is in place.
+**Status:** ✅ 100% - SEO structure, JSON-LD, and Analytics are implemented.
 
 ### Tasks
 - [x] Add SEO meta tags to templates via mixins.
 - [x] Create `sitemap.xml` and `robots.txt`.
-- [ ] **[TASK-601]** Add JSON-LD structured data (e.g., `BeautySalon` schema).
-- [ ] **[TASK-603]** Add Google Analytics / Matomo.
+- [x] **[TASK-601]** Add JSON-LD structured data (LocalBusiness, Service, OfferCatalog).
+- [x] **[TASK-603]** Add Google Analytics / Matomo integration.
 
 ---
 ## ⚙️ Admin & Backend
@@ -155,9 +140,9 @@ This roadmap organizes development tasks by **domain** (feature area). It reflec
 **Status:** 60% - Basic admin for core models is configured. Advanced features are pending.
 
 ### Tasks
-- [x] Configure Django Admin with custom styling.
+- [x] Configure Django Admin with custom styling (Unfold).
 - [x] Add admin for `Category`, `Service`, `Master`, `Client`, `Appointment`.
 - [x] Use `modeltranslation` in admin.
-- [ ] **[TASK-701]** Customize admin dashboard with statistics.
-- [ ] **[TASK-703]** Implement image upload previews.
-- [ ] **[TASK-704]** Add inline editing for related models.
+- [x] **[TASK-701]** Customize admin dashboard with statistics.
+- [ ] **[TASK-703]** Implement image upload previews in forms.
+- [ ] **[TASK-704]** Add inline editing for `MasterPortfolio` and `MasterCertificate` in `MasterAdmin`.

@@ -1,29 +1,23 @@
 # 🤖 Telegram Bot Integration Tasks
 
-This document outlines the remaining tasks for the Telegram Bot integration, focusing on analytics and delivery tracking.
+This document outlines the remaining tasks for the Telegram Bot integration.
 
-## 📊 Analytics & Reporting (High Priority)
+> **Note:** Analytics, Reporting, and Delivery Tracking have been moved to the Django Admin Cabinet.
 
-- [ ] **[TODO]** Backend: Implement `AnalyticsService` to aggregate revenue (Total & Per Master).
-- [ ] **[TODO]** Data Structuring: Format data into "Cross-Table" JSON (Rows: Dates, Cols: Masters, Cells: Revenue).
-- [ ] **[TODO]** Integration: Store structured JSON in Redis for Arc/Worker access.
-- [ ] **[TODO]** Arc Task: Implement worker task to generate Excel/PDF report from Redis data.
-- [ ] **[TODO]** Delivery: Implement email sending logic for the generated report.
+## 🔐 Authentication & Access Control
 
-## 📡 Delivery Tracking (Twilio)
+- [ ] **[TODO]** Update `StartOrchestrator` to parse `access_token` from `/start` payload for deep-linking.
+- [ ] **[TODO]** Implement `AuthDataProvider` to verify tokens via Django API.
+- [ ] **[TODO]** Implement `FeatureDiscoveryService` to filter available bot features based on user roles (Master/Admin/Client).
+- [ ] **[TODO]** Ensure `BotMenuOrchestrator` dynamically updates based on permissions.
 
-- [ ] **[TODO]** Configure **Twilio Webhooks** to track WhatsApp/SMS delivery status in real-time.
-  - *Goal:* Update notification status in Admin Panel (Sent -> Delivered/Failed).
-- [ ] **[TODO]** Create unified templates for all channels (Email HTML, WhatsApp Buttons, SMS Text).
+## 📡 Core Integration
 
-## 🔐 Authentication (On Hold)
-
-- [ ] **[ON HOLD]** Update `StartOrchestrator` to parse `access_token` from `/start` payload.
-- [ ] **[ON HOLD]** Implement real `AuthDataProvider` to call Django API for user linking.
-- [ ] **[ON HOLD]** Update `FeatureDiscoveryService` to support filtering by `is_admin`.
-- [ ] **[ON HOLD]** Ensure `BotMenuOrchestrator` only shows non-admin features.
+- [ ] **[TODO]** Finalize callback handlers for appointment confirmation/rejection in `handlers.py`.
+- [ ] **[TODO]** Implement secure API communication between Bot and Django (Shared Secret/JWT).
 
 ## ✅ Completed
 
 - [x] **SendGrid API:** Implemented as fallback in `notification_worker`.
 - [x] **Notification Orchestrator:** Implemented via Redis queue (`notification_worker`).
+- [x] **Basic UI:** Notification cards and action buttons.

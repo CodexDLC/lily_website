@@ -14,11 +14,11 @@ log = logger
 
 class InterceptHandler(logging.Handler):
     """
-    Перехватывает стандартные сообщения `logging` и направляет их в `loguru`.
+    Intercepts standard `logging` messages and redirects them to `loguru`.
     """
 
     def emit(self, record: logging.LogRecord) -> None:
-        """Перенаправляет запись лога в loguru."""
+        """Redirects log record to loguru."""
         try:
             level: str | int = logger.level(record.levelname).name
         except ValueError:
@@ -38,31 +38,31 @@ class InterceptHandler(logging.Handler):
 
 def setup_logging(base_dir: Path, config: dict[str, Any]) -> None:
     """
-    Настраивает loguru для Django.
+    Configures loguru for Django.
 
     Args:
-        base_dir: Путь к корню проекта (BASE_DIR).
-        config: Словарь с настройками (LOG_LEVEL_CONSOLE, и т.д.).
+        base_dir: Root project directory (BASE_DIR).
+        config: Dictionary with settings (LOG_LEVEL_CONSOLE, etc.).
     """
-    # Удаляем дефолтные хендлеры loguru
+    # Remove default loguru handlers
     logger.remove()
 
-    # Определяем пути
-    # В контейнере base_dir = /app. Локально = src/backend_django.
-    # Создаем логи внутри base_dir, чтобы избежать проблем с правами доступа в Docker.
+    # Define paths
+    # In container base_dir = /app. Locally = src/backend_django.
+    # Create logs inside base_dir to avoid permission issues in Docker.
     log_dir = base_dir / "logs" / "backend"
     log_dir.mkdir(parents=True, exist_ok=True)
 
     log_file_debug = log_dir / "debug.log"
     log_file_errors = log_dir / "errors.json"
 
-    # Уровни логирования
+    # Logging levels
     console_level = config.get("LOG_LEVEL_CONSOLE", "INFO")
     file_level = config.get("LOG_LEVEL_FILE", "DEBUG")
     rotation = config.get("LOG_ROTATION", "10 MB")
     debug = config.get("DEBUG", False)
 
-    # 1. Консольный вывод (Красивый)
+    # 1. Console output (Pretty)
     logger.add(
         sink=sys.stdout,
         level=console_level,
@@ -76,19 +76,19 @@ def setup_logging(base_dir: Path, config: dict[str, Any]) -> None:
         ),
     )
 
-    # 2. Файл debug (Подробный)
+    # 2. Debug file (Detailed)
     logger.add(
         sink=str(log_file_debug),
         level=file_level,
         rotation=rotation,
         compression="zip",
         format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
-        enqueue=True,  # Асинхронная запись
+        enqueue=True,  # Async write
         backtrace=debug,
         diagnose=debug,
     )
 
-    # 3. Файл errors (JSON для мониторинга)
+    # 3. Errors file (JSON for monitoring)
     logger.add(
         sink=str(log_file_errors),
         level="ERROR",
@@ -98,10 +98,10 @@ def setup_logging(base_dir: Path, config: dict[str, Any]) -> None:
         enqueue=True,
     )
 
-    # 4. Перехват стандартного logging (Django, Libraries)
+    # 4. Intercept standard logging (Django, Libraries)
     logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
 
-    # Настройка уровней для шумных библиотек
+    # Configure levels for noisy libraries
     logging.getLogger("django").setLevel(logging.INFO)
     logging.getLogger("django.db.backends").setLevel(logging.WARNING)
     logging.getLogger("django.utils.autoreload").setLevel(logging.WARNING)
