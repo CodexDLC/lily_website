@@ -2,6 +2,23 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.5.0] - 2026-02-27
+### Added
+- **Cabinet:** Implemented full appointment reschedule logic with interactive calendar and HTMX-powered slot selection.
+- **Logging:** Introduced a unified logging standard across Backend, Shared, and Workers for better observability.
+- **Documentation:** Added a comprehensive Global Roadmap and detailed technical task specifications (TASK-GLOBAL-*, TASK-206-210).
+- **Infrastructure:** Added `logging_standard.md` and updated development principles for the team.
+
+### Changed / Refactored
+- **Booking:** Major refactoring of booking services (`reschedule.py`, `session.py`, `slots.py`) to support flexible appointment adjustments.
+- **Cabinet:** Improved architecture by separating selectors and services for appointment management.
+- **System:** Enhanced Redis managers for site settings and notification caching for better performance.
+- **Workers:** Updated notification processors and email templates for more robust delivery.
+
+### Fixed
+- **API:** Resolved issues in booking and promo validation logic.
+- **Management:** Improved stability of data migration and content update commands.
+
 ## [1.4.2] - 2026-02-26
 ### Added
 - **Quality Control:** Integrated `test_templates_syntax.py` to automatically verify Django template syntax during tests.
