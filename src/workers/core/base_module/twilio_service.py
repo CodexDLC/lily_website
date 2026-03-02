@@ -12,9 +12,11 @@ class TwilioService:
     Сервис для отправки уведомлений через Twilio (SMS, WhatsApp).
     """
 
-    def __init__(self, account_sid: str, auth_token: str, from_number: str):
+    def __init__(self, account_sid: str, auth_token: str, from_number: str, sendgrid_api_key: str | None = None):
         self.client = Client(account_sid, auth_token)
         self.from_number = from_number
+        self.sendgrid_api_key = sendgrid_api_key
+        self.sendgrid_url = "https://api.sendgrid.com/v3/mail/send"
 
     def _format_phone(self, phone: str) -> str:
         """Нормализация номера для Twilio (E.164)."""
@@ -93,4 +95,36 @@ class TwilioService:
             return False
         except Exception as e:
             log.error(f"TwilioService | WhatsApp failed (Unexpected Error): {e}")
+            return False
+
+    async def send_email(
+        self, to_email: str, subject: str, html_content: str, from_email: str, timeout: int = 15
+    ) -> bool:
+        """Отправка через SendGrid HTTP API (принадлежит Twilio)."""
+        if not self.sendgrid_api_key:
+            log.error("TwilioService | SendGrid API Key is missing.")
+            return False
+
+        headers = {"Authorization": f"Bearer {self.sendgrid_api_key}", "Content-Type": "application/json"}
+
+        payload = {
+            "personalizations": [{"to": [{"email": to_email}], "subject": subject}],
+            "from": {"email": from_email, "name": "Lily Beauty Salon"},
+            "content": [{"type": "text/html", "value": html_content}],
+        }
+
+        try:
+            import httpx
+
+            async with httpx.AsyncClient() as client:
+                response = await client.post(self.sendgrid_url, headers=headers, json=payload, timeout=timeout)
+
+            if response.status_code in [200, 201, 202]:
+                log.info(f"TwilioService | Email sent successfully via SendGrid to {to_email}")
+                return True
+            else:
+                log.error(f"TwilioService | SendGrid Error: {response.status_code} - {response.text}")
+                return False
+        except Exception as e:
+            log.error(f"TwilioService | SendGrid Exception: {e}")
             return False

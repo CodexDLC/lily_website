@@ -43,6 +43,25 @@ class Appointment(TimestampMixin, models.Model):
         help_text=_("Price at booking time (snapshot)"),
     )
 
+    price_actual = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name=_("Actual Price (€)"),
+        help_text=_("Final price entered by administrator"),
+    )
+
+    # === Finalization ===
+    finalize_token = models.CharField(
+        max_length=64,
+        unique=True,
+        null=True,
+        blank=True,
+        db_index=True,
+        verbose_name=_("Finalization Token"),
+    )
+
     # === Status Tracking ===
     STATUS_PENDING = "pending"
     STATUS_CONFIRMED = "confirmed"
@@ -163,11 +182,17 @@ class Appointment(TimestampMixin, models.Model):
         return f"{self.client.display_name()} → {self.master.name} ({self.datetime_start.strftime('%Y-%m-%d %H:%M')})"
 
     def save(self, *args, **kwargs):
-        """Auto-fill duration and price from service"""
+        """Auto-fill duration and price from service, generate token."""
         if not self.duration_minutes:
             self.duration_minutes = self.service.duration
         if not self.price:
             self.price = self.service.price
+
+        if not self.finalize_token:
+            import secrets
+
+            self.finalize_token = secrets.token_urlsafe(32)
+
         super().save(*args, **kwargs)
 
     def clean(self):

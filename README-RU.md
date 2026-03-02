@@ -4,7 +4,7 @@
 
 > **Разработка веб-ресурса для салона красоты в Германии.**
 >
-> 🚀 **Status:** Active Development (Django + Telegram Bot).
+> 🚀 **Status:** Active Development (Django + Telegram Bot + ARQ Worker).
 
 ---
 
@@ -33,14 +33,16 @@
 
 ## 🛠 Технологический стек
 
-Проект построен на базе модульного монорепозитория (Django + Aiogram).
+Проект построен на базе модульного монорепозитория (Django + Aiogram + ARQ).
 
 | Компонент | Технология | Описание |
 | :--- | :--- | :--- |
-| **Backend** | **Django 5.1** | Features-based архитектура, Split settings |
-| **Bot** | **Aiogram 3.x** | Асинхронный бот, интеграция с БД |
-| **Frontend** | **HTML/CSS/JS** | Django Templates, Vanilla JS |
+| **Backend** | **Django 5.1** | Features-based архитектура, Ninja API |
+| **Bot** | **Aiogram 3.x** | Асинхронный бот, интеграция с Redis Stream |
+| **Worker** | **ARQ** | Очередь задач для уведомлений |
+| **Frontend** | **HTML/CSS/JS** | Django Templates, HTMX, Vanilla JS |
 | **Database** | **PostgreSQL** | Изоляция схем (`django_app`, `bot_app`) |
+| **Cache** | **Redis** | Кэширование, сессии, очередь задач |
 | **Infra** | **Docker** | Docker Compose, Nginx, GitHub Actions |
 
 ---
@@ -67,7 +69,7 @@ poetry install --extras "django bot dev"
 ### 3. Настройка окружения
 
 Создайте файлы `.env` в папках компонентов:
-*   `src/backend-django/.env`
+*   `src/backend_django/.env`
 *   `src/telegram_bot/.env`
 
 ### 4. Запуск (Local Development)
@@ -96,16 +98,17 @@ arq src.workers.notification_worker.worker.WorkerSettings
 ```
 lily_website/
 ├── src/
-│   ├── backend-django/       # Django бэкенд (features-based структура)
-│   │   ├── core/             # Настройки (settings), urls
-│   │   ├── features/         # Бизнес-логика (main, system и др.)
+│   ├── backend_django/       # Django бэкенд (features-based структура)
+│   │   ├── api/              # Ninja API эндпоинты
+│   │   ├── core/             # Настройки, urls, конфиг логирования
+│   │   ├── features/         # Бизнес-логика (booking, cabinet и др.)
 │   │   ├── static/           # Статика (CSS, JS, IMG)
 │   │   └── templates/        # HTML шаблоны
 │   ├── telegram_bot/         # Telegram Bot (aiogram 3.x)
-│   └── shared/               # Общий код
+│   ├── workers/              # Фоновые воркеры ARQ
+│   └── shared/               # Общий код (схемы, утилиты, ядро)
 ├── deploy/                   # Docker-compose и Nginx конфиги
-├── docs/                     # Техническая документация
-├── 1/arch/                   # Архитектурная документация и концепты
+├── docs/                     # Техническая документация и роадмапы
 └── pyproject.toml            # Конфигурация Poetry, Ruff, Mypy
 ```
 

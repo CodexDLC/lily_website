@@ -53,6 +53,17 @@
                 <span class="sidebar-icon">💅</span>
                 {% trans "Masters" %}
             </a>
+            <a href="{% url 'cabinet:contacts' %}" hx-get="{% url 'cabinet:contacts' %}" hx-target="#cabinet-content"
+                hx-push-url="true" class="sidebar-link d-flex justify-content-between align-items-center {% if active_section == 'contacts' %}active{% endif %}">
+                <div>
+                    <span class="sidebar-icon">✉️</span>
+                    {% trans "Requests" %}
+                </div>
+                <!-- HTMX out-of-band updates will target this badge if needed, though simple setup rely on full page reload or view re-render -->
+                {% if unprocessed_count > 0 %}
+                <span class="badge bg-warning text-dark rounded-pill">{{ unprocessed_count }}</span>
+                {% endif %}
+            </a>
         </div>
     </div>
 

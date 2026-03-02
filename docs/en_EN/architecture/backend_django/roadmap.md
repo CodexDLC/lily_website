@@ -12,13 +12,27 @@ This roadmap organizes development tasks by **domain** (feature area). It reflec
 |:---|:---:|:---:|:---:|
 | **[✅ Booking System Core](#-booking-system-core)** | ✅ Done | 100% | Critical |
 | **[✅ Booking Wizard UI (HTMX)](#-booking-wizard-ui-htmx)** | ✅ Done | 100% | Critical |
+| **[🔄 Advanced Booking (Combo)](#-advanced-booking-combo)** | 📝 Design | 10% | High |
 | **[🔄 Notifications & Background Tasks](#-notifications--background-tasks)** | 🔄 In Progress | 20% | High |
-| **[🔐 QR Finalization (Future)](#-qr-finalization-future)** | 📝 Design | 5% | Medium |
+| **[✅ QR Finalization System](#-qr-finalization-system)** | ✅ Done | 100% | Medium |
 | **[🎨 Frontend & Design](#-frontend--design)** | ✅ Done | 90% | Critical |
 | **[📄 Content Pages](#-content-pages)** | ✅ Done | 95% | Critical |
 | **[✅ Localization (i18n)](#-localization-i18n)** | ✅ Done | 90% | High |
 | **[✅ SEO & Analytics](#-seo--analytics)** | ✅ Done | 100% | High |
-| **[⚙️ Admin & Backend](#️-admin--backend)** | 🔄 In Progress | 60% | Medium |
+| **[⚙️ Admin & Backend](#️-admin--backend)** | 🔄 In Progress | 80% | Medium |
+
+---
+
+## 🔄 Advanced Booking (Combo)
+
+**Goal:** Allow users to book multiple services in one session with continuous time slots.
+**Status:** 📝 10% - Design specification in progress.
+
+### Tasks
+- [ ] **[TASK-211](./tasks/TASK-211-complex-booking-system.md):** Implement Multi-Service "Complex" Booking.
+- [ ] Create "Combo Transformer" service for slot chaining.
+- [ ] Support multi-master relay for complex bookings.
+- [ ] Implement combo discount logic.
 
 ---
 
@@ -28,9 +42,9 @@ This roadmap organizes development tasks by **domain** (feature area). It reflec
 **Status:** ✅ 100% - Core models and services are implemented and in use.
 
 ### Tasks
-- [x] **[TASK-101](./tasks/TASK-101-master-model.md):** Create `Master` model.
-- [x] **[TASK-301](./tasks/TASK-301-client-model.md):** Create `Client` model with Ghost User pattern.
-- [x] **[TASK-201](./tasks/TASK-201-appointment-model.md):** Create `Appointment` model.
+- [x] **[TASK-101](./tasks/archived/TASK-101-master-model.md):** Create `Master` model.
+- [x] **[TASK-301](./tasks/archived/TASK-301-client-model.md):** Create `Client` model with Ghost User pattern.
+- [x] **[TASK-201](./tasks/archived/TASK-201-appointment-model.md):** Create `Appointment` model.
 - [x] Implement `ClientService` for ghost user management.
 - [x] Implement `BookingService` for appointment creation.
 - [x] Refactor services to be stateless and use static methods.
@@ -44,7 +58,7 @@ This roadmap organizes development tasks by **domain** (feature area). It reflec
 **Status:** ✅ 100% - The booking wizard is fully functional.
 
 ### Tasks
-- [x] **[TASK-204](./tasks/TASK-204-htmx-booking-flow.md):** Implement HTMX-based wizard.
+- [x] **[TASK-204](./tasks/archived/TASK-204-htmx-booking-flow.md):** Implement HTMX-based wizard.
 - [x] Implement `BookingState` DTO for type-safe session management.
 - [x] Implement `BookingSessionService` to handle the DTO.
 - [x] Refactor view, steps, and selectors to use the `BookingState` DTO.
@@ -67,16 +81,16 @@ This roadmap organizes development tasks by **domain** (feature area). It reflec
 
 ---
 
-## 🔐 QR Finalization (Future)
+## ✅ QR Finalization System
 
-**Goal:** On-site appointment finalization via QR scanning by masters.
-**Status:** 5% - Full design documented, implementation is a future feature.
+**Goal:** Secure appointment price adjustment via QR scanning by administrators.
+**Status:** ✅ 100% - Integrated into Admin Cabinet.
 
 ### Tasks
-- [ ] **[TASK-205](./tasks/TASK-205-qr-finalization-system.md):** Implement the full QR finalization system.
-- [ ] Develop a Telegram Bot Mini App with a QR scanner.
-- [ ] Implement API endpoints for scan validation and finalization.
-- [ ] Implement lead tracking for unauthorized scans.
+- [x] **[TASK-205](./tasks/archived/TASK-205-qr-finalization-system.md):** Implement Admin-only QR Price Adjustment.
+- [x] Create `AppointmentPriceEditView` with token validation.
+- [x] Add `price_actual` field to `Appointment` model.
+- [ ] Connect with `tools/media/qr_style.py` for branded QR generation.
 
 ---
 ## 📄 Content Pages
@@ -144,5 +158,6 @@ This roadmap organizes development tasks by **domain** (feature area). It reflec
 - [x] Add admin for `Category`, `Service`, `Master`, `Client`, `Appointment`.
 - [x] Use `modeltranslation` in admin.
 - [x] **[TASK-701]** Customize admin dashboard with statistics.
+- [x] **[TASK-210](./tasks/archived/TASK-210-contact-requests-cabinet.md):** Implement Contact Requests management in Cabinet.
 - [ ] **[TASK-703]** Implement image upload previews in forms.
 - [ ] **[TASK-704]** Add inline editing for `MasterPortfolio` and `MasterCertificate` in `MasterAdmin`.
