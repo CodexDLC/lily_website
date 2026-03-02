@@ -30,15 +30,9 @@ class ServiceStep(BaseStep):
         return cast("dict[str, Any] | None", wizard_selectors.get_step_1_context(self.state))
 
 
-class MasterStep(BaseStep):
-    template_name = "booking/steps/step_2_masters_mock.html"
-
-    def get_context(self) -> dict[str, Any] | None:
-        log.debug(f"View: MasterStep | Action: LoadContext | service_id={self.state.service_id}")
-        return cast("dict[str, Any] | None", wizard_selectors.get_step_2_context(self.state))
-
-
 class CalendarStep(BaseStep):
+    """Step 2: Date & time selection. Master not yet selected — slots aggregated across all masters."""
+
     template_name = "booking/steps/step_3_calendar_mock.html"
 
     def get_context(self) -> dict[str, Any] | None:
@@ -48,14 +42,27 @@ class CalendarStep(BaseStep):
         month = self.request.GET.get("month", today.month)
 
         log.debug(
-            f"View: CalendarStep | Action: LoadContext | master_id={self.state.master_id} | year={year} | month={month}"
+            f"View: CalendarStep | Action: LoadContext | service_id={self.state.service_id} | year={year} | month={month}"
         )
 
         view_data = {
             "year": year,
             "month": month,
         }
-        return cast("dict[str, Any] | None", wizard_selectors.get_step_3_context(self.state, view_data))
+        return cast("dict[str, Any] | None", wizard_selectors.get_step_2_context(self.state, view_data))
+
+
+class MasterStep(BaseStep):
+    """Step 3: Show only masters who are free at the selected date & time."""
+
+    template_name = "booking/steps/step_2_masters_mock.html"
+
+    def get_context(self) -> dict[str, Any] | None:
+        log.debug(
+            f"View: MasterStep | Action: LoadContext | service_id={self.state.service_id} "
+            f"| date={self.state.selected_date} | time={self.state.selected_time}"
+        )
+        return cast("dict[str, Any] | None", wizard_selectors.get_step_3_context(self.state))
 
 
 class ConfirmStep(BaseStep):

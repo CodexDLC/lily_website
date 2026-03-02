@@ -176,14 +176,62 @@ def run_docker_validation():
         if not docker_compose("up -d")[0]:
             return False
 
-        print_step("Waiting for services to be ready (60s)")
-        time.sleep(60)
+        print_step("Waiting for services to be ready (15s)")
+        time.sleep(15)
 
+        # --- New: Check all containers status ---
+        print_step("Verifying all containers are running")
+        success, ps_out = docker_compose("ps --format json")
+        if success and ps_out:
+            import json
+
+            try:
+                containers = []
+                # Handle multiple JSON objects (one per line) or a single JSON list
+                lines = ps_out.strip().split("\n")
+                for line in lines:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        data = json.loads(line)
+                        if isinstance(data, list):
+                            containers.extend(data)
+                        else:
+                            containers.append(data)
+                    except json.JSONDecodeError:
+                        continue
+
+                failed_services = []
+                for c in containers:
+                    # Status can be 'running', 'healthy', 'exited', etc.
+                    state = str(c.get("State", "")).lower() or str(c.get("Status", "")).lower()
+                    service_name = c.get("Service", "unknown")
+                    if "running" not in state and "healthy" not in state:
+                        failed_services.append(service_name)
+
+                if failed_services:
+                    print_error(f"The following services failed to start: {', '.join(failed_services)}")
+                    for service in failed_services:
+                        print(f"\n{Colors.CYAN}Logs for {service}:{Colors.ENDC}")
+                        _, logs = docker_compose(f"logs --tail=20 {service}")
+                        print(logs)
+                    return False
+
+                if containers:
+                    print_success("All containers are running/healthy")
+                else:
+                    print(f"{Colors.YELLOW}Warning: No containers found to check.{Colors.ENDC}")
+
+            except Exception as e:
+                print(f"{Colors.YELLOW}Warning: Could not parse docker-compose ps output: {e}{Colors.ENDC}")
+
+        # --- Backend specific checks ---
         env = {"CONTAINER_PREFIX": TEST_PROJECT_NAME}
         _, output = run_command(
             f"docker-compose -p {TEST_PROJECT_NAME} -f {COMPOSE_FILE} ps -q backend", capture_output=True, env=env
         )
-        container_id = output.strip()
+        container_id = output.strip() if output else None
         if not container_id:
             print_error("Backend container not found")
             return False

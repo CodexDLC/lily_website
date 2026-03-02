@@ -56,58 +56,26 @@ def get_step_1_context(state: BookingState) -> dict[str, Any]:
     }
 
 
-def get_step_2_context(state: BookingState) -> dict[str, Any] | None:
-    """Context for Step 2: Masters. Cached."""
-    if not state.service_id:
-        return None
-
-    def fetch():
-        try:
-            service = Service.objects.get(id=state.service_id)
-            # Only public masters shown in the selection UI
-            masters = list(
-                Master.objects.filter(
-                    categories=service.category, status=Master.STATUS_ACTIVE, is_public=True
-                ).order_by("order")
-            )
-            return {"selected_service": service, "masters": masters, "service_id": state.service_id}
-        except Service.DoesNotExist:
-            return None
-
-    return get_cached_data(f"wizard_step_2_cache_{state.service_id}", fetch)
-
-
-def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[str, Any] | None:
-    """Context for Step 3: Calendar & Slots."""
+def get_step_2_context(state: BookingState, view_data: dict[str, Any]) -> dict[str, Any] | None:
+    """Context for Step 2: Calendar & Slots (master not yet selected — show all available slots)."""
     context = {}
 
     # 1. Get Service
     if not state.service_id:
         return None
     try:
-        service = Service.objects.get(id=state.service_id)
+        service = Service.objects.select_related("category").get(id=state.service_id)
         context["selected_service"] = service
     except Service.DoesNotExist:
         return None
 
-    # 2. Get Masters (Handle "any" or specific ID)
-    masters_list = []
-    master_id_val = state.master_id or "any"
-    context["master_id"] = master_id_val
-
-    if master_id_val == "any":
-        masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
-    else:
-        try:
-            master = Master.objects.get(id=master_id_val)
-            context["selected_master"] = master
-            masters_list = [master]
-        except (Master.DoesNotExist, ValueError):
-            masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
-            context["master_id"] = "any"
+    # 2. Get all active masters for this category (slot aggregation — "any" logic)
+    masters_list = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
 
     if not masters_list:
         return None
+
+    context["master_id"] = "any"
 
     # 3. Date Strip (Horizontal list for mobile)
     context["date_strip"] = _get_date_strip(days=14)
@@ -139,6 +107,70 @@ def get_step_3_context(state: BookingState, view_data: dict[str, Any]) -> dict[s
     return context
 
 
+def get_step_3_context(state: BookingState) -> dict[str, Any] | None:
+    """Context for Step 3: Masters available at the selected date & time slot. NOT cached (dynamic)."""
+    if not (state.service_id and state.selected_date and state.selected_time):
+        return None
+
+    try:
+        service = Service.objects.select_related("category").get(id=state.service_id)
+    except Service.DoesNotExist:
+        return None
+
+    # Parse selected datetime
+    from datetime import datetime as dt
+
+    try:
+        naive_dt = dt.strptime(f"{state.selected_date.isoformat()} {state.selected_time}", "%Y-%m-%d %H:%M")
+        start_dt = timezone.make_aware(naive_dt)
+    except (ValueError, TypeError):
+        return None
+
+    # All active public masters for this category
+    candidates = list(
+        Master.objects.filter(
+            categories=service.category,
+            status=Master.STATUS_ACTIVE,
+            is_public=True,
+        ).order_by("order")
+    )
+
+    # Filter 1: works on this weekday
+    weekday = state.selected_date.weekday()
+    candidates = [m for m in candidates if weekday in (m.work_days or [])]
+
+    # Filter 2: no day-off on this date
+    from features.booking.models.master_day_off import MasterDayOff
+
+    day_off_ids = set(
+        MasterDayOff.objects.filter(master__in=candidates, date=state.selected_date).values_list("master_id", flat=True)
+    )
+    candidates = [m for m in candidates if m.id not in day_off_ids]
+
+    # Filter 3: slot is not already booked (best-effort for UI; final check is in BookingService)
+    from features.booking.services.booking import BookingService
+
+    available_masters = [
+        m for m in candidates if BookingService._is_slot_still_available(m, start_dt, service.duration)
+    ]
+
+    # Check if ANY master (incl. non-public "any pool") is free at this slot
+    # Used to auto-skip step 3 when only visiting/anonymous masters are available
+    all_active = list(Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE))
+    all_active = [m for m in all_active if weekday in (m.work_days or [])]
+    all_active = [m for m in all_active if m.id not in day_off_ids]
+    has_any_masters = any(BookingService._is_slot_still_available(m, start_dt, service.duration) for m in all_active)
+
+    return {
+        "available_masters": available_masters,
+        "has_any_masters": has_any_masters,
+        "selected_service": service,
+        "selected_date": state.selected_date,
+        "selected_time": state.selected_time,
+        "service_id": state.service_id,
+    }
+
+
 def get_step_4_context(state: BookingState) -> dict[str, Any] | None:
     """Context for Step 4: Confirmation. Dynamic."""
     if not state.service_id or not state.selected_date or not state.selected_time:
@@ -163,8 +195,8 @@ def get_stepper_context(current_step: int) -> list[StepperStep]:
     """Returns stepper state."""
     steps: list[StepperStep] = [
         {"number": "1", "title": _("Leistung"), "active": False, "completed": False},
-        {"number": "2", "title": _("Experte"), "active": False, "completed": False},
-        {"number": "3", "title": _("Termin"), "active": False, "completed": False},
+        {"number": "2", "title": _("Termin"), "active": False, "completed": False},
+        {"number": "3", "title": _("Experte"), "active": False, "completed": False},
         {"number": "4", "title": _("Bestätigung"), "active": False, "completed": False},
     ]
     for step in steps:
