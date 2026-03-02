@@ -182,26 +182,30 @@ def run_docker_validation():
         # --- New: Check all containers status ---
         print_step("Verifying all containers are running")
         success, ps_out = docker_compose("ps --format json")
-        if success:
+        if success and ps_out:
             import json
 
             try:
-                # docker-compose ps --format json returns multiple lines of JSON objects or a list
-                # depending on the version. We'll handle both.
                 containers = []
-                for line in ps_out.strip().split("\n"):
+                # Handle multiple JSON objects (one per line) or a single JSON list
+                lines = ps_out.strip().split("\n")
+                for line in lines:
+                    line = line.strip()
                     if not line:
                         continue
-                    data = json.loads(line)
-                    if isinstance(data, list):
-                        containers.extend(data)
-                    else:
-                        containers.append(data)
+                    try:
+                        data = json.loads(line)
+                        if isinstance(data, list):
+                            containers.extend(data)
+                        else:
+                            containers.append(data)
+                    except json.JSONDecodeError:
+                        continue
 
                 failed_services = []
                 for c in containers:
                     # Status can be 'running', 'healthy', 'exited', etc.
-                    state = c.get("State", "").lower() or c.get("Status", "").lower()
+                    state = str(c.get("State", "")).lower() or str(c.get("Status", "")).lower()
                     service_name = c.get("Service", "unknown")
                     if "running" not in state and "healthy" not in state:
                         failed_services.append(service_name)
@@ -213,7 +217,12 @@ def run_docker_validation():
                         _, logs = docker_compose(f"logs --tail=20 {service}")
                         print(logs)
                     return False
-                print_success("All containers are running/healthy")
+
+                if containers:
+                    print_success("All containers are running/healthy")
+                else:
+                    print(f"{Colors.YELLOW}Warning: No containers found to check.{Colors.ENDC}")
+
             except Exception as e:
                 print(f"{Colors.YELLOW}Warning: Could not parse docker-compose ps output: {e}{Colors.ENDC}")
 
@@ -222,7 +231,7 @@ def run_docker_validation():
         _, output = run_command(
             f"docker-compose -p {TEST_PROJECT_NAME} -f {COMPOSE_FILE} ps -q backend", capture_output=True, env=env
         )
-        container_id = output.strip()
+        container_id = output.strip() if output else None
         if not container_id:
             print_error("Backend container not found")
             return False
