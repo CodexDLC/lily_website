@@ -35,7 +35,6 @@ CRITICAL: This must be loaded BEFORE GTM/GA4 scripts to avoid race conditions.
 
 {% if site_settings.google_analytics_id %}
 <!-- Google Analytics 4 (GA4) -->
-{% if site_settings.google_analytics_id and not site_settings.google_tag_manager_id %}
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ site_settings.google_analytics_id }}"></script>
 <script>
   gtag('js', new Date());
@@ -44,7 +43,6 @@ CRITICAL: This must be loaded BEFORE GTM/GA4 scripts to avoid race conditions.
     'cookie_flags': 'SameSite=None;Secure'
   });
 </script>
-{% endif %}
 {% endif %}
 
 {% if site_settings.google_tag_manager_id %}

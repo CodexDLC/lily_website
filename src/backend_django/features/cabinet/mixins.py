@@ -33,11 +33,14 @@ class CabinetAccessMixin(LoginRequiredMixin):
                     return client
 
             # 2. Try phone match (assuming username might be a phone)
-            normalized_phone = ClientService._normalize_phone(user.username)
-            if normalized_phone:
-                client = Client.objects.filter(phone=normalized_phone).first()
-                if client:
-                    return client
+            try:
+                normalized_phone = ClientService._normalize_phone(user.username)
+                if normalized_phone:
+                    client = Client.objects.filter(phone=normalized_phone).first()
+                    if client:
+                        return client
+            except Exception:  # nosec: B110 - failing to normalize a username as phone is expected/safe
+                pass
 
         # Check magic link session
         client_id = self.request.session.get("cabinet_client_id")
