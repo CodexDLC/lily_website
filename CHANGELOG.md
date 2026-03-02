@@ -2,6 +2,15 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.6.0] - 2026-02-27
+### Added
+- **Cabinet:** Implemented QR-based appointment finalization for masters.
+- **Analytics:** Fixed GA4 tracking logic for better event reporting.
+
+### Changed / Refactored
+- **Security:** Enhanced security and cleaned up imports in notification services.
+- **Documentation:** General documentation updates and improvements.
+
 ## [1.5.0] - 2026-02-27
 ### Added
 - **Cabinet:** Implemented full appointment reschedule logic with interactive calendar and HTMX-powered slot selection.
