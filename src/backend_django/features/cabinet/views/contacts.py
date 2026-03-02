@@ -1,8 +1,9 @@
 """Contact requests list view (Admin only)."""
 
 from core.logger import log
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 from django.views.generic import TemplateView
 from features.cabinet.mixins import AdminRequiredMixin, HtmxCabinetMixin
 from features.main.models.contact_request import ContactRequest
@@ -56,11 +57,7 @@ class ContactRequestsView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
         # Instead of JsonResponse, we render the row template so HTMX swaps just that row
         # This is standard HTMX pattern
 
-        ctx = self.get_context_data()
-        ctx["req"] = contact_request  # pass the single object to the row template
-
-        from django.http import HttpResponse
-        from django.template.loader import render_to_string
+        ctx = {"req": contact_request}
 
         html = render_to_string("cabinet/contacts/row.html", ctx, request=request)
         return HttpResponse(html)

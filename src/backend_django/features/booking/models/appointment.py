@@ -1,5 +1,6 @@
 """Appointment model (client booking)."""
 
+import secrets
 from datetime import timedelta
 
 from django.core.exceptions import ValidationError
@@ -189,8 +190,6 @@ class Appointment(TimestampMixin, models.Model):
             self.price = self.service.price
 
         if not self.finalize_token:
-            import secrets
-
             self.finalize_token = secrets.token_urlsafe(32)
 
         super().save(*args, **kwargs)

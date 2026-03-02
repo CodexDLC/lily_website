@@ -2,6 +2,7 @@ import json
 import re
 from typing import Any
 
+import httpx
 from loguru import logger as log
 from twilio.base.exceptions import TwilioRestException
 from twilio.rest import Client
@@ -114,8 +115,6 @@ class TwilioService:
         }
 
         try:
-            import httpx
-
             async with httpx.AsyncClient() as client:
                 response = await client.post(self.sendgrid_url, headers=headers, json=payload, timeout=timeout)
 

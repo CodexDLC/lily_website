@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from loguru import logger as log
 
@@ -44,8 +44,6 @@ class NotificationOrchestrator:
             log.warning(f"Orchestrator | Action: SendEmail | Step: PrimaryFailed | error={e}")
 
         # 2. Fallback: SendGrid (via Twilio)
-        from typing import cast
-
         sender = cast("str", from_email or self.email_client.smtp_from_email)
         log.info(f"Orchestrator | Action: SendEmail | Step: Fallback | to={to_email}")
         return await self.twilio_client.send_email(to_email, subject, html_content, from_email=sender, timeout=timeout)

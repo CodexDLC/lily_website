@@ -17,15 +17,18 @@ class SevenIOClient:
         Sends SMS via Seven.io.
         """
         params: dict[str, str | int] = {
-            "p": str(self.api_key),
             "to": str(to_number),
             "text": str(text),
             "from": str(self.from_name),
             "json": 1,
         }
+        headers = {
+            "X-Api-Key": self.api_key,
+            "Accept": "application/json",
+        }
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.post(f"{self.base_url}/sms", params=params)
+                response = await client.post(f"{self.base_url}/sms", params=params, headers=headers)
                 response.raise_for_status()
                 data = response.json()
 
