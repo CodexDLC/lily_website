@@ -27,8 +27,7 @@ class AppointmentPriceEditView(AdminRequiredMixin, DetailView):
         ctx = super().get_context_data(**kwargs)
         apt = self.object
         log.info(
-            f"View: AppointmentPriceEdit | Action: GetContext | "
-            f"appointment_id={apt.id} | token={apt.finalize_token} | user={self.request.user.id}"
+            f"View: AppointmentPriceEdit | Action: GetContext | appointment_id={apt.id} | user={self.request.user.id}"
         )
 
         price = float(apt.price_actual if apt.price_actual is not None else (apt.price or 0.0))
