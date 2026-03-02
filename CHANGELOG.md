@@ -2,6 +2,21 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.6.3] - 2026-03-02
+### Added
+- **Analytics:** Implemented "Lazy Load" strategy for GTM and GA4 to significantly improve PageSpeed scores (LCP/TBT).
+- **Analytics:** Added a 3-second fallback timer to ensure tracking scripts load even without user interaction.
+- **Analytics:** Integrated HTMX tracking by pushing `htmx_page_view` events on virtual page transitions.
+- **Dev Tools:** Enhanced `tools/dev/check.py` with robust Docker container status validation and automatic log output for failed services.
+
+### Fixed
+- **Worker:** Fixed `ModuleNotFoundError` in `notification_worker` by correcting the `transliterate` utility import path.
+- **UI/UX:** Fixed broken translation tag for `service_item_epilation` in the footer.
+- **Configuration:** Updated Google Tag Manager ID to the latest active container (`GTM-NR6MRX2C`) in site settings fixtures.
+
+### Changed / Refactored
+- **Booking Wizard:** Continued refactoring of the Wizard v2 flow, including updated selectors and step templates (Masters, Calendar, Confirm).
+
 ## [1.6.0] - 2026-02-27
 ### Added
 - **Cabinet:** Implemented QR-based appointment finalization for masters.
