@@ -2,6 +2,7 @@ Project Structure: Full Project
 ===============================
 
 📂 lily_website/
+    📄 .ai_instructions.md
     📄 .dockerignore
     📄 .env
     📄 .env.example
@@ -46,6 +47,7 @@ Project Structure: Full Project
         📂 en_EN/
             📄 GETTING_STARTED.md
             📄 README.md
+            📄 global_roadmap.md
             📂 architecture/
                 📄 README.md
                 📂 archive/
@@ -112,14 +114,19 @@ Project Structure: Full Project
                         📄 css_architecture.md
                     📂 staticfiles/
                     📂 tasks/
-                        📄 TASK-101-master-model.md
-                        📄 TASK-201-appointment-model.md
-                        📄 TASK-204-htmx-booking-flow.md
-                        📄 TASK-205-qr-finalization-system.md
-                        📄 TASK-301-client-model.md
-                        📄 TASK-MVP-001-simple-booking-form.md
+                        📄 TASK-206-arq-notifications.md
+                        📄 TASK-207-feedback-logic.md
+                        📄 TASK-208-retention-logic.md
+                        📄 TASK-209-analytics-reporting-layer.md
+                        📄 TASK-211-complex-booking-system.md
                         📄 TASK-SEO-001-internal-linking.md
-                        📄 bot_integration.md
+                        📂 archived/
+                            📄 TASK-101-master-model.md
+                            📄 TASK-201-appointment-model.md
+                            📄 TASK-204-htmx-booking-flow.md
+                            📄 TASK-205-qr-finalization-system.md
+                            📄 TASK-210-contact-requests-cabinet.md
+                            📄 TASK-301-client-model.md
                     📂 templates/
                         📄 README.md
                         📂 contacts/
@@ -305,6 +312,7 @@ Project Structure: Full Project
                             📄 view_sender.md
                     📂 tasks/
                         📄 README.md
+                        📄 TASK-BOT-102-system-orchestrator.md
                         📄 integration_tasks.md
                 📂 workers/
                     📄 README.md
@@ -329,11 +337,17 @@ Project Structure: Full Project
                             📄 notification_service.md
                         📂 tasks/
                             📄 README.md
+                            📄 TASK-WRK-101-heartbeat-scheduler.md
                             📄 email_tasks.md
                             📄 notification_tasks.md
                             📄 task_aggregator.md
                             📄 twilio_tasks.md
                             📄 utils.md
+                    📂 system_worker/
+                        📂 tasks/
+                            📄 TASK-WRK-102-system-heartbeat.md
+                            📄 TASK-WRK-103-feedback-email.md
+                            📄 TASK-WRK-104-retention-email.md
                     📂 templates/
                         📄 README.md
                         📄 base_email.md
@@ -352,9 +366,16 @@ Project Structure: Full Project
                 📄 layout_navigation.md
                 📄 page_flow.md
                 📄 ui_components.md
+            📂 global_task/
+                📄 TASK-GLOBAL-001-notifications-arq.md
+                📄 TASK-GLOBAL-004-post-visit-feedback.md
+                📄 TASK-GLOBAL-005-reengagement-campaign.md
+                📄 TASK-GLOBAL-006-database-backups.md
+                📄 TASK-GLOBAL-007-analytics-system.md
             📂 infrastructure/
                 📄 README.md
                 📄 git_flow.md
+                📄 logging_standard.md
                 📂 dependencies/
                     📄 README.md
                 📂 deployment/
@@ -464,6 +485,9 @@ Project Structure: Full Project
                     📄 dev.py
                     📄 prod.py
                     📄 test.py
+                📂 templatetags/
+                    📄 __init__.py
+                    📄 i18n_urls.py
             📂 features/
                 📄 __init__.py
                 📂 booking/
@@ -472,6 +496,7 @@ Project Structure: Full Project
                     📄 apps.py
                     📄 dto.py
                     📄 forms.py
+                    📄 qr_style.py
                     📄 tests.py
                     📄 translation.py
                     📄 urls.py
@@ -487,6 +512,7 @@ Project Structure: Full Project
                         📄 0004_masterdayoff.py
                         📄 0005_master_work_days.py
                         📄 0006_master_is_public.py
+                        📄 0007_appointment_finalize_token_appointment_price_actual_and_more.py
                         📄 __init__.py
                     📂 models/
                         📄 __init__.py
@@ -508,6 +534,8 @@ Project Structure: Full Project
                         📄 booking.py
                         📄 client_service.py
                         📄 notifications.py
+                        📄 qr_service.py
+                        📄 reschedule.py
                         📄 session.py
                         📄 slots.py
                     📂 views/
@@ -520,16 +548,27 @@ Project Structure: Full Project
                     📄 apps.py
                     📄 mixins.py
                     📄 urls.py
+                    📂 selector/
+                        📄 __init__.py
+                        📄 appointment_selectors.py
+                    📂 services/
+                        📄 __init__.py
+                        📄 appointment_service.py
+                    📂 tests/
+                        📄 test_views_price_edit.py
                     📂 views/
                         📄 __init__.py
                         📄 appointments.py
                         📄 appointments_create.py
                         📄 auth.py
                         📄 clients.py
+                        📄 contacts.py
                         📄 dashboard.py
                         📄 masters.py
-                        📄 profile.py
+                        📄 price_adjustment.py
+                        📄 reschedule.py
                         📄 services.py
+                        📄 user_profile.py
                 📂 main/
                     📄 __init__.py
                     📄 admin.py
@@ -540,9 +579,11 @@ Project Structure: Full Project
                     📄 urls.py
                     📂 fixtures/
                         📄 initial_categories.json
-                        📄 initial_data.json
-                        📄 initial_portfolio.json
-                        📄 initial_services.json
+                    📂 management/
+                        📄 __init__.py
+                        📂 commands/
+                            📄 __init__.py
+                            📄 load_main_data.py
                     📂 migrations/
                         📄 0001_initial.py
                         📄 0002_load_initial_data.py
@@ -593,7 +634,6 @@ Project Structure: Full Project
                     📄 signals.py
                     📄 translation.py
                     📂 fixtures/
-                        📄 initial_seo.json
                         📂 content/
                             📄 masters.json
                             📄 site_settings.json
@@ -646,29 +686,11 @@ Project Structure: Full Project
                     📂 services/
                         📄 dashboard_refresh_service.py
                         📄 images.py
+                        📄 notification.py
                     📂 tests/
                         📄 __init__.py
                         📄 test_image_service.py
-                📂 telegram_app/
-                    📄 __init__.py
-                    📄 admin.py
-                    📄 apps.py
-                    📄 decorators.py
-                    📄 models.py
-                    📄 tests.py
-                    📄 urls.py
-                    📄 views.py
-                    📂 migrations/
-                        📄 __init__.py
-                    📂 services/
-                        📄 notification.py
-                        📄 security.py
-                    📂 views/
-                        📄 __init__.py
-                        📄 appointments.py
-                        📄 appointments_new.py
-                        📄 contacts.py
-                        📄 reply.py
+                        📄 test_templates_syntax.py
             📂 locale/
                 📂 de/
                     📂 LC_MESSAGES/
@@ -739,8 +761,6 @@ Project Structure: Full Project
                     📄 cabinet.css
                     📄 cabinet_app.css
                     📄 compiler_config.json
-                    📄 tma_app.css
-                    📄 tma_base.css
                     📂 adaptive/
                         📄 desktop-large.css
                         📄 laptop-small.css
@@ -756,7 +776,7 @@ Project Structure: Full Project
                         📄 reset.css
                         📄 variables.css
                     📂 cabinet/
-                        📄 auth.css
+                        📄 calendar.css
                         📄 cards.css
                         📄 dashboard.css
                         📄 layout.css
@@ -779,10 +799,6 @@ Project Structure: Full Project
                         📄 service-detail.css
                         📄 services.css
                         📄 team.css
-                    📂 tma_app/
-                        📄 appointments.css
-                        📄 base.css
-                        📄 contacts.css
                 📂 fonts/
                     📄 GreatVibes-Regular.ttf
                     📄 Lato-Black.ttf
@@ -821,7 +837,6 @@ Project Structure: Full Project
                     📄 cookie-consent.js
                     📄 htmx.min.js
                     📄 promo-notification.js
-                    📄 telegram_app.js
                     📂 admin/
                         📄 pwa-enhance.js
             📂 staticfiles/
@@ -1135,13 +1150,23 @@ Project Structure: Full Project
                     📄 index.html
                     📂 appointments/
                         📄 create.html
+                        📄 edit_price.html
                         📄 list.html
+                        📄 reschedule.html
+                        📂 includes/
+                            📄 _appointment_card.html
+                            📄 _reschedule_calendar.html
+                            📄 _reschedule_slots.html
+                            📄 _reschedule_success.html
                     📂 auth/
                         📄 login.html
                         📄 magic_link.html
                     📂 clients/
                         📄 _list_partial.html
                         📄 list.html
+                    📂 contacts/
+                        📄 list.html
+                        📄 row.html
                     📂 dashboard/
                         📄 index.html
                     📂 includes/
@@ -1191,12 +1216,6 @@ Project Structure: Full Project
                 📂 team/
                     📄 _schema_person.html
                     📄 team.html
-                📂 telegram_app/
-                    📄 appointments.html
-                    📄 appointments_new.html
-                    📄 contacts.html
-                    📄 reply_form.html
-                    📄 tma_base.html
         📂 shared/
             📄 __init__.py
             📂 core/
@@ -1286,29 +1305,6 @@ Project Structure: Full Project
                             📄 ui.py
                 📂 telegram/
                     📄 __init__.py
-                    📂 appointments/
-                        📄 __init__.py
-                        📄 feature_setting.py
-                        📂 contracts/
-                            📄 __init__.py
-                            📄 contract.py
-                        📂 handlers/
-                            📄 __init__.py
-                            📄 handlers.py
-                        📂 logic/
-                            📄 __init__.py
-                            📄 orchestrator.py
-                            📄 provider.py
-                        📂 resources/
-                            📄 __init__.py
-                            📄 callbacks.py
-                            📄 dto.py
-                            📄 formatters.py
-                            📄 keyboards.py
-                            📄 texts.py
-                        📂 ui/
-                            📄 __init__.py
-                            📄 ui.py
                     📂 bot_menu/
                         📄 __init__.py
                         📄 feature_setting.py
@@ -1353,31 +1349,6 @@ Project Structure: Full Project
                         📂 ui/
                             📄 __init__.py
                             📄 commands_ui.py
-                    📂 contacts_admin/
-                        📄 __init__.py
-                        📄 feature_setting.py
-                        📂 contracts/
-                            📄 __init__.py
-                            📄 contract.py
-                        📂 handlers/
-                            📄 __init__.py
-                            📄 handlers.py
-                        📂 logic/
-                            📄 __init__.py
-                            📄 orchestrator.py
-                            📄 provider.py
-                        📂 resources/
-                            📄 __init__.py
-                            📄 callbacks.py
-                            📄 dto.py
-                            📄 formatters.py
-                            📄 keyboards.py
-                            📄 texts.py
-                        📂 tests/
-                            📄 __init__.py
-                        📂 ui/
-                            📄 __init__.py
-                            📄 ui.py
                     📂 notifications/
                         📄 __init__.py
                         📄 feature_setting.py
@@ -1530,6 +1501,8 @@ Project Structure: Full Project
                     📄 __init__.py
                     📄 dependencies.py
                     📄 email_client.py
+                    📄 orchestrator.py
+                    📄 seven_io_client.py
                     📄 template_renderer.py
                     📄 twilio_service.py
             📂 notification_worker/
@@ -1543,9 +1516,9 @@ Project Structure: Full Project
                 📂 tasks/
                     📄 __init__.py
                     📄 email_tasks.py
+                    📄 message_tasks.py
                     📄 notification_tasks.py
                     📄 task_aggregator.py
-                    📄 twilio_tasks.py
                     📄 utils.py
             📂 templates/
                 📄 base_email.html
@@ -1560,6 +1533,8 @@ Project Structure: Full Project
     📂 tools/
         📄 README.md
         📄 __init__.py
+        📂 debug/
+            📄 debug_sync.py
         📂 dev/
             📄 README.md
             📄 __init__.py
@@ -1652,6 +1627,8 @@ Project Structure: Full Project
                             📄 urls.py.tpl
         📂 media/
             📄 convert_to_webp.py
+            📄 qr_generator.py
+            📄 qr_style.py
         📂 static/
             📄 __init__.py
             📄 css_compiler.py

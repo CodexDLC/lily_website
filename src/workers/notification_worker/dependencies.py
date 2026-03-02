@@ -10,6 +10,8 @@ from src.workers.core.base_module.dependencies import (
     close_common_dependencies,
     init_common_dependencies,
 )
+from src.workers.core.base_module.orchestrator import NotificationOrchestrator
+from src.workers.core.base_module.seven_io_client import SevenIOClient
 from src.workers.core.base_module.twilio_service import TwilioService
 from src.workers.notification_worker.config import WorkerSettings
 from src.workers.notification_worker.services.notification_service import NotificationService
@@ -82,6 +84,24 @@ async def init_notification_service(ctx: dict[str, Any], settings: WorkerSetting
         raise
 
 
+async def init_seven_io_service(ctx: dict[str, Any], settings: WorkerSettings) -> None:
+    """Инициализация SevenIOClient."""
+    log.info("Initializing SevenIOClient...")
+    try:
+        api_key = settings.SEVEN_IO_API_KEY
+        if not api_key:
+            log.warning("Seven.io API Key is missing.")
+            ctx["seven_io_client"] = None
+            return
+
+        seven_io_client = SevenIOClient(api_key=api_key)
+        ctx["seven_io_client"] = seven_io_client
+        log.info("SevenIOClient initialized successfully.")
+    except Exception as e:
+        log.exception(f"Failed to initialize SevenIOClient: {e}")
+        raise
+
+
 async def init_twilio_service(ctx: dict[str, Any], settings: WorkerSettings) -> None:
     """Инициализация TwilioService."""
     log.info("Initializing TwilioService...")
@@ -91,19 +111,11 @@ async def init_twilio_service(ctx: dict[str, Any], settings: WorkerSettings) -> 
             ctx["twilio_service"] = None
             return
 
-        # Type narrowing for Mypy
-        account_sid = settings.TWILIO_ACCOUNT_SID
-        auth_token = settings.TWILIO_AUTH_TOKEN
-        phone_number = settings.TWILIO_PHONE_NUMBER
-
-        assert account_sid is not None
-        assert auth_token is not None
-        assert phone_number is not None
-
         twilio_service = TwilioService(
-            account_sid=account_sid,
-            auth_token=auth_token,
-            from_number=phone_number,
+            account_sid=cast("str", settings.TWILIO_ACCOUNT_SID),
+            auth_token=cast("str", settings.TWILIO_AUTH_TOKEN),
+            from_number=cast("str", settings.TWILIO_PHONE_NUMBER),
+            sendgrid_api_key=settings.SENDGRID_API_KEY,
         )
         ctx["twilio_service"] = twilio_service
         log.info("TwilioService initialized successfully.")
@@ -112,12 +124,34 @@ async def init_twilio_service(ctx: dict[str, Any], settings: WorkerSettings) -> 
         raise
 
 
+async def init_orchestrator(ctx: dict[str, Any], settings: WorkerSettings) -> None:
+    """Инициализация NotificationOrchestrator."""
+    log.info("Initializing NotificationOrchestrator...")
+    try:
+        notification_service = cast("NotificationService", ctx["notification_service"])
+        seven_io_client = cast("SevenIOClient", ctx["seven_io_client"])
+        twilio_service = cast("TwilioService", ctx["twilio_service"])
+
+        orchestrator = NotificationOrchestrator(
+            email_client=notification_service.email_client,
+            seven_io_client=seven_io_client,
+            twilio_client=twilio_service,
+        )
+        ctx["orchestrator"] = orchestrator
+        log.info("NotificationOrchestrator initialized successfully.")
+    except Exception as e:
+        log.exception(f"Failed to initialize NotificationOrchestrator: {e}")
+        raise
+
+
 STARTUP_DEPENDENCIES: list[DependencyFunction] = [
     init_common_dependencies,
     init_arq_service,
     init_stream_manager,
     init_notification_service,
+    init_seven_io_service,
     init_twilio_service,
+    init_orchestrator,
 ]
 
 SHUTDOWN_DEPENDENCIES: list[DependencyFunction] = [
