@@ -1,11 +1,18 @@
 {% load i18n %}
 <div class="step-content fade-in">
     <div class="step-header-row">
-        <h3 class="step-heading">
-            {% trans "Wählen Sie einen Experten" %}
-        </h3>
+        <div>
+            <h3 class="step-heading">
+                {% trans "Wählen Sie einen Experten" %}
+            </h3>
+            {% if selected_date and selected_time %}
+            <p class="step-subheading">
+                {{ selected_date|date:"d. F" }} &mdash; {{ selected_time }} {% trans "Uhr" %}
+            </p>
+            {% endif %}
+        </div>
         <button class="btn-back"
-                hx-get="{% url 'booking_wizard' %}?step=1"
+                hx-get="{% url 'booking_wizard' %}?step=2&service_id={{ service_id }}&date={{ selected_date|date:'Y-m-d' }}"
                 hx-target="#wizard-content"
                 hx-swap="innerHTML">
             ← {% trans "Zurück" %}
@@ -14,7 +21,7 @@
 
     <div class="masters-grid-wizard">
 
-        <!-- Option: Any Master -->
+        <!-- Option: Any Master (earliest available at this slot) -->
         <div class="master-card-wizard special-any">
             <div class="mc-avatar-placeholder">
                 <span>?</span>
@@ -24,33 +31,40 @@
                 <p class="mc-role">{% trans "Frühestmöglicher Termin" %}</p>
             </div>
             <button class="btn-select-master"
-                    hx-get="{% url 'booking_wizard' %}?step=3&master_id=any&service_id={{ service_id }}"
+                    hx-get="{% url 'booking_wizard' %}?step=4&master_id=any"
                     hx-target="#wizard-content"
                     hx-swap="innerHTML">
                 {% trans "Auswählen" %}
             </button>
         </div>
 
-        <!-- Real Masters Loop -->
-        {% for master in masters %}
+        <!-- Available Masters Loop -->
+        {% for master in available_masters %}
         <div class="master-card-wizard">
             <div class="mc-avatar" style="background-image: url('{% if master.photo %}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}');"></div>
             <div class="mc-info">
                 <h4 class="mc-name">{{ master.name }}</h4>
                 <p class="mc-role">{{ master.title }}</p>
-                <!-- Rating placeholder (can be real later) -->
                 <div class="mc-rating">★★★★★</div>
             </div>
             <button class="btn-select-master"
-                    hx-get="{% url 'booking_wizard' %}?step=3&master_id={{ master.id }}&service_id={{ service_id }}"
+                    hx-get="{% url 'booking_wizard' %}?step=4&master_id={{ master.id }}"
                     hx-target="#wizard-content"
                     hx-swap="innerHTML">
                 {% trans "Auswählen" %}
             </button>
         </div>
         {% empty %}
-        <div style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted);">
-            {% trans "Leider sind für diese Leistung aktuell keine Experten verfügbar." %}
+        <div style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted); padding: 32px 0;">
+            <p>{% trans "Leider sind zu diesem Zeitpunkt keine Experten verfügbar." %}</p>
+            <p style="margin-top: 8px; font-size: 0.9em;">
+                <button class="btn-back"
+                        hx-get="{% url 'booking_wizard' %}?step=2&service_id={{ service_id }}&date={{ selected_date|date:'Y-m-d' }}"
+                        hx-target="#wizard-content"
+                        hx-swap="innerHTML">
+                    ← {% trans "Anderen Termin wählen" %}
+                </button>
+            </p>
         </div>
         {% endfor %}
 

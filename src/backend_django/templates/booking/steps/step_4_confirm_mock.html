@@ -5,7 +5,7 @@
             {% trans "Ihre Daten" %}
         </h2>
         <button class="btn-back"
-                hx-get="{% url 'booking_wizard' %}?step=3&service_id={{ selected_service.id }}&master_id={{ selected_master.id }}"
+                hx-get="{% url 'booking_wizard' %}?step=3&date={{ selected_date|date:'Y-m-d' }}&time={{ selected_time }}"
                 hx-target="#wizard-content"
                 hx-swap="innerHTML">
             ← {% trans "Zurück" %}
