@@ -19,8 +19,8 @@ class BookingWizardView(TemplateView):
     # Map step numbers to Step Classes
     STEP_CLASSES = {
         "1": ServiceStep,
-        "2": MasterStep,
-        "3": CalendarStep,
+        "2": CalendarStep,  # Step 2: Date & Time (master not yet selected)
+        "3": MasterStep,  # Step 3: Masters available at the chosen slot
         "4": ConfirmStep,
     }
 
@@ -50,13 +50,21 @@ class BookingWizardView(TemplateView):
 
         if step_context is None:
             log.warning(f"Missing data for step {current_step}, falling back to previous step")
-            # If step 3 (Calendar) fails, go to step 2 (Masters)
             if state.step > 1:
                 state.step -= 1
                 session_service.save_state(state)
                 return redirect("booking_wizard")
 
             session_service.clear()
+            return redirect("booking_wizard")
+
+        # Auto-skip step 3 when no named (public) masters are available at the chosen slot,
+        # but the "any master" pool has someone free — assign "any" and jump to confirmation.
+        if current_step == "3" and not step_context.get("available_masters") and step_context.get("has_any_masters"):
+            log.info("No public masters at chosen slot — auto-assigning 'any' master, skipping to step 4")
+            state.master_id = "any"
+            state.step = 4
+            session_service.save_state(state)
             return redirect("booking_wizard")
 
         # 6. Prepare Full Context

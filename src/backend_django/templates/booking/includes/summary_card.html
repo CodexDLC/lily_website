@@ -18,6 +18,18 @@
         <hr class="summary-divider">
     {% endif %}
 
+    {% if selected_date %}
+        <!-- Date & Time -->
+        <div class="summary-item">
+            <span class="s-label">{% trans "Zeit" %}</span>
+            <strong class="s-value">{{ selected_date|date:"d. F Y" }}</strong>
+            {% if selected_time %}
+            <strong class="s-value">{{ selected_time }}</strong>
+            {% endif %}
+        </div>
+        <hr class="summary-divider">
+    {% endif %}
+
     {% if selected_master %}
         <!-- Master -->
         <div class="summary-item">
@@ -28,18 +40,6 @@
                 {% endif %}
                 <strong class="s-value">{{ selected_master.name }}</strong>
             </div>
-        </div>
-        <hr class="summary-divider">
-    {% endif %}
-
-    {% if selected_date %}
-        <!-- Date & Time -->
-        <div class="summary-item">
-            <span class="s-label">{% trans "Zeit" %}</span>
-            <strong class="s-value">{{ selected_date|date:"d. F Y" }}</strong>
-            {% if selected_time %}
-            <strong class="s-value">{{ selected_time }}</strong>
-            {% endif %}
         </div>
         <hr class="summary-divider">
     {% endif %}

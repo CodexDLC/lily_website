@@ -1,60 +1,81 @@
 {% comment %}
-Google Consent Mode v2 + GA4 + GTM Integration
-CRITICAL: This must be loaded BEFORE GTM/GA4 scripts to avoid race conditions.
+Google Consent Mode v2 + GA4 + GTM Integration (Lazy Load for PageSpeed)
+CRITICAL: Consent initialization must be in HEAD, but scripts are deferred until user interaction.
 {% endcomment %}
 
 {% if site_settings.google_analytics_id or site_settings.google_tag_manager_id %}
 <script>
-  // 1. Initialize dataLayer
+  // 1. Initialize dataLayer & Consent Mode (Must be in HEAD)
   window.dataLayer = window.dataLayer || [];
   function gtag() { dataLayer.push(arguments); }
 
-  // 2. Check localStorage for existing consent
+  // Check localStorage for existing consent
   const savedConsent = localStorage.getItem('cookie_consent');
+  const consentStatus = savedConsent === 'granted' ? 'granted' : 'denied';
 
-  if (savedConsent === 'granted') {
-    // User previously accepted cookies
-    gtag('consent', 'default', {
-      'ad_storage': 'granted',
-      'ad_user_data': 'granted',
-      'ad_personalization': 'granted',
-      'analytics_storage': 'granted',
-      'wait_for_update': 500
+  gtag('consent', 'default', {
+    'ad_storage': consentStatus,
+    'ad_user_data': consentStatus,
+    'ad_personalization': consentStatus,
+    'analytics_storage': consentStatus,
+    'wait_for_update': 500
+  });
+
+  // 2. Lazy Load Function for Analytics
+  function loadAnalytics() {
+    if (window.analyticsLoaded) return;
+    window.analyticsLoaded = true;
+
+    {% if site_settings.google_analytics_id %}
+    // Load GA4 Script
+    const gaScript = document.createElement('script');
+    gaScript.async = true;
+    gaScript.src = 'https://www.googletagmanager.com/gtag/js?id={{ site_settings.google_analytics_id }}';
+    document.head.appendChild(gaScript);
+
+    gtag('js', new Date());
+    gtag('config', '{{ site_settings.google_analytics_id }}', {
+      'anonymize_ip': true,
+      'cookie_flags': 'SameSite=None;Secure'
     });
-  } else {
-    // Default: denied (GDPR-compliant)
-    gtag('consent', 'default', {
-      'ad_storage': 'denied',
-      'ad_user_data': 'denied',
-      'ad_personalization': 'denied',
-      'analytics_storage': 'denied',
-      'wait_for_update': 500
-    });
+    {% endif %}
+
+    {% if site_settings.google_tag_manager_id %}
+    // Load GTM Script
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start': new Date().getTime(), event: 'gtm.js'
+      });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true;
+      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', '{{ site_settings.google_tag_manager_id }}');
+    {% endif %}
+
+    console.log('Analytics loaded on user interaction');
   }
-</script>
 
-{% if site_settings.google_analytics_id %}
-<!-- Google Analytics 4 (GA4) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id={{ site_settings.google_analytics_id }}"></script>
-<script>
-  gtag('js', new Date());
-  gtag('config', '{{ site_settings.google_analytics_id }}', {
-    'anonymize_ip': true,
-    'cookie_flags': 'SameSite=None;Secure'
+  // 3. Trigger loading on any user interaction
+  ['mouseover', 'keydown', 'touchmove', 'scroll', 'click'].forEach(event => {
+    window.addEventListener(event, loadAnalytics, { once: true, passive: true });
+  });
+
+  // 4. HTMX Integration: Track virtual page views and ensure analytics is loaded
+  document.addEventListener('htmx:afterOnLoad', function (evt) {
+    // If user is interacting with HTMX, they are definitely active - load analytics if not yet
+    loadAnalytics();
+
+    // Push virtual page view to dataLayer
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        'event': 'htmx_page_view',
+        'page_path': evt.detail.pathInfo.requestPath,
+        'page_title': document.title,
+        'htmx_target': evt.detail.target.id || 'unknown'
+      });
+    }
   });
 </script>
-{% endif %}
-
-{% if site_settings.google_tag_manager_id %}
-<!-- Google Tag Manager -->
-<script>(function (w, d, s, l, i) {
-    w[l] = w[l] || []; w[l].push({
-      'gtm.start':
-        new Date().getTime(), event: 'gtm.js'
-    }); var f = d.getElementsByTagName(s)[0],
-      j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-        'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-  })(window, document, 'script', 'dataLayer', '{{ site_settings.google_tag_manager_id }}');</script>
-<!-- End Google Tag Manager -->
-{% endif %}
 {% endif %}
