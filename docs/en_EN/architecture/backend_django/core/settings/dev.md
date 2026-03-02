@@ -1,3 +1,4 @@
+{% raw %}
 # 📜 Development Settings (`dev.py`)
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../../../README.md)
@@ -54,3 +55,4 @@ This section overrides the default logging configuration to provide more verbose
 *   `disable_existing_loggers: False`: Ensures that existing loggers are not disabled.
 *   `handlers`: Defines a `console` handler that outputs log messages to `sys.stderr`.
 *   `root`: Configures the root logger to use the `console` handler and sets the logging level to `DEBUG`, meaning all messages from `DEBUG` level and above will be displayed.
+{% endraw %}
