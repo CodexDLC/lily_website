@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 async def send_universal_notification_task(ctx: dict[str, Any], payload_dict: dict[str, Any]) -> None:
     """
-    Universal task to route notifications to Email, Telegram (Bot), or both.
+    Universal task to route notifications.
     """
     try:
         payload = NotificationPayload(**payload_dict)
@@ -25,38 +25,18 @@ async def send_universal_notification_task(ctx: dict[str, Any], payload_dict: di
         return
 
     notification_service = cast("NotificationService", ctx.get("notification_service"))
-    stream_manager = cast("StreamManager", ctx.get("stream_manager"))
 
-    # 1. Handle Email Channel
+    # For universal task, we still use the service's logic but respect the requested channels
     if "email" in payload.channels and payload.recipient.email and payload.template_name:
         try:
-            subject = payload.subject or "Notification from LILY Salon"
             await notification_service.send_notification(
                 email=payload.recipient.email,
-                subject=subject,
+                subject=payload.subject or "Notification from LILY Salon",
                 template_name=payload.template_name,
                 data=payload.context_data,
             )
-            log.info(f"Task: universal_notification | Action: EmailSent | ID: {payload.notification_id}")
         except Exception as e:
-            log.error(f"Task: universal_notification | Action: EmailFailed | ID: {payload.notification_id} | error={e}")
-            # Retry on email failure (network/smtp)
             raise Retry(defer=ctx["job_try"] * 30) from e
-
-    # 2. Handle Telegram Channel
-    if "telegram" in payload.channels and payload.event_type and stream_manager:
-        try:
-            event_data = {
-                "type": payload.event_type,
-                "notification_id": payload.notification_id,
-                **payload.context_data,
-            }
-            await stream_manager.add_event(RedisStreams.BotEvents.NAME, event_data)
-        except Exception as e:
-            log.error(
-                f"Task: universal_notification | Action: TelegramError | ID: {payload.notification_id} | error={e}"
-            )
-            raise Retry(defer=ctx["job_try"] * 10) from e
 
 
 async def send_group_booking_notification_task(ctx: dict[str, Any], group_id: int) -> None:
@@ -73,7 +53,6 @@ async def send_group_booking_notification_task(ctx: dict[str, Any], group_id: in
     try:
         raw_data = await redis_service.get_value(cache_key)
     except Exception as e:
-        log.error(f"Task: send_group_booking_notification_task | Action: RedisError | error={e}")
         raise Retry(defer=10) from e
 
     if not raw_data:
@@ -83,10 +62,9 @@ async def send_group_booking_notification_task(ctx: dict[str, Any], group_id: in
     try:
         data = json.loads(raw_data)
     except json.JSONDecodeError:
-        log.error("Task: send_group_booking_notification_task | Action: JsonParseError")
-        return  # Critical code/data error, no retry
+        return
 
-    # 2. Send Email
+    # 2. Send via Service (Service handles Email -> SendGrid fallback)
     if data.get("client_email"):
         try:
             await notification_service.send_notification(
@@ -95,10 +73,7 @@ async def send_group_booking_notification_task(ctx: dict[str, Any], group_id: in
                 template_name="bk_group_booking",
                 data=data,
             )
-            log.info(f"Task: send_group_booking_notification_task | Action: EmailSent | group_id={group_id}")
         except Exception as e:
-            log.error(f"Task: send_group_booking_notification_task | Action: EmailFailed | error={e}")
-            # Retry on SMTP/Network errors
             raise Retry(defer=ctx["job_try"] * 60) from e
 
 
@@ -129,7 +104,6 @@ async def send_booking_notification_task(ctx: dict[str, Any], appointment_id: in
                 data=data,
             )
         except Exception as e:
-            log.error(f"Task: send_booking_notification_task | Action: EmailFailed | error={e}")
             raise Retry(defer=ctx["job_try"] * 60) from e
 
 
@@ -150,7 +124,6 @@ async def send_contact_notification_task(ctx: dict[str, Any], request_id: int) -
         try:
             await stream_manager.add_event(RedisStreams.BotEvents.NAME, {"type": "contact_request", **data})
         except Exception as e:
-            log.error(f"Task: send_contact_notification_task | Action: BotNotifyFailed | error={e}")
             raise Retry(defer=10) from e
 
 

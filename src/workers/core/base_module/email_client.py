@@ -2,6 +2,7 @@ from email.message import EmailMessage
 from typing import Any
 
 import aiosmtplib
+import httpx
 from loguru import logger
 
 
@@ -33,20 +34,34 @@ class AsyncEmailClient:
 
     async def send_email(self, to_email: str, subject: str, html_content: str, timeout: int = 15):
         """
-        Main method for sending email via SMTP.
+        Main method for sending email. Tries SMTP first, then SendGrid.
         """
+        smtp_error = None
         try:
             await self._send_via_smtp(to_email, subject, html_content, timeout)
+            return
         except Exception as e:
-            logger.error(f"SMTP failed to {to_email}: {e}")
-            raise e
+            smtp_error = e
+            logger.warning(f"SMTP failed to {to_email}: {e}. Trying SendGrid fallback...")
+
+        if self.sendgrid_api_key:
+            try:
+                await self._send_via_sendgrid(to_email, subject, html_content)
+                return
+            except Exception as sg_e:
+                logger.error(f"SendGrid fallback also failed to {to_email}: {sg_e}")
+                raise sg_e from smtp_error
+        else:
+            logger.error(f"SMTP failed and no SendGrid API key provided for {to_email}")
+            if smtp_error:
+                raise smtp_error
+            raise Exception("Email delivery failed: No SMTP success and no SendGrid key")
 
     async def _send_via_smtp(self, to_email: str, subject: str, html_content: str, timeout: int):
         message = EmailMessage()
         message["From"] = self.smtp_from_email
         message["To"] = to_email
         message["Subject"] = subject
-        # Plain text version for non-HTML clients
         message.set_content("Please enable HTML to view this email.")
         message.add_alternative(html_content, subtype="html")
 
@@ -65,6 +80,25 @@ class AsyncEmailClient:
             send_kwargs["username"] = self.smtp_user
             send_kwargs["password"] = self.smtp_password
 
-        logger.debug(f"SMTP | Sending to {to_email} via {self.smtp_host}")
         await aiosmtplib.send(message, **send_kwargs)
         logger.info(f"SMTP | Email sent successfully to {to_email}")
+
+    async def _send_via_sendgrid(self, to_email: str, subject: str, html_content: str):
+        """Sends email via SendGrid HTTP API."""
+        payload = {
+            "personalizations": [{"to": [{"email": to_email}]}],
+            "from": {"email": self.smtp_from_email, "name": "LILY Beauty Salon"},
+            "subject": subject,
+            "content": [{"type": "text/html", "value": html_content}],
+        }
+        headers = {
+            "Authorization": f"Bearer {self.sendgrid_api_key}",
+            "Content-Type": "application/json",
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(self.sendgrid_url, json=payload, headers=headers, timeout=10.0)
+            if response.status_code not in [200, 201, 202]:
+                raise Exception(f"SendGrid API error: {response.status_code} - {response.text}")
+
+        logger.info(f"SendGrid | Email sent successfully to {to_email}")

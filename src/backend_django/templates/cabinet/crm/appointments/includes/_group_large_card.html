@@ -106,6 +106,18 @@
             </div>
         {% endif %}
 
+        <!-- 4. RESEND NOTIFICATION -->
+        <div style="flex: 1; min-width: 120px;">
+            <button hx-post="{% url 'cabinet:appointments' %}"
+                    hx-vals='{"action": "resend_group_notification", "group_id": "{{ group.id }}"}'
+                    hx-target="#group-{{ group.id }}"
+                    hx-swap="outerHTML"
+                    class="btn-mgmt"
+                    style="width: 100%; justify-content: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #aaa; cursor: pointer;">
+                ✉️ {% trans "Resend Email" %}
+            </button>
+        </div>
+
     </div>
     {% endif %}
 

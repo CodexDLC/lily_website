@@ -6,15 +6,17 @@ from src.shared.core.config import CommonSettings
 class WorkerSettings(CommonSettings):
     """
     Настройки для Notification Worker (arq).
+    Маппинг переменных из .env (Django style) на внутренние настройки воркера.
     """
 
     # --- Email (SMTP) ---
-    SMTP_HOST: str = "mail.spacemail.com"
-    SMTP_PORT: int = 465
-    SMTP_USER: str
-    SMTP_PASSWORD: str
-    SMTP_FROM_EMAIL: str
-    SMTP_USE_TLS: bool = False  # Port 465 uses SSL (implicit TLS), not STARTTLS
+    SMTP_HOST: str = Field(default="mail.spacemail.com", alias="EMAIL_HOST")
+    SMTP_PORT: int = Field(default=465, alias="EMAIL_PORT")
+    SMTP_USER: str = Field(alias="EMAIL_HOST_USER")
+    SMTP_PASSWORD: str = Field(alias="EMAIL_HOST_PASSWORD")
+    SMTP_FROM_EMAIL: str = Field(alias="DEFAULT_FROM_EMAIL")
+    SMTP_USE_TLS: bool = Field(default=False, alias="EMAIL_USE_TLS")
+    SMTP_USE_SSL: bool = Field(default=True, alias="EMAIL_USE_SSL")
 
     # --- SendGrid API (Fallback) ---
     SENDGRID_API_KEY: str | None = None

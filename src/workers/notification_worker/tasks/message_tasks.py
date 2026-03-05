@@ -31,7 +31,7 @@ async def send_message_task(
 
     if not orchestrator:
         log.error("Task: send_message_task | Action: Failed | error=OrchestratorMissing")
-        await _send_status_update(ctx, appointment_id, "twilio", "failed")  # Still use 'twilio' status key for now
+        await _send_status_update(ctx, appointment_id, "twilio", "failed")
         return
 
     try:
@@ -91,17 +91,17 @@ async def send_appointment_notification(
         dt_str = str(appointment_data.get("datetime", ""))
         try:
             dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
-            date = dt_obj.strftime("%d.%m.%Y")
-            time = dt_obj.strftime("%H:%M")
+            date_val = dt_obj.strftime("%d.%m.%Y")
+            time_val = dt_obj.strftime("%H:%M")
         except (ValueError, TypeError):
             parts = dt_str.split(" ")
-            date = parts[0] if len(parts) > 0 else dt_str
-            time = parts[1] if len(parts) > 1 else ""
+            date_val = parts[0] if len(parts) > 0 else dt_str
+            time_val = parts[1] if len(parts) > 1 else ""
 
         template_vars = {
             "1": transliterate(appointment_data.get("first_name", "Guest")),
-            "2": date,
-            "3": time,
+            "2": date_val,
+            "3": time_val,
             "4": str(appointment_id),
         }
 

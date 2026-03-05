@@ -83,8 +83,8 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
         booking_service = BookingV2Service()
 
         try:
-            # --- 1. Group Actions (Approve, Cancel, Complete) ---
-            if action in ["approve_group", "cancel_group", "complete_group"]:
+            # --- 1. Group Actions (Approve, Cancel, Complete, Resend) ---
+            if action in ["approve_group", "cancel_group", "complete_group", "resend_group_notification"]:
                 group_id = request.POST.get("group_id")
                 group = get_object_or_404(AppointmentGroup, id=group_id)
 
@@ -95,6 +95,8 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
                     group.cancel_all()
                 elif action == "complete_group":
                     group.complete_all()
+                elif action == "resend_group_notification":
+                    self._trigger_group_notification(group)
 
                 return render(
                     request,

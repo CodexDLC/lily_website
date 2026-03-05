@@ -26,12 +26,8 @@ class NotificationService:
         url_path_reschedule: str | None = None,
         url_path_contact_form: str | None = None,
     ):
-        if not all([smtp_host, smtp_port, smtp_from_email]):
+        if not smtp_host or not smtp_port or not smtp_from_email:
             raise ValueError("Core SMTP settings are missing.")
-
-        assert smtp_host is not None
-        assert smtp_port is not None
-        assert smtp_from_email is not None
 
         self.email_client = AsyncEmailClient(
             smtp_host=smtp_host,
@@ -51,17 +47,54 @@ class NotificationService:
         self.url_path_reschedule = url_path_reschedule
         self.url_path_contact_form = url_path_contact_form
 
+    # --- Core Sending Methods ---
+
+    async def send_notification(self, email: str, subject: str, template_name: str, data: dict):
+        """Base method for sending any email notification."""
+        full_context = self.enrich_email_context(data)
+        full_template_path = self.resolve_template_path(template_name)
+
+        log.debug(f"NotificationService: Rendering {full_template_path} for {email}")
+        html_content = self.renderer.render(full_template_path, full_context)
+        await self.email_client.send_email(email, subject, html_content)
+
+    # --- Specific Helpers (Legacy/Convenience) ---
+
+    async def send_booking_confirmation(self, recipient_email: str, client_name: str, context: dict):
+        """Sends a standard booking confirmation."""
+        data = context.copy()
+        data["first_name"] = client_name
+        await self.send_notification(recipient_email, "Terminbestätigung - LILY Beauty Salon", "bk_confirmation", data)
+
+    async def send_booking_cancellation(self, recipient_email: str, client_name: str, context: dict):
+        """Sends a booking cancellation notice."""
+        data = context.copy()
+        data["first_name"] = client_name
+        await self.send_notification(recipient_email, "Terminstornierung - LILY Beauty Salon", "bk_cancellation", data)
+
+    async def send_booking_no_show(self, recipient_email: str, client_name: str, context: dict):
+        """Sends a no-show notification."""
+        data = context.copy()
+        data["first_name"] = client_name
+        await self.send_notification(recipient_email, "Vermisster Termin - LILY Beauty Salon", "bk_no_show", data)
+
+    async def send_universal(
+        self, recipient_email: str, first_name: str, template_name: str, subject: str, context_data: dict, **kwargs
+    ):
+        """Universal gateway for any template."""
+        data = context_data.copy()
+        data["first_name"] = first_name
+        await self.send_notification(recipient_email, subject, template_name, data)
+
+    # --- Internal Logic ---
+
     def resolve_template_path(self, template_name: str) -> str:
-        """
-        Resolves short template name to full path based on prefix.
-        """
         if template_name.startswith("bk_"):
             return f"booking/{template_name}.html"
         if template_name.startswith("ct_"):
             return f"contacts/{template_name}.html"
         if template_name.startswith("mk_"):
             return f"marketing/{template_name}.html"
-
         return f"{template_name}.html" if not template_name.endswith(".html") else template_name
 
     def get_absolute_logo_url(self) -> str | None:
@@ -78,17 +111,45 @@ class NotificationService:
         dt_str = data.get("datetime", "")
         try:
             dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
-            date = dt_obj.strftime("%d.%m.%Y")
-            time = dt_obj.strftime("%H:%M")
+            date_val = dt_obj.strftime("%d.%m.%Y")
+            time_val = dt_obj.strftime("%H:%M")
         except (ValueError, TypeError):
-            date = dt_str
-            time = ""
+            date_val = dt_str
+            time_val = ""
 
         clean_name = transliterate(first_name)
-        return f"Hallo {clean_name}, Ihr Termin am {date} um {time} im Lily Beauty Salon ist bestätigt. Wir freuen uns на Sie!"
+        return f"Hallo {clean_name}, Ihr Termin am {date_val} um {time_val} im Lily Beauty Salon ist bestätigt. Wir freuen uns на Sie!"
+
+    def enrich_email_context(self, data: dict) -> dict:
+        context = data.copy()
+        context["data"] = data
+
+        dt_str = str(context.get("datetime", ""))
+        try:
+            dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
+            context["date"] = dt_obj.strftime("%d.%m.%Y")
+            context["time"] = dt_obj.strftime("%H:%M")
+        except (ValueError, TypeError):
+            context["date"] = context.get("booking_date", dt_str)
+            context["time"] = ""
+
+        context["site_url"] = self.site_url
+        context["logo_url"] = self.get_absolute_logo_url()
+        context["calendar_url"] = self._generate_google_calendar_url(data)
+
+        if "name" in context and "greeting" not in context:
+            visits = int(context.get("visits_count", 0))
+            name = context["name"]
+            if visits == 0:
+                context["greeting"] = f"Sehr geehrte/r {name},"
+            elif 1 <= visits <= 4:
+                context["greeting"] = f"Liebe/r {name},"
+            else:
+                context["greeting"] = f"Hallo {name},"
+
+        return context
 
     def _generate_google_calendar_url(self, data: dict) -> str:
-        """Генерирует ссылку для Google Calendar."""
         try:
             service_name = data.get("service_name", "Beauty Termin")
             dt_str = data.get("datetime")
@@ -112,86 +173,3 @@ class NotificationService:
             return f"{base_url}&{query_str}"
         except Exception:
             return ""
-
-    def enrich_email_context(self, data: dict) -> dict:
-        """Подготавливает полный контекст для Email шаблона."""
-        context = data.copy()
-        # Add 'data' key to support templates using {{ data.xxx }}
-        context["data"] = data
-
-        dt_str = str(context.get("datetime", ""))
-        try:
-            dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
-            context["date"] = dt_obj.strftime("%d.%m.%Y")
-            context["time"] = dt_obj.strftime("%H:%M")
-        except (ValueError, TypeError):
-            context["date"] = dt_str
-            context["time"] = ""
-
-        context["site_url"] = self.site_url
-        context["logo_url"] = self.get_absolute_logo_url()
-
-        if self.url_path_contact_form:
-            path = (
-                self.url_path_contact_form
-                if self.url_path_contact_form.startswith("/")
-                else f"/{self.url_path_contact_form}"
-            )
-            context["contact_form_url"] = f"{self.site_url}{path}"
-        else:
-            context["contact_form_url"] = "#"
-
-        context["calendar_url"] = self._generate_google_calendar_url(data)
-
-        if "name" in context and "greeting" not in context:
-            visits = int(context.get("visits_count", 0))
-            name = context["name"]
-            if visits == 0:
-                context["greeting"] = f"Sehr geehrte/r {name},"
-            elif 1 <= visits <= 4:
-                context["greeting"] = f"Liebe/r {name},"
-            else:
-                context["greeting"] = f"Hallo {name},"
-
-        action_token = data.get("action_token")
-        if self.url_path_confirm and action_token:
-            context["link_confirm"] = f"{self.site_url}{self.url_path_confirm.format(token=action_token)}"
-        else:
-            context["link_confirm"] = "#"
-
-        if self.url_path_cancel and action_token:
-            context["link_cancel"] = f"{self.site_url}{self.url_path_cancel.format(token=action_token)}"
-        else:
-            context["link_cancel"] = "#"
-
-        if "link_reschedule" not in context:
-            if self.url_path_reschedule and action_token:
-                path = self.url_path_reschedule.format(token=action_token)
-                path = path if path.startswith("/") else f"/{path}"
-                context["link_reschedule"] = f"{self.site_url}{path}"
-                context["link_calendar"] = f"{self.site_url}{path}"
-            elif self.url_path_reschedule:
-                path = self.url_path_reschedule
-                path = path if path.startswith("/") else f"/{path}"
-                context["link_reschedule"] = f"{self.site_url}{path}"
-                context["link_calendar"] = f"{self.site_url}{path}"
-            else:
-                context["link_reschedule"] = "#"
-                context["link_calendar"] = "#"
-
-        if "email_button_text" not in context:
-            if data.get("is_reschedule_offer"):
-                context["email_button_text"] = "Vorschlag akzeptieren"
-            elif "/cancel/" in str(context.get("link_cancel", "")):
-                context["email_button_text"] = "Neuen Termin buchen"
-            else:
-                context["email_button_text"] = "Termin bestätigen"
-
-        return context
-
-    async def send_notification(self, email: str, subject: str, template_name: str, data: dict):
-        full_context = self.enrich_email_context(data)
-        full_template_path = self.resolve_template_path(template_name)
-        log.debug(f"NotificationService: Rendering {full_template_path}")
-        html_content = self.renderer.render(full_template_path, full_context)
-        await self.email_client.send_email(email, subject, html_content)
