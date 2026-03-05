@@ -3,6 +3,7 @@ name: CI Main (Quality & Testing)
 on:
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   quality-and-tests:
