@@ -1,0 +1,59 @@
+{% load i18n %}
+
+{% if request.user.is_superuser or perms.system.view_sitesettings or perms.main.view_service %}
+<div class="nav-group">
+    <div class="nav-group-header" @click="activeGroup = (activeGroup === 'settings' ? null : 'settings')">
+        <span class="sidebar-label">{% trans "Settings" %}</span>
+        <svg class="nav-group-arrow sidebar-arrow" :class="{ 'rotate-180': activeGroup === 'settings' }" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z" />
+        </svg>
+    </div>
+    <div class="nav-sublist" x-show="activeGroup === 'settings'" x-collapse>
+
+        {% if request.user.is_superuser or perms.system.view_sitesettings %}
+        <!-- Site Settings -->
+        <a href="{% url 'cabinet:system_settings' %}?section=site"
+           hx-get="{% url 'cabinet:system_settings' %}?section=site"
+           hx-target="#cabinet-content"
+           hx-push-url="true"
+           class="sidebar-link {% if active_section == 'system_settings' and current_tab == 'site' %}active{% endif %}">
+            <span class="sidebar-icon">🌐</span>
+            <span class="sidebar-text">{% trans "Business Info" %}</span>
+        </a>
+
+        <!-- Social Media -->
+        <a href="{% url 'cabinet:system_settings' %}?section=socials"
+           hx-get="{% url 'cabinet:system_settings' %}?section=socials"
+           hx-target="#cabinet-content"
+           hx-push-url="true"
+           class="sidebar-link {% if active_section == 'system_settings' and current_tab == 'socials' %}active{% endif %}">
+            <span class="sidebar-icon">📱</span>
+            <span class="sidebar-text">{% trans "Social Media" %}</span>
+        </a>
+
+        <!-- Booking Rules -->
+        <a href="{% url 'cabinet:system_settings' %}?section=booking"
+           hx-get="{% url 'cabinet:system_settings' %}?section=booking"
+           hx-target="#cabinet-content"
+           hx-push-url="true"
+           class="sidebar-link {% if active_section == 'system_settings' and current_tab == 'booking' %}active{% endif %}">
+            <span class="sidebar-icon">📅</span>
+            <span class="sidebar-text">{% trans "Booking Rules" %}</span>
+        </a>
+        {% endif %}
+
+        {% if perms.main.view_service %}
+        <!-- Services Management -->
+        <a href="{% url 'cabinet:services' %}"
+           hx-get="{% url 'cabinet:services' %}"
+           hx-target="#cabinet-content"
+           hx-push-url="true"
+           class="sidebar-link {% if active_section == 'services' %}active{% endif %}">
+            <span class="sidebar-icon">⚙️</span>
+            <span class="sidebar-text">{% trans "Services" %}</span>
+        </a>
+        {% endif %}
+
+    </div>
+</div>
+{% endif %}

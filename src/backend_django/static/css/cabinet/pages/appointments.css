@@ -1,0 +1,201 @@
+/* ===================================================
+   LILY Appointments List — Corrected Dual-Column View
+   =================================================== */
+
+.appointments-main-layout {
+    display: flex;
+    gap: 30px;
+    height: 100%;
+    width: 100%;
+    align-items: flex-start;
+    transition: gap 0.3s ease;
+}
+
+/* LEFT COLUMN: Main content (550px - 1280px) */
+.appointments-content-col {
+    flex: 1;
+    min-width: 550px;
+    max-width: 1280px;
+    transition: max-width 0.3s ease;
+}
+
+/* RIGHT COLUMN: Sidebar (300px) */
+.appointments-sidebar-col {
+    width: 300px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    transition: width 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* --- Sidebar Hidden State (Desktop) --- */
+.appointments-main-layout.sidebar-hidden .appointments-sidebar-col {
+    width: 0;
+    opacity: 0;
+    transform: translateX(20px);
+    overflow: hidden;
+    padding: 0; /* Remove padding if any */
+}
+
+.appointments-main-layout.sidebar-hidden {
+    gap: 0;
+}
+
+.appointments-main-layout.sidebar-hidden .appointments-content-col {
+    max-width: 100%; /* Expand to full width */
+}
+
+.appointments-main-layout.sidebar-hidden .appointments-grid-v2 {
+    grid-template-columns: repeat(4, 1fr); /* 4 cards per row when expanded */
+}
+
+/* --- Filter Bar Container --- */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* --- Results Header --- */
+.results-info-header {
+    display: flex;
+    align-items: baseline;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Cards Grid inside left column */
+.appointments-grid-v2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cards per row on large screens */
+    gap: 20px;
+    width: 100%;
+    transition: grid-template-columns 0.3s ease;
+}
+
+.apt-grid-item {
+    min-width: 0;
+}
+
+.grid-span-all {
+    grid-column: 1 / -1;
+}
+
+/* --- Responsive Grid & Card Layout --- */
+
+/* Tablet / Small Laptop (1024px - 1280px) */
+@media (max-width: 1280px) {
+    .appointments-grid-v2 {
+        grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
+    }
+    /* Even when hidden, 3 cols might be too tight on 1280px, stick to 3 */
+    .appointments-main-layout.sidebar-hidden .appointments-grid-v2 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Mobile / Small Tablet (< 992px) */
+@media (max-width: 992px) {
+    .appointments-main-layout {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .appointments-content-col {
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    /* Mobile Calendar Sidebar (Offcanvas style) */
+    .appointments-sidebar-col {
+        position: fixed;
+        top: 0;
+        right: -320px; /* Hidden by default */
+        width: 300px;
+        height: 100vh;
+        background: #1a1a1a; /* Dark background */
+        z-index: 1050;
+        padding: 20px;
+        transition: right 0.3s ease-in-out;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+        overflow-y: auto;
+        opacity: 1; /* Reset desktop hidden styles */
+        transform: none;
+    }
+
+    .appointments-sidebar-col.active {
+        right: 0; /* Slide in */
+    }
+
+    .mobile-sidebar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        color: var(--color-gold);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 10px;
+    }
+
+    .appointments-grid-v2 {
+        grid-template-columns: 1fr; /* 1 card per row */
+    }
+
+    /* Reset hidden state logic for mobile */
+    .appointments-main-layout.sidebar-hidden .appointments-sidebar-col {
+        width: 300px; /* Restore width for offcanvas */
+    }
+}
+
+/* --- Card Internal Responsiveness --- */
+@container (max-width: 400px) {
+    .card-header-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+    .card-header-right {
+        width: 100%;
+        align-items: flex-start !important;
+        margin-left: 0 !important;
+        text-align: left !important;
+        flex-direction: row !important;
+        justify-content: space-between;
+    }
+    .card-datetime {
+        text-align: right !important;
+    }
+}
+
+/* --- Sub-Components --- */
+
+.results-badge {
+    background: rgba(237, 208, 113, 0.1);
+    color: var(--color-gold);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: 1px solid rgba(237, 208, 113, 0.2);
+}
+
+.sidebar-info-hint {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.4);
+    border-left: 3px solid var(--color-gold);
+}
+
+/* Calendar within Sidebar Col */
+.appointments-sidebar-col .c-cabinet-block {
+    padding: 20px;
+}

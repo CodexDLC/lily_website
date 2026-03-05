@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from urllib.parse import quote
 
+from loguru import logger as log
+
 from src.shared.utils.text import transliterate
 from src.workers.core.base_module.email_client import AsyncEmailClient
 from src.workers.core.base_module.template_renderer import TemplateRenderer
@@ -49,6 +51,19 @@ class NotificationService:
         self.url_path_reschedule = url_path_reschedule
         self.url_path_contact_form = url_path_contact_form
 
+    def resolve_template_path(self, template_name: str) -> str:
+        """
+        Resolves short template name to full path based on prefix.
+        """
+        if template_name.startswith("bk_"):
+            return f"booking/{template_name}.html"
+        if template_name.startswith("ct_"):
+            return f"contacts/{template_name}.html"
+        if template_name.startswith("mk_"):
+            return f"marketing/{template_name}.html"
+
+        return f"{template_name}.html" if not template_name.endswith(".html") else template_name
+
     def get_absolute_logo_url(self) -> str | None:
         if not self.logo_url:
             return f"{self.site_url}/static/img/_source/logo_lily.png"
@@ -65,7 +80,7 @@ class NotificationService:
             dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
             date = dt_obj.strftime("%d.%m.%Y")
             time = dt_obj.strftime("%H:%M")
-        except (ValueError, TypeError):  # Исправлено: специфичные исключения
+        except (ValueError, TypeError):
             date = dt_str
             time = ""
 
@@ -101,16 +116,21 @@ class NotificationService:
     def enrich_email_context(self, data: dict) -> dict:
         """Подготавливает полный контекст для Email шаблона."""
         context = data.copy()
+        # Add 'data' key to support templates using {{ data.xxx }}
+        context["data"] = data
+
         dt_str = str(context.get("datetime", ""))
         try:
             dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
             context["date"] = dt_obj.strftime("%d.%m.%Y")
             context["time"] = dt_obj.strftime("%H:%M")
-        except (ValueError, TypeError):  # Исправлено: специфичные исключения
+        except (ValueError, TypeError):
             context["date"] = dt_str
             context["time"] = ""
+
         context["site_url"] = self.site_url
         context["logo_url"] = self.get_absolute_logo_url()
+
         if self.url_path_contact_form:
             path = (
                 self.url_path_contact_form
@@ -120,7 +140,9 @@ class NotificationService:
             context["contact_form_url"] = f"{self.site_url}{path}"
         else:
             context["contact_form_url"] = "#"
+
         context["calendar_url"] = self._generate_google_calendar_url(data)
+
         if "name" in context and "greeting" not in context:
             visits = int(context.get("visits_count", 0))
             name = context["name"]
@@ -130,24 +152,25 @@ class NotificationService:
                 context["greeting"] = f"Liebe/r {name},"
             else:
                 context["greeting"] = f"Hallo {name},"
+
         action_token = data.get("action_token")
         if self.url_path_confirm and action_token:
             context["link_confirm"] = f"{self.site_url}{self.url_path_confirm.format(token=action_token)}"
         else:
             context["link_confirm"] = "#"
+
         if self.url_path_cancel and action_token:
             context["link_cancel"] = f"{self.site_url}{self.url_path_cancel.format(token=action_token)}"
         else:
             context["link_cancel"] = "#"
+
         if "link_reschedule" not in context:
             if self.url_path_reschedule and action_token:
-                # Allows formatting with {token} like url_path_confirm does
                 path = self.url_path_reschedule.format(token=action_token)
                 path = path if path.startswith("/") else f"/{path}"
                 context["link_reschedule"] = f"{self.site_url}{path}"
                 context["link_calendar"] = f"{self.site_url}{path}"
             elif self.url_path_reschedule:
-                # Fallback if no action_token is present but we have a url path
                 path = self.url_path_reschedule
                 path = path if path.startswith("/") else f"/{path}"
                 context["link_reschedule"] = f"{self.site_url}{path}"
@@ -155,6 +178,7 @@ class NotificationService:
             else:
                 context["link_reschedule"] = "#"
                 context["link_calendar"] = "#"
+
         if "email_button_text" not in context:
             if data.get("is_reschedule_offer"):
                 context["email_button_text"] = "Vorschlag akzeptieren"
@@ -167,5 +191,7 @@ class NotificationService:
 
     async def send_notification(self, email: str, subject: str, template_name: str, data: dict):
         full_context = self.enrich_email_context(data)
-        html_content = self.renderer.render(template_name, full_context)
+        full_template_path = self.resolve_template_path(template_name)
+        log.debug(f"NotificationService: Rendering {full_template_path}")
+        html_content = self.renderer.render(full_template_path, full_context)
         await self.email_client.send_email(email, subject, html_content)

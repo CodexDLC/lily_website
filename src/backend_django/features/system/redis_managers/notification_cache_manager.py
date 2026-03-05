@@ -14,6 +14,7 @@ class NotificationCacheManager:
 
     # Key patterns (must match src/telegram_bot/infrastructure/redis/managers/notifications/notification_keys.py)
     APPOINTMENT_CACHE_PREFIX = "notifications:cache:"
+    GROUP_CACHE_PREFIX = "notifications:group_cache:"
     CONTACT_CACHE_PREFIX = "notifications:contact_cache:"
 
     TTL = 86400  # 24 hours
@@ -26,6 +27,7 @@ class NotificationCacheManager:
     def seed_appointment(cls, appointment_id: int, extra_data: dict[str, Any] | None = None) -> bool:
         """
         Fetches appointment data and saves a JSON snapshot to Redis.
+        Used for single appointment notifications.
         """
         from django.utils import translation
         from features.booking.models.appointment import Appointment
@@ -73,6 +75,67 @@ class NotificationCacheManager:
 
         except Exception as e:
             log.error(f"Failed to seed appointment cache for ID={appointment_id}: {e}")
+            return False
+
+    @classmethod
+    def seed_group_appointment(cls, group_id: int, extra_data: dict[str, Any] | None = None) -> bool:
+        """
+        Fetches all appointments in a group and saves a unified JSON snapshot to Redis.
+        Used for grouped notifications (one message for multiple services).
+        """
+        from django.utils import translation
+        from features.booking.models.appointment_group import AppointmentGroup
+
+        try:
+            with translation.override("de"):
+                group = AppointmentGroup.objects.select_related("client").get(id=group_id)
+                items = group.items.select_related(
+                    "appointment", "appointment__master", "appointment__service"
+                ).order_by("order")
+
+                if not items.exists():
+                    log.warning(f"No items found for group ID={group_id}")
+                    return False
+
+                # Common client info
+                data = {
+                    "group_id": group.id,
+                    "client_name": f"{group.client.first_name} {group.client.last_name}" if group.client else "Unknown",
+                    "first_name": group.client.first_name if group.client else "",
+                    "last_name": group.client.last_name if group.client else "",
+                    "client_phone": group.client.phone if group.client else "",
+                    "client_email": group.client.email if group.client else "",
+                    "booking_date": group.booking_date.strftime("%d.%m.%Y"),
+                    "total_price": float(sum(item.appointment.price for item in items)),
+                    "total_duration": group.total_duration_minutes,
+                    "notes": group.notes,
+                    "items": [],
+                }
+
+                for item in items:
+                    appt = item.appointment
+                    local_dt = timezone.localtime(appt.datetime_start)
+                    data["items"].append(
+                        {
+                            "appointment_id": appt.id,
+                            "service_name": appt.service.title,
+                            "master_name": appt.master.name,
+                            "time": local_dt.strftime("%H:%M"),
+                            "price": float(appt.price),
+                            "duration": appt.duration_minutes,
+                        }
+                    )
+
+            if extra_data:
+                data.update(extra_data)
+
+            key = f"{cls.GROUP_CACHE_PREFIX}{group_id}"
+            cls.get_redis_client().set(key, json.dumps(data, ensure_ascii=False), ex=cls.TTL)
+            log.info(f"Seeded group appointment cache for ID={group_id} with {len(data['items'])} items")
+            return True
+
+        except Exception as e:
+            log.error(f"Failed to seed group appointment cache for ID={group_id}: {e}")
             return False
 
     @classmethod

@@ -1,5 +1,6 @@
 from modeltranslation.translator import TranslationOptions, register
 
+from .models.email_content import EmailContent
 from .models.seo import StaticPageSeo
 from .models.site_settings import SiteSettings
 from .models.static_translation import StaticTranslation
@@ -24,4 +25,9 @@ class SiteSettingsTranslationOptions(TranslationOptions):
 
 @register(StaticTranslation)
 class StaticTranslationOptions(TranslationOptions):
+    fields = ("text",)
+
+
+@register(EmailContent)
+class EmailContentTranslationOptions(TranslationOptions):
     fields = ("text",)

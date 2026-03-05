@@ -1,0 +1,180 @@
+.db-right-col .c-cabinet-block {
+    height: auto;
+    flex-shrink: 0;
+    padding: 12px 14px; /* More compact */
+}
+
+/* Bento Grid inside analytics cards */
+.db-bento-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.db-bento-grid .c-data-island {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    margin-bottom: 0;
+    padding: 8px 10px;
+}
+
+.db-bento-grid .c-data-island-main-value {
+    font-size: 1.4rem; /* Down from 28px */
+    line-height: 1.2;
+}
+
+.db-bento-grid .c-data-island-title {
+    margin-bottom: 4px;
+    font-size: 9px;
+}
+
+.db-quick-action {
+    display: flex;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.btn-quick-booking {
+    height: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, var(--color-gold), #b38a38);
+    color: black !important;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-decoration: none;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.btn-quick-booking:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #f0d880, var(--color-gold));
+}
+
+/* Dashboard layout containers */
+.dashboard-v2-layout {
+    display: flex;
+    gap: 24px;
+    margin-top: 10px;
+    align-items: stretch;
+    flex: 1; /* FILL PARENT CABINET-CONTENT */
+    min-height: 0;
+    height: 100%; /* Force fill */
+}
+
+@media (max-width: 1024px) {
+    .db-right-col {
+        grid-template-columns: repeat(6, 1fr) !important;
+    }
+}
+
+@media (max-width: 800px) {
+    .dashboard-v2-layout {
+        flex-direction: column;
+        height: auto;
+    }
+    .db-right-col {
+        grid-template-columns: 1fr !important;
+    }
+    .db-left-col {
+        min-width: 0 !important;
+    }
+}
+
+/* Left column: PRIMARY (Stats + Main Action + Schedule) */
+.db-left-col {
+    flex: 1; /* Allow to grow between min and max */
+    min-width: 550px;
+    max-width: 1024px;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Fill parent */
+}
+
+/* Right column: SECONDARY (Bento Analytics) */
+.db-right-col {
+    flex: 1; /* TAKES REMAINING SPACE */
+    min-width: 320px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr); /* 12 COLUMN GRID SYSTEM */
+    gap: 20px;
+    align-content: flex-start;
+    height: 100%; /* Fill parent */
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+
+/* Bento Span Utilities */
+.span-2 { grid-column: span 2; }
+.span-3 { grid-column: span 3; }
+.span-4 { grid-column: span 4; }
+.span-6 { grid-column: span 6; }
+.span-12 { grid-column: span 12; }
+
+/* 2x2 grid for left column header */
+.db-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Forced 2x2 */
+    gap: 12px;
+    margin-bottom: 0; /* Tight with schedule */
+    flex-shrink: 0;
+}
+
+.db-schedule-block {
+    flex: 1; /* STRETCH TO FILL BOTTOM */
+    min-height: 0; /* CRITICAL for internal scrolling */
+    margin-top: 24px;
+}
+
+/* No 4-col switch on large screens as per request */
+
+.db-stat-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(237, 208, 113, 0.15);
+    border-radius: 8px; /* Slightly sharper for button look */
+    padding: 10px 16px;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: row; /* Horizontal */
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.db-stat-item:hover {
+    background: rgba(255, 255, 255, 0.08); /* Flat button hover */
+    border-color: rgba(237, 208, 113, 0.4);
+    transform: translateY(-1px);
+}
+
+.db-stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.5px;
+    margin-bottom: 0; /* Clear margin */
+    white-space: nowrap;
+}
+
+.db-stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-gold);
+}
+
+/* Fix for cabinet-card inside scroller */
+.c-cabinet-scroller .cabinet-card {
+    margin-bottom: 12px;
+}
+.c-cabinet-scroller .cabinet-card:last-child {
+    margin-bottom: 0;
+}

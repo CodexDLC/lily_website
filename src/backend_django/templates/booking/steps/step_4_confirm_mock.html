@@ -5,7 +5,7 @@
             {% trans "Ihre Daten" %}
         </h2>
         <button class="btn-back"
-                hx-get="{% url 'booking_wizard' %}?step=3&date={{ selected_date|date:'Y-m-d' }}&time={{ selected_time }}"
+                hx-get="{% url 'booking:booking_wizard' %}?step=3&date={{ selected_date|date:'Y-m-d' }}&time={{ selected_time }}"
                 hx-target="#wizard-content"
                 hx-swap="innerHTML">
             ← {% trans "Zurück" %}
@@ -13,7 +13,7 @@
     </div>
 
     <form class="booking-form"
-          hx-post="{% url 'booking_wizard' %}"
+          hx-post="{% url 'booking:booking_wizard' %}"
           hx-target="#wizard-content"
           hx-swap="innerHTML">
         {% csrf_token %}
@@ -86,7 +86,7 @@
                 <input type="checkbox" name="consent" x-model="form.consent" required>
                 <span class="checkmark"></span>
                 <span class="checkbox-text" style="color: var(--color-gold);">
-                    {% trans "Ich stimme zu, dass meine Daten gespeichert werden und ich Benachrichtigungen (SMS/E-Mail) zu meinem Termin erhalte." %}
+                    {% trans "Ich stimме zu, dass meine Daten gespeichert werden und ich Benachrichtigungen (SMS/E-Mail) zu meinem Termin erhalte." %}
                 </span>
             </label>
         </div>

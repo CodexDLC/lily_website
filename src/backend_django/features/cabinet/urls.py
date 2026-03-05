@@ -4,15 +4,16 @@ from django.shortcuts import redirect
 from django.urls import path
 
 from .views.appointments import AppointmentsView
-from .views.appointments_create import AppointmentCreateView
 from .views.auth import CabinetLoginView, CabinetLogoutView, MagicLinkView
 from .views.clients import ClientsView
+from .views.constructor import AdminConstructorView
 from .views.contacts import ContactRequestsView
 from .views.dashboard import DashboardView
 from .views.masters import MastersView
 from .views.price_adjustment import AppointmentPriceEditView
 from .views.reschedule import RescheduleAppointmentView
 from .views.services import ServicesView
+from .views.system_settings import SystemSettingsView
 from .views.user_profile import ProfileView
 
 app_name = "cabinet"
@@ -31,7 +32,6 @@ urlpatterns = [
     # Admin sections
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path("appointments/", AppointmentsView.as_view(), name="appointments"),
-    path("appointments/create/", AppointmentCreateView.as_view(), name="appointments_create"),
     path("clients/", ClientsView.as_view(), name="clients"),
     path("masters/", MastersView.as_view(), name="masters"),
     path("services/", ServicesView.as_view(), name="services"),
@@ -42,4 +42,6 @@ urlpatterns = [
     path("appointments/reschedule/<str:token>/", RescheduleAppointmentView.as_view(), name="reschedule_appointment"),
     # QR Price Edit link (Admin check is inside the view)
     path("appointment/<str:token>/edit-price/", AppointmentPriceEditView.as_view(), name="edit_price"),
+    path("settings/", SystemSettingsView.as_view(), name="system_settings"),
+    path("constructor/", AdminConstructorView.as_view(), name="constructor"),
 ]

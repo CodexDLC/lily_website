@@ -1,5 +1,4 @@
-import json
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from core.arq.client import DjangoArqClient
 from django.utils import timezone
@@ -7,7 +6,7 @@ from features.booking.models import Appointment
 from features.booking.services.reschedule import RescheduleTokenService
 from features.booking.services.slots import SlotService
 from features.system.models.site_settings import SiteSettings
-from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
+from features.system.services.notification import NotificationService
 from loguru import logger as log
 
 
@@ -45,46 +44,95 @@ class AppointmentService:
 
     @staticmethod
     def approve_appointment(appointment: Appointment) -> None:
-        """Approves a pending appointment."""
+        """Approves a pending appointment and sends confirmation."""
         appointment.status = Appointment.STATUS_CONFIRMED
         appointment.save(update_fields=["status", "updated_at"])
-        NotificationCacheManager.seed_appointment(appointment.id)
-        DjangoArqClient.enqueue_job("send_appointment_notification", appointment_id=appointment.id, status="confirmed")
+
+        if appointment.client.email:
+            NotificationService.send_booking_confirmation(
+                recipient_email=appointment.client.email,
+                client_name=appointment.client.first_name,
+                context=AppointmentService._build_email_context(appointment),
+            )
+        log.info(f"Appointment #{appointment.id} approved and confirmation sent.")
 
     @staticmethod
     def cancel_appointment(appointment: Appointment, reason_code: str, reason_text: str) -> None:
-        """Cancels an appointment with a given reason."""
+        """Cancels an appointment and sends notification."""
         appointment.status = Appointment.STATUS_CANCELLED
         appointment.cancelled_at = timezone.now()
         appointment.cancel_reason = reason_code or Appointment.CANCEL_REASON_OTHER
         appointment.cancel_note = reason_text
         appointment.save(update_fields=["status", "cancelled_at", "cancel_reason", "cancel_note", "updated_at"])
-        NotificationCacheManager.seed_appointment(appointment.id)
 
-        # Enqueue the cancellation email separately, specifying the reason text to be included
-        DjangoArqClient.enqueue_job(
-            "send_appointment_notification",
-            appointment_id=appointment.id,
-            status="cancelled",
-            reason_text=reason_text,
-        )
+        if appointment.client.email:
+            ctx = AppointmentService._build_email_context(appointment)
+            ctx["reason_text"] = reason_text
+
+            NotificationService.send_booking_cancellation(
+                recipient_email=appointment.client.email, client_name=appointment.client.first_name, context=ctx
+            )
+        log.info(f"Appointment #{appointment.id} cancelled. Reason: {reason_code}")
+
+    @staticmethod
+    def update_appointment(appointment: Appointment, new_status: str, admin_notes: str | None = None) -> None:
+        """Update appointment status and admin notes directly."""
+        old_status = appointment.status
+
+        if new_status:
+            appointment.status = new_status
+        if admin_notes is not None:
+            appointment.admin_notes = admin_notes
+        appointment.save()
+
+        # If completed -> send "Thank you / Review" email
+        if (
+            new_status == Appointment.STATUS_COMPLETED
+            and old_status != Appointment.STATUS_COMPLETED
+            and appointment.client.email
+        ):
+            NotificationService.send_universal(
+                recipient_email=appointment.client.email,
+                first_name=appointment.client.first_name,
+                template_name="mk_reengagement",
+                subject="Vielen Dank für Ihren Besuch!",
+                context_data=AppointmentService._build_email_context(appointment),
+                channels=["email"],
+            )
+
+        # If No Show -> send "Missed Appointment" email
+        if (
+            new_status == Appointment.STATUS_NO_SHOW
+            and old_status != Appointment.STATUS_NO_SHOW
+            and appointment.client.email
+        ):
+            NotificationService.send_booking_no_show(
+                recipient_email=appointment.client.email,
+                client_name=appointment.client.first_name,
+                context=AppointmentService._build_email_context(appointment),
+            )
+
+    @staticmethod
+    def reschedule_appointment(appointment: Appointment, new_start: datetime) -> None:
+        """Update appointment start time directly."""
+        appointment.datetime_start = new_start
+        appointment.save(update_fields=["datetime_start", "updated_at"])
+        log.info(f"Appointment #{appointment.id} rescheduled to {new_start}.")
 
     @staticmethod
     def propose_reschedule(appointment: Appointment, datetime_str: str, slot_label: str) -> None:
         """Proposes a reschedule to the client for a new date and time."""
-        from datetime import datetime
 
         log.debug(f"Proposing reschedule for appointment #{appointment.id} to new slot: {slot_label} ({datetime_str})")
-        # 1. Cancel the old appointment marking it as rescheduled
+
+        # 1. Cancel old
         appointment.status = Appointment.STATUS_CANCELLED
         appointment.cancelled_at = timezone.now()
         appointment.cancel_reason = Appointment.CANCEL_REASON_RESCHEDULE
         appointment.cancel_note = f"Reschedule proposed: {slot_label}"
         appointment.save(update_fields=["status", "cancelled_at", "cancel_reason", "cancel_note", "updated_at"])
-        NotificationCacheManager.seed_appointment(appointment.id)
-        log.info(f"Old appointment #{appointment.id} cancelled with status 'reschedule'")
 
-        # 2. Create the proposed appointment
+        # 2. Create new
         new_start = timezone.make_aware(datetime.strptime(datetime_str, "%d.%m.%Y %H:%M"))
         new_appointment = Appointment.objects.create(
             client=appointment.client,
@@ -98,76 +146,48 @@ class AppointmentService:
             client_notes=appointment.client_notes,
             admin_notes="Pending client confirmation (proposed by admin)",
         )
-        log.info(f"Created new proposed appointment #{new_appointment.id} for client {appointment.client.phone}")
 
-        # 3. Generate 24hr token
+        # 3. Generate token
         token = RescheduleTokenService.create_token(appointment_id=new_appointment.id, proposed_slot=slot_label)
 
-        # 4. Enqueue expiration task
+        # 4. Enqueue expiration
         try:
             DjangoArqClient.enqueue_job(
                 "expire_reservation_task", appointment_id=new_appointment.id, _defer_by=timedelta(hours=24)
             )
-            log.info(f"Enqueued expire_reservation_task for proposed appointment #{new_appointment.id}")
         except Exception as e:
             log.error(f"Failed to enqueue expire task: {e}")
 
-        # 5. Send Email
-        AppointmentService._send_reschedule_email(appointment, new_appointment, slot_label, token)
-
-    @staticmethod
-    def _send_reschedule_email(
-        old_appointment: Appointment, new_appointment: Appointment, slot_label: str, token: str
-    ) -> None:
-        """Sends the reschedule offer email."""
-        redis_client = NotificationCacheManager.get_redis_client()
-        raw = redis_client.get(f"{NotificationCacheManager.APPOINTMENT_CACHE_PREFIX}{old_appointment.id}")
-        cache_data = json.loads(raw) if raw else {}
-        client_email = cache_data.get("client_email")
-
-        if client_email and client_email != "n/a":
+        # 5. Send Email via Universal Gateway
+        if appointment.client.email:
             site_settings = SiteSettings.load()
-            settings_dict = site_settings.to_dict()
-            base_url = settings_dict.get("site_base_url", "").rstrip("/")
-
-            # The URL route is defined in cabinet/urls.py as 'appointments/reschedule/<str:token>/'
-            # We add /de/ prefix because it's under i18n_patterns
+            base_url = site_settings.site_base_url.rstrip("/")
             reschedule_url = f"{base_url}/de/cabinet/appointments/reschedule/{token}/"
-            log.debug(f"Generated reschedule URL: {reschedule_url}")
 
-            # The email template uses `date` and `time`
-            # We must override the old cache values with the NEW appointment's date/time
-            local_dt = timezone.localtime(new_appointment.datetime_start)
-            new_date = local_dt.strftime("%d.%m.%Y")
-            new_time = local_dt.strftime("%H:%M")
+            ctx = AppointmentService._build_email_context(new_appointment)
+            ctx["link_reschedule"] = reschedule_url
+            ctx["is_reschedule_offer"] = True
 
-            email_data = {
-                **cache_data,
-                "date": new_date,
-                "time": new_time,
-                "proposed_slots": [slot_label],
-                "link_reschedule": reschedule_url,
-                "timeout_hours": 24,
-                "is_reschedule_offer": True,
-            }
-            DjangoArqClient.enqueue_job(
-                "send_email_task",
-                recipient_email=client_email,
+            NotificationService.send_universal(
+                recipient_email=appointment.client.email,
+                first_name=appointment.client.first_name,
+                template_name="bk_reschedule",
                 subject="Terminvorschlag - Lily Beauty Salon",
-                template_name="reschedule_offer.html",
-                data=email_data,
+                context_data=ctx,
+                channels=["email"],
             )
-            log.info(
-                f"Enqueued email task to {client_email} for reschedule of #{old_appointment.id} -> #{new_appointment.id}"
-            )
-        else:
-            log.warning(f"Skipping email for appointment #{old_appointment.id}: No valid client email found in cache")
 
     @staticmethod
-    def update_appointment(appointment: Appointment, new_status: str, admin_notes: str) -> None:
-        """Update appointment status and admin notes directly."""
-        if new_status:
-            appointment.status = new_status
-        if admin_notes is not None:
-            appointment.admin_notes = admin_notes
-        appointment.save()
+    def _build_email_context(appointment: Appointment) -> dict:
+        """Helper to build standard context for booking emails."""
+        local_dt = timezone.localtime(appointment.datetime_start)
+        return {
+            "appointment_id": appointment.id,
+            "service_name": appointment.service.title,
+            "master_name": appointment.master.name,
+            "date": local_dt.strftime("%d.%m.%Y"),
+            "time": local_dt.strftime("%H:%M"),
+            "price": str(appointment.price),
+            "duration_minutes": appointment.duration_minutes,
+            "datetime": local_dt.strftime("%d.%m.%Y %H:%M"),  # For calendar generation
+        }

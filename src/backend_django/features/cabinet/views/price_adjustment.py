@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.utils.translation import gettext as _
 from django.views.generic import DetailView
 from features.booking.models.appointment import Appointment
-from features.booking.services.qr_service import AppointmentQRService
+from features.booking.services.utils.qr_service import AppointmentQRService
 from features.cabinet.mixins import AdminRequiredMixin
 
 
@@ -18,7 +18,7 @@ class AppointmentPriceEditView(AdminRequiredMixin, DetailView):
     """
 
     model = Appointment
-    template_name = "cabinet/appointments/edit_price.html"
+    template_name = "cabinet/crm/appointments/edit_price.html"
     context_object_name = "appointment"
     slug_field = "finalize_token"
     slug_url_kwarg = "token"

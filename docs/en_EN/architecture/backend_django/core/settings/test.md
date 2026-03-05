@@ -1,3 +1,4 @@
+{% raw %}
 # 📜 Test Settings (`test.py`)
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../../../README.md)
@@ -68,3 +69,4 @@ PASSWORD_HASHERS = [
 ]
 ```
 This setting (if uncommented) configures Django to use a faster, less secure password hasher (MD5) during tests. This can speed up test execution, especially for tests involving user authentication, as password hashing is a CPU-intensive operation. It should *never* be used in production.
+{% endraw %}

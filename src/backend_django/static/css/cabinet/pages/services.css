@@ -1,0 +1,109 @@
+/* ===================================================
+   Cabinet — Services Page
+   Masonry layout using CSS Columns
+   =================================================== */
+
+.services-masonry {
+    column-count: 4; /* Default for large screens */
+    column-gap: 20px;
+    width: 100%;
+}
+
+/* --- Category Block --- */
+.c-cabinet-block {
+    break-inside: avoid; /* Prevent splitting across columns */
+    margin-bottom: 20px; /* Space between items in column */
+    display: inline-block; /* Fix for some browsers to respect break-inside */
+    width: 100%;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.category-title {
+    font-size: 1.1rem; /* Slightly smaller for denser layout */
+    margin-bottom: 0;
+    color: var(--color-gold);
+    font-family: var(--font-serif);
+}
+
+.services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Tighter gap */
+}
+
+/* --- Edit Forms --- */
+.edit-form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.lang-input-group {
+    display: flex;
+    align-items: stretch;
+}
+
+.lang-label {
+    width: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #aaa;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px 0 0 4px;
+}
+
+.lang-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 0 4px 4px 0;
+    font-size: 13px;
+}
+
+.lang-input:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.edit-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: white;
+    font-size: 13px;
+}
+
+/* Responsive Columns */
+@media (max-width: 1600px) {
+    .services-masonry {
+        column-count: 3;
+    }
+}
+
+@media (max-width: 1200px) {
+    .services-masonry {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 768px) {
+    .services-masonry {
+        column-count: 1;
+    }
+}

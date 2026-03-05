@@ -1,0 +1,24 @@
+{% load i18n %}
+
+<!-- GROUP: MY CABINET (Available to everyone) -->
+<div class="nav-group">
+    <div class="nav-group-header" @click="activeGroup = (activeGroup === 'personal' ? null : 'personal')">
+        <span class="sidebar-label">{% trans "My Cabinet" %}</span>
+        <svg class="nav-group-arrow sidebar-arrow" :class="{ 'rotate-180': activeGroup === 'personal' }" viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z" />
+        </svg>
+    </div>
+    <div class="nav-sublist" x-show="activeGroup === 'personal'" x-collapse>
+        <a href="{% url 'cabinet:appointments' %}?scope=personal" hx-get="{% url 'cabinet:appointments' %}?scope=personal"
+            hx-target="#cabinet-content" hx-push-url="true"
+            class="sidebar-link {% if active_section == 'my_appointments' %}active{% endif %}">
+            <span class="sidebar-icon">📅</span>
+            <span class="sidebar-text">{% trans "My Appointments" %}</span>
+        </a>
+        <a href="{% url 'cabinet:profile' %}" hx-get="{% url 'cabinet:profile' %}" hx-target="#cabinet-content"
+            hx-push-url="true" class="sidebar-link {% if active_section == 'profile' %}active{% endif %}">
+            <span class="sidebar-icon">👤</span>
+            <span class="sidebar-text">{% trans "Profile" %}</span>
+        </a>
+    </div>
+</div>

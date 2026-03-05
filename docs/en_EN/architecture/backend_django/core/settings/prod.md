@@ -1,3 +1,4 @@
+{% raw %}
 # 📜 Production Settings (`prod.py`)
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../../../README.md)
@@ -66,3 +67,4 @@ LOGGING = {
 ```
 This section configures logging for production.
 *   `root` logger `level` is set to `WARNING`, meaning only `WARNING` level messages and above will be output to the console. This reduces log verbosity in production compared to development.
+{% endraw %}

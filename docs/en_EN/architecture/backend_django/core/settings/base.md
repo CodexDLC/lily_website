@@ -1,3 +1,4 @@
+{% raw %}
 # 📜 Base Settings (`base.py`)
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../../../README.md)
@@ -79,3 +80,4 @@ The `base.py` settings file ensures consistency across different deployment envi
 
 *   `LOGGING_CONFIG`: Set to `None` to allow custom logging configuration (e.g., via Loguru).
 *   `LOG_LEVEL_CONSOLE`, `LOG_LEVEL_FILE`, `LOG_ROTATION`: Logging parameters loaded from environment variables.
+{% endraw %}

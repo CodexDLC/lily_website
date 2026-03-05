@@ -1,70 +1,117 @@
-"""Contact requests list view (Admin only)."""
+"""Contact Requests CRM view (Admin only)."""
+
+from datetime import datetime
 
 from core.logger import log
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404
-from django.template.loader import render_to_string
+from django.db.models import Q
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView
 from features.cabinet.mixins import AdminRequiredMixin, HtmxCabinetMixin
 from features.main.models.contact_request import ContactRequest
+from features.system.services.notification import NotificationService
 
 
 class ContactRequestsView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
-    template_name = "cabinet/contacts/list.html"
+    template_name = "cabinet/crm/contacts/list.html"
+
+    def get(self, request, *args, **kwargs):
+        action = request.GET.get("action")
+        req_id = request.GET.get("id")
+
+        if action and req_id:
+            req = get_object_or_404(ContactRequest, id=req_id)
+            if action == "view":
+                return render(request, "cabinet/crm/contacts/_detail_view.html", {"req": req})
+            if action == "view_row":
+                return render(request, "cabinet/crm/contacts/_single_card.html", {"req": req})
+            if action == "toggle_status":
+                req.is_processed = not req.is_processed
+                req.save()
+                log.info(f"CRM: ContactRequest {req.id} status toggled to {req.is_processed}")
+                return render(request, "cabinet/crm/contacts/_single_card.html", {"req": req})
+
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        action = request.POST.get("action")
+        req_id = request.POST.get("id")
+        new_reply = request.POST.get("new_reply", "").strip()
+
+        if not req_id or not new_reply:
+            log.warning(f"CRM: Invalid POST request | action={action} | id={req_id}")
+            return self.get(request, *args, **kwargs)
+
+        req = get_object_or_404(ContactRequest, id=req_id)
+        timestamp = datetime.now().strftime("%d.%m.%Y %H:%M")
+
+        if action == "send_email":
+            # 1. Prepare history for the email
+            history = f"--- Original Message ---\n{req.message}\n\n"
+            if req.admin_notes:
+                history += f"--- Previous Correspondence ---\n{req.admin_notes}"
+
+            # 2. Update internal notes (Newest on top)
+            new_note = f"[{timestamp}] SENT EMAIL:\n{new_reply}\n"
+            separator = "\n" if req.admin_notes else ""
+            req.admin_notes = new_note + separator + req.admin_notes
+            req.is_processed = True
+            req.save()
+
+            # 3. Send Email via Universal Gateway
+            if req.client.email:
+                NotificationService.send_universal(
+                    recipient_email=req.client.email,
+                    template_name="ct_reply",
+                    subject=f"Re: Your inquiry [Ref: #{req.id}]",
+                    context_data={"reply_text": new_reply, "history_text": history, "request_id": req.id},
+                    channels=["email"],
+                )
+                log.info(f"CRM: Email response sent for Request {req.id}")
+
+            return render(request, "cabinet/crm/contacts/_single_card.html", {"req": req})
+
+        if action == "save_notes":
+            new_note = f"[{timestamp}] NOTE:\n{new_reply}\n"
+            separator = "\n" if req.admin_notes else ""
+            req.admin_notes = new_note + separator + req.admin_notes
+            req.is_processed = True
+            req.save()
+            log.info(f"CRM: Internal note saved for Request {req.id}")
+            return render(request, "cabinet/crm/contacts/_single_card.html", {"req": req})
+
+        return self.get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        log.debug(f"View: ContactRequestsView | Action: GetContext | user={self.request.user.id}")
         ctx = super().get_context_data(**kwargs)
         ctx["active_section"] = "contacts"
 
-        # Get all requests ordered by date, newest first
-        requests = ContactRequest.objects.select_related("client").order_by("-created_at")
-        ctx["requests"] = requests
+        search = self.request.GET.get("q", "").strip()
+        status_filter = self.request.GET.get("status", "new")
+        topic_filter = self.request.GET.get("topic", "all")
 
-        # Count unprocessed for badge
-        ctx["unprocessed_count"] = requests.filter(is_processed=False).count()
+        qs = ContactRequest.objects.select_related("client").order_by("-created_at")
 
-        log.info(f"View: ContactRequestsView | Action: Success | total_requests={requests.count()}")
+        if search:
+            qs = qs.filter(
+                Q(client__first_name__icontains=search)
+                | Q(client__last_name__icontains=search)
+                | Q(client__phone__icontains=search)
+                | Q(message__icontains=search)
+            )
+
+        if status_filter == "new":
+            qs = qs.filter(is_processed=False)
+        elif status_filter == "processed":
+            qs = qs.filter(is_processed=True)
+
+        if topic_filter != "all":
+            qs = qs.filter(topic=topic_filter)
+
+        ctx["requests"] = qs
+        ctx["search"] = search
+        ctx["status_filter"] = status_filter
+        ctx["topic_filter"] = topic_filter
+        ctx["topic_choices"] = ContactRequest.TOPIC_CHOICES
+        ctx["unprocessed_count"] = ContactRequest.objects.filter(is_processed=False).count()
+
         return ctx
-
-    def post(self, request, *args, **kwargs):
-        """Handle HTMX actions for individual contact requests."""
-        request_id = request.POST.get("request_id")
-        action = request.POST.get("action")
-
-        log.info(f"View: ContactRequestsView | Action: {action} | request_id={request_id} | user={request.user.id}")
-
-        contact_request = get_object_or_404(ContactRequest, pk=request_id)
-
-        try:
-            if action == "toggle_processed":
-                contact_request.is_processed = not contact_request.is_processed
-                contact_request.save(update_fields=["is_processed", "updated_at"])
-                log.debug(
-                    f"View: ContactRequestsView | Action: StatusToggled | is_processed={contact_request.is_processed}"
-                )
-
-            elif action == "save_notes":
-                notes = request.POST.get("admin_notes", "").strip()
-                contact_request.admin_notes = notes
-                contact_request.save(update_fields=["admin_notes", "updated_at"])
-                log.debug("View: ContactRequestsView | Action: NotesSaved")
-
-        except Exception as e:
-            log.error(f"View: ContactRequestsView | Action: PostFailed | error={e}")
-            return JsonResponse({"ok": False, "error": str(e)}, status=400)
-
-        # Instead of JsonResponse, we render the row template so HTMX swaps just that row
-        # This is standard HTMX pattern
-
-        ctx = {"req": contact_request}
-
-        html = render_to_string("cabinet/contacts/row.html", ctx, request=request)
-        return HttpResponse(html)
-
-    def delete(self, request, *args, **kwargs):
-        """Handle deletion of a contact request via HTMX."""
-        # Note: HTMX DELETE requests usually pass data in the URL or body depending on setup.
-        # Let's assume the ID is in the query params for DELETE or we extract it.
-        # Actually, standard HTMX delete puts it in the URL if built that way.
-        pass  # Will implement later if needed, starting with just processed toggle.

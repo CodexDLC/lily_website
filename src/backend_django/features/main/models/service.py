@@ -1,3 +1,4 @@
+from codex_tools.booking.adapters import BookableServiceMixin
 from core.logger import log
 from django.core.cache import cache
 from django.db import models
@@ -8,7 +9,7 @@ from features.system.services.images import optimize_image
 from .category import Category
 
 
-class Service(TimestampMixin, ActiveMixin, SeoMixin):
+class Service(BookableServiceMixin, TimestampMixin, ActiveMixin, SeoMixin):
     """
     Specific service (e.g. 'Classic Manicure').
     """
@@ -67,6 +68,17 @@ class Service(TimestampMixin, ActiveMixin, SeoMixin):
         help_text=_("If checked, this service will be excluded from 'Price from' calculation on the home page."),
     )
     order = models.PositiveIntegerField(default=0, verbose_name=_("Order"), help_text=_("Sorting order."))
+
+    # --- Exclusion Logic ---
+    excludes = models.ManyToManyField(
+        "self",
+        symmetrical=True,
+        blank=True,
+        verbose_name=_("Excludes Services"),
+        help_text=_(
+            "Select services that cannot be booked together with this one (e.g. Full Body excludes Back massage)."
+        ),
+    )
 
     class Meta:
         verbose_name = _("Service")

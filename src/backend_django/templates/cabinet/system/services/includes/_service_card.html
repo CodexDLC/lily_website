@@ -1,0 +1,29 @@
+{% load i18n %}
+<div class="cabinet-card" id="service-{{ service.id }}">
+    <div class="card-header-row">
+        <div class="card-header-left">
+            <span class="card-client-name">{{ service.title }}</span>
+            {% if service.is_active %}
+                <span class="status-badge status-confirmed">{% trans "Active" %}</span>
+            {% else %}
+                <span class="status-badge status-cancelled">{% trans "Disabled" %}</span>
+            {% endif %}
+        </div>
+        <div class="card-header-right">
+            <button class="btn-card-edit"
+                    hx-get="{% url 'cabinet:services' %}?action=edit_form&id={{ service.id }}"
+                    hx-target="#service-{{ service.id }}"
+                    hx-swap="outerHTML">
+                ✏️
+            </button>
+        </div>
+    </div>
+
+    <div class="card-meta">
+        <span class="card-meta-item">💰 {{ service.price }} €</span>
+        <span class="card-meta-item">⏱ {{ service.duration }} {% trans "min" %}</span>
+        {% if service.price_info %}
+            <span class="card-meta-item" style="opacity: 0.6;">ℹ️ {{ service.price_info }}</span>
+        {% endif %}
+    </div>
+</div>
