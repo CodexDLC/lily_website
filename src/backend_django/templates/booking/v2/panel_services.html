@@ -1,0 +1,63 @@
+{% load i18n %}
+<div class="step-content fade-in">
+
+    <h3 class="step-heading">Выберите услуги</h3>
+    <p style="color: var(--color-text-muted); margin-bottom: 24px;">
+        Можно выбрать несколько — мы подберём время для всей цепочки.
+    </p>
+
+    {% if error %}
+    <div class="alert alert-error" style="margin-bottom: 16px; padding: 12px 16px; background: rgba(255,80,80,.1); border-left: 3px solid #f55; border-radius: 6px; color: #f55;">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form hx-post="{% url 'booking_v2_wizard' %}"
+          hx-target="#v2-wizard-panel"
+          hx-swap="innerHTML"
+          hx-indicator="#v2-spinner">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="select_services">
+
+        <div class="services-list-wizard">
+            {% for cat in categories %}
+            <div style="margin-bottom: 32px;">
+                <h4 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--color-gold); margin-bottom: 16px; border-bottom: 1px solid rgba(198,168,124,0.3); padding-bottom: 8px;">
+                    {{ cat.title }}
+                </h4>
+
+                {% for svc in cat.services %}
+                <label class="service-card-wizard" style="cursor: pointer; display: flex; align-items: center; padding: 16px; margin-bottom: 12px;">
+                    <div style="margin-right: 16px;">
+                        <input type="checkbox" name="service_ids" value="{{ svc.id }}" style="width: 20px; height: 20px; accent-color: var(--color-gold); cursor: pointer;">
+                    </div>
+                    <div class="sc-info" style="flex: 1;">
+                        <h4 class="sc-title" style="margin: 0 0 4px 0;">{{ svc.title }}</h4>
+                        <div class="sc-meta">
+                            <span>⏱ {{ svc.duration }} min</span>
+                            <span>•</span>
+                            <span>ab {{ svc.price }} €</span>
+                        </div>
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+            {% empty %}
+            <p style="text-align:center; color: var(--color-text-muted); padding: 40px 0;">
+                Услуги не найдены.
+            </p>
+            {% endfor %}
+        </div>
+
+        <div class="form-actions" style="margin-top: 24px; display: flex; justify-content: flex-end;">
+            <button type="submit" class="btn-confirm" style="min-width: 200px;">
+                Далее →
+            </button>
+        </div>
+    </form>
+
+    <div id="v2-spinner" class="htmx-indicator"
+         style="display: none; text-align:center; padding: 20px; color: var(--color-text-muted);">
+        Загрузка...
+    </div>
+</div>

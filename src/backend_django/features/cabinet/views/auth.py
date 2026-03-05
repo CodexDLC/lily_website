@@ -6,7 +6,7 @@ from django.views import View
 
 
 class CabinetLoginView(View):
-    template_name = "cabinet/auth/login.html"
+    template_name = "cabinet/system/auth/login.html"
 
     def get(self, request):
         if request.user.is_authenticated:
@@ -36,7 +36,7 @@ class CabinetLogoutView(View):
 class MagicLinkView(View):
     """Login via access_token from SMS/Email link."""
 
-    template_name = "cabinet/auth/magic_link.html"
+    template_name = "cabinet/system/auth/magic_link.html"
 
     def get(self, request, token):
         from features.booking.models import Client
@@ -56,6 +56,10 @@ class MagicLinkView(View):
 
 
 def _redirect_by_role(request):
+    next_url = request.GET.get("next") or request.POST.get("next")
+    if next_url:
+        return redirect(next_url)
+
     if request.user.is_staff:
         return redirect("cabinet:dashboard")
     return redirect("cabinet:appointments")

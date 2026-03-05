@@ -17,7 +17,7 @@ class RescheduleAppointmentView(TemplateView):
     Uses HTMX for partial updates.
     """
 
-    template_name = "cabinet/appointments/reschedule.html"
+    template_name = "cabinet/crm/appointments/reschedule.html"
 
     def dispatch(self, request, *args, **kwargs):
         self.token = kwargs.get("token")
@@ -83,7 +83,7 @@ class RescheduleAppointmentView(TemplateView):
             logger.success("Appointment {} confirmed successfully (proposed time).", appointment_id)
 
             return render(
-                request, "cabinet/appointments/includes/_reschedule_success.html", {"appointment": appointment}
+                request, "cabinet/crm/appointments/includes/_reschedule_success.html", {"appointment": appointment}
             )
 
         # 2. User confirms a NEW picked time
@@ -111,7 +111,7 @@ class RescheduleAppointmentView(TemplateView):
                 logger.success("Appointment {} confirmed successfully with NEW time {}.", appointment_id, datetime_str)
 
                 return render(
-                    request, "cabinet/appointments/includes/_reschedule_success.html", {"appointment": appointment}
+                    request, "cabinet/crm/appointments/includes/_reschedule_success.html", {"appointment": appointment}
                 )
             except ValueError as e:
                 logger.error("ValueError parsing datetime {}: {}", datetime_str, e)
@@ -193,7 +193,7 @@ class RescheduleAppointmentView(TemplateView):
 
             calendar_data = self._get_calendar_grid(year, month)
             ctx = {"token": self.token, "appointment": appointment, **calendar_data}
-            return render(request, "cabinet/appointments/includes/_reschedule_calendar.html", ctx)
+            return render(request, "cabinet/crm/appointments/includes/_reschedule_calendar.html", ctx)
 
         # 2. Load Slots for a date
         elif action == "load_slots":
@@ -217,7 +217,7 @@ class RescheduleAppointmentView(TemplateView):
 
                 return render(
                     request,
-                    "cabinet/appointments/includes/_reschedule_slots.html",
+                    "cabinet/crm/appointments/includes/_reschedule_slots.html",
                     {"slots": slots_data, "token": self.token, "selected_date": date_obj},
                 )
             except ValueError:

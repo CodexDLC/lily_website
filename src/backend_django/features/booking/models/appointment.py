@@ -73,7 +73,7 @@ class Appointment(TimestampMixin, models.Model):
 
     STATUS_CHOICES = [
         (STATUS_PENDING, _("Pending Confirmation")),
-        (STATUS_CONFIRMED, _("Confirmed")),
+        (STATUS_CONFIRMED, _("Scheduled")),  # Changed from "Confirmed" to "Scheduled"
         (STATUS_COMPLETED, _("Completed")),
         (STATUS_CANCELLED, _("Cancelled")),
         (STATUS_NO_SHOW, _("No Show")),

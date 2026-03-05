@@ -5,16 +5,12 @@ Features auto-included via include().
 """
 
 from api.urls import api
-from core.sitemaps import sitemaps  # Импортируем словарь sitemaps напрямую
+from core.sitemaps import sitemaps
 from core.views import LLMSTextView
 from django.conf import settings
-
-# Импортируем i18n_patterns
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
-
-# Импортируем sitemap и наши классы sitemap
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 from django.views.static import serve
@@ -34,11 +30,11 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
     path("admin/", admin.site.urls),
     path("cabinet/", include("features.cabinet.urls", namespace="cabinet")),
-    # SEO & AI Files (localized versions if needed, or handled by view logic)
+    # SEO & AI Files
     path("llms.txt", LLMSTextView.as_view()),
     # Features
-    path("", include("features.booking.urls")),  # Booking Wizard
-    path("", include("features.main.urls")),  # Main Site
+    path("", include("features.booking.urls", namespace="booking")),
+    path("", include("features.main.urls")),
 )
 
 if settings.DEBUG:
@@ -47,8 +43,7 @@ if settings.DEBUG:
     urlpatterns += debug_toolbar_urls()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# Custom error handlers (must be at the top level of urls.py)
-# These will only be used when DEBUG = False
+# Custom error handlers
 handler400 = "django.views.defaults.bad_request"
 handler403 = "django.views.defaults.permission_denied"
 handler404 = "django.views.defaults.page_not_found"

@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 from features.booking.selectors import wizard as wizard_selectors
 from features.booking.services.booking import BookingService
-from features.booking.services.session import BookingSessionService
+from features.booking.services.utils.session import BookingSessionService
 from features.booking.views.steps import CalendarStep, ConfirmStep, MasterStep, ServiceStep
 
 

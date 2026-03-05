@@ -7,8 +7,8 @@ RUN pip install poetry poetry-plugin-export
 
 COPY pyproject.toml poetry.lock ./
 RUN poetry lock
-# Экспортируем основные зависимости + django + shared (arq и др.)
-RUN poetry export --without-hashes --with django,shared --format=requirements.txt > requirements.txt
+# Экспортируем основные зависимости + django + shared + codex_tools
+RUN poetry export --without-hashes --with django,shared,codex_tools --format=requirements.txt > requirements.txt
 
 RUN python -m venv /venv
 RUN /venv/bin/pip install --no-cache-dir -r requirements.txt

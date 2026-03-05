@@ -17,70 +17,84 @@
     <link rel="preload" href="{% static 'fonts/playfair-display-v40-latin-regular.woff2' %}" as="font" type="font/woff2"
         crossorigin>
 
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
     <!-- Cabinet CSS -->
-    <link rel="stylesheet" href="{% static 'css/cabinet_app.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cabinet_app.css' %}?v={% now "U" %}">
 
     <!-- Alpine.js with Collapse plugin -->
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-    <!-- Critical inline styles (prevent FOUC) -->
-
+    <script defer src="{% static 'js/vendor/alpine-collapse.min.js' %}"></script>
+    <script defer src="{% static 'js/vendor/alpine.min.js' %}"></script>
 
     {% block extra_css %}{% endblock extra_css %}
 </head>
 
-<body class="cabinet-body" x-data="{ sidebarOpen: false }">
+<body class="cabinet-body" x-data="{ sidebarOpen: false }" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
     <!-- Mobile overlay -->
     <div class="sidebar-overlay" :class="{ 'active': sidebarOpen }" @click="sidebarOpen = false"></div>
 
-    <div class="cabinet-layout">
+    <div class="cabinet-shell">
+        <!-- Top Header -->
+        {% if not no_sidebar %}
+        {% include "cabinet/base/includes/_topbar.html" %}
+        {% endif %}
 
-        <!-- Sidebar -->
-        <aside class="cabinet-sidebar" :class="{ 'open': sidebarOpen }" id="cabinet-sidebar">
-            <div class="sidebar-header">
-                <button class="sidebar-close-btn" @click="sidebarOpen = false" aria-label="Закрыть меню">✕</button>
-            </div>
-            {% include "cabinet/includes/_sidebar.html" %}
-        </aside>
+        <div class="cabinet-layout">
 
-        <!-- Main Content Area -->
-        <main class="cabinet-main">
-            <!-- Top Header -->
-            {% include "cabinet/includes/_topbar.html" %}
+            <!-- Sidebar -->
+            {% if not no_sidebar %}
+            <aside class="cabinet-sidebar" :class="{ 'open': sidebarOpen }" id="cabinet-sidebar">
+                {% include "cabinet/base/includes/_sidebar.html" %}
+            </aside>
+            {% endif %}
 
-            <div class="cabinet-content" id="cabinet-content">
-                {% block content %}{% endblock content %}
-            </div>
+            <!-- Main Content Area -->
+            <main class="cabinet-main">
+                <div class="cabinet-content" id="cabinet-content">
+                    {% block cabinet_content %}{% endblock cabinet_content %}
+                    {% block content %}{% endblock content %}
+                </div>
+            </main>
 
-        </main>
-
+        </div>
     </div>
 
     <!-- HTMX -->
-    <script src="{% static 'js/htmx.min.js' %}" defer></script>
+    <script src="{% static 'js/vendor/htmx.min.js' %}" defer></script>
 
     <!-- Sidebar active link sync -->
     <script>
-        document.body.addEventListener('htmx:afterSettle', function(evt) {
+        function syncSidebarLinks() {
             const currentPath = window.location.pathname;
+            const currentSearch = window.location.search;
+            const fullUrl = currentPath + currentSearch;
+
             document.querySelectorAll('.sidebar-link').forEach(link => {
-                const linkPath = new URL(link.getAttribute('href'), window.location.origin).pathname;
-                if (currentPath === linkPath) {
+                const linkHref = link.getAttribute('href');
+                if (!linkHref) return;
+
+                let isMatch = false;
+
+                if (linkHref.includes('?')) {
+                    isMatch = fullUrl.endsWith(linkHref) || fullUrl.includes(linkHref);
+                } else if (linkHref !== '/') {
+                    // Strict match to prevent overlapping active buttons
+                    isMatch = currentPath === linkHref || currentPath === linkHref + '/';
+                }
+
+                if (isMatch) {
                     link.classList.add('active');
-                    // Also open the parent group if it's a sublist
-                    const group = link.closest('.nav-group');
-                    if (group) {
-                        // We use Alpine.js for groups, but we can helper it here
-                        // by finding the header and clicking it if not active,
-                        // or better, use an Alpine event.
-                    }
                 } else {
                     link.classList.remove('active');
                 }
             });
-        });
+        }
+
+        document.body.addEventListener('htmx:afterSettle', syncSidebarLinks);
+        window.addEventListener('popstate', syncSidebarLinks);
+        document.addEventListener('DOMContentLoaded', syncSidebarLinks);
     </script>
 
     {% block scripts %}{% endblock scripts %}

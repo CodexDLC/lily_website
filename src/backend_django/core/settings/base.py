@@ -236,6 +236,12 @@ UNFOLD = {
                         "permission": lambda request: request.user.has_perm("booking.view_appointment"),
                     },
                     {
+                        "title": "Group Bookings",
+                        "icon": "layers",
+                        "link": "/admin/booking/appointmentgroup/",
+                        "permission": lambda request: request.user.has_perm("booking.view_appointmentgroup"),
+                    },
+                    {
                         "title": "Masters",
                         "icon": "face",
                         "link": "/admin/booking/master/",

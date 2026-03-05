@@ -47,7 +47,7 @@
                     {% endif %}
 
                     <div class="owner-buttons">
-                        <a href="{% url 'booking_wizard' %}?master_id={{ owner.id }}" class="btn-pill">{% trans "btn_cta_booking" %}</a>
+                        <a href="{% url 'booking:booking_wizard' %}?master_id={{ owner.id }}" class="btn-pill">{% trans "btn_cta_booking" %}</a>
                         {% if owner.instagram %}
                         <a href="https://instagram.com/{{ owner.instagram }}" target="_blank" class="btn-pill btn-instagram-secondary">Instagram</a>
                         {% endif %}
@@ -72,7 +72,7 @@
                         <h3 class="master-name">{{ master.name }}</h3>
                         <p class="master-role">{{ master.title }}</p>
                         <div class="master-buttons">
-                            <a href="{% url 'booking_wizard' %}?master_id={{ master.id }}" class="btn-select">{% trans "btn_action_book" %}</a>
+                            <a href="{% url 'booking:booking_wizard' %}?master_id={{ master.id }}" class="btn-select">{% trans "btn_action_book" %}</a>
                             {% if master.instagram %}
                             <a href="https://instagram.com/{{ master.instagram }}" target="_blank" class="btn-select btn-instagram-card">Instagram</a>
                             {% endif %}

@@ -24,7 +24,7 @@ class CabinetAccessMixin(LoginRequiredMixin):
         # Fallback: search by email if authenticated
         if user.is_authenticated:
             from features.booking.models import Client
-            from features.booking.services.client_service import ClientService
+            from features.booking.services.utils.client_service import ClientService
 
             # 1. Try email match
             if user.email:
@@ -77,7 +77,7 @@ class HtmxCabinetMixin:
     """
     HTMX Router for Cabinet Views.
     Adds `cabinet_base_template` to the context.
-    If it's an HTMX request, uses 'cabinet/base_htmx.html' to render only partials.
+    If it's an HTMX request, uses 'cabinet/base/base_htmx.html' to render only partials.
     If it's a direct browser request, uses 'cabinet/base_cabinet.html'.
     """
 
@@ -94,7 +94,7 @@ class HtmxCabinetMixin:
                 is_htmx = True
 
         if is_htmx:
-            ctx["cabinet_base_template"] = "cabinet/base_htmx.html"
+            ctx["cabinet_base_template"] = "cabinet/base/base_htmx.html"
         else:
             ctx["cabinet_base_template"] = "cabinet/base_cabinet.html"
 

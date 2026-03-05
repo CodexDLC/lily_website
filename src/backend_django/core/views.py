@@ -1,8 +1,29 @@
 from core.logger import log
 from django.conf import settings
+from django.http import HttpResponsePermanentRedirect
 from django.template.exceptions import TemplateDoesNotExist
 from django.utils import translation
+from django.views import View
 from django.views.generic import TemplateView
+
+
+class RootRedirectView(View):
+    """
+    Handles 301 Permanent Redirect from / to the default language prefix (e.g., /de/).
+    This is crucial for SEO (Google) to index the localized version as the main one.
+    """
+
+    def get(self, request, *args, **kwargs):
+        # Get the default language from settings (e.g., 'de')
+        default_lang = settings.LANGUAGE_CODE.split("-")[0]
+
+        # Construct the URL for the main page in the default language
+        # We use 'main:index' or similar if available, or just hardcode /de/
+        # Since we are in core, we'll try to resolve the root of the i18n patterns
+        target_url = f"/{default_lang}/"
+
+        log.info(f"SEO: 301 Redirect from / to {target_url}")
+        return HttpResponsePermanentRedirect(target_url)
 
 
 class LLMSTextView(TemplateView):

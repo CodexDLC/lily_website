@@ -1,6 +1,7 @@
 import secrets
 import uuid
 
+from codex_tools.booking.adapters import BookableMasterMixin
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db import models
@@ -13,7 +14,7 @@ from features.system.services.images import optimize_image
 User = get_user_model()
 
 
-class Master(TimestampMixin, SeoMixin, models.Model):
+class Master(BookableMasterMixin, TimestampMixin, SeoMixin, models.Model):
     """
     Salon master/specialist.
     """

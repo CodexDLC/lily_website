@@ -22,7 +22,12 @@ class SlotService:
         return self._cached_settings
 
     def get_available_slots(
-        self, masters: Master | list[Master], date_obj: date, duration_minutes: int, allow_past: bool = False
+        self,
+        masters: Master | list[Master],
+        date_obj: date,
+        duration_minutes: int,
+        allow_past: bool = False,
+        step_minutes: int = 30,
     ) -> list[str]:
         if isinstance(masters, Master):
             masters = [masters]
@@ -32,15 +37,17 @@ class SlotService:
 
         all_slots = set()
         for master in masters:
-            master_slots = self._get_slots_for_single_master(master, date_obj, duration_minutes, allow_past=allow_past)
+            master_slots = self._get_slots_for_single_master(
+                master, date_obj, duration_minutes, allow_past=allow_past, step_minutes=step_minutes
+            )
             all_slots.update(master_slots)
 
         return sorted(list(all_slots))
 
     def _get_slots_for_single_master(
-        self, master: Master, date_obj: date, duration_minutes: int, allow_past: bool = False
+        self, master: Master, date_obj: date, duration_minutes: int, allow_past: bool = False, step_minutes: int = 30
     ) -> list[str]:
-        """Calculates slots using 'tight packing' logic."""
+        """Calculates slots using 'sliding window' logic."""
 
         # 0. Check master's personal work schedule (if set)
         if master.work_days and date_obj.weekday() not in master.work_days:
@@ -93,30 +100,32 @@ class SlotService:
         if current_ptr < end_limit:
             free_windows.append((current_ptr, end_limit))
 
-        # 4. Generate slots for each window
+        # 4. Generate slots for each window using sliding window approach
         available_slots = []
         now = timezone.localtime()
         # Small technical buffer (15 min) to prevent booking in the past
         min_allowed_start = now + timedelta(minutes=15)
 
-        service_delta = timedelta(minutes=duration_minutes)
+        service_duration = timedelta(minutes=duration_minutes)
+        step_delta = timedelta(minutes=step_minutes)
 
         for w_start, w_end in free_windows:
             # A window must be at least as long as the service
-            if (w_end - w_start) < service_delta:
+            if (w_end - w_start) < service_duration:
                 continue
 
-            # Forward packing (from start of gap)
-            temp_start = w_start
-            while temp_start + service_delta <= w_end:
-                if allow_past or temp_start >= min_allowed_start:
-                    available_slots.append(temp_start.strftime("%H:%M"))
-                temp_start += service_delta
+            # Sliding window logic:
+            # Start at the beginning of the free window
+            current_slot_start = w_start
 
-            # Backward packing (from end of gap)
-            final_slot_start = w_end - service_delta
-            if (allow_past or final_slot_start >= min_allowed_start) and final_slot_start > w_start:
-                available_slots.append(final_slot_start.strftime("%H:%M"))
+            # While the service can fit into the remaining window space
+            while current_slot_start + service_duration <= w_end:
+                # Check if this slot is in the future (or allow_past is True)
+                if allow_past or current_slot_start >= min_allowed_start:
+                    available_slots.append(current_slot_start.strftime("%H:%M"))
+
+                # Move to the next potential slot by step_minutes
+                current_slot_start += step_delta
 
         return sorted(list(set(available_slots)))
 

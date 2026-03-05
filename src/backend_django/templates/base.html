@@ -14,7 +14,11 @@
         !function (e) { "use strict"; var t = function (t, n, r, o) { var i, a = e.document, d = a.createElement("link"); if (n) i = n; else { var f = (a.body || a.getElementsByTagName("head")[0]).childNodes; i = f[f.length - 1] } var l = a.styleSheets; if (o) for (var s in o) o.hasOwnProperty(s) && d.setAttribute(s, o[s]); d.rel = "stylesheet", d.href = t, d.media = "only x", function e(t) { if (a.body) return t(); setTimeout(function () { e(t) }) }(function () { i.parentNode.insertBefore(d, n ? i : i.nextSibling) }); var u = function (e) { for (var t = d.href, n = l.length; n--;)if (l[n].href === t) return e(); setTimeout(function () { u(e) }) }; return d.addEventListener && d.addEventListener("load", function () { this.media = r || "all" }), d.onloadcssdefined = u, u(function () { d.media !== r && (d.media = r) }), d }; "undefined" != typeof exports ? exports.loadCSS = t : e.loadCSS = t }("undefined" != typeof global ? global : this);
     </script>
 
-    <script src="{% static 'js/htmx.min.js' %}" defer></script>
+    <script src="{% static 'js/vendor/htmx.min.js' %}" defer></script>
+
+    <!-- PWA Styles -->
+    <link rel="stylesheet" href="{% static 'css/pwa.css' %}">
+
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -35,7 +39,11 @@
     {% include "includes/_cookie_consent.html" %}
     {% include "includes/_promo_notification.html" %}
 
-    <script src="{% static 'js/base.js' %}" defer></script>
+    <script src="{% static 'js/app/base.js' %}" defer></script>
+
+    <!-- PWA Script -->
+    <script src="{% static 'js/app/pwa-enhance.js' %}" defer></script>
+
     {% block scripts %}
     {% endblock %}
 </body>

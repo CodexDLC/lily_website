@@ -16,6 +16,9 @@ class Command(BaseCommand):
             log.debug("Command: update_all_content | Action: SubCommand | name=update_static_translations")
             call_command("update_static_translations")
 
+            log.debug("Command: update_all_content | Action: SubCommand | name=update_email_content")
+            call_command("update_email_content")
+
             log.debug("Command: update_all_content | Action: SubCommand | name=update_services_seo")
             call_command("update_services_seo")
 

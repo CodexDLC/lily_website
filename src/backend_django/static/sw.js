@@ -1,20 +1,19 @@
-const CACHE_NAME = 'lily-admin-v3';
-const STATIC_CACHE = 'lily-static-v3';
+const CACHE_NAME = 'lily-site-v6';
+const STATIC_CACHE = 'lily-static-v6';
 
 // Файлы для кэширования при установке
 const STATIC_ASSETS = [
-  '/admin/',
   '/static/css/app.css',
   '/static/js/base.js',
   '/static/img/logo_lily.webp',
   '/static/img/favicon/icon-192x192.png',
   '/static/img/favicon/icon-512x512.png',
-  '/static/admin/offline.html'
+  '/static/offline.html'
 ];
 
 // Установка Service Worker
 self.addEventListener('install', (event) => {
-  console.log('[Service Worker] Installing...');
+  console.log('[Service Worker] Installing v6...');
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then(cache => {
@@ -31,7 +30,7 @@ self.addEventListener('install', (event) => {
 
 // Активация и очистка старых кэшей
 self.addEventListener('activate', (event) => {
-  console.log('[Service Worker] Activating...');
+  console.log('[Service Worker] Activating v6...');
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
@@ -54,18 +53,24 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Игнорируем chrome-extension и другие протоколы
+  // Игнорируем не-http запросы (chrome-extension и т.д.)
   if (!url.protocol.startsWith('http')) {
     return;
   }
 
-  // Network-only: API — всегда свежие данные
-  if (url.pathname.startsWith('/api/')) {
-    event.respondWith(fetch(request));
+  // 1. Игнорируем АДМИНКУ и КАБИНЕТ ПОЛНОСТЬЮ (Network Only)
+  // Это критически важные разделы, которые должны работать напрямую с сервером
+  // чтобы избежать ошибок кэширования и проблем с редиректами (ERR_FAILED)
+  if (url.pathname.startsWith('/admin/') || url.pathname.startsWith('/cabinet/')) {
     return;
   }
 
-  // Cache-first ТОЛЬКО для настоящей статики (CSS, JS, шрифты, картинки)
+  // 2. API — всегда свежие данные (Network Only)
+  if (url.pathname.startsWith('/api/')) {
+    return;
+  }
+
+  // 3. Cache-first для статики (CSS, JS, шрифты, картинки)
   const isStaticAsset = url.pathname.startsWith('/static/') &&
     /\.(css|js|woff2?|ttf|eot|png|jpg|jpeg|webp|svg|ico)(\?.*)?$/.test(url.pathname);
 
@@ -85,18 +90,29 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Network-only для всех HTML-страниц (кабинет, admin, booking и т.д.)
-  // Данные всегда должны быть актуальными
-  event.respondWith(
-    fetch(request).catch(() => {
-      if (request.headers.get('accept') && request.headers.get('accept').includes('text/html')) {
-        return caches.match('/static/admin/offline.html');
-      }
-    })
-  );
+  // 4. Network First для HTML-страниц (Навигация по сайту)
+  if (request.mode === 'navigate' || (request.headers.get('accept') && request.headers.get('accept').includes('text/html'))) {
+    event.respondWith(
+      fetch(request) // Убрали redirect: follow, браузер сам разберется
+        .catch(error => {
+          console.error('[Service Worker] Fetch failed for navigation:', error);
+
+          // Показываем офлайн только если реально нет сети
+          if (!navigator.onLine) {
+             return caches.match('/static/offline.html');
+          }
+
+          // Если сеть есть, но fetch упал, пробуем отдать из кэша или показываем заглушку
+          return caches.match(request).then(cached => {
+            return cached || caches.match('/static/offline.html');
+          });
+        })
+    );
+    return;
+  }
 });
 
-// Обработка сообщений от клиентов
+// Обработка сообщений
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();

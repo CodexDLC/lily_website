@@ -1,0 +1,15 @@
+{% extends "cabinet/base_cabinet.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Настройки записи" %}{% endblock %}
+
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title">{% trans "Настройки записи" %}</h1>
+        <p class="text-muted">Глобальные правила конструктора V2.</p>
+    </div>
+</div>
+
+{% include "cabinet/pages/booking_settings_htmx.html" %}
+{% endblock %}

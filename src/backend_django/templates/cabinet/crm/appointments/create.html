@@ -1,0 +1,245 @@
+{% extends cabinet_base_template|default:"cabinet/base_cabinet.html" %}
+{% load static %}
+{% block title %}Создать запись{% endblock title %}
+{% block topbar_title %}Создать запись{% endblock topbar_title %}
+{% block content %}
+<div id="booking-main">
+
+    <!-- 1. КЛИЕНТ -->
+    <div class="create-section">
+        <span class="create-section-label">1. Найти или добавить клиента</span>
+
+        <div class="create-search-wrapper">
+            <input type="text" id="client-search" class="create-input" placeholder="Имя или телефон..."
+                hx-get="{% url 'cabinet:appointments_create' %}?action=search_clients"
+                hx-trigger="keyup changed delay:300ms" hx-target="#search-results" hx-include="[name='q']" name="q"
+                autocomplete="off" oninput="validateForm()">
+            <div id="search-results" class="create-search-results"></div>
+        </div>
+
+        <div id="client-status-container"></div>
+
+        <div id="manual-client-fields" class="create-manual-fields">
+            <div class="create-row">
+                <input type="text" id="in-first-name" class="create-input" placeholder="Имя *" oninput="validateForm()">
+                <input type="text" id="in-last-name" class="create-input" placeholder="Фамилия">
+            </div>
+            <input type="tel" id="in-phone" class="create-input" placeholder="Телефон * (или ghost- для тетради)"
+                oninput="validateForm()">
+
+            <span class="create-extra-toggle" id="extra-fields-toggle" onclick="toggleExtraFields()">+ Email /
+                соцсети</span>
+
+            <div id="client-extra-fields" class="create-extra-fields">
+                <input type="email" id="in-email" class="create-input" placeholder="Email">
+                <div class="create-row">
+                    <input type="text" id="in-instagram" class="create-input" placeholder="Instagram">
+                    <input type="text" id="in-telegram" class="create-input" placeholder="Telegram">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. МАСТЕР + УСЛУГА -->
+    <div class="create-section">
+        <span class="create-section-label">2. Мастер и услуга</span>
+
+        <select id="sel-master" name="master_id" class="create-select"
+            hx-get="{% url 'cabinet:appointments_create' %}?action=get_services" hx-target="#sel-service"
+            hx-trigger="change" hx-include="#sel-master" onchange="onMasterChange()">
+            <option value="any">Любой специалист</option>
+            {% for m in masters %}
+            <option value="{{ m.id }}">{{ m.name }}</option>
+            {% endfor %}
+        </select>
+
+        <select id="sel-service" name="service_id" class="create-select" hx-get="{% url 'cabinet:appointments_create' %}?action=get_dates"
+            hx-target="#date-grid" hx-trigger="change"
+            hx-vals='js:{master_id: document.getElementById("sel-master").value}' onchange="onServiceChange()">
+            <option value="" disabled selected>Сначала выберите мастера...</option>
+            {% for s in services %}
+            <option value="{{ s.id }}">{{ s.title }} ({{ s.duration }} мин)</option>
+            {% endfor %}
+        </select>
+
+        <textarea id="in-client-notes" class="create-textarea" placeholder="Описание / что именно делаем"></textarea>
+    </div>
+
+    <!-- 3. ДАТА И ВРЕМЯ -->
+    <div class="create-section">
+        <span class="create-section-label">3. Дата и время</span>
+
+        <div id="date-grid" class="date-grid">
+            <span class="create-hint">Выберите услугу, чтобы увидеть даты</span>
+        </div>
+
+        <div id="section-time" class="create-time-section">
+            <div id="time-grid" class="time-grid"></div>
+        </div>
+
+        <textarea id="in-admin-notes" class="create-textarea u-mt-14"
+            placeholder="Внутренняя заметка для мастера..."></textarea>
+
+        <button id="btn-submit" class="btn-create-submit" disabled onclick="submitBooking()">
+            Подтвердить и сохранить
+        </button>
+    </div>
+
+</div>
+
+<!-- Success state -->
+<div id="success-view" class="create-success">
+    <div class="create-success-icon">✅</div>
+    <h2>Запись сохранена!</h2>
+    <p>Уведомление отправлено клиенту.</p>
+    <button class="btn-create-submit btn-success-new"
+        onclick="window.location.reload()">Новая запись</button>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    var CREATE_URL = "{% url 'cabinet:appointments_create' %}";
+    var CSRF_TOKEN = "{{ csrf_token }}";
+    var state = { master_id: 'any', service_id: '', date: '', time: '' };
+
+    function toggleExtraFields() {
+        const el = document.getElementById('client-extra-fields');
+        const toggle = document.getElementById('extra-fields-toggle');
+        const visible = el.style.display !== 'none';
+        el.style.display = visible ? 'none' : 'block';
+        toggle.textContent = visible ? '+ Email / соцсети' : '— скрыть';
+    }
+
+    function fillClientData(data) {
+        document.getElementById('in-first-name').value = data.first_name || '';
+        document.getElementById('in-last-name').value = data.last_name || '';
+        document.getElementById('in-phone').value = data.phone || '';
+        document.getElementById('in-email').value = data.email || '';
+        document.getElementById('in-instagram').value = data.instagram || '';
+        document.getElementById('in-telegram').value = data.telegram || '';
+        document.getElementById('client-search').value = (data.first_name + ' ' + (data.last_name || '')).trim();
+        document.getElementById('search-results').style.display = 'none';
+
+        if (data.id) {
+            fetch(CREATE_URL + '?action=get_client_status&client_id=' + data.id)
+                .then(r => r.text())
+                .then(html => { document.getElementById('client-status-container').innerHTML = html; });
+        }
+        validateForm();
+    }
+
+    function onMasterChange() {
+        state.master_id = document.getElementById('sel-master').value;
+        state.service_id = ''; state.date = ''; state.time = '';
+        document.getElementById('section-time').style.display = 'none';
+        validateForm();
+    }
+
+    function onServiceChange() {
+        state.service_id = document.getElementById('sel-service').value;
+        state.date = ''; state.time = '';
+        document.getElementById('section-time').style.display = 'none';
+        validateForm();
+    }
+
+    function selectDate(iso, el) {
+        state.date = iso; state.time = '';
+        document.querySelectorAll('.date-bubble').forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+
+        const grid = document.getElementById('time-grid');
+        grid.innerHTML = '<span class="create-hint">Загрузка...</span>';
+        document.getElementById('section-time').style.display = 'block';
+
+        const params = new URLSearchParams({
+            action: 'get_slots',
+            service_id: state.service_id,
+            master_id: state.master_id,
+            date: iso
+        });
+        fetch(CREATE_URL + '?' + params)
+            .then(r => r.text())
+            .then(html => { grid.innerHTML = html; });
+        validateForm();
+    }
+
+    function selectTime(val, el) {
+        state.time = val;
+        document.querySelectorAll('.time-pill').forEach(p => p.classList.remove('selected'));
+        el.classList.add('selected');
+        validateForm();
+    }
+
+    function validateForm() {
+        const name = document.getElementById('in-first-name').value.trim();
+        const phone = document.getElementById('in-phone').value.trim();
+        document.getElementById('btn-submit').disabled = !(state.time && name && phone.length > 3);
+    }
+
+    function submitBooking() {
+        document.getElementById('btn-submit').disabled = true;
+        document.getElementById('btn-submit').textContent = 'Сохраняем...';
+
+        const payload = {
+            service_id: state.service_id,
+            master_id: state.master_id,
+            datetime_start: state.date + 'T' + state.time,
+            first_name: document.getElementById('in-first-name').value,
+            last_name: document.getElementById('in-last-name').value,
+            phone: document.getElementById('in-phone').value,
+            email: document.getElementById('in-email').value,
+            instagram: document.getElementById('in-instagram').value,
+            telegram: document.getElementById('in-telegram').value,
+            client_notes: document.getElementById('in-client-notes').value,
+            admin_notes: document.getElementById('in-admin-notes').value,
+        };
+
+        fetch(CREATE_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': CSRF_TOKEN,
+            },
+            body: JSON.stringify(payload),
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('booking-main').style.display = 'none';
+                    document.getElementById('success-view').style.display = 'block';
+                } else {
+                    alert('Ошибка: ' + (data.message || 'неизвестная'));
+                    document.getElementById('btn-submit').disabled = false;
+                    document.getElementById('btn-submit').textContent = 'Подтвердить и сохранить';
+                }
+            })
+            .catch(() => {
+                alert('Ошибка сети');
+                document.getElementById('btn-submit').disabled = false;
+                document.getElementById('btn-submit').textContent = 'Подтвердить и сохранить';
+            });
+    }
+
+    // Show/hide search results
+    document.getElementById('client-search').addEventListener('focus', function () {
+        const res = document.getElementById('search-results');
+        if (res.innerHTML.trim()) res.style.display = 'block';
+    });
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('#client-search') && !e.target.closest('#search-results')) {
+            document.getElementById('search-results').style.display = 'none';
+        }
+    });
+    // Show results when HTMX loads them
+    document.getElementById('search-results').addEventListener('htmx:afterSettle', function () {
+        this.style.display = this.innerHTML.trim() ? 'block' : 'none';
+    });
+    document.body.addEventListener('htmx:afterSwap', function (e) {
+        if (e.detail.target.id === 'search-results') {
+            const el = document.getElementById('search-results');
+            el.style.display = el.innerHTML.trim() ? 'block' : 'none';
+        }
+    });
+</script>
+{% endblock scripts %}

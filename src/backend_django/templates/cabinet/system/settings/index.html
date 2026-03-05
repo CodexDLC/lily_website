@@ -1,0 +1,183 @@
+{% extends cabinet_base_template|default:"cabinet/base_cabinet.html" %}
+{% load i18n static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cabinet/pages/settings.css' %}">
+{% endblock extra_css %}
+
+{% block title %}{% trans "System Settings" %} - LILY Cabinet{% endblock title %}
+
+{% block cabinet_content %}
+<div class="settings-container no-sidebar">
+
+    <!-- Main Settings Content -->
+    <main class="settings-content-wrapper">
+        <div class="settings-content-header">
+            <h3>
+                {% if current_tab == 'site' %}{% trans "Business Info" %}
+                {% elif current_tab == 'socials' %}{% trans "Social Media & Contacts" %}
+                {% elif current_tab == 'booking' %}{% trans "Booking rules" %}
+                {% endif %}
+            </h3>
+        </div>
+
+        <form hx-post="{% url 'cabinet:system_settings' %}" hx-target="#cabinet-content" class="h-100 d-flex flex-column">
+            {% csrf_token %}
+            <input type="hidden" name="section" value="{{ current_tab }}">
+
+            <div class="settings-scroll-area">
+                {% if current_tab == 'site' %}
+                    <input type="hidden" name="action" value="save_site">
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "Company Name" %}</span>
+                            <span class="setting-description">{% trans "Full name as displayed on the website" %}</span>
+                        </div>
+                        <div class="setting-input-col">
+                            <input type="text" name="company_name" value="{{ site_settings.company_name }}" class="form-control glass-input">
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "Owner Name" %}</span>
+                            <span class="setting-description">{% trans "Displayed in legal notices (Impressum)" %}</span>
+                        </div>
+                        <div class="setting-input-col">
+                            <input type="text" name="owner_name" value="{{ site_settings.owner_name }}" class="form-control glass-input">
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "Address" %}</span>
+                            <span class="setting-description">{% trans "Street and number" %}</span>
+                        </div>
+                        <div class="setting-input-col">
+                            <input type="text" name="address_street" value="{{ site_settings.address_street }}" class="form-control glass-input">
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "City & Postcode" %}</span>
+                            <span class="setting-description">{% trans "City and PLZ code" %}</span>
+                        </div>
+                        <div class="setting-input-col d-flex gap-2">
+                            <input type="text" name="address_postal_code" value="{{ site_settings.address_postal_code }}" class="form-control glass-input w-25">
+                            <input type="text" name="address_locality" value="{{ site_settings.address_locality }}" class="form-control glass-input flex-grow-1">
+                        </div>
+                    </div>
+
+                {% elif current_tab == 'socials' %}
+                    <input type="hidden" name="action" value="save_site">
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "Business Phone" %}</span>
+                            <span class="setting-description">{% trans "Public phone number" %}</span>
+                        </div>
+                        <div class="setting-input-col">
+                            <input type="text" name="phone" value="{{ site_settings.phone }}" class="form-control glass-input">
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "Public Email" %}</span>
+                            <span class="setting-description">{% trans "Used for customer inquiries" %}</span>
+                        </div>
+                        <div class="setting-input-col">
+                            <input type="email" name="email" value="{{ site_settings.email }}" class="form-control glass-input">
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "Instagram" %}</span>
+                            <span class="setting-description">{% trans "Link to your Instagram profile" %}</span>
+                        </div>
+                        <div class="setting-input-col">
+                            <input type="url" name="instagram_url" value="{{ site_settings.instagram_url }}" class="form-control glass-input">
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "Telegram" %}</span>
+                            <span class="setting-description">{% trans "Link to your Telegram channel or chat" %}</span>
+                        </div>
+                        <div class="setting-input-col">
+                            <input type="url" name="telegram_url" value="{{ site_settings.telegram_url }}" class="form-control glass-input">
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "WhatsApp" %}</span>
+                            <span class="setting-description">{% trans "Link to your business WhatsApp" %}</span>
+                        </div>
+                        <div class="setting-input-col">
+                            <input type="url" name="whatsapp_url" value="{{ site_settings.whatsapp_url }}" class="form-control glass-input">
+                        </div>
+                    </div>
+
+                {% elif current_tab == 'booking' %}
+                    <input type="hidden" name="action" value="save_booking">
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "Slot Step (min)" %}</span>
+                            <span class="setting-description">{% trans "Interval between time suggestions" %}</span>
+                        </div>
+                        <div class="setting-input-col">
+                            <select name="default_step_minutes" class="form-select glass-select">
+                                <option value="15" {% if booking_settings.default_step_minutes == 15 %}selected{% endif %}>15 min</option>
+                                <option value="30" {% if booking_settings.default_step_minutes == 30 %}selected{% endif %}>30 min</option>
+                                <option value="60" {% if booking_settings.default_step_minutes == 60 %}selected{% endif %}>60 min</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "Buffer (min)" %}</span>
+                            <span class="setting-description">{% trans "Rest/cleaning time after each service" %}</span>
+                        </div>
+                        <div class="setting-input-col">
+                            <input type="number" name="default_buffer_between_minutes" value="{{ booking_settings.default_buffer_between_minutes }}" class="form-control glass-input">
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "Min Advance (min)" %}</span>
+                            <span class="setting-description">{% trans "How soon can a client book an appointment" %}</span>
+                        </div>
+                        <div class="setting-input-col">
+                            <input type="number" name="default_min_advance_minutes" value="{{ booking_settings.default_min_advance_minutes }}" class="form-control glass-input">
+                        </div>
+                    </div>
+
+                    <div class="setting-row">
+                        <div class="setting-label-col">
+                            <span class="setting-label">{% trans "Max Horizon (days)" %}</span>
+                            <span class="setting-description">{% trans "How far ahead the calendar is visible" %}</span>
+                        </div>
+                        <div class="setting-input-col">
+                            <input type="number" name="default_max_advance_days" value="{{ booking_settings.default_max_advance_days }}" class="form-control glass-input">
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="settings-footer">
+                <button type="submit" class="btn btn-premium-save">
+                    <i class="bi bi-check-lg me-2"></i>{% trans "Save Changes" %}
+                </button>
+            </div>
+        </form>
+    </main>
+</div>
+{% endblock cabinet_content %}

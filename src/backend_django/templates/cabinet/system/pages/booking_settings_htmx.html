@@ -1,0 +1,71 @@
+{% load i18n %}
+
+{% if messages %}
+<div class="messages mb-4">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="card card-custom">
+    <div class="card-body">
+        <form hx-post="{% url 'cabinet:booking_settings' %}"
+              hx-target="#cabinet-content"
+              hx-swap="innerHTML">
+            {% csrf_token %}
+
+            <h5 class="mb-3 border-bottom pb-2">Сетка слотов</h5>
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Шаг сетки (минуты)</label>
+                    <input type="number" name="default_step_minutes" class="form-control" value="{{ settings.default_step_minutes }}" required min="5" step="5">
+                    <div class="form-text">Интервал предложений в конструкторе. Например: 30 = 09:00, 09:30...</div>
+                </div>
+            </div>
+
+            <h5 class="mb-3 border-bottom pb-2">Рабочие часы по умолчанию</h5>
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Начало работы</label>
+                    <input type="time" name="default_work_start" class="form-control" value="{{ settings.default_work_start|time:'H:i' }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Окончание работы</label>
+                    <input type="time" name="default_work_end" class="form-control" value="{{ settings.default_work_end|time:'H:i' }}" required>
+                </div>
+                <div class="col-12">
+                    <div class="form-text">Используются, если у мастера не задано индивидуальное расписание в его профиле.</div>
+                </div>
+            </div>
+
+            <h5 class="mb-3 border-bottom pb-2">Буфер и горизонт</h5>
+            <div class="row mb-4">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Окно между визитами (мин)</label>
+                    <input type="number" name="default_buffer_between_minutes" class="form-control" value="{{ settings.default_buffer_between_minutes }}" required min="0">
+                    <div class="form-text">Резерв времени после каждой услуги на уборку.</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Мин. запись заранее (мин)</label>
+                    <input type="number" name="default_min_advance_minutes" class="form-control" value="{{ settings.default_min_advance_minutes }}" required min="0">
+                    <div class="form-text">Как скоро можно записаться от текущего времени.</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Макс. горизонт записи (дни)</label>
+                    <input type="number" name="default_max_advance_days" class="form-control" value="{{ settings.default_max_advance_days }}" required min="1">
+                    <div class="form-text">На сколько дней вперёд открыт календарь.</div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary d-inline-flex align-items-center">
+                    <span class="sidebar-icon me-2">💾</span> {% trans "Сохранить настройки" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,119 @@
+{% load i18n %}
+<div class="cabinet-card large-card {% if group.is_multi_day %}is-multi-day{% endif %}" id="group-{{ group.id }}">
+
+    <!-- Group Header: Client & Total Info -->
+    <div class="group-card-header">
+        <div class="group-header-info">
+            {% include "cabinet/crm/clients/_mini_card.html" with client=group.client %}
+            <div class="group-meta-badges">
+                <span class="badge-group-id">🔗 {% trans "Group" %} #{{ group.id }}</span>
+                <span class="badge-engine-mode">{{ group.engine_mode }}</span>
+            </div>
+        </div>
+
+        <div class="group-header-stats">
+            <div class="group-stat-item">
+                <span class="label">{% trans "Date" %}</span>
+                <span class="value">{{ group.booking_date|date:"d.m.Y" }}</span>
+            </div>
+            <div class="group-stat-item">
+                <span class="label">{% trans "Duration" %}</span>
+                <span class="value">{{ group.total_duration_minutes }} {% trans "min" %}</span>
+            </div>
+            <div class="group-stat-item highlight">
+                <span class="label">{% trans "Status" %}</span>
+                <span class="status-badge status-{{ group.status }}">{{ group.get_status_display }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services List -->
+    <div class="group-services-list">
+        <div class="services-list-title">{% trans "Services in this visit" %}</div>
+        {% for item in group.items.all %}
+            <div class="group-service-row">
+                <div class="service-time">
+                    {{ item.appointment.datetime_start|time:"H:i" }}
+                </div>
+                <div class="service-main-info">
+                    <div class="service-title">💅 {{ item.service.title }}</div>
+                    <div class="service-master">👤 {{ item.appointment.master.name }}</div>
+                </div>
+                <div class="service-price">
+                    {{ item.appointment.price }} €
+                </div>
+                <div class="service-status">
+                     <span class="status-dot status-{{ item.appointment.status }}" title="{{ item.appointment.get_status_display }}"></span>
+                </div>
+            </div>
+            {% if item.appointment.client_notes %}
+                <div class="group-service-note" style="margin-left: 55px; margin-top: -5px; margin-bottom: 10px; font-size: 12px; color: rgba(255,255,255,0.6); font-style: italic;">
+                    <i class="bi bi-chat-quote" style="font-size: 11px;"></i> {{ item.appointment.client_notes }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Group Actions (Admin Control Panel) -->
+    {% if is_admin %}
+    <div class="group-card-actions mt-3" style="display: flex; gap: 10px; flex-wrap: wrap;">
+
+        <!-- 1. CANCEL ALL -->
+        {% if group.status != 'cancelled' and group.status != 'completed' %}
+            <div style="flex: 1; min-width: 120px;">
+                <button hx-post="{% url 'cabinet:appointments' %}"
+                        hx-vals='{"action": "cancel_group", "group_id": "{{ group.id }}"}'
+                        hx-target="#group-{{ group.id }}"
+                        hx-swap="outerHTML"
+                        hx-confirm="{% trans 'Are you sure you want to cancel the entire group?' %}"
+                        class="btn-mgmt btn-reject" style="width: 100%; justify-content: center; border: none; cursor: pointer;">
+                    ❌ {% trans "Cancel All" %}
+                </button>
+            </div>
+        {% endif %}
+
+        <!-- 2. STATUS ACTION (Approve/Complete) -->
+        <div style="flex: 1; min-width: 120px;">
+            {% if group.status == 'pending' %}
+                <button hx-post="{% url 'cabinet:appointments' %}"
+                        hx-vals='{"action": "approve_group", "group_id": "{{ group.id }}"}'
+                        hx-target="#group-{{ group.id }}"
+                        hx-swap="outerHTML"
+                        class="btn-mgmt btn-approve" style="width: 100%; justify-content: center; border: none; cursor: pointer;">
+                    ✅ {% trans "Approve All" %}
+                </button>
+            {% elif group.status == 'confirmed' %}
+                <button hx-post="{% url 'cabinet:appointments' %}"
+                        hx-vals='{"action": "complete_group", "group_id": "{{ group.id }}"}'
+                        hx-target="#group-{{ group.id }}"
+                        hx-swap="outerHTML"
+                        class="btn-mgmt btn-approve" style="width: 100%; justify-content: center; border: none; cursor: pointer;">
+                    🏁 {% trans "Complete All" %}
+                </button>
+            {% endif %}
+        </div>
+
+        <!-- 3. RESCHEDULE ALL -->
+        {% if group.status != 'cancelled' and group.status != 'completed' %}
+            <div style="flex: 1; min-width: 120px;">
+                <button hx-get="{% url 'cabinet:appointments' %}?action=group_reschedule_form&group_id={{ group.id }}"
+                        hx-target="#group-{{ group.id }}"
+                        hx-swap="outerHTML"
+                        class="btn-mgmt btn-reschedule"
+                        style="width: 100%; justify-content: center; border: none; cursor: pointer;">
+                    📅 {% trans "Reschedule All" %}
+                </button>
+            </div>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
+    {% if group.notes %}
+    <div class="group-card-footer mt-2 pt-2" style="border-top: 1px solid rgba(255,255,255,0.05);">
+        <div class="card-note">
+            <i class="bi bi-chat-left-text"></i> {{ group.notes }}
+        </div>
+    </div>
+    {% endif %}
+</div>
