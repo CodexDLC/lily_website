@@ -7,9 +7,31 @@ from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 from unfold.admin import ModelAdmin
 
+from .models.email_content import EmailContent
 from .models.seo import StaticPageSeo
 from .models.site_settings import SiteSettings
 from .models.static_translation import StaticTranslation
+
+
+@admin.register(EmailContent)
+class EmailContentAdmin(ModelAdmin, TranslationAdmin):
+    """Admin interface for EmailContent model."""
+
+    list_display = ["key", "category", "text_preview", "description"]
+    list_filter = ["category"]
+    search_fields = ["key", "text", "description"]
+    ordering = ["category", "key"]
+
+    fieldsets = [
+        (_("Identification"), {"fields": ("key", "category", "description")}),
+        (_("Translations"), {"fields": ("text",)}),
+    ]
+
+    @admin.display(description=_("Text Preview"))
+    def text_preview(self, obj):
+        if obj.text:
+            return obj.text[:70] + "..." if len(obj.text) > 70 else obj.text
+        return "—"
 
 
 @admin.register(StaticTranslation)

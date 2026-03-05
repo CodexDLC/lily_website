@@ -8,7 +8,7 @@
     <div class="category-tabs desktop-only">
         {% for cat in categories %}
         <button class="tab-btn {% if cat.slug == selected_category_slug %}active{% endif %}"
-                hx-get="{% url 'booking_wizard' %}?step=1&category={{ cat.slug }}"
+                hx-get="{% url 'booking:booking_wizard' %}?step=1&category={{ cat.slug }}"
                 hx-target="#wizard-content"
                 hx-swap="innerHTML">
             {{ cat.title }}
@@ -31,7 +31,7 @@
             <div class="dropdown-menu" id="dropdown-menu">
                 {% for cat in categories %}
                 <div class="dropdown-item {% if cat.slug == selected_category_slug %}active{% endif %}"
-                     hx-get="{% url 'booking_wizard' %}?step=1&category={{ cat.slug }}"
+                     hx-get="{% url 'booking:booking_wizard' %}?step=1&category={{ cat.slug }}"
                      hx-target="#wizard-content"
                      hx-swap="innerHTML"
                      onclick="toggleDropdown()">
@@ -71,7 +71,7 @@
             </div>
             <div class="sc-action">
                 <button class="btn-select"
-                        hx-get="{% url 'booking_wizard' %}?step=2&service_id={{ service.id }}"
+                        hx-get="{% url 'booking:booking_wizard' %}?step=2&service_id={{ service.id }}"
                         hx-target="#wizard-content"
                         hx-swap="innerHTML">
                     {% trans "Auswählen" %}

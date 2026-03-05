@@ -9,7 +9,17 @@ from unfold.admin import ModelAdmin, TabularInline
 from unfold.decorators import action
 
 from .forms import MasterAdminForm
-from .models import Appointment, Client, Master, MasterCertificate, MasterDayOff, MasterPortfolio
+from .models import (
+    Appointment,
+    AppointmentGroup,
+    AppointmentGroupItem,
+    BookingSettings,
+    Client,
+    Master,
+    MasterCertificate,
+    MasterDayOff,
+    MasterPortfolio,
+)
 
 
 class MasterDayOffInline(TabularInline):
@@ -84,11 +94,33 @@ class ClientAdmin(ModelAdmin):
 
 @admin.register(Appointment)
 class AppointmentAdmin(ModelAdmin):
-    list_display = ["id", "client", "master", "service", "datetime_start", "status_badge", "active_promo_badge"]
+    list_display = [
+        "id",
+        "client",
+        "master",
+        "service",
+        "datetime_start",
+        "status_badge",
+        "group_badge",
+        "active_promo_badge",
+    ]
     list_display_links = ["id", "client"]
-    list_filter = ["status", "master"]
+    list_filter = ["status", "master", "group_item__group"]
     list_filter_sheet = True
     readonly_fields = ["active_promo"]
+
+    @admin.display(description=_("Group"))
+    def group_badge(self, obj):
+        # Relationship is OneToOneField with related_name="group_item"
+        if hasattr(obj, "group_item"):
+            group = obj.group_item.group
+            url = f"/admin/booking/appointmentgroup/{group.id}/change/"
+            return format_html(
+                '<a href="{}" class="text-blue-600 dark:text-blue-400 font-medium">🔗 #{}</a>',
+                url,
+                group.id,
+            )
+        return "—"
 
     @admin.display(description=_("Status"))
     def status_badge(self, obj):
@@ -129,3 +161,95 @@ class MasterCertificateAdmin(ModelAdmin, TranslationAdmin):
 @admin.register(MasterPortfolio)
 class MasterPortfolioAdmin(ModelAdmin, TranslationAdmin):
     list_display = ["master", "service", "is_active"]
+
+
+# ---------------------------------------------------------------------------
+# Booking Settings (singleton)
+# ---------------------------------------------------------------------------
+
+
+@admin.register(BookingSettings)
+class BookingSettingsAdmin(ModelAdmin):
+    """
+    Настройки букинга — singleton, редактировать можно только одну запись.
+    Добавьте в меню кабинета через UNFOLD navigation_items.
+    """
+
+    fieldsets = (
+        (
+            _("Сетка слотов"),
+            {
+                "fields": ("default_step_minutes",),
+                "description": "Шаг сетки в минутах. 30 = слоты каждые полчаса.",
+            },
+        ),
+        (
+            _("Рабочие часы по умолчанию"),
+            {
+                "fields": ("default_work_start", "default_work_end"),
+                "description": "Используются если у мастера не заданы индивидуальные часы.",
+            },
+        ),
+        (
+            _("Буфер и горизонт"),
+            {
+                "fields": (
+                    "default_buffer_between_minutes",
+                    "default_min_advance_minutes",
+                    "default_max_advance_days",
+                ),
+            },
+        ),
+    )
+
+    def has_add_permission(self, request):
+        """Запрещаем создание второй записи — это singleton."""
+        return not BookingSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        """Singleton нельзя удалять."""
+        return False
+
+
+# ---------------------------------------------------------------------------
+# AppointmentGroup
+# ---------------------------------------------------------------------------
+
+
+class AppointmentGroupItemInline(TabularInline):
+    model = AppointmentGroupItem
+    extra = 0
+    readonly_fields = ["appointment", "service", "order"]
+    can_delete = False
+
+
+@admin.register(AppointmentGroup)
+class AppointmentGroupAdmin(ModelAdmin):
+    list_display = [
+        "id",
+        "client",
+        "booking_date",
+        "status_badge",
+        "total_duration_minutes",
+        "engine_mode",
+        "created_at",
+    ]
+    list_display_links = ["id", "client"]
+    list_filter = ["status", "engine_mode", "booking_date"]
+    readonly_fields = ["engine_mode", "total_duration_minutes", "created_at", "updated_at"]
+    inlines = [AppointmentGroupItemInline]
+
+    @admin.display(description=_("Status"))
+    def status_badge(self, obj):
+        colors = {
+            "pending": "bg-amber-500/20 text-amber-700 dark:text-amber-400",
+            "confirmed": "bg-green-500/20 text-green-700 dark:text-green-400",
+            "completed": "bg-blue-500/20 text-blue-700 dark:text-blue-400",
+            "cancelled": "bg-red-500/20 text-red-700 dark:text-red-400",
+        }
+        color_classes = mark_safe(colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400"))  # nosec
+        return format_html(
+            '<span class="px-2 py-1 rounded-md text-xs font-medium {}">{}</span>',
+            color_classes,
+            obj.get_status_display(),
+        )

@@ -2,14 +2,17 @@
    LILY BEAUTY SALON - MAIN STYLESHEET
    ========================================= */
 
-/* Core Base Styles */
+/* Core Base Styles (Shared) */
 @import url('base/variables.css');
+@import url('base/tokens.css');
 @import url('base/reset.css');
 @import url('base/layout.css');
-@import url('base/header.css');
-@import url('base/footer.css');
 
-/* Components */
+/* Site Layout */
+@import url('site/layout/header.css');
+@import url('site/layout/footer.css');
+
+/* Components (Shared) */
 @import url('components/buttons.css');
 @import url('components/cards.css');
 @import url('components/forms.css');
@@ -17,20 +20,20 @@
 @import url('components/utils.css');
 @import url('components/promo-notification.css');
 
-/* Pages */
-@import url('pages/home.css');
-@import url('pages/services.css');
-@import url('pages/service-detail.css');
-@import url('pages/team.css');
-@import url('pages/contacts.css');
-@import url('pages/booking.css'); /* Booking Wizard */
-@import url('pages/errors.css');
-@import url('pages/legal.css'); /* Legal Pages (Impressum, Datenschutz) */
-@import url('pages/faq.css');   /* FAQ Page */
+/* Site Pages */
+@import url('site/pages/home.css');
+@import url('site/pages/services.css');
+@import url('site/pages/service-detail.css');
+@import url('site/pages/team.css');
+@import url('site/pages/contacts.css');
+@import url('site/pages/booking.css');
+@import url('site/pages/errors.css');
+@import url('site/pages/legal.css');
+@import url('site/pages/faq.css');
 
-/* Adaptive Styles with Media Queries */
-@import url('adaptive/mobile.css') screen and (max-width: 767px);
-@import url('adaptive/tablet.css') screen and (min-width: 768px) and (max-width: 1023px);
-@import url('adaptive/laptop-small.css') screen and (min-width: 1024px) and (max-width: 1279px);
-@import url('adaptive/laptop.css') screen and (min-width: 1280px) and (max-width: 1439px);
-@import url('adaptive/desktop-large.css') screen and (min-width: 1440px);
+/* Site Adaptive Styles */
+@import url('site/adaptive/mobile.css') screen and (max-width: 767px);
+@import url('site/adaptive/tablet.css') screen and (min-width: 768px) and (max-width: 1023px);
+@import url('site/adaptive/laptop-small.css') screen and (min-width: 1024px) and (max-width: 1279px);
+@import url('site/adaptive/laptop.css') screen and (min-width: 1280px) and (max-width: 1439px);
+@import url('site/adaptive/desktop-large.css') screen and (min-width: 1440px);

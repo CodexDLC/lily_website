@@ -8,7 +8,7 @@ from features.booking.dto import BookingState
 from features.booking.models.appointment import Appointment
 from features.booking.models.client import Client
 from features.booking.models.master import Master
-from features.booking.services.client_service import ClientService
+from features.booking.services.utils.client_service import ClientService
 from features.main.models.service import Service
 
 
@@ -37,20 +37,14 @@ class BookingService:
         service, master = objects
 
         # 3. Final Availability Check
-        # If master was "any", we might need to find a free one here if _get_objects didn't check availability
-        # But let's assume _get_objects returns a candidate, and we verify it here.
-
         with transaction.atomic():
             # If master_id was "any", we need to be sure this specific master is free.
-            # If not, we could try another one, but for simplicity, let's just fail or rely on _get_objects logic.
-
-            # If master_id was "any", _get_objects returned *some* master.
-            # We must check if they are free.
-            if not BookingService._is_slot_still_available(master, start_dt, service.duration):
+            # We use for_update=True here to prevent double-booking.
+            if not BookingService._is_slot_still_available(master, start_dt, service.duration, for_update=True):
                 # If the chosen "any" master is busy, try to find another one?
                 if state.master_id == "any":
                     log.info(f"Master {master} is busy, trying to find another for 'any' selection...")
-                    alternative_master = BookingService._find_free_master(service, start_dt)
+                    alternative_master = BookingService._find_free_master(service, start_dt, for_update=True)
                     if alternative_master:
                         master = alternative_master
                         log.info(f"Found alternative master: {master}")
@@ -79,15 +73,25 @@ class BookingService:
         return appointment
 
     @staticmethod
-    def _is_slot_still_available(master: Master, start_dt: datetime, duration_minutes: int) -> bool:
+    def _is_slot_still_available(
+        master: Master, start_dt: datetime, duration_minutes: int, for_update: bool = False
+    ) -> bool:
+        """
+        Checks if a master is free at a given time.
+        If for_update=True, locks the rows to prevent race conditions (must be inside a transaction).
+        """
         end_dt = start_dt + timedelta(minutes=duration_minutes)
-        today_appointments = Appointment.objects.filter(
+
+        queryset = Appointment.objects.filter(
             master=master,
             datetime_start__date=start_dt.date(),
             status__in=[Appointment.STATUS_PENDING, Appointment.STATUS_CONFIRMED],
-        ).select_for_update()
+        )
 
-        for app in today_appointments:
+        if for_update:
+            queryset = queryset.select_for_update()
+
+        for app in queryset:
             app_start = app.datetime_start
             app_end = app_start + timedelta(minutes=app.duration_minutes)
             if start_dt < app_end and end_dt > app_start:
@@ -95,12 +99,12 @@ class BookingService:
         return True
 
     @staticmethod
-    def _find_free_master(service: Service, start_dt: datetime) -> Master | None:
+    def _find_free_master(service: Service, start_dt: datetime, for_update: bool = False) -> Master | None:
         """Finds any active master who can perform the service and is free at start_dt."""
         candidates = Master.objects.filter(categories=service.category, status=Master.STATUS_ACTIVE)
 
         for master in candidates:
-            if BookingService._is_slot_still_available(master, start_dt, service.duration):
+            if BookingService._is_slot_still_available(master, start_dt, service.duration, for_update=for_update):
                 return master
         return None
 

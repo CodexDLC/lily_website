@@ -1,0 +1,26 @@
+{% extends cabinet_base_template|default:"cabinet/base_cabinet.html" %}
+{% load static i18n %}
+{% block title %}{% trans "Masters Management" %}{% endblock title %}
+{% block topbar_title %}{% trans "Masters" %}{% endblock topbar_title %}
+{% block content %}
+
+<div class="crm-filter-bar" hx-boost="true" hx-target="#masters-list" hx-swap="outerHTML">
+    <a href="{% url 'cabinet:masters' %}" class="filter-tag {% if not status_filter and not show_fired %}active{% endif %}">
+        {% trans "All Active" %}
+    </a>
+
+    {% for code, label in status_choices %}
+        {% if code != 'fired' %}
+        <a href="?status={{ code }}" class="filter-tag {% if status_filter == code %}active{% endif %}">
+            {{ label }}
+        </a>
+        {% endif %}
+    {% endfor %}
+
+    <a href="?show_fired=1" class="filter-tag {% if show_fired %}active{% endif %}" style="margin-left: auto; border-color: rgba(248, 113, 113, 0.3); color: #f87171;">
+        {% trans "Show Fired" %}
+    </a>
+</div>
+
+{% include "cabinet/crm/masters/_list_partial.html" %}
+{% endblock content %}

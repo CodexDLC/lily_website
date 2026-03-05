@@ -1,0 +1,29 @@
+{% extends cabinet_base_template|default:"cabinet/base_cabinet.html" %}
+{% load static i18n %}
+{% block title %}{% trans "Services" %}{% endblock title %}
+{% block topbar_title %}{% trans "Services" %}{% endblock topbar_title %}
+{% block content %}
+
+<div class="services-masonry">
+    {% for category, services in service_groups %}
+
+    <!-- Category Block -->
+    <div class="c-cabinet-block h-100" id="category-{{ category.id }}">
+        {% include "cabinet/system/services/includes/_category_header.html" %}
+
+        <!-- Services List -->
+        <div class="services-list">
+            {% for service in services %}
+                {% include "cabinet/system/services/includes/_service_card.html" %}
+            {% empty %}
+                <div class="text-muted small text-center py-3">{% trans "No services found in this category" %}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% empty %}
+    <div class="today-empty grid-span-all">{% trans "No services found" %}</div>
+    {% endfor %}
+</div>
+
+{% endblock content %}

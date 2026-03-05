@@ -1,0 +1,50 @@
+{% load i18n %}
+<div class="cabinet-card" id="service-{{ service.id }}">
+    <div class="card-header-row">
+        <div class="card-header-left">
+            <span class="card-client-name">{% trans "Edit Service" %}</span>
+        </div>
+    </div>
+
+    <form hx-post="{% url 'cabinet:services' %}" hx-target="#service-{{ service.id }}" hx-swap="outerHTML">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ service.id }}">
+        <input type="hidden" name="action" value="update">
+
+        <div class="card-edit-row" style="margin-top: 15px;">
+            <label style="color: #888; font-size: 12px;">{% trans "Title" %}</label>
+            <input type="text" name="title" value="{{ service.title }}" class="card-edit-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px; border-radius: 4px;">
+        </div>
+
+        <div class="mgmt-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+            <div>
+                <label style="color: #888; font-size: 12px;">{% trans "Price (€)" %}</label>
+                <input type="number" step="0.01" name="price" value="{{ service.price }}" class="card-edit-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px; border-radius: 4px;">
+            </div>
+            <div>
+                <label style="color: #888; font-size: 12px;">{% trans "Duration (min)" %}</label>
+                <input type="number" name="duration" value="{{ service.duration }}" class="card-edit-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px; border-radius: 4px;">
+            </div>
+        </div>
+
+        <div class="card-edit-row" style="margin-top: 10px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: white;">
+                <input type="checkbox" name="is_active" {% if service.is_active %}checked{% endif %}>
+                {% trans "Active (Available for booking)" %}
+            </label>
+        </div>
+
+        <div class="card-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+            <button type="submit" class="btn-card-save" style="flex: 1; background: #4ade80; color: black; border: none; padding: 10px; border-radius: 4px; font-weight: bold;">
+                {% trans "Save" %}
+            </button>
+            <button type="button" class="btn-card-edit"
+                    hx-get="{% url 'cabinet:services' %}?action=view_card&id={{ service.id }}"
+                    hx-target="#service-{{ service.id }}"
+                    hx-swap="outerHTML"
+                    style="flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 4px;">
+                {% trans "Cancel" %}
+            </button>
+        </div>
+    </form>
+</div>

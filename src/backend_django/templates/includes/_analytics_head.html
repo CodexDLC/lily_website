@@ -1,15 +1,14 @@
 {% comment %}
-Google Consent Mode v2 + GA4 + GTM Integration (Lazy Load for PageSpeed)
-CRITICAL: Consent initialization must be in HEAD, but scripts are deferred until user interaction.
+Google Consent Mode v2 + GTM Integration (Extreme PageSpeed Optimization)
+GA4 should be configured INSIDE GTM to avoid double loading.
 {% endcomment %}
 
-{% if site_settings.google_analytics_id or site_settings.google_tag_manager_id %}
+{% if site_settings.google_tag_manager_id %}
 <script>
   // 1. Initialize dataLayer & Consent Mode (Must be in HEAD)
   window.dataLayer = window.dataLayer || [];
   function gtag() { dataLayer.push(arguments); }
 
-  // Check localStorage for existing consent
   const savedConsent = localStorage.getItem('cookie_consent');
   const consentStatus = savedConsent === 'granted' ? 'granted' : 'denied';
 
@@ -21,27 +20,12 @@ CRITICAL: Consent initialization must be in HEAD, but scripts are deferred until
     'wait_for_update': 500
   });
 
-  // 2. Lazy Load Function for Analytics
+  // 2. Optimized Lazy Load Function
   function loadAnalytics() {
     if (window.analyticsLoaded) return;
     window.analyticsLoaded = true;
 
-    {% if site_settings.google_analytics_id %}
-    // Load GA4 Script
-    const gaScript = document.createElement('script');
-    gaScript.async = true;
-    gaScript.src = 'https://www.googletagmanager.com/gtag/js?id={{ site_settings.google_analytics_id }}';
-    document.head.appendChild(gaScript);
-
-    gtag('js', new Date());
-    gtag('config', '{{ site_settings.google_analytics_id }}', {
-      'anonymize_ip': true,
-      'cookie_flags': 'SameSite=None;Secure'
-    });
-    {% endif %}
-
-    {% if site_settings.google_tag_manager_id %}
-    // Load GTM Script
+    // Load GTM Script only (GA4 should be a tag inside GTM)
     (function (w, d, s, l, i) {
       w[l] = w[l] || []; w[l].push({
         'gtm.start': new Date().getTime(), event: 'gtm.js'
@@ -52,28 +36,36 @@ CRITICAL: Consent initialization must be in HEAD, but scripts are deferred until
       j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
       f.parentNode.insertBefore(j, f);
     })(window, document, 'script', 'dataLayer', '{{ site_settings.google_tag_manager_id }}');
-    {% endif %}
 
-    console.log('Analytics loaded on user interaction');
+    console.log('Analytics (GTM) loaded');
   }
 
-  // 3. Trigger loading on any user interaction
-  ['mouseover', 'keydown', 'touchmove', 'scroll', 'click'].forEach(event => {
+  // 3. Trigger loading on interaction OR when browser is idle
+  const interactionEvents = ['mouseover', 'keydown', 'touchmove', 'scroll', 'click'];
+
+  interactionEvents.forEach(event => {
     window.addEventListener(event, loadAnalytics, { once: true, passive: true });
   });
 
-  // 4. HTMX Integration: Track virtual page views and ensure analytics is loaded
-  document.addEventListener('htmx:afterOnLoad', function (evt) {
-    // If user is interacting with HTMX, they are definitely active - load analytics if not yet
-    loadAnalytics();
+  // Fallback: Load after 7 seconds or when idle
+  window.addEventListener('load', () => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        setTimeout(loadAnalytics, 2000); // Wait 2s more after idle
+      });
+    } else {
+      setTimeout(loadAnalytics, 7000); // 7s fallback for older browsers
+    }
+  });
 
-    // Push virtual page view to dataLayer
+  // 4. HTMX Integration
+  document.addEventListener('htmx:afterOnLoad', function (evt) {
+    loadAnalytics();
     if (window.dataLayer) {
       window.dataLayer.push({
         'event': 'htmx_page_view',
         'page_path': evt.detail.pathInfo.requestPath,
-        'page_title': document.title,
-        'htmx_target': evt.detail.target.id || 'unknown'
+        'page_title': document.title
       });
     }
   });

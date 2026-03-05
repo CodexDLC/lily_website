@@ -12,7 +12,12 @@
       "Bash(git commit:*)",
       "Bash(find:*)",
       "Bash(python3:*)",
-      "Bash(git checkout feat/admin-cabinet-qr)"
+      "Bash(git checkout feat/admin-cabinet-qr)",
+      "Bash(where pytest)",
+      "Bash(.venv/Scripts/pytest src/backend_django/features/booking/tests/test_v2_slots.py -v --tb=short)",
+      "Bash(.venv/Scripts/pytest src/backend_django/features/booking/tests/test_v2_slots.py::TestSlotsStartTime::test_single_service_starts_at_master_work_start --tb=long)",
+      "Bash(.venv/Scripts/python -m pytest src/backend_django/features/booking/engine/tests/test_new_features.py -v)",
+      "Bash(.venv/Scripts/python tools/dev/check.py)"
     ]
   }
 }

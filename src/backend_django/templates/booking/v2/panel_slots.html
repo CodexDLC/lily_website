@@ -1,0 +1,54 @@
+{% load i18n %}
+<div class="step-content fade-in">
+    <div class="step-header-row">
+        <h3 class="step-heading">Выберите время</h3>
+        <button class="btn-back"
+                hx-post="{% url 'booking_v2_wizard' %}"
+                hx-target="#v2-wizard-panel"
+                hx-swap="innerHTML"
+                hx-vals='{"action": "select_services"}'>
+            ← Услуги
+        </button>
+    </div>
+
+    <p style="color: var(--color-text-muted); margin-bottom: 24px;">{{ date_display }}</p>
+
+    {% if error %}
+    <div class="alert alert-error" style="margin-bottom: 16px; padding: 12px 16px; background: rgba(255,80,80,.1); border-left: 3px solid #f55; border-radius: 6px; color: #f55;">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <div class="time-slots-panel">
+        {% if has_slots %}
+        <div class="slots-grid-compact" style="margin-top: 20px;">
+            {% for slot in slots %}
+            <form hx-post="{% url 'booking_v2_wizard' %}"
+                  hx-target="#v2-wizard-panel"
+                  hx-swap="innerHTML"
+                  style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="select_time">
+                <input type="hidden" name="time" value="{{ slot }}">
+                <button type="submit" class="slot-btn" style="width: 100%;">
+                    {{ slot }}
+                </button>
+            </form>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align: center; color: var(--color-text-muted); padding: 40px;">
+            <p style="font-size: 24px; margin-bottom: 8px;">😔</p>
+            <p>На эту дату свободных слотов нет.</p>
+            <p style="font-size: 14px; margin-top: 8px;">Попробуйте выбрать другой день.</p>
+            <button class="btn-outline" style="margin-top: 16px;"
+                    hx-post="{% url 'booking_v2_wizard' %}"
+                    hx-target="#v2-wizard-panel"
+                    hx-swap="innerHTML"
+                    hx-vals='{"action": "reset"}'>
+                Выбрать другую дату
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</div>

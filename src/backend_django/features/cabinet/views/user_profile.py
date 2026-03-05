@@ -6,7 +6,7 @@ from features.cabinet.mixins import CabinetAccessMixin, HtmxCabinetMixin
 
 
 class ProfileView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
-    template_name = "cabinet/profile/index.html"
+    template_name = "cabinet/client/profile/index.html"
 
     def get_context_data(self, **kwargs):
         log.debug(f"View: ProfileView | Action: GetContext | user={self.request.user.id}")

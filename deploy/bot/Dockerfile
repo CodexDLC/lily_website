@@ -7,7 +7,8 @@ RUN pip install poetry poetry-plugin-export
 COPY pyproject.toml poetry.lock ./
 # Обновляем lock-файл внутри контейнера, чтобы он соответствовал измененному pyproject.toml
 RUN poetry lock
-RUN poetry export --with bot,shared --without-hashes --format=requirements.txt > requirements.txt
+# Бот использует arq и pydantic из codex_tools
+RUN poetry export --with bot,shared,codex_tools --without-hashes --format=requirements.txt > requirements.txt
 
 RUN python -m venv /app/.venv
 RUN /app/.venv/bin/pip install --no-cache-dir -r requirements.txt

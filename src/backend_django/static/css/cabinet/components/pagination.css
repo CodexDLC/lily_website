@@ -1,0 +1,35 @@
+/* ===================================================
+   Cabinet — Pagination
+   =================================================== */
+
+.cabinet-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    padding: 7px 13px;
+    border-radius: 6px;
+    border: 1px solid rgba(237, 208, 113, 0.15);
+    background: none;
+    color: var(--color-champagne);
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.page-btn:hover,
+.page-btn.current {
+    background: rgba(237, 208, 113, 0.12);
+    border-color: rgba(237, 208, 113, 0.3);
+    color: var(--color-gold);
+}
+
+.page-btn.current {
+    font-weight: 700;
+    cursor: default;
+}

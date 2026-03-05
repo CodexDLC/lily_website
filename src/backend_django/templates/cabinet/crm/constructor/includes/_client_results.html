@@ -1,0 +1,10 @@
+{% for client in clients %}
+<div class="search-result-item"
+     onclick="fillClient('{{ client.phone }}', '{{ client.first_name|escapejs }}', '{{ client.last_name|escapejs }}', '{{ client.id }}', '{{ client.email|escapejs }}')">
+    <span class="result-name">{{ client.first_name }} {{ client.last_name }}</span>
+    <div class="d-flex justify-content-between small opacity-75">
+        <span class="result-phone text-gold">{{ client.phone|default:"---" }}</span>
+        <span class="result-email text-white-50">{{ client.email|default:"" }}</span>
+    </div>
+</div>
+{% endfor %}

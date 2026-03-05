@@ -1,0 +1,33 @@
+{% load i18n %}
+<div class="client-mini-card" style="display: flex; gap: 12px; align-items: center; padding: 8px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+
+    <!-- Avatar / Initials -->
+    <div class="client-avatar" style="width: 40px; height: 40px; background: var(--color-gold); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px;">
+        {{ client.first_name|slice:":1"|upper }}{{ client.last_name|slice:":1"|upper }}
+    </div>
+
+    <!-- Info -->
+    <div class="client-info" style="flex: 1;">
+        <div class="d-flex align-items-center gap-2">
+            <span style="font-weight: bold; color: white; font-size: 14px;">{{ client.display_name }}</span>
+
+            <!-- Status Badge -->
+            {% with visits=client.appointments.filter_completed.count %}
+                {% if visits == 0 %}
+                    <span class="client-badge new" title="{% trans 'New Client' %}" style="font-size: 10px; padding: 2px 6px; background: #3b82f6; border-radius: 4px;">🆕</span>
+                {% elif visits > 10 %}
+                    <span class="client-badge vip" title="{% trans 'VIP Client' %}" style="font-size: 10px; padding: 2px 6px; background: #f59e0b; border-radius: 4px;">👑</span>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div style="font-size: 11px; color: #aaa; margin-top: 2px; line-height: 1.4;">
+            <div>ID: {{ client.id }} • {{ client.get_status_display }}</div>
+            <div>
+                {% if client.phone %}{{ client.phone }}{% endif %}
+                {% if client.phone and client.email %} • {% endif %}
+                {% if client.email %}{{ client.email }}{% endif %}
+            </div>
+        </div>
+    </div>
+</div>

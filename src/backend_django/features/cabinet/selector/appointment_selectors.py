@@ -20,5 +20,5 @@ def get_cabinet_appointments(user, client_filter=None, status_filter=None) -> Qu
     if status_filter:
         qs = qs.filter(status=status_filter)
 
-    log.debug(f"Selector: AppointmentSelector | Action: Success | count={qs.count()}")
+    log.debug("Selector: AppointmentSelector | Action: Success")
     return qs
