@@ -1,0 +1,27 @@
+{% extends "base_email.html" %}
+
+{% block content %}
+<tr>
+    <td style="color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+        <!-- Header/Title of the message -->
+        <h2 style="color: #003831; font-family: 'Georgia', serif; font-size: 20px; margin-top: 0; margin-bottom: 20px;">
+            {{ data.header_text }}
+        </h2>
+
+        <p style="margin-bottom: 15px;">{{ data.greeting }} {{ data.client_name }},</p>
+
+        <p style="margin-bottom: 25px;">{{ data.body_text }}</p>
+
+        <!-- Quoted message -->
+        <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #eeeeee;">
+            <div style="margin-top: 0; margin-bottom: 10px; color: #888888; font-size: 12px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">
+                {{ data.quoted_message_label }}
+            </div>
+            <div style="margin-bottom: 0; font-style: italic; color: #555555; white-space: pre-wrap; font-size: 15px;">"{{ data.message_text }}"</div>
+        </div>
+
+        <!-- Signature -->
+        <div style="margin-top: 35px; padding-top: 20px; border-top: 1px solid #f0f0f0; color: #333333; white-space: pre-wrap;">{{ data.signature }}</div>
+    </td>
+</tr>
+{% endblock %}

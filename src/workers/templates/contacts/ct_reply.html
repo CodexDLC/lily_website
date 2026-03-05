@@ -1,0 +1,30 @@
+{% extends "base_email.html" %}
+
+{% block title %}Antwort auf Ihre Anfrage - LILY Salon{% endblock title %}
+
+{% block content %}
+    <tr>
+        <td style="color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+            <h1 style="color: #003831; font-family: 'Georgia', serif; font-size: 24px; margin-bottom: 10px;">Antwort auf Ihre Anfrage</h1>
+            <div style="border-bottom: 2px solid #edd071; width: 50px; margin-bottom: 30px;"></div>
+
+            <div style="white-space: pre-wrap; margin-bottom: 30px; font-size: 17px; color: #000;">{{ data.reply_text }}</div>
+
+            <!-- Dynamic Signature from DB -->
+            <div style="margin-bottom: 40px; white-space: pre-wrap;">{{ data.signature }}</div>
+
+            {% if data.history_text %}
+            <div style="border-top: 1px solid #eeeeee; padding-top: 20px; margin-top: 40px; color: #888888; font-size: 13px;">
+                <div style="margin-bottom: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Vorherige Korrespondenz:</div>
+                <blockquote style="margin: 0; padding-left: 15px; border-left: 3px solid #edd071; white-space: pre-wrap; font-style: italic;">
+{{ data.history_text }}
+                </blockquote>
+            </div>
+            {% endif %}
+
+            <div style="margin-top: 50px; font-size: 10px; color: #cccccc; text-align: center;">
+                Reference ID: #{{ data.request_id }}
+            </div>
+        </td>
+    </tr>
+{% endblock %}
