@@ -4,8 +4,7 @@ on:
   workflow_dispatch: # Позволяет запускать тесты вручную
   pull_request:
     branches: [ main ]
-  push:
-    branches: [ main ]
+
 
 
 jobs:
