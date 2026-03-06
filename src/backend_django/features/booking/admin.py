@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.utils.html import mark_safe
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from features.booking.models import (
     Appointment,
@@ -125,32 +125,33 @@ class MasterAdmin(ModelAdmin):
             "fired": "bg-red-500/20 text-red-700 dark:text-red-400",
             "training": "bg-blue-500/20 text-blue-700 dark:text-blue-400",
         }
+        color_classes = colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400")
         # Admin-only status coloring
         # nosec B308,B703
         return mark_safe(
-            f'<span class="px-2 py-1 rounded-md text-xs font-medium {colors.get(obj.status, "bg-gray-500/20")}">{obj.get_status_display()}</span>'
+            f'<span class="px-2 py-1 rounded-md text-xs font-medium {color_classes}">{obj.get_status_display()}</span>'
         )
 
 
 @admin.register(Client)
 class ClientAdmin(ModelAdmin):
-    list_display = ("full_name", "phone", "email", "telegram_id", "total_appointments", "is_blocked")
-    list_filter = ("is_blocked", "consent_marketing", "created_at")
-    search_fields = ("first_name", "last_name", "phone", "email", "telegram_username")
+    list_display = ("full_name", "phone", "email", "telegram", "status", "total_appointments")
+    list_filter = ("status", "consent_marketing", "created_at")
+    search_fields = ("first_name", "last_name", "phone", "email", "telegram")
     readonly_fields = ("created_at", "updated_at")
 
     fieldsets = (
         (
             _("Personal Info"),
-            {"fields": ("first_name", "last_name", "phone", "email", "photo")},
+            {"fields": ("first_name", "last_name", "phone", "email")},
         ),
         (
-            _("Telegram"),
-            {"fields": ("telegram_id", "telegram_username", "telegram_language")},
+            _("Socials"),
+            {"fields": ("instagram", "telegram")},
         ),
         (
             _("Status"),
-            {"fields": ("is_blocked", "block_reason", "notes", "consent_marketing")},
+            {"fields": ("status", "notes", "consent_marketing")},
         ),
         (
             _("System"),
@@ -217,10 +218,11 @@ class AppointmentAdmin(ModelAdmin):
             "no_show": "bg-gray-500/20 text-gray-700 dark:text-gray-400",
             "reschedule_proposed": "bg-purple-500/20 text-purple-700 dark:text-purple-400",
         }
+        color_classes = colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400")
         # Admin-only status coloring
         # nosec B308,B703
         return mark_safe(
-            f'<span class="px-2 py-1 rounded-md text-xs font-medium {colors.get(obj.status, "bg-gray-500/20")}">{obj.get_status_display()}</span>'
+            f'<span class="px-2 py-1 rounded-md text-xs font-medium {color_classes}">{obj.get_status_display()}</span>'
         )
 
     @admin.display(description=_("Client"))
@@ -263,7 +265,7 @@ class AppointmentGroupAdmin(ModelAdmin):
             "cancelled": "bg-red-500/20 text-red-700 dark:text-red-400",
             "partial": "bg-orange-500/20 text-orange-700 dark:text-orange-400",
         }
-        color_classes = mark_safe(colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400"))  # nosec
+        color_classes = colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400")
         return mark_safe(
             f'<span class="px-2 py-1 rounded-md text-xs font-medium {color_classes}">{obj.get_status_display()}</span>'
         )

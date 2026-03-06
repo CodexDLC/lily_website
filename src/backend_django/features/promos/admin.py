@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.utils.html import mark_safe
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from features.promos.models import PromoMessage
 from unfold.admin import ModelAdmin
@@ -7,38 +7,39 @@ from unfold.admin import ModelAdmin
 
 @admin.register(PromoMessage)
 class PromoMessageAdmin(ModelAdmin):
-    list_display = ("title", "category", "status_badge", "start_date", "end_date", "is_active")
-    list_filter = ("is_active", "category", "start_date", "end_date")
-    search_fields = ("title", "text")
+    list_display = ("title", "status_badge", "starts_at", "ends_at", "is_active")
+    list_filter = ("is_active", "starts_at", "ends_at")
+    search_fields = ("title", "description")
     save_on_top = True
 
     fieldsets = (
         (
             _("Content"),
-            {"fields": ("title", "text", "image", "category")},
+            {"fields": ("title", "description", "image")},
         ),
         (
             _("Schedule"),
-            {"fields": ("start_date", "end_date", "is_active")},
+            {"fields": ("starts_at", "ends_at", "is_active")},
         ),
         (
             _("Display Options"),
-            {"fields": ("priority", "show_in_bot", "show_on_website")},
+            {"fields": ("priority", "display_delay", "button_text", "button_color", "text_color")},
         ),
     )
 
     @admin.display(description=_("Status"))
     def status_badge(self, obj):
-        if not obj.is_active:
+        status = obj.status_display
+
+        if status == _("Inactive"):
             color = "bg-gray-500/20 text-gray-700 dark:text-gray-400"
-            text = _("Inactive")
-        elif obj.is_now_active:
+        elif status == _("Active"):
             color = "bg-green-500/20 text-green-700 dark:text-green-400"
-            text = _("Active Now")
-        else:
+        elif status == _("Scheduled"):
             color = "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400"
-            text = _("Scheduled")
+        else:
+            color = "bg-red-500/20 text-red-700 dark:text-red-400"
 
         # Admin-only status coloring
         # nosec B308,B703
-        return mark_safe(f'<span class="px-2 py-1 rounded-md text-xs font-medium {color}">{text}</span>')
+        return mark_safe(f'<span class="px-2 py-1 rounded-md text-xs font-medium {color}">{status}</span>')
