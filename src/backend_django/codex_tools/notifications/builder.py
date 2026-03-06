@@ -1,11 +1,11 @@
 """
 codex_tools.notifications.builder
 ==================================
-Стандартизация данных для уведомлений.
+Standardization of data for notifications.
 
-Отвечает за создание унифицированного словаря (payload), который
-понимает Notification Worker. Гарантирует наличие всех необходимых
-полей: ID уведомления, данные получателя, каналы связи и контекст.
+Responsible for creating a unified dictionary (payload) that the
+Notification Worker understands. Guarantees the presence of all required
+fields: notification ID, recipient data, communication channels, and context.
 """
 
 import uuid
@@ -13,9 +13,9 @@ import uuid
 
 class NotificationPayloadBuilder:
     """
-    Построитель универсального пакета данных для уведомлений.
+    Builder of the universal data package for notifications.
 
-    Используется на стороне Django для подготовки задачи в очередь.
+    Used on the Django side to prepare a task for the queue.
     """
 
     @staticmethod
@@ -32,22 +32,22 @@ class NotificationPayloadBuilder:
         notification_id: str | None = None,
     ) -> dict:
         """
-        Создает валидный словарь для задачи send_universal_notification_task.
+        Creates a valid dictionary for the send_universal_notification_task.
 
         Args:
-            recipient_email: Email получателя (для канала email).
-            recipient_phone: Телефон получателя (для канала sms/whatsapp).
-            first_name: Имя получателя для приветствия.
-            last_name: Фамилия получателя.
-            template_name: Короткое имя шаблона (например, 'ct_receipt').
-            event_type: Тип события для Telegram-бота (например, 'new_request').
-            subject: Тема письма (опционально).
-            context_data: Словарь данных для рендеринга шаблона.
-            channels: Список активных каналов ['email', 'telegram', 'sms'].
-            notification_id: Уникальный UUID для трекинга (генерируется если пуст).
+            recipient_email: Recipient's email (for the email channel).
+            recipient_phone: Recipient's phone (for sms/whatsapp channel).
+            first_name: Recipient's first name for greeting.
+            last_name: Recipient's last name.
+            template_name: Short name of the template (e.g., 'ct_receipt').
+            event_type: Event type for the Telegram bot (e.g., 'new_request').
+            subject: Email subject (optional).
+            context_data: Data dictionary for template rendering.
+            channels: List of active channels ['email', 'telegram', 'sms'].
+            notification_id: Unique UUID for tracking (generated if empty).
 
         Returns:
-            dict: Стандартизированный payload.
+            dict: Standardized payload.
         """
         return {
             "notification_id": notification_id or str(uuid.uuid4()),

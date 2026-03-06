@@ -183,7 +183,7 @@ class Master(BookableMasterMixin, TimestampMixin, SeoMixin, models.Model):
                 # Check if file is actually a new upload (not a path string)
                 if hasattr(self.photo, "file"):
                     optimize_image(self.photo, max_width=800)
-            except Exception:  # nosec: B110
+            except Exception:  # nosec B110
                 pass
 
         super().save(*args, **kwargs)

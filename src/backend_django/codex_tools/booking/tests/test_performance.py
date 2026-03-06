@@ -2,6 +2,7 @@ import random
 import time
 from datetime import date, datetime, timedelta
 
+import pytest
 from codex_tools.booking import (
     BookingEngineRequest,
     BookingMode,
@@ -11,6 +12,7 @@ from codex_tools.booking import (
 )
 
 
+@pytest.mark.unit
 def test_extreme_chain_performance():
     """
     Стресс-тест для ChainFinder (Backtracking).
@@ -91,6 +93,7 @@ def test_extreme_chain_performance():
     assert duration < 1.0, f"Too slow! Took {duration:.4f}s"
 
 
+@pytest.mark.unit
 def test_parallel_chain_performance():
     """
     Стресс-тест для параллельного выполнения (overlap_allowed=True).
@@ -126,6 +129,7 @@ def test_parallel_chain_performance():
     assert duration < 0.1  # Должно быть еще быстрее
 
 
+@pytest.mark.unit
 def test_parallel_group_logic():
     """
     Тест логики parallel_group (например, парный маникюр).

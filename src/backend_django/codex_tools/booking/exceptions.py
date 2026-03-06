@@ -1,17 +1,17 @@
 """
-codexn_tools.booking.exceptions
+codex_tools.booking.exceptions
 =================================
-Кастомные исключения движка бронирования.
+Custom exceptions for the booking engine.
 
-Иерархия:
-    BookingEngineError (базовое)
-    ├── NoAvailabilityError      — нет свободных слотов для запроса
-    ├── InvalidServiceDurationError — некорректная длительность услуги
-    ├── InvalidBookingDateError  — некорректная/недопустимая дата
-    └── MasterNotAvailableError  — конкретный мастер недоступен
+Hierarchy:
+    BookingEngineError (base)
+    ├── NoAvailabilityError      — no free slots for the request
+    ├── InvalidServiceDurationError — incorrect service duration
+    ├── InvalidBookingDateError  — incorrect/invalid date
+    └── MasterNotAvailableError  — specific master is not available
 
-Использование в сервисном слое:
-    from codexn_tools.booking.exceptions import NoAvailabilityError
+Usage in the service layer:
+    from codex_tools.booking.exceptions import NoAvailabilityError
 
     try:
         result = finder.find(request, availability)
@@ -21,11 +21,11 @@ codexn_tools.booking.exceptions
                 service_ids=[s.service_id for s in request.service_requests],
             )
     except NoAvailabilityError as e:
-        # Django-view поймает и вернёт понятное сообщение пользователю
+        # Django view will catch and return a user-friendly message
         return render(request, "booking/no_slots.html", {"error": str(e)})
 
-Импорт:
-    from codexn_tools.booking.exceptions import (
+Imports:
+    from codex_tools.booking.exceptions import (
         BookingEngineError,
         NoAvailabilityError,
         InvalidServiceDurationError,
@@ -39,13 +39,13 @@ from datetime import date
 
 class BookingEngineError(Exception):
     """
-    Базовое исключение движка бронирования.
+    Base exception of the booking engine.
 
-    Все остальные исключения наследуются от него.
-    Django-view может поймать BookingEngineError для единой обработки
-    всех ошибок движка.
+    All other exceptions inherit from it.
+    A Django view can catch BookingEngineError for unified handling
+    of all engine errors.
 
-    Пример:
+    Example:
         try:
             result = service.book(...)
         except BookingEngineError as e:
@@ -53,7 +53,7 @@ class BookingEngineError(Exception):
             return redirect("booking:wizard")
     """
 
-    default_message: str = "Ошибка системы бронирования"
+    default_message: str = "Booking system error"
 
     def __init__(self, message: str | None = None) -> None:
         super().__init__(message or self.default_message)
@@ -61,24 +61,24 @@ class BookingEngineError(Exception):
 
 class NoAvailabilityError(BookingEngineError):
     """
-    Движок не нашёл ни одного варианта расписания для запроса.
+    The engine found no schedule options for the request.
 
-    Вызывается когда ChainFinder.find() вернул пустой EngineResult.
-    В Django-view переводится в user-friendly сообщение.
+    Raised when ChainFinder.find() returns an empty EngineResult.
+    Translated to a user-friendly message in the Django view.
 
-    Атрибуты:
-        booking_date: Дата на которую искали.
-        service_ids: Список id услуг из запроса.
+    Attributes:
+        booking_date: Date searched for.
+        service_ids: List of service IDs from the request.
 
-    Пример:
+    Example:
         raise NoAvailabilityError(
             booking_date=date(2024, 5, 10),
             service_ids=["5", "12"],
         )
-        # str(e) → "Нет свободных слотов на 10.05.2024 для выбранных услуг."
+        # str(e) -> "No free slots on 10.05.2024 for the selected services."
     """
 
-    default_message = "К сожалению, на выбранную дату нет доступных слотов для этих услуг."
+    default_message = "Unfortunately, there are no available slots for these services on the selected date."
 
     def __init__(
         self,
@@ -93,7 +93,7 @@ class NoAvailabilityError(BookingEngineError):
             final_message = message
         elif booking_date:
             date_str = booking_date.strftime("%d.%m.%Y")
-            final_message = f"Нет свободных слотов на {date_str} для выбранных услуг. Попробуйте выбрать другую дату."
+            final_message = f"No free slots on {date_str} for the selected services. Please try choosing another date."
         else:
             final_message = self.default_message
 
@@ -102,20 +102,20 @@ class NoAvailabilityError(BookingEngineError):
 
 class InvalidServiceDurationError(BookingEngineError):
     """
-    Некорректная длительность услуги.
+    Incorrect service duration.
 
-    Вызывается если duration_minutes <= 0 или превышает допустимый максимум.
+    Raised if duration_minutes <= 0 or exceeds the explicit maximum.
 
-    Атрибуты:
-        service_id: Id проблемной услуги.
-        duration_minutes: Переданное значение длительности.
+    Attributes:
+        service_id: ID of the problematic service.
+        duration_minutes: The passed duration value.
 
-    Пример:
+    Example:
         raise InvalidServiceDurationError(service_id="5", duration_minutes=0)
-        # str(e) → "Услуга 5: некорректная длительность 0 мин."
+        # str(e) -> "Service 5: incorrect duration 0 min."
     """
 
-    default_message = "Некорректная длительность услуги."
+    default_message = "Incorrect service duration."
 
     def __init__(
         self,
@@ -130,8 +130,7 @@ class InvalidServiceDurationError(BookingEngineError):
             final_message = message
         elif service_id is not None and duration_minutes is not None:
             final_message = (
-                f"Услуга {service_id}: некорректная длительность {duration_minutes} мин. "
-                "Длительность должна быть больше 0."
+                f"Service {service_id}: incorrect duration {duration_minutes} min. Duration must be greater than 0."
             )
         else:
             final_message = self.default_message
@@ -141,25 +140,25 @@ class InvalidServiceDurationError(BookingEngineError):
 
 class InvalidBookingDateError(BookingEngineError):
     """
-    Дата бронирования недопустима.
+    Booking date is invalid.
 
-    Примеры причин:
-        - Дата в прошлом
-        - Дата дальше max_advance_days
-        - Салон закрыт в этот день
+    Example reasons:
+        - Date in the past
+        - Date beyond max_advance_days
+        - Salon is closed on this day
 
-    Атрибуты:
-        booking_date: Проблемная дата.
-        reason: Человекочитаемое пояснение.
+    Attributes:
+        booking_date: Problematic date.
+        reason: Human-readable explanation.
 
-    Пример:
+    Example:
         raise InvalidBookingDateError(
             booking_date=date(2020, 1, 1),
-            reason="Дата в прошлом",
+            reason="Date in the past",
         )
     """
 
-    default_message = "Выбранная дата недоступна для записи."
+    default_message = "The selected date is unavailable for booking."
 
     def __init__(
         self,
@@ -174,10 +173,10 @@ class InvalidBookingDateError(BookingEngineError):
             final_message = message
         elif booking_date and reason:
             date_str = booking_date.strftime("%d.%m.%Y")
-            final_message = f"Дата {date_str} недоступна: {reason}."
+            final_message = f"Date {date_str} is unavailable: {reason}."
         elif booking_date:
             date_str = booking_date.strftime("%d.%m.%Y")
-            final_message = f"Дата {date_str} недоступна для записи."
+            final_message = f"Date {date_str} is unavailable for booking."
         else:
             final_message = self.default_message
 
@@ -186,31 +185,31 @@ class InvalidBookingDateError(BookingEngineError):
 
 class SlotAlreadyBookedError(BookingEngineError):
     """
-    Слот был свободен при показе, но занят к моменту подтверждения бронирования.
+    Slot was free during display but became booked by the time of confirmation.
 
-    Race condition: клиент A и клиент B одновременно смотрят один слот.
-    A нажимает "Записаться" первым → B получает эту ошибку.
+    Race condition: client A and client B are viewing the same slot simultaneously.
+    A clicks "Book" first -> B receives this error.
 
-    Django-view должен показать клиенту B сообщение:
-    "Этот слот только что заняли. Выберите другое время."
+    The Django view should show client B the message:
+    "This slot was just booked. Please choose another time."
 
-    Атрибуты:
-        master_id: Id мастера.
-        service_id: Id услуги.
-        booking_date: Дата бронирования.
-        slot_time: Выбранное время (строка "HH:MM").
+    Attributes:
+        master_id: Master ID.
+        service_id: Service ID.
+        booking_date: Booking date.
+        slot_time: Selected time (string "HH:MM").
 
-    Пример:
+    Example:
         raise SlotAlreadyBookedError(
             master_id="3",
             service_id="5",
             booking_date=date(2024, 5, 10),
             slot_time="14:00",
         )
-        # str(e) → "Слот 14:00 10.05.2024 был занят. Выберите другое время."
+        # str(e) -> "Slot 14:00 on 10.05.2024 was booked. Please choose another time."
     """
 
-    default_message = "Выбранный слот был занят. Пожалуйста, выберите другое время."
+    default_message = "The selected slot was booked. Please choose another time."
 
     def __init__(
         self,
@@ -229,7 +228,9 @@ class SlotAlreadyBookedError(BookingEngineError):
             final_message = message
         elif slot_time and booking_date:
             date_str = booking_date.strftime("%d.%m.%Y")
-            final_message = f"Слот {slot_time} на {date_str} был занят пока вы оформляли запись. Выберите другое время."
+            final_message = (
+                f"Slot {slot_time} on {date_str} was booked while you were processing. Please choose another time."
+            )
         else:
             final_message = self.default_message
 
@@ -238,28 +239,28 @@ class SlotAlreadyBookedError(BookingEngineError):
 
 class ChainBuildError(BookingEngineError):
     """
-    Движок не смог собрать цепочку для всех услуг запроса.
+    The engine could not assemble a chain for all services in the request.
 
-    Отличается от NoAvailabilityError: здесь цепочка ЧАСТИЧНО собралась,
-    но не до конца (нарушение ограничений, несовместимые услуги и т.д.).
+    Differs from NoAvailabilityError: here the chain was PARTIALLY assembled,
+    but not to the end (constraint violation, incompatible services, etc.).
 
-    Используется когда:
-        - max_chain_duration_minutes превышен
-        - Услуги несовместимы (будущее: excludes/tags)
-        - group_size > доступных параллельных слотов
+    Used when:
+        - max_chain_duration_minutes is exceeded
+        - Services are incompatible (future: excludes/tags)
+        - group_size > available parallel slots
 
-    Атрибуты:
-        failed_at_index: Индекс услуги (в service_requests) на которой сборка упала.
-        reason: Техническая причина (для логов).
+    Attributes:
+        failed_at_index: Index of the service (in service_requests) where assembly failed.
+        reason: Technical reason (for logs).
 
-    Пример:
+    Example:
         raise ChainBuildError(
             failed_at_index=2,
-            reason="max_chain_duration_minutes=180 exceeded at service 'Покраска'",
+            reason="max_chain_duration_minutes=180 exceeded at service 'Coloring'",
         )
     """
 
-    default_message = "Не удалось подобрать расписание для всех выбранных услуг."
+    default_message = "Could not find a schedule for all selected services."
 
     def __init__(
         self,
@@ -273,7 +274,7 @@ class ChainBuildError(BookingEngineError):
         if message:
             final_message = message
         elif reason:
-            final_message = f"Не удалось собрать цепочку: {reason}."
+            final_message = f"Could not assemble the chain: {reason}."
         else:
             final_message = self.default_message
 
@@ -282,21 +283,21 @@ class ChainBuildError(BookingEngineError):
 
 class MasterNotAvailableError(BookingEngineError):
     """
-    Конкретный мастер недоступен для бронирования.
+    Specific master is not available for booking.
 
-    Используется в режиме MASTER_LOCKED когда выбранный мастер
-    не работает в этот день или его расписание пустое.
+    Used in MASTER_LOCKED mode when the selected master
+    does not work on this day or their schedule is empty.
 
-    Атрибуты:
-        master_id: Id мастера.
-        booking_date: Дата на которую пытались записаться.
+    Attributes:
+        master_id: Master's ID.
+        booking_date: Date attempted to book.
 
-    Пример:
+    Example:
         raise MasterNotAvailableError(master_id="3", booking_date=date(2024,5,10))
-        # str(e) → "Мастер недоступен на 10.05.2024."
+        # str(e) -> "Master unavailable on 10.05.2024."
     """
 
-    default_message = "Выбранный мастер недоступен на эту дату."
+    default_message = "The selected master is unavailable on this date."
 
     def __init__(
         self,
@@ -311,7 +312,7 @@ class MasterNotAvailableError(BookingEngineError):
             final_message = message
         elif booking_date:
             date_str = booking_date.strftime("%d.%m.%Y")
-            final_message = f"Мастер недоступен на {date_str}. Попробуйте выбрать другую дату."
+            final_message = f"Master unavailable on {date_str}. Please try another date."
         else:
             final_message = self.default_message
 

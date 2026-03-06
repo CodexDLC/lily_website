@@ -1,12 +1,12 @@
 """
 codexn_tools.booking.dto
 =========================
-Pydantic v2 DTO (Data Transfer Objects) для движка бронирования.
+Pydantic v2 DTO (Data Transfer Objects) for the booking engine.
 
-Все модели immutable (frozen=True) — движок не мутирует входные данные.
-Никаких Django-импортов. Только Python stdlib + pydantic.
+All models are immutable (frozen=True) — the engine does not mutate inputs.
+No Django imports. Only Python stdlib + pydantic.
 
-Импорт:
+Imports:
     from codexn_tools.booking import (
         BookingEngineRequest, ServiceRequest,
         MasterAvailability, EngineResult, BookingChainSolution,
@@ -27,54 +27,54 @@ from .modes import BookingMode
 
 class ServiceRequest(BaseModel, frozen=True):
     """
-    Запрос на одну услугу в рамках бронирования.
+    Request for a single service within a booking.
 
-    Движок не знает о конкретных мастерах — только о тех,
-    кто *способен* выполнить данную услугу (possible_master_ids).
-    Подбор конкретного мастера — задача ChainFinder.
+    The engine does not know about specific professionals — only about those
+    who *are capable* of performing the service (possible_master_ids).
+    Selecting a specific professional is the job of ChainFinder.
 
-    Поля:
+    Fields:
         service_id (str):
-            Уникальный идентификатор услуги. Строка для универсальности
-            (может быть "5", "uuid-xxx", "manicure" — не важно).
+            Unique identifier of the service. String for universality
+            (can be "5", "uuid-xxx", "manicure" — doesn't matter).
 
         duration_minutes (int):
-            Длительность услуги в минутах. Должна быть > 0.
+            Duration of the service in minutes. Must be > 0.
 
         min_gap_after_minutes (int):
-            Минимальная пауза (мин) после этой услуги перед следующей
-            в цепочке. По умолчанию 0 (без паузы).
-            Пример: после покраски нужно 30 мин ожидания → min_gap_after_minutes=30
+            Minimum gap (minutes) after this service before the next one
+            in the chain. Default is 0 (no gap).
+            Example: after coloring, 30 mins waiting is needed → min_gap_after_minutes=30
 
         possible_master_ids (list[str]):
-            Список id мастеров, которые умеют выполнять эту услугу.
-            Движок выбирает из этого списка свободного мастера.
-            Для MASTER_LOCKED содержит ровно один элемент.
+            List of master ids capable of performing this service.
+            The engine chooses an available master from this list.
+            For MASTER_LOCKED, contains exactly one element.
 
         parallel_group (str | None):
-            Метка группы параллельного выполнения.
-            Услуги с одинаковым parallel_group могут выполняться одновременно
-            разными мастерами (overlap_allowed=True должен быть в запросе).
-            None = услуга выполняется независимо (стандартное поведение).
+            Tag for parallel execution group.
+            Services with the same parallel_group can be performed simultaneously
+            by different masters (overlap_allowed=True must be set in the request).
+            None = service is performed independently (standard behavior).
 
-            Пример — педикюр и маникюр параллельно:
+            Example — pedicure and manicure in parallel:
                 svc_mani = ServiceRequest(..., parallel_group="session_1")
                 svc_pedi = ServiceRequest(..., parallel_group="session_1")
-                # Обе услуги могут стартовать в одно время у разных мастеров.
+                # Both services can start at the same time with different masters.
 
-            Пример — консультация → процедуры параллельно:
-                svc_consult = ServiceRequest(..., parallel_group=None)   # сначала
-                svc_a = ServiceRequest(..., parallel_group="procedures") # потом параллельно
-                svc_b = ServiceRequest(..., parallel_group="procedures") # потом параллельно
+            Example — consultation → procedures in parallel:
+                svc_consult = ServiceRequest(..., parallel_group=None)   # first
+                svc_a = ServiceRequest(..., parallel_group="procedures") # then in parallel
+                svc_b = ServiceRequest(..., parallel_group="procedures") # then in parallel
 
-    Пример:
+    Example:
         ServiceRequest(
             service_id="5",
             duration_minutes=60,
             possible_master_ids=["1", "3", "7"],
         )
 
-    Пример с параллельной группой:
+    Example with parallel group:
         ServiceRequest(
             service_id="mani",
             duration_minutes=60,
@@ -94,70 +94,70 @@ class ServiceRequest(BaseModel, frozen=True):
 
     @property
     def total_block_minutes(self) -> int:
-        """Суммарное время которое блокирует мастера: duration + gap после."""
+        """Total time that blocks the master: duration + gap after."""
         return self.duration_minutes + self.min_gap_after_minutes
 
 
 class BookingEngineRequest(BaseModel, frozen=True):
     """
-    Входной запрос к движку. Описывает ЧТО нужно забронировать.
+    Input request to the engine. Describes WHAT needs to be booked.
 
-    Поля:
+    Fields:
         service_requests (list[ServiceRequest]):
-            Список услуг для бронирования. Порядок важен для SINGLE_DAY —
-            движок будет планировать их в указанном порядке.
-            Минимум 1 услуга.
+            List of services to book. Order is important for SINGLE_DAY —
+            the engine will schedule them in the specified order.
+            Minimum 1 service.
 
         booking_date (date):
-            Дата бронирования. Используется для SINGLE_DAY и MASTER_LOCKED.
-            Для MULTI_DAY — дата первой услуги (остальные — отдельно, future).
+            Booking date. Used for SINGLE_DAY and MASTER_LOCKED.
+            For MULTI_DAY — date of the first service (others — separately, future).
 
         mode (BookingMode):
-            Режим работы движка. По умолчанию SINGLE_DAY.
+            Engine operating mode. Default is SINGLE_DAY.
 
         overlap_allowed (bool):
-            Разрешить параллельное выполнение услуг разными мастерами.
-            False (по умолчанию) — каждая следующая услуга начинается только после окончания
-            предыдущей (строго последовательно, полезно для авто-сервисов
-            и других пайплайнов где клиент переходит от мастера к мастеру).
-            True — мастера работают независимо, услуги могут
-            начинаться одновременно (педикюр + ресницы в одно время).
+            Allow parallel execution of services by different masters.
+            False (default) — each subsequent service starts only after the end
+            of the previous one (strictly sequential, useful for pipelines
+            where a client moves from master to master).
+            True — masters work independently, services can
+            start simultaneously (pedicure + lashes at the same time).
 
         group_size (int):
-            DEPRECATED. Используйте дублирование ServiceRequest с parallel_group.
-            Количество клиентов в группе. По умолчанию 1.
+            DEPRECATED. Use duplication of ServiceRequest with parallel_group.
+            Number of clients in a group. Default is 1.
 
         max_chain_duration_minutes (int | None):
-            Максимальная суммарная длительность всей записи в минутах
-            (от начала первой до конца последней услуги).
-            None = без ограничения.
-            Пример: max_chain_duration_minutes=240 → запись не длиннее 4 часов.
+            Maximum total duration of the entire booking in minutes
+            (from the start of the first to the end of the last service).
+            None = no limit.
+            Example: max_chain_duration_minutes=240 → booking no longer than 4 hours.
 
         days_gap (list[int] | None):
-            Для MULTI_DAY: смещение в днях для каждой услуги от booking_date.
-            [0, 0, 7] → первые две услуги в booking_date, третья через 7 дней.
-            None = все услуги в один день (SINGLE_DAY поведение).
-            ВАЖНО: используется только в MULTI_DAY режиме (пока не реализован).
+            For MULTI_DAY: offset in days for each service from booking_date.
+            [0, 0, 7] → first two services on booking_date, third after 7 days.
+            None = all services on one day (SINGLE_DAY behavior).
+            IMPORTANT: used only in MULTI_DAY mode (not implemented yet).
 
-    Пример:
+    Example:
         BookingEngineRequest(
             service_requests=[svc_manicure, svc_pedicure],
             booking_date=date(2024, 5, 10),
             mode=BookingMode.SINGLE_DAY,
         )
 
-    Пример с параллельными услугами:
+    Example with parallel services:
         BookingEngineRequest(
             service_requests=[svc_manicure, svc_pedicure],
             booking_date=date(2024, 5, 10),
-            overlap_allowed=True,   # маникюр и педикюр одновременно
+            overlap_allowed=True,   # manicure and pedicure simultaneously
         )
 
-    Пример с ограничением длительности:
+    Example with duration limit:
         BookingEngineRequest(
             service_requests=[svc_a, svc_b, svc_c],
             booking_date=date(2024, 5, 10),
-            max_chain_duration_minutes=180,  # не более 3 часов
+            max_chain_duration_minutes=180,  # not more than 3 hours
         )
     """
 
@@ -185,14 +185,14 @@ class BookingEngineRequest(BaseModel, frozen=True):
 
     @property
     def total_duration_minutes(self) -> int:
-        """Суммарная длительность всех услуг (без gap-пауз)."""
+        """Total duration of all services (without gap pauses)."""
         return sum(s.duration_minutes for s in self.service_requests)
 
     @property
     def total_block_minutes(self) -> int:
         """
-        Суммарное время блокировки включая паузы между услугами.
-        Используется для быстрой проверки: влезает ли цепочка в окно.
+        Total blocking time including pauses between services.
+        Used for quick check: does the chain fit into the window.
         """
         return sum(s.total_block_minutes for s in self.service_requests)
 
@@ -204,24 +204,24 @@ class BookingEngineRequest(BaseModel, frozen=True):
 
 class MasterAvailability(BaseModel, frozen=True):
     """
-    Свободные временные окна мастера на заданную дату.
-    Подготавливается адаптером (DjangoAvailabilityAdapter),
-    движок их только читает — не ходит в БД.
+    Free time windows of a master for a given date.
+    Prepared by the adapter (DjangoAvailabilityAdapter),
+    the engine only reads them — does not query the DB.
 
-    Поля:
+    Fields:
         master_id (str):
-            Идентификатор мастера (строка для универсальности).
+            Master identifier (string for universality).
 
         free_windows (list[tuple[datetime, datetime]]):
-            Список свободных окон в формате [(window_start, window_end), ...].
-            Окна уже очищены от занятых слотов и перерывов.
-            Отсортированы по времени начала.
+            List of free windows in format [(window_start, window_end), ...].
+            Windows are already cleared of busy slots and breaks.
+            Sorted by start time.
 
         buffer_between_minutes (int):
-            Буфер между клиентами у этого мастера.
-            Учитывается при подборе следующего слота.
+            Buffer between clients for this master.
+            Taken into account when finding the next slot.
 
-    Пример:
+    Example:
         MasterAvailability(
             master_id="3",
             free_windows=[
@@ -238,7 +238,7 @@ class MasterAvailability(BaseModel, frozen=True):
 
     @model_validator(mode="after")
     def validate_windows_order(self) -> "MasterAvailability":
-        """Проверяет что каждое окно: start < end."""
+        """Checks that each window: start < end."""
         for start, end in self.free_windows:
             if start >= end:
                 raise ValueError(f"Мастер {self.master_id}: start={start} >= end={end}")
@@ -252,14 +252,14 @@ class MasterAvailability(BaseModel, frozen=True):
 
 class SingleServiceSolution(BaseModel, frozen=True):
     """
-    Найденный слот для одной услуги в цепочке.
+    Found slot for a single service in a chain.
 
-    Поля:
-        service_id (str): Id услуги из ServiceRequest.
-        master_id (str): Id выбранного мастера.
-        start_time (datetime): Начало выполнения услуги.
-        end_time (datetime): Конец выполнения услуги (без gap).
-        gap_end_time (datetime): Конец с учётом паузы (мастер занят до этого момента).
+    Fields:
+        service_id (str): Id of the service from ServiceRequest.
+        master_id (str): Id of the selected master.
+        start_time (datetime): Start time of the service execution.
+        end_time (datetime): End time of the service execution (without gap).
+        gap_end_time (datetime): End time including pause (master is busy until this moment).
     """
 
     service_id: str
@@ -270,33 +270,33 @@ class SingleServiceSolution(BaseModel, frozen=True):
 
     @property
     def duration_minutes(self) -> int:
-        """Фактическая длительность услуги в минутах."""
+        """Actual duration of the service in minutes."""
         return int((self.end_time - self.start_time).total_seconds() / 60)
 
 
 class BookingChainSolution(BaseModel, frozen=True):
     """
-    Одно полное решение для всего запроса (набор слотов для всех услуг).
-    Найдено движком. Гарантирует отсутствие конфликтов между услугами.
+    One complete solution for the entire request (set of slots for all services).
+    Found by the engine. Guarantees no conflicts between services.
 
-    Поля:
+    Fields:
         items (list[SingleServiceSolution]):
-            Список слотов в порядке выполнения услуг.
+            List of slots in the order of service execution.
 
         score (float):
-            Оценка качества решения. По умолчанию 0.0.
-            Более высокий score = более предпочтительное решение.
-            Пример использования:
-                - предпочтительный мастер → score += 10
-                - минимальный простой между услугами → score += 2 за каждый час
-                - один мастер на несколько услуг → score += 5
-            Используется при сортировке и выборе result.best.
-            Установить можно через ChainFinder или внешний скорер.
+            Quality score of the solution. Default 0.0.
+            Higher score = more preferred solution.
+            Usage example:
+                - preferred master → score += 10
+                - minimal idle time between services → score += 2 for every hour
+                - one master for multiple services → score += 5
+            Used during sorting and selecting result.best.
+            Can be set via ChainFinder or an external scorer.
 
-    Свойства:
-        starts_at: время начала первой услуги
-        ends_at:   время конца последней услуги
-        span_minutes: общее время от начала первой до конца последней
+    Properties:
+        starts_at: start time of the first service
+        ends_at:   end time of the last service
+        span_minutes: total time from the start of the first to the end of the last
     """
 
     items: list[SingleServiceSolution] = Field(min_length=1)
@@ -304,23 +304,23 @@ class BookingChainSolution(BaseModel, frozen=True):
 
     @property
     def starts_at(self) -> datetime:
-        """Начало первой услуги в цепочке."""
+        """Start of the first service in the chain."""
         return min(s.start_time for s in self.items)
 
     @property
     def ends_at(self) -> datetime:
-        """Конец последней услуги (без gap)."""
+        """End of the last service (without gap)."""
         return max(s.end_time for s in self.items)
 
     @property
     def span_minutes(self) -> int:
-        """Общее время от начала первой до конца последней услуги."""
+        """Total time from the start of the first to the end of the last service."""
         return int((self.ends_at - self.starts_at).total_seconds() / 60)
 
     def to_display(self) -> dict[str, Any]:
         """
-        Конвертирует решение в dict для UI/сериализации.
-        Возвращает: {service_id: {master_id, start, end}, ...}
+        Converts the solution into a dict for UI/serialization.
+        Returns: {service_id: {master_id, start, end}, ...}
         """
         return {
             item.service_id: {
@@ -334,29 +334,29 @@ class BookingChainSolution(BaseModel, frozen=True):
 
 class EngineResult(BaseModel, frozen=True):
     """
-    Результат работы движка. Возвращается ChainFinder.find().
+    Engine work result. Returned by ChainFinder.find().
 
-    Поля:
-        mode (BookingMode): Режим в котором был выполнен поиск.
+    Fields:
+        mode (BookingMode): Mode in which the search was performed.
         solutions (list[BookingChainSolution]):
-            Найденные варианты расписания. Пустой список = ничего не нашли.
-            После BookingScorer.score() — отсортированы по score DESC.
-            По умолчанию (без скорера) — по времени начала первой услуги.
+            Found schedule options. Empty list = found nothing.
+            After BookingScorer.score() — sorted by score DESC.
+            By default (without scorer) — by start time of the first service.
 
-    Свойства:
-        has_solutions (bool): Быстрая проверка наличия результатов.
-        best (BookingChainSolution | None): Первый вариант (ранний или лучший по score).
-        best_scored (BookingChainSolution | None): Вариант с максимальным score.
+    Properties:
+        has_solutions (bool): Quick check for results availability.
+        best (BookingChainSolution | None): First option (earliest or best by score).
+        best_scored (BookingChainSolution | None): Option with the maximum score.
 
-    Пример использования без скорера (первый по времени):
+    Example usage without scorer (first by time):
         result = ChainFinder().find(request, availability)
         if result.has_solutions:
             print(result.best.starts_at)
 
-    Пример с BookingScorer (первый по качеству):
+    Example with BookingScorer (first by quality):
         result = BookingScorer(preferred_master_ids=["3"]).score(result)
-        print(result.best.score)        # наивысший score
-        print(result.best_scored.score) # то же самое
+        print(result.best.score)        # highest score
+        print(result.best_scored.score) # same thing
     """
 
     mode: BookingMode
@@ -364,29 +364,29 @@ class EngineResult(BaseModel, frozen=True):
 
     @property
     def has_solutions(self) -> bool:
-        """True если движок нашёл хотя бы одно решение."""
+        """True if the engine found at least one solution."""
         return len(self.solutions) > 0
 
     @property
     def best(self) -> BookingChainSolution | None:
         """
-        Первый вариант в списке решений.
-        - Без скорера: самый ранний по времени начала.
-        - После BookingScorer.score(): с наивысшим score.
-        None если решений нет.
+        The first option in the list of solutions.
+        - Without scorer: earliest by start time.
+        - After BookingScorer.score(): with the highest score.
+        None if there are no solutions.
         """
         return self.solutions[0] if self.solutions else None
 
     @property
     def best_scored(self) -> BookingChainSolution | None:
         """
-        Вариант с максимальным score среди всех решений.
+        Option with the maximum score among all solutions.
 
-        Отличается от best если scorer ещё не применялся —
-        в этом случае best = earliest, best_scored = highest_score.
-        После BookingScorer.score() они совпадают (список уже отсортирован).
+        Differs from best if scorer has not been applied yet —
+        in this case best = earliest, best_scored = highest_score.
+        After BookingScorer.score() they match (list is already sorted).
 
-        None если решений нет.
+        None if there are no solutions.
         """
         if not self.solutions:
             return None
@@ -394,9 +394,9 @@ class EngineResult(BaseModel, frozen=True):
 
     def get_unique_start_times(self) -> list[str]:
         """
-        Возвращает список уникальных времён начала первой услуги.
-        Используется для отображения сетки слотов в UI.
-        Формат: ["09:00", "09:30", "10:00", ...]
+        Returns a list of unique start times of the first service.
+        Used to display a grid of slots in the UI.
+        Format: ["09:00", "09:30", "10:00", ...]
         """
         times = {s.starts_at.strftime("%H:%M") for s in self.solutions}
         return sorted(times)
@@ -409,25 +409,25 @@ class EngineResult(BaseModel, frozen=True):
 
 class WaitlistEntry(BaseModel, frozen=True):
     """
-    Ближайший доступный слот для уведомления клиента из листа ожидания.
+    Nearest available slot to notify a client from the waitlist.
 
-    Возвращается ChainFinder.find_nearest() через вспомогательный сервис
-    или waitlist-воркером при освобождении слота.
+    Returned by ChainFinder.find_nearest() via an auxiliary service
+    or by a waitlist-worker when a slot becomes available.
 
-    Поля:
-        available_date (date): Дата когда слот стал доступен.
-        available_time (str): Время начала первой услуги ("HH:MM").
-        solution (BookingChainSolution): Полное найденное решение.
-        days_from_request (int): Через сколько дней от исходной даты запроса.
+    Fields:
+        available_date (date): Date when the slot became available.
+        available_time (str): Start time of the first service ("HH:MM").
+        solution (BookingChainSolution): Complete found solution.
+        days_from_request (int): How many days from the original request date.
 
-    Пример использования:
-        # В waitlist-воркере, когда отменили запись:
+    Example usage:
+        # In the waitlist-worker, when an appointment is canceled:
         result = finder.find_nearest(request, get_avail, search_from=original_date)
         if result.has_solutions:
             entry = WaitlistEntry.from_engine_result(result, original_date)
-            notify_client(entry)  # отправить email/telegram
+            notify_client(entry)  # send email/telegram
 
-    Пример создания:
+    Example creation:
         entry = WaitlistEntry(
             available_date=date(2024, 5, 15),
             available_time="10:30",
@@ -448,14 +448,14 @@ class WaitlistEntry(BaseModel, frozen=True):
         original_date: date,
     ) -> "WaitlistEntry | None":
         """
-        Создаёт WaitlistEntry из EngineResult найденного find_nearest().
+        Creates WaitlistEntry from EngineResult of a successful find_nearest().
 
         Args:
-            result: EngineResult с хотя бы одним решением.
-            original_date: Исходная дата запроса (для расчёта days_from_request).
+            result: EngineResult with at least one solution.
+            original_date: Original request date (for calculating days_from_request).
 
         Returns:
-            WaitlistEntry или None если result пустой.
+            WaitlistEntry or None if result is empty.
         """
         if not result.has_solutions:
             return None

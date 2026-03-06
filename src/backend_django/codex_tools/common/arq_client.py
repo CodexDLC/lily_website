@@ -1,10 +1,10 @@
 """
 codex_tools.common.arq_client
 ==============================
-Универсальный клиент для ARQ (Producer).
+Universal client for ARQ (Producer).
 
-Позволяет синхронному коду ставить задачи в асинхронную очередь Redis.
-Не зависит от Django settings напрямую.
+Allows synchronous code to enqueue jobs into an asynchronous Redis queue.
+Does not depend directly on Django settings.
 """
 
 import asyncio
@@ -15,7 +15,7 @@ from arq.connections import ArqRedis, RedisSettings, create_pool
 
 class BaseArqClient:
     """
-    Базовый клиент для работы с очередью ARQ.
+    Base client for interacting with the ARQ queue.
     """
 
     _pool: ArqRedis | None = None
@@ -38,11 +38,11 @@ class BaseArqClient:
             pool = await self.get_pool()
             return await pool.enqueue_job(function, *args, **kwargs)
         except Exception as e:
-            # В библиотеке лучше пробрасывать исключение или использовать логгер
+            # Better to raise an exception or use a logger in a library
             raise e
 
     def enqueue_job(self, function: str, *args: Any, **kwargs: Any) -> Any:
-        """Синхронная обертка для использования в Django views."""
+        """Synchronous wrapper for use in Django views."""
         try:
             loop = asyncio.get_event_loop()
             if loop.is_closed():

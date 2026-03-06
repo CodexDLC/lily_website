@@ -55,16 +55,17 @@ def test_price_edit_view_access_denied_for_anonymous(client, confirmed_appointme
     url = reverse("cabinet:edit_price", kwargs={"token": confirmed_appointment.finalize_token})
     response = client.get(url)
     assert response.status_code == 302
-    assert "/cabinet/login/" in response.url
+    # Expect redirect to standard login URL (accounts/login)
+    assert "/accounts/login/" in response.url
 
 
 def test_price_edit_view_access_denied_for_client(client, test_client, confirmed_appointment):
-    """Clients (regular users) should get 302 Redirect to their appointments."""
+    """Clients (regular users) should get 403 Forbidden (AdminRequiredMixin)."""
     client.force_login(test_client.user)
     url = reverse("cabinet:edit_price", kwargs={"token": confirmed_appointment.finalize_token})
     response = client.get(url)
-    assert response.status_code == 302
-    assert response.url == reverse("cabinet:appointments")
+    # AdminRequiredMixin raises PermissionDenied (403) for non-staff users
+    assert response.status_code == 403
 
 
 def test_price_edit_view_access_granted_for_admin(client, admin_client_user, confirmed_appointment):

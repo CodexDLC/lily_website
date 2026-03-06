@@ -1,8 +1,8 @@
 """
 codex_tools.codex_calendar.engine
 =================================
-Универсальный генератор календаря.
-Не зависит от Django.
+Universal calendar generator.
+Framework-agnostic (does not depend on Django).
 """
 
 import calendar
@@ -14,9 +14,9 @@ from holidays.countries import Germany
 
 class CalendarEngine:
     """
-    Генератор матрицы дней для календаря.
+    Day matrix generator for a calendar.
 
-    Используется для отрисовки UI (сайт, бот).
+    Used for rendering UI (website, bot).
     """
 
     @staticmethod
@@ -25,24 +25,24 @@ class CalendarEngine:
         month: int,
         today: date,
         selected_date: date | None = None,
-        holidays_subdiv: str = "ST",  # По умолчанию Саксония-Анхальт
+        holidays_subdiv: str = "ST",  # Default: Saxony-Anhalt
     ) -> list[dict[str, Any]]:
         """
-        Генерирует список дней для сетки календаря.
+        Generates a list of days for the calendar grid.
 
         Args:
-            year: Год.
-            month: Месяц.
-            today: Текущая дата (для определения прошлого).
-            selected_date: Выбранная дата (для статуса 'active').
-            holidays_subdiv: Регион Германии для праздников.
+            year: Year.
+            month: Month.
+            today: Current date (to determine past days).
+            selected_date: Selected date (for 'active' status).
+            holidays_subdiv: German region for holidays.
 
         Returns:
-            Список словарей с данными о днях.
+            List of dictionaries with day data.
         """
         de_holidays = Germany(subdiv=holidays_subdiv, years=year)
 
-        cal = calendar.Calendar(firstweekday=0)  # Пн - первый день
+        cal = calendar.Calendar(firstweekday=0)  # Mon - first day
         month_days = cal.itermonthdays(year, month)
 
         result: list[dict[str, Any]] = []
@@ -54,7 +54,7 @@ class CalendarEngine:
             calc_date = date(year, month, day_num)
             weekday = calc_date.weekday()
 
-            # Базовый статус
+            # Base status
             status = "available"
 
             if calc_date < today or weekday == 6:
@@ -78,7 +78,7 @@ class CalendarEngine:
 
     @staticmethod
     def get_month_label(year: int, month: int, locale: str = "ru") -> str:
-        """Возвращает название месяца и год."""
+        """Returns the month name and year."""
         month_names_ru = {
             1: "Январь",
             2: "Февраль",
@@ -93,6 +93,6 @@ class CalendarEngine:
             11: "Ноябрь",
             12: "Декабрь",
         }
-        # Можно добавить другие языки (de, en) при необходимости
+        # Other languages (de, en) can be added if necessary
         name = month_names_ru.get(month, "")
         return f"{name} {year}"

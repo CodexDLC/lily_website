@@ -1,13 +1,13 @@
 """
 codex_tools.common.logger
 ==========================
-Универсальная настройка Loguru для Python проектов.
+Universal Loguru setup for Python projects.
 
-Поддерживает:
-- Перехват стандартного модуля logging.
-- Красивый вывод в консоль.
-- Ротацию и сжатие логов.
-- JSON формат для ошибок.
+Supports:
+- Interception of the standard logging module.
+- Beautiful console output.
+- Log rotation and compression.
+- JSON format for errors.
 """
 
 import logging
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 
 class InterceptHandler(logging.Handler):
     """
-    Перехватывает сообщения стандартного logging и перенаправляет в loguru.
+    Intercepts standard logging messages and redirects them to loguru.
     """
 
     def emit(self, record: logging.LogRecord) -> None:
@@ -51,7 +51,7 @@ def setup_universal_logging(
     is_debug: bool = False,
 ) -> None:
     """
-    Настраивает loguru с перехватом стандартных логов.
+    Configures loguru with interception of standard logs.
     """
     logger.remove()
     log_dir.mkdir(parents=True, exist_ok=True)

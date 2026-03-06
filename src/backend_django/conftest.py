@@ -4,7 +4,12 @@ Pytest configuration for Django tests.
 Configures test database, Redis, and other fixtures.
 """
 
+import os
+
 import pytest
+
+# Prevent NinjaAPI from raising ConfigError during tests due to multiple imports
+os.environ["NINJA_SKIP_REGISTRY"] = "True"
 
 
 @pytest.fixture(autouse=True)

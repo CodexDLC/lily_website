@@ -1,11 +1,11 @@
 """
 codex_tools.notifications.service
 ==================================
-Ядро управления уведомлениями.
+Notification management core.
 
-Оркестрирует процесс: собирает данные через Builder и отправляет их
-в очередь через Adapter. Является базовым классом для всех сервисов
-уведомлений в проектах.
+Orchestrates the process: collects data via Builder and sends it
+to the queue via Adapter. Acts as a base class for all notification
+services in projects.
 """
 
 from typing import Any
@@ -15,10 +15,10 @@ from .builder import NotificationPayloadBuilder
 
 class BaseNotificationEngine:
     """
-    Базовый движок уведомлений.
+    Base notification engine.
 
-    Не зависит от фреймворка. Вся связь с внешним миром (очереди, БД)
-    идет через переданный адаптер.
+    Framework-agnostic. All communication with the outside world (queues, DB)
+    goes through the provided adapter.
     """
 
     TASK_NAME = "send_universal_notification_task"
@@ -26,19 +26,19 @@ class BaseNotificationEngine:
     def __init__(self, adapter: Any):
         """
         Args:
-            adapter: Объект, реализующий метод .enqueue(task_name, payload).
+            adapter: Object implementing the .enqueue(task_name, payload) method.
         """
         self.adapter = adapter
 
     def dispatch(self, **kwargs) -> bool:
         """
-        Собирает пакет данных и отправляет его в очередь.
+        Collects the data package and sends it to the queue.
 
         Args:
-            **kwargs: Параметры для NotificationPayloadBuilder.build().
+            **kwargs: Parameters for NotificationPayloadBuilder.build().
 
         Returns:
-            bool: True если задача успешно поставлена в очередь.
+            bool: True if the task was successfully dequeued.
         """
         payload = NotificationPayloadBuilder.build(**kwargs)
         return self.adapter.enqueue(self.TASK_NAME, payload)
