@@ -3097,6 +3097,21 @@ textarea.form-input-boxed {
 }
 
 
+.constructor-grid > .c-cabinet-block {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+
+.constructor-grid .c-cabinet-scroller {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 8px;
+}
+
+
 .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -3231,6 +3246,7 @@ textarea.form-input-boxed {
     padding-bottom: 20px;
     margin-bottom: 10px;
     border-bottom: 1px solid rgba(237, 208, 113, 0.15);
+    flex-shrink: 0;
 }
 
 .constructor-header-top-row {

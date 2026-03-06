@@ -52,7 +52,7 @@
     "@type": "ReserveAction",
     "target": {
       "@type": "EntryPoint",
-      "urlTemplate": "{% url 'booking_wizard' %}", {# Using Django's url tag #}
+      "urlTemplate": "{% url 'booking:booking_wizard' %}", {# Fixed: added booking: namespace #}
       "inLanguage": "{{ request.LANGUAGE_CODE }}",
       "actionPlatform": [
         "https://schema.org/DesktopWebPlatform",
