@@ -1,19 +1,19 @@
 """
 codex_tools.common.text
 =======================
-Универсальные инструменты для работы с текстом.
-Не зависит от Django.
+Universal tools for working with text.
+Framework-agnostic (does not depend on Django).
 """
 
 
 def normalize_name(name: str) -> str:
     """
-    Приводит имя/фамилию к стандартному виду: 'Иван' или 'Иван-Иванович'.
+    Brings first/last name to a standard form: 'Ivan' or 'Ivan-Ivanovich'.
     """
     if not name:
         return ""
 
-    # Убираем лишние пробелы и делаем Capitalize
+    # Remove extra spaces and Capitalize
     parts = name.strip().split("-")
     normalized_parts = [p.strip().capitalize() for p in parts if p.strip()]
 
@@ -21,7 +21,7 @@ def normalize_name(name: str) -> str:
 
 
 def clean_string(text: str) -> str:
-    """Убирает лишние пробелы и невидимые символы."""
+    """Removes extra spaces and invisible characters."""
     if not text:
         return ""
     return " ".join(text.split())

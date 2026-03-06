@@ -1,19 +1,19 @@
 """
-codexn_tools.booking.chain_finder
+codex_tools.booking.chain_finder
 ====================================
-Главный алгоритм поиска цепочек слотов для N услуг.
+Main algorithm for finding slot chains for N services.
 
-Не зависит от Django/ORM -- работает только с DTO и datetime.
-Является оркестратором для SlotCalculator и BookingValidator.
+Framework-agnostic (does not depend on Django/ORM) -- works only with DTOs and datetime.
+Acts as an orchestrator for SlotCalculator and BookingValidator.
 
-Принцип производительности:
-    Внутри рекурсивного поиска (backtracking) используем лёгкий _SlotCandidate
-    с __slots__ -- без Pydantic-валидации. Pydantic-объекты (SingleServiceSolution,
-    BookingChainSolution) создаются ТОЛЬКО один раз для каждого найденного решения.
-    Это критично при большом числе услуг и мастеров.
+Performance principle:
+    Inside recursive search (backtracking) we use lightweight _SlotCandidate
+    with __slots__ -- without Pydantic validation. Pydantic objects (SingleServiceSolution,
+    BookingChainSolution) are created ONLY once for each found solution.
+    This is critical with a large number of services and masters.
 
-Импорт:
-    from codexn_tools.booking import ChainFinder
+Imports:
+    from codex_tools.booking import ChainFinder
 """
 
 from collections.abc import Callable
@@ -32,12 +32,12 @@ from .slot_calculator import SlotCalculator
 
 class _SlotCandidate:
     """
-    Лёгкое внутреннее представление назначенного слота внутри backtracking.
+    Lightweight internal representation of a booked slot inside backtracking.
 
-    Использует __slots__ для минимального потребления памяти и быстрого доступа.
-    НЕ содержит Pydantic-валидации -- только сырые данные.
+    Uses __slots__ for minimal memory consumption and fast access.
+    Does NOT contain Pydantic validation -- only raw data.
 
-    Конвертируется в SingleServiceSolution (Pydantic) только для финального результата.
+    Converted to SingleServiceSolution (Pydantic) only for the final result.
     """
 
     __slots__ = (
@@ -46,6 +46,7 @@ class _SlotCandidate:
         "start_time",
         "end_time",
         "gap_end_time",
+        "parallel_group",
     )
 
     def __init__(
@@ -55,15 +56,17 @@ class _SlotCandidate:
         start_time: datetime,
         end_time: datetime,
         gap_end_time: datetime,
+        parallel_group: str | None = None,
     ) -> None:
         self.service_id = service_id
         self.master_id = master_id
         self.start_time = start_time
         self.end_time = end_time
         self.gap_end_time = gap_end_time
+        self.parallel_group = parallel_group
 
     def to_solution(self) -> SingleServiceSolution:
-        """Конвертирует в Pydantic DTO для финального результата."""
+        """Converts to Pydantic DTO for the final result."""
         return SingleServiceSolution(
             service_id=self.service_id,
             master_id=self.master_id,
@@ -75,13 +78,13 @@ class _SlotCandidate:
 
 class ChainFinder:
     """
-    Находит комбинации временных слотов для N услуг (цепочки бронирования).
+    Finds combinations of time slots for N services (booking chains).
 
-    Основной алгоритм: рекурсивный backtracking.
-    Для каждой услуги перебирает возможных мастеров и их свободные окна.
-    Проверяет отсутствие конфликтов с уже назначенными услугами в цепочке.
+    Core algorithm: recursive backtracking.
+    Iterates over possible masters and their free windows for each service.
+    Checks for the absence of conflicts with already assigned services in the chain.
 
-    Пример -- 1 услуга, любой свободный мастер:
+    Example -- 1 service, any free master:
         finder = ChainFinder(step_minutes=30)
         request = BookingEngineRequest(
             service_requests=[
@@ -92,10 +95,10 @@ class ChainFinder:
             mode=BookingMode.SINGLE_DAY,
         )
         result = finder.find(request, masters_availability)
-        # result.solutions -- список BookingChainSolution
+        # result.solutions -- list of BookingChainSolution
         # result.get_unique_start_times() -> ["09:00", "09:30", "10:00", ...]
 
-    Пример -- 2 услуги в один день:
+    Example -- 2 services on the same day:
         request = BookingEngineRequest(
             service_requests=[svc_manicure, svc_pedicure],
             booking_date=date(2024, 5, 10),
@@ -103,14 +106,14 @@ class ChainFinder:
         )
         result = finder.find(request, availability)
 
-    Пример -- запись к конкретному мастеру (MASTER_LOCKED):
-        # Просто передай possible_master_ids=[locked_master_id]
-        # и mode=BookingMode.MASTER_LOCKED
+    Example -- booking a specific master (MASTER_LOCKED):
+        # Just pass possible_master_ids=[locked_master_id]
+        # and mode=BookingMode.MASTER_LOCKED
 
     Args:
-        step_minutes: Шаг сетки слотов (по умолчанию 30 мин).
-        min_start: Минимальное допустимое время начала первой услуги.
-                   None = без ограничения (например, в тестах).
+        step_minutes: Grid slot step (30 min by default).
+        min_start: Minimum acceptable start time of the first service.
+                   None = no restriction (e.g., in tests).
     """
 
     def __init__(
@@ -130,29 +133,34 @@ class ChainFinder:
         max_unique_starts: int | None = None,
     ) -> EngineResult:
         """
-        Единая точка входа движка. Делегирует в нужный режим.
+        Unified engine entry point. Delegates to the appropriate mode.
 
         Args:
-            request: Входной запрос с услугами, датой и режимом.
-            masters_availability: Словарь {master_id: MasterAvailability}.
-                                  Подготавливается DjangoAvailabilityAdapter.
-                                  Ключи -- строки (str(master.pk)).
-            max_solutions: Максимальное количество вариантов которые движок
-                           вернёт. Не влияет на корректность -- только на полноту.
-            max_unique_starts: Остановиться после нахождения N уникальных
-                               стартовых времён (по items[0].start_time).
-                               None = без ограничения.
-                               Пример: max_unique_starts=8 → только ближайшие 8 слотов,
-                               даже если в дне их 16. Вдвое меньше итераций движка.
+            request: Input request with services, date, and mode.
+            masters_availability: Dictionary {master_id: MasterAvailability}.
+                                  Prepared by DjangoAvailabilityAdapter.
+                                  Keys -- strings (str(master.pk)).
+            max_solutions: Maximum number of options the engine will return.
+                           Does not affect correctness -- only completeness.
+            max_unique_starts: Stop after finding N unique start times
+                               (based on items[0].start_time).
+                               None = no limit.
+                               Example: max_unique_starts=8 -> only the closest 8 slots,
+                               even if there are 16 in a day. Halves engine iterations.
 
         Returns:
-            EngineResult с найденными решениями.
-            solutions отсортированы по времени начала первой услуги.
+            EngineResult with found solutions.
+            solutions sorted by the start time of the first service.
         """
+        # Fail Fast: Check for unsupported features
+        if request.group_size > 1:
+            raise NotImplementedError("Group bookings (group_size > 1) are not yet supported.")
+
+        if request.mode == BookingMode.MULTI_DAY:
+            raise NotImplementedError("MULTI_DAY booking mode is not yet implemented.")
+
         if request.mode in (BookingMode.SINGLE_DAY, BookingMode.MASTER_LOCKED):
             solutions = self._find_single_day(request, masters_availability, max_solutions, max_unique_starts)
-        elif request.mode == BookingMode.MULTI_DAY:
-            solutions = []  # TODO: реализовать MULTI_DAY
         else:
             solutions = []
 
@@ -168,28 +176,28 @@ class ChainFinder:
         max_solutions_per_day: int = 1,
     ) -> EngineResult:
         """
-        Ищет первый день с доступными слотами в диапазоне search_days.
+        Searches for the first day with available slots in the search_days range.
 
-        Используется для:
-            - Перебронирования: мастер заболел → найти новую дату для N записей
-            - Waitlist: ближайший свободный слот для уведомления клиента
-            - MULTI_DAY планирования: найти первый день когда цепочка влезает
+        Used for:
+            - Rebooking: master is sick -> find a new date for N appointments
+            - Waitlist: closest free slot to notify the client
+            - MULTI_DAY planning: find the first day the chain fits
 
         Args:
-            request: Запрос (booking_date будет заменён для каждого проверяемого дня).
+            request: Request (booking_date will be replaced for each checked day).
             get_availability_for_date: callable(date) -> dict[str, MasterAvailability].
-                                       Вызывается для каждого проверяемого дня.
-                                       В Django-слое оборачивает DjangoAvailabilityAdapter.
-            search_from: Дата с которой начинаем поиск (включительно).
-            search_days: Сколько дней проверять максимум. По умолчанию 60.
-            max_solutions_per_day: Сколько решений искать на каждый день.
-                                   1 = быстрый режим (остановиться при первом).
+                                       Called for each checked day.
+                                       Wraps DjangoAvailabilityAdapter in the Django layer.
+            search_from: Date to start the search from (inclusive).
+            search_days: Maximum days to check. Defaults to 60.
+            max_solutions_per_day: How many solutions to look for per day.
+                                   1 = fast mode (stop at the first one).
 
         Returns:
-            EngineResult первого дня с решениями.
-            Если за search_days ничего не нашли — EngineResult(solutions=[]).
+            EngineResult of the first day with solutions.
+            If nothing found in search_days — EngineResult(solutions=[]).
 
-        Пример (Django-слой):
+        Example (Django layer):
             adapter = DjangoAvailabilityAdapter()
             master_ids = [...]
 
@@ -198,12 +206,12 @@ class ChainFinder:
 
             result = finder.find_nearest(request, get_avail, search_from=date.today())
             if result.has_solutions:
-                print(result.best.starts_at)  # дата и время нового слота
+                print(result.best.starts_at)  # date and time of the new slot
         """
         for offset in range(search_days):
             check_date = search_from + timedelta(days=offset)
 
-            # Обновляем дату в запросе (frozen=True → model_copy)
+            # Update date in the request (frozen=True -> model_copy)
             day_request = request.model_copy(update={"booking_date": check_date})
 
             availability = get_availability_for_date(check_date)
@@ -217,7 +225,7 @@ class ChainFinder:
         return EngineResult(mode=request.mode, solutions=[])
 
     # ---------------------------------------------------------------------------
-    # Режим SINGLE_DAY / MASTER_LOCKED
+    # SINGLE_DAY / MASTER_LOCKED mode
     # ---------------------------------------------------------------------------
 
     def _find_single_day(
@@ -228,23 +236,23 @@ class ChainFinder:
         max_unique_starts: int | None = None,
     ) -> list[BookingChainSolution]:
         """
-        Поиск цепочки для режима 'все услуги в один день'.
+        Search for a chain for the 'all services in one day' mode.
 
-        Производительность:
-            Внутренне работает с _SlotCandidate (__slots__) -- без Pydantic.
-            Pydantic-объекты создаются ТОЛЬКО для финальных решений.
-            При 3 услугах x 3 мастерах x 20 слотов -- до 1800 итераций.
+        Performance:
+            Internally works with _SlotCandidate (__slots__) -- without Pydantic.
+            Pydantic objects are created ONLY for final solutions.
+            With 3 services x 3 masters x 20 slots -- up to 1800 iterations.
 
-        Параметры request учитываемые в этом методе:
+        Request parameters considered in this method:
             request.overlap_allowed:
-                True  → разные мастера работают независимо (могут параллельно).
-                False → каждая следующая услуга начинается только после конца предыдущей.
+                True  -> different masters work independently (can be parallel).
+                False -> each subsequent service starts only after the previous one ends.
             request.max_chain_duration_minutes:
-                Если задан — отсекает ветви backtracking где цепочка уже превышает лимит.
+                If set — cuts off backtracking branches where the chain already exceeds the limit.
         """
         solutions: list[BookingChainSolution] = []
         chain: list[_SlotCandidate] = []
-        seen_starts: set[str] = set()  # уникальные времена начала первой услуги
+        seen_starts: set[str] = set()  # unique start times of the first service
 
         def backtrack(service_index: int) -> None:
             if len(solutions) >= max_solutions:
@@ -253,7 +261,7 @@ class ChainFinder:
                 return
 
             if service_index >= len(request.service_requests):
-                # Финальная проверка + конвертация в Pydantic только здесь
+                # Final check + conversion to Pydantic only here
                 if self._no_conflicts_fast(chain):
                     solution = BookingChainSolution(items=[c.to_solution() for c in chain])
                     solutions.append(solution)
@@ -264,17 +272,63 @@ class ChainFinder:
             duration_delta = timedelta(minutes=service_req.duration_minutes)
             gap_delta = timedelta(minutes=service_req.min_gap_after_minutes)
 
+            # --- Parallel Group Logic ---
+            # If the current service has a parallel_group, look for a "partner" in the already assembled chain.
+            # If found, the start time must strictly match.
+            forced_start_time: datetime | None = None
+            if service_req.parallel_group:
+                for item in chain:
+                    if item.parallel_group == service_req.parallel_group:
+                        forced_start_time = item.start_time
+                        break
+
             for master_id in service_req.possible_master_ids:
                 availability = masters_availability.get(master_id)
                 if not availability:
                     continue
 
-                # Занятые интервалы этого мастера в текущей цепочке
+                # Busy intervals of this master in the current chain
                 master_busy = [(c.start_time, c.gap_end_time) for c in chain if c.master_id == master_id]
 
+                # If there is a forced_start_time, check only it
+                if forced_start_time:
+                    # Check if the master is free at this specific time
+                    slot_end = forced_start_time + duration_delta
+                    gap_end = slot_end + gap_delta
+
+                    # 1. Check master's occupancy in the chain
+                    if not self._is_slot_free_fast(forced_start_time, gap_end, master_busy):
+                        continue
+
+                    # 2. Check if it falls into the master's free windows
+                    in_window = False
+                    for w_start, w_end in availability.free_windows:
+                        if w_start <= forced_start_time and w_end >= slot_end:
+                            in_window = True
+                            break
+
+                    if not in_window:
+                        continue
+
+                    # If everything is ok - add and move on
+                    chain.append(
+                        _SlotCandidate(
+                            service_id=service_req.service_id,
+                            master_id=master_id,
+                            start_time=forced_start_time,
+                            end_time=slot_end,
+                            gap_end_time=gap_end,
+                            parallel_group=service_req.parallel_group,
+                        )
+                    )
+                    backtrack(service_index + 1)
+                    chain.pop()
+                    continue  # Move to the next master, no need to iterate over slots
+
+                # --- Standard Logic (No forced start time) ---
                 effective_min = self._effective_min_start(master_busy, availability.buffer_between_minutes)
 
-                # overlap_allowed=False: каждая услуга начинается после конца всех предыдущих
+                # overlap_allowed=False: each service starts after the end of all previous ones
                 if not request.overlap_allowed and chain:
                     chain_ends_at = max(c.end_time for c in chain)
                     if effective_min is None or effective_min < chain_ends_at:
@@ -297,18 +351,18 @@ class ChainFinder:
                         slot_end = slot_start + duration_delta
                         gap_end = slot_end + gap_delta
 
-                        # Простое сравнение datetime -- без Pydantic
+                        # Simple datetime comparison -- without Pydantic
                         if not self._is_slot_free_fast(slot_start, gap_end, master_busy):
                             continue
 
-                        # Проверка максимальной длительности цепочки
+                        # Check maximum chain duration
                         if request.max_chain_duration_minutes is not None and chain:
                             chain_start = min(c.start_time for c in chain)
                             prospective_span = int(
                                 (max(slot_end, max(c.end_time for c in chain)) - chain_start).total_seconds() / 60
                             )
                             if prospective_span > request.max_chain_duration_minutes:
-                                continue  # отсекаем ветвь — цепочка слишком длинная
+                                continue  # cut off branch - chain is too long
 
                         chain.append(
                             _SlotCandidate(
@@ -317,6 +371,7 @@ class ChainFinder:
                                 start_time=slot_start,
                                 end_time=slot_end,
                                 gap_end_time=gap_end,
+                                parallel_group=service_req.parallel_group,
                             )
                         )
                         backtrack(service_index + 1)
@@ -326,7 +381,7 @@ class ChainFinder:
         return solutions
 
     # ---------------------------------------------------------------------------
-    # Быстрые внутренние проверки (без Pydantic -- только stdlib)
+    # Fast internal checks (without Pydantic -- stdlib only)
     # ---------------------------------------------------------------------------
 
     @staticmethod
@@ -335,12 +390,12 @@ class ChainFinder:
         slot_end: datetime,
         busy_intervals: list[tuple[datetime, datetime]],
     ) -> bool:
-        """Быстрая проверка свободности слота. Без Pydantic."""
+        """Fast slot availability check. Without Pydantic."""
         return all(not (slot_start < b_end and slot_end > b_start) for b_start, b_end in busy_intervals)
 
     @staticmethod
     def _no_conflicts_fast(chain: list["_SlotCandidate"]) -> bool:
-        """Финальная проверка цепочки на конфликты по мастерам. Без Pydantic."""
+        """Final check of the chain for master conflicts. Without Pydantic."""
         by_master: dict[str, list[_SlotCandidate]] = {}
         for c in chain:
             if c.master_id not in by_master:
@@ -363,11 +418,11 @@ class ChainFinder:
         buffer_minutes: int,
     ) -> datetime | None:
         """
-        Минимально допустимое время старта для мастера.
+        Minimum allowable start time for the master.
 
-        Учитывает:
-            - self.min_start (глобальный -- "не раньше чем через N мин от сейчас")
-            - Конец последнего занятого слота + буфер между клиентами
+        Considers:
+            - self.min_start (global -- "no earlier than N mins from now")
+            - End of the last booked slot + buffer between clients
         """
         candidates: list[datetime] = []
 

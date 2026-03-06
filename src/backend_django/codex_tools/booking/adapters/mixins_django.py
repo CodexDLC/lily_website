@@ -1,27 +1,27 @@
 """
-codexn_tools.booking.adapters.mixins_django
+codex_tools.booking.adapters.mixins_django
 =============================================
-Опциональные Django-миксины для стандартизации моделей
-под требования движка бронирования.
+Optional Django mixins to standardize models
+to the requirements of the booking engine.
 
-Требует: Django (pip install codexn_tools[django])
+Requires: Django (pip install codex_tools[django])
 
-Применение к модели Master:
-    from codexn_tools.booking.adapters.mixins_django import BookableMasterMixin
+Applying to the Master model:
+    from codex_tools.booking.adapters.mixins_django import BookableMasterMixin
 
     class Master(BookableMasterMixin, TimestampMixin, models.Model):
         name = models.CharField(...)
-        # BookableMasterMixin добавит поля ниже автоматически
+        # BookableMasterMixin will add the required fields automatically
 
-Применение к модели Service:
-    from codexn_tools.booking.adapters.mixins_django import BookableServiceMixin
+Applying to the Service model:
+    from codex_tools.booking.adapters.mixins_django import BookableServiceMixin
 
     class Service(BookableServiceMixin, TimestampMixin, models.Model):
         title = models.CharField(...)
-        # BookableServiceMixin добавит min_gap_after_minutes
+        # BookableServiceMixin will add min_gap_after_minutes
 
-ВАЖНО: поля с null=True — если не заданы на конкретном экземпляре,
-DjangoAvailabilityAdapter автоматически берёт дефолты из BookingSettings.
+IMPORTANT: fields with null=True — if not set on a specific instance,
+DjangoAvailabilityAdapter will automatically get defaults from BookingSettings.
 """
 
 from django.db import models
@@ -30,49 +30,49 @@ from django.utils.translation import gettext_lazy as _
 
 class BookableMasterMixin(models.Model):
     """
-    Миксин для модели исполнителя (мастер, специалист, ресурс).
+    Mixin for the performer model (master, specialist, resource).
 
-    Добавляет поля необходимые движку для корректного расчёта слотов.
-    Все поля nullable — если не заданы, адаптер использует глобальные
-    дефолты из BookingSettings.
+    Adds fields necessary for the engine to properly calculate slots.
+    All fields are nullable — if not set, the adapter uses global
+    defaults from BookingSettings.
 
-    Логика приоритетов (в DjangoAvailabilityAdapter):
-        master.work_start не None  → используем его
-        master.work_start is None  → берём BookingSettings.default_work_start_weekdays
+    Priority logic (in DjangoAvailabilityAdapter):
+        master.work_start is not None  -> use it
+        master.work_start is None      -> take BookingSettings.default_work_start_weekdays
 
-    Поля:
+    Fields:
         work_start (TimeField, nullable):
-            Начало рабочего дня мастера. Переопределяет глобальное расписание салона.
+            Start of the master's workday. Overrides the salon's global schedule.
 
         work_end (TimeField, nullable):
-            Конец рабочего дня мастера.
+            End of the master's workday.
 
         break_start (TimeField, nullable):
-            Начало перерыва (обед и т.п.). None = нет перерыва.
+            Start of break (lunch etc.). None = no break.
 
         break_end (TimeField, nullable):
-            Конец перерыва.
+            End of break.
 
         buffer_between_minutes (PositiveIntegerField, nullable):
-            Время в минутах между клиентами. Мастеру нужно это время
-            для подготовки к следующему клиенту (уборка, инструменты).
-            None → BookingSettings.default_buffer_between_minutes.
+            Time in minutes between clients. The master needs this time
+            to prepare for the next client (cleaning, instruments).
+            None -> BookingSettings.default_buffer_between_minutes.
 
         min_advance_minutes (PositiveIntegerField, nullable):
-            Минимум за сколько минут до начала можно записаться.
-            None → BookingSettings.default_min_advance_minutes.
+            Minimum minutes in advance a booking can be made.
+            None -> BookingSettings.default_min_advance_minutes.
 
         max_advance_days (PositiveIntegerField, nullable):
-            Горизонт записи в днях. Нельзя записаться дальше чем через N дней.
-            None → BookingSettings.default_max_advance_days.
+            Booking horizon in days. Cannot book further than N days ahead.
+            None -> BookingSettings.default_max_advance_days.
 
-    Пример использования в кабинете:
-        - Мастер А работает 9:00-18:00, без индивидуальных настроек → берём из салона
-        - Мастер Б работает 12:00-20:00 → задаём work_start=12:00, work_end=20:00
-        - Мастер В берёт 15 мин перерыв между клиентами → buffer_between_minutes=15
+    Usage example in the administration:
+        - Master A works 9:00-18:00, no individual settings -> take from the salon
+        - Master B works 12:00-20:00 -> set work_start=12:00, work_end=20:00
+        - Master C takes a 15 min break between clients -> buffer_between_minutes=15
     """
 
-    # Индивидуальный рабочий день (override SiteSettings глобального расписания)
+    # Individual workday (override SiteSettings global schedule)
     work_start = models.TimeField(
         null=True,
         blank=True,
@@ -86,7 +86,7 @@ class BookableMasterMixin(models.Model):
         help_text=_("Individual work end time. If empty, uses salon schedule."),
     )
 
-    # Перерыв (обед, личное время)
+    # Break (lunch, personal time)
     break_start = models.TimeField(
         null=True,
         blank=True,
@@ -100,7 +100,7 @@ class BookableMasterMixin(models.Model):
         help_text=_("Break end time."),
     )
 
-    # Буферы и горизонт записи
+    # Buffers and booking horizons
     buffer_between_minutes = models.PositiveIntegerField(
         null=True,
         blank=True,
@@ -139,36 +139,36 @@ class BookableMasterMixin(models.Model):
 
 class BookableServiceMixin(models.Model):
     """
-    Миксин для модели услуги.
+    Mixin for the service model.
 
-    Добавляет поля для корректного расчёта цепочек в ChainFinder.
+    Adds fields for proper chain calculation in ChainFinder.
 
-    Поля:
+    Fields:
         min_gap_after_minutes (PositiveIntegerField, default=0):
-            Минимальная пауза в минутах ПОСЛЕ этой услуги
-            перед следующей в цепочке.
+            Minimum pause in minutes AFTER this service
+            before the next one in the chain.
 
-            Примеры:
-                - Маникюр → Педикюр: min_gap_after_minutes=0 (сразу переходим)
-                - Покраска → Стрижка: min_gap_after_minutes=30 (ждём 30 мин)
-                - База → Верхнее покрытие: min_gap_after_minutes=15 (сушка)
+            Examples:
+                - Manicure -> Pedicure: min_gap_after_minutes=0 (move immediately)
+                - Coloring -> Haircut: min_gap_after_minutes=30 (wait 30 min)
+                - Base -> Top coat: min_gap_after_minutes=15 (drying)
 
-            ChainFinder учитывает это поле при поиске следующего слота:
+            ChainFinder considers this field when looking for the next slot:
             next_service.start >= current_service.end + min_gap_after_minutes
 
         parallel_ok (BooleanField, default=True):
-            Может ли эта услуга выполняться параллельно с другими услугами
-            в одной цепочке (разными мастерами одновременно).
-            True  → маникюр + педикюр одновременно — ОК.
-            False → услуга требует последовательного выполнения
-                    (например, после предыдущей: сушка → верхнее покрытие).
-            DjangoAvailabilityAdapter читает это поле и передаёт в ServiceRequest.parallel_group.
+            Can this service be performed in parallel with other services
+            in a single chain (by different masters simultaneously).
+            True  -> manicure + pedicure simultaneously is OK.
+            False -> service requires sequential execution
+                     (e.g. after the previous one: drying -> top coat).
+            DjangoAvailabilityAdapter reads this field and passes it to ServiceRequest.parallel_group.
 
-    Пример применения:
+    Usage example:
         class Service(BookableServiceMixin, models.Model):
             title = CharField(...)
             duration = PositiveIntegerField(...)
-            # + min_gap_after_minutes, parallel_ok добавлены миксином
+            # + min_gap_after_minutes, parallel_ok added by mixin
     """
 
     min_gap_after_minutes = models.PositiveIntegerField(

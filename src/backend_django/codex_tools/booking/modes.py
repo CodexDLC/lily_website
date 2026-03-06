@@ -1,9 +1,9 @@
 """
 codexn_tools.booking.modes
 ==========================
-Режимы работы движка бронирования.
+Operating modes for the booking engine.
 
-Импорт:
+Imports:
     from codexn_tools.booking import BookingMode
 """
 
@@ -12,27 +12,27 @@ from enum import StrEnum
 
 class BookingMode(StrEnum):
     """
-    Режим работы ChainFinder.
+    Operating mode for ChainFinder.
 
     SINGLE_DAY:
-        Все услуги из запроса укладываются в один день.
-        Движок ищет непрерывную (или с допустимыми паузами) цепочку слотов.
-        Самый частый режим — клиент хочет сделать несколько услуг за одно посещение.
+        All services from the request must fit within a single day.
+        The engine searches for a continuous (or with allowed gaps) chain of slots.
+        The most common mode — client wants multiple services in one visit.
 
     MULTI_DAY:
-        Каждая услуга может быть запланирована на отдельный день.
-        Заглушка — реализуется в следующей итерации.
-        find() с этим режимом вернёт EngineResult(solutions=[]).
+        Each service can be scheduled for a different day.
+        Stub — to be implemented in the next iteration.
+        Running find() with this mode will return EngineResult(solutions=[]).
 
     MASTER_LOCKED:
-        Запись к конкретному мастеру (например, с его личной страницы на сайте).
-        Работает как SINGLE_DAY, но ServiceRequest.possible_master_ids
-        содержит ровно один id — id выбранного мастера.
-        Движок не подбирает мастера — использует только указанного.
+        Booking for a specific professional (e.g., from their personal profile page).
+        Works like SINGLE_DAY, but ServiceRequest.possible_master_ids
+        contains exactly one id — the chosen professional's id.
+        The engine relies entirely on the provided master constraints.
 
-    Пример:
+    Example:
         mode = BookingMode.SINGLE_DAY
-        mode = BookingMode("single_day")   # тоже работает
+        mode = BookingMode("single_day")   # string cast works too
     """
 
     SINGLE_DAY = "single_day"

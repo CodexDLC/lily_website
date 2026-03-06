@@ -1,13 +1,13 @@
 """
-codexn_tools.booking.slot_calculator
+codex_tools.booking.slot_calculator
 ======================================
-Базовые операции со слотами внутри временных окон.
+Basic slot operations inside time windows.
 
-Это "математика без ORM" — работает с datetime объектами, не знает о Django.
-Используется внутри ChainFinder, а также может применяться независимо.
+This is "math without ORM" — works with datetime objects, does not know about Django.
+Used inside ChainFinder, and can also be applied independently.
 
-Импорт:
-    from codexn_tools.booking import SlotCalculator
+Imports:
+    from codex_tools.booking import SlotCalculator
 """
 
 from datetime import datetime, timedelta
@@ -15,37 +15,37 @@ from datetime import datetime, timedelta
 
 class SlotCalculator:
     """
-    Генератор слотов внутри свободного временного окна (sliding window).
+    Slot generator inside a free time window (sliding window).
 
-    Не зависит от ORM. Работает с datetime-объектами.
-    Ядро алгоритма — переработанная логика из SlotService V1,
-    вынесенная из Django-контекста.
+    Does not depend on ORM. Works with datetime objects.
+    The algorithm core is the reworked logic from SlotService V1,
+    extracted from the Django context.
 
-    Пример использования:
+    Example usage:
         calc = SlotCalculator(step_minutes=30)
 
-        # Получить все возможные слоты в окне с 9:00 до 12:00 для услуги 60 мин:
+        # Get all possible slots in a window from 9:00 to 12:00 for a 60 min service:
         slots = calc.find_slots_in_window(
             window_start=datetime(2024, 5, 10, 9, 0),
             window_end=datetime(2024, 5, 10, 12, 0),
             duration_minutes=60,
         )
-        # → [datetime(2024,5,10,9,0), datetime(2024,5,10,9,30), datetime(2024,5,10,10,0), ...]
+        # -> [datetime(2024,5,10,9,0), datetime(2024,5,10,9,30), datetime(2024,5,10,10,0), ...]
 
-        # Получить свободные окна из рабочего дня:
+        # Get free windows from a working day:
         windows = calc.merge_free_windows(
             work_start=datetime(2024,5,10,9,0),
             work_end=datetime(2024,5,10,18,0),
             busy_intervals=[(datetime(2024,5,10,10,0), datetime(2024,5,10,11,0))],
         )
-        # → [(9:00, 10:00), (11:00, 18:00)]
+        # -> [(9:00, 10:00), (11:00, 18:00)]
     """
 
     def __init__(self, step_minutes: int = 30) -> None:
         """
         Args:
-            step_minutes: Шаг сетки слотов в минутах. По умолчанию 30.
-                          Определяет с каким интервалом предлагаются слоты.
+            step_minutes: Grid slot step in minutes. Defaults to 30.
+                          Determines the interval at which slots are offered.
         """
         if step_minutes <= 0:
             raise ValueError(f"step_minutes должен быть > 0, получен: {step_minutes}")
@@ -60,26 +60,26 @@ class SlotCalculator:
         min_start: datetime | None = None,
     ) -> list[datetime]:
         """
-        Возвращает список возможных стартовых времён внутри окна.
+        Returns a list of possible start times within the window.
 
-        Алгоритм: скользящее окно (sliding window) с шагом self.step_minutes.
-        Каждый кандидат проверяется: помещается ли услуга [slot, slot+duration]
-        до конца окна.
+        Algorithm: sliding window with a step of self.step_minutes.
+        Each candidate is checked: does the service [slot, slot+duration]
+        fit within the end of the window.
 
         Args:
-            window_start: Начало свободного временного окна.
-            window_end: Конец свободного временного окна.
-            duration_minutes: Длительность услуги в минутах.
-            min_start: Минимально допустимое время начала (например, "не ранее чем
-                       через 15 минут от текущего времени"). None = без ограничения.
+            window_start: Start of the free time window.
+            window_end: End of the free time window.
+            duration_minutes: Duration of the service in minutes.
+            min_start: Minimum acceptable start time (e.g., "no earlier than
+                       15 minutes from the current time"). None = no limit.
 
         Returns:
-            Список datetime — возможные моменты начала услуги.
-            Пустой список если услуга не влезает в окно.
+            List of datetime — possible service start moments.
+            Empty list if the service does not fit in the window.
 
-        Пример:
-            # Окно 9:00-11:00, услуга 60 мин, шаг 30 мин:
-            # → [9:00, 9:30, 10:00]  (10:30 + 60 мин = 11:30, не влезает)
+        Example:
+            # Window 9:00-11:00, service 60 min, step 30 min:
+            # -> [9:00, 9:30, 10:00]  (10:30 + 60 min = 11:30, does not fit)
         """
         duration_delta = timedelta(minutes=duration_minutes)
 
@@ -107,70 +107,85 @@ class SlotCalculator:
         busy_intervals: list[tuple[datetime, datetime]],
         break_interval: tuple[datetime, datetime] | None = None,
         buffer_minutes: int = 0,
+        min_duration_minutes: int = 0,
     ) -> list[tuple[datetime, datetime]]:
         """
-        Вычисляет список свободных окон из рабочего дня.
+        Calculates a list of free windows from a working day.
 
-        Из промежутка [work_start, work_end] вычитает:
-        - busy_intervals (занятые записи)
-        - break_interval (обед/перерыв мастера)
-        - buffer_minutes (буфер после каждого занятого интервала)
+        Subtracts from the interval [work_start, work_end]:
+        - busy_intervals (booked appointments)
+        - break_interval (master's lunch/break)
+        - buffer_minutes (buffer after each booked interval)
 
         Args:
-            work_start: Начало рабочего дня мастера.
-            work_end: Конец рабочего дня мастера.
-            busy_intervals: Список занятых отрезков [(start, end), ...].
-                            Должны быть в пределах [work_start, work_end].
-                            Не требуют предварительной сортировки.
-            break_interval: Перерыв мастера (обед), tuple (start, end) или None.
-            buffer_minutes: Буфер в минутах добавляемый после каждой занятой записи.
-                            Даёт мастеру время на подготовку к следующему клиенту.
+            work_start: Start of the master's working day.
+            work_end: End of the master's working day.
+            busy_intervals: List of busy segments [(start, end), ...].
+                            Must be within [work_start, work_end].
+                            Do not require prior sorting.
+            break_interval: Master's break (lunch), tuple (start, end) or None.
+            buffer_minutes: Buffer in minutes added after each booked appointment.
+                            Gives the master time to prepare for the next client.
+            min_duration_minutes: Minimum window length. Windows shorter than this value
+                                  are discarded as "junk".
 
         Returns:
-            Список свободных окон [(start, end), ...] отсортированных по времени.
-            Окна с нулевой длиной не включаются.
+            List of free windows [(start, end), ...] sorted by time.
+            Windows with zero length are not included.
 
-        Пример:
-            # Рабочий день 9:00-18:00, запись 10:00-11:00, обед 13:00-14:00
+        Example:
+            # Work day 9:00-18:00, booked 10:00-11:00, lunch 13:00-14:00
             windows = calc.merge_free_windows(
                 work_start=dt(9,0), work_end=dt(18,0),
                 busy_intervals=[(dt(10,0), dt(11,0))],
                 break_interval=(dt(13,0), dt(14,0)),
                 buffer_minutes=10,
             )
-            # → [(9:00, 10:00), (11:10, 13:00), (14:00, 18:00)]
+            # -> [(9:00, 10:00), (11:10, 13:00), (14:00, 18:00)]
         """
         buffer_delta = timedelta(minutes=buffer_minutes)
 
-        # Собираем все "занятые" интервалы: записи + перерыв
+        # Collect all "busy" intervals: appointments + break
         blocked: list[tuple[datetime, datetime]] = []
         for b_start, b_end in busy_intervals:
-            # Применяем буфер после занятой записи
+            # Apply buffer after the booked appointment
             blocked.append((b_start, b_end + buffer_delta))
 
         if break_interval:
             blocked.append(break_interval)
 
-        # Сортируем и мёрджим пересекающиеся интервалы
+        # Sort and merge overlapping intervals
         blocked = self._merge_intervals(blocked)
 
-        # Вычисляем свободные окна
+        # Calculate free windows
         free_windows: list[tuple[datetime, datetime]] = []
         current_ptr = work_start
 
         for b_start, b_end in blocked:
-            # Отсекаем выход за рамки рабочего дня
+            # Cut off segments outside the working day
             b_start = max(b_start, work_start)
             b_end = min(b_end, work_end)
 
             if b_start > current_ptr:
+                # Junk window filter
+                if min_duration_minutes > 0:
+                    duration = (b_start - current_ptr).total_seconds() / 60
+                    if duration < min_duration_minutes:
+                        current_ptr = max(current_ptr, b_end)
+                        continue
+
                 free_windows.append((current_ptr, b_start))
 
             current_ptr = max(current_ptr, b_end)
 
-        # Остаток после последнего занятого блока
+        # Remaining time after the last busy block
         if current_ptr < work_end:
-            free_windows.append((current_ptr, work_end))
+            if min_duration_minutes > 0:
+                duration = (work_end - current_ptr).total_seconds() / 60
+                if duration >= min_duration_minutes:
+                    free_windows.append((current_ptr, work_end))
+            else:
+                free_windows.append((current_ptr, work_end))
 
         return free_windows
 
@@ -180,33 +195,33 @@ class SlotCalculator:
         min_gap_minutes: int,
     ) -> list[tuple[datetime, datetime, int]]:
         """
-        Находит все свободные окна минимальной длины в расписании мастера.
+        Finds all free windows of minimum length in the master's schedule.
 
-        Используется для:
-            - "Забить день мастера": найти свободные промежутки куда можно
-              поставить дополнительные записи (акция, последний слот перед уходом)
-            - Анализа загрузки: сколько свободного времени у мастера
-            - Уведомлений: мастер освободился на N минут → предложить клиенту
+        Used for:
+            - "Fill master's day": finding free gaps where additional
+              appointments can be placed (promo, last slot before leaving)
+            - Load analysis: how much free time the master has
+            - Notifications: master is free for N minutes -> offer to client
 
         Args:
-            free_windows: Свободные окна из MasterAvailability.free_windows
-                          (уже очищены от занятых записей).
-            min_gap_minutes: Минимальная длина окна в минутах.
-                             Окна короче этого значения не возвращаются.
+            free_windows: Free windows from MasterAvailability.free_windows
+                          (already cleared of busy appointments).
+            min_gap_minutes: Minimum window length in minutes.
+                             Windows shorter than this value are not returned.
 
         Returns:
-            Список (window_start, window_end, duration_minutes) — окна
-            длиннее min_gap_minutes, отсортированные по времени начала.
+            List (window_start, window_end, duration_minutes) — windows
+            longer than min_gap_minutes, sorted by start time.
 
-        Пример:
-            # Мастер свободен: 9:00-10:00, 11:30-14:00, 16:00-18:00
-            # Ищем окна >= 60 минут:
+        Example:
+            # Master is free: 9:00-10:00, 11:30-14:00, 16:00-18:00
+            # Search for windows >= 60 minutes:
             gaps = calc.find_gaps(free_windows, min_gap_minutes=60)
-            # → [(9:00, 10:00, 60), (11:30, 14:00, 150), (16:00, 18:00, 120)]
+            # -> [(9:00, 10:00, 60), (11:30, 14:00, 150), (16:00, 18:00, 120)]
 
-            # Ищем окна >= 90 минут:
+            # Search for windows >= 90 minutes:
             gaps = calc.find_gaps(free_windows, min_gap_minutes=90)
-            # → [(11:30, 14:00, 150), (16:00, 18:00, 120)]
+            # -> [(11:30, 14:00, 150), (16:00, 18:00, 120)]
         """
         result: list[tuple[datetime, datetime, int]] = []
 
@@ -226,51 +241,51 @@ class SlotCalculator:
         service_end: datetime,
     ) -> list[tuple[datetime, datetime]]:
         """
-        Разбивает свободное окно на части вокруг занятого отрезка услуги.
+        Splits a free window into parts around a booked service segment.
 
-        Используется при динамическом расчёте: "если поставить услугу сюда —
-        какие окна останутся свободными для следующих?"
+        Used for dynamic calculation: "if we put a service here —
+        what windows will remain free for the next ones?"
 
         Args:
-            window_start: Начало свободного окна.
-            window_end: Конец свободного окна.
-            service_start: Начало занятого отрезка (должен быть внутри окна).
-            service_end: Конец занятого отрезка (должен быть внутри окна).
+            window_start: Start of the free window.
+            window_end: End of the free window.
+            service_start: Start of the booked segment (must be inside the window).
+            service_end: End of the booked segment (must be inside the window).
 
         Returns:
-            Список оставшихся свободных окон (0, 1 или 2 элемента).
+            List of remaining free windows (0, 1, or 2 elements).
 
-        Пример:
-            # Окно 9:00-18:00, услуга 11:00-12:00:
+        Example:
+            # Window 9:00-18:00, service 11:00-12:00:
             split_window_by_service(9:00, 18:00, 11:00, 12:00)
-            # → [(9:00, 11:00), (12:00, 18:00)]
+            # -> [(9:00, 11:00), (12:00, 18:00)]
 
-            # Услуга в начале окна:
+            # Service at the start of the window:
             split_window_by_service(9:00, 18:00, 9:00, 11:00)
-            # → [(11:00, 18:00)]
+            # -> [(11:00, 18:00)]
         """
         remaining: list[tuple[datetime, datetime]] = []
 
-        # Часть до услуги
+        # Part before the service
         if service_start > window_start:
             remaining.append((window_start, service_start))
 
-        # Часть после услуги
+        # Part after the service
         if service_end < window_end:
             remaining.append((service_end, window_end))
 
         return remaining
 
     # ---------------------------------------------------------------------------
-    # Внутренние вспомогательные методы
+    # Internal helper methods
     # ---------------------------------------------------------------------------
 
     def _merge_intervals(self, intervals: list[tuple[datetime, datetime]]) -> list[tuple[datetime, datetime]]:
         """
-        Мёрджит пересекающиеся или смежные интервалы.
-        Возвращает отсортированный список непересекающихся интервалов.
+        Merges overlapping or adjacent intervals.
+        Returns a sorted list of non-overlapping intervals.
 
-        Внутренний метод. Используется в merge_free_windows.
+        Internal method. Used in merge_free_windows.
         """
         if not intervals:
             return []
@@ -281,7 +296,7 @@ class SlotCalculator:
         for start, end in sorted_intervals[1:]:
             last_start, last_end = merged[-1]
             if start <= last_end:
-                # Пересечение — расширяем текущий блок
+                # Overlap — expand current block
                 merged[-1] = (last_start, max(last_end, end))
             else:
                 merged.append((start, end))
@@ -290,13 +305,13 @@ class SlotCalculator:
 
     def _align_to_grid(self, target: datetime, grid_origin: datetime) -> datetime:
         """
-        Выравнивает target к ближайшему шагу сетки относительно grid_origin.
-        Возвращает первый момент сетки >= target.
+        Aligns target to the nearest grid step relative to grid_origin.
+        Returns the first grid moment >= target.
 
-        Внутренний метод. Используется для выравнивания min_start к сетке.
+        Internal method. Used to align min_start to the grid.
 
-        Пример (шаг 30 мин, origin 9:00, target 9:17):
-            → 9:30  (ближайший шаг >= 9:17)
+        Example (step 30 min, origin 9:00, target 9:17):
+            -> 9:30  (nearest step >= 9:17)
         """
         delta_seconds = (target - grid_origin).total_seconds()
         step_seconds = self._step_delta.total_seconds()
@@ -304,7 +319,7 @@ class SlotCalculator:
         if delta_seconds <= 0:
             return grid_origin
 
-        # Количество полных шагов
+        # Number of full steps
         full_steps = int(delta_seconds / step_seconds)
         aligned = grid_origin + timedelta(seconds=full_steps * step_seconds)
 

@@ -1,10 +1,10 @@
 """
 codex_tools.notifications.adapters.django_adapter
 ==================================================
-Реализация адаптера для Django.
+Adapter implementation for Django.
 
-Связывает универсальное ядро уведомлений с инфраструктурой Django.
-НЕ содержит жестких импортов из ядра проекта (core.*).
+Connects the universal notification core with Django infrastructure.
+Does NOT contain hard imports from the project core (core.*).
 """
 
 from collections.abc import Callable
@@ -16,18 +16,18 @@ from django.utils.translation import override
 
 class DjangoNotificationAdapter:
     """
-    Адаптер для интеграции Notification Engine в Django-проект.
+    Adapter for integrating the Notification Engine into a Django project.
     """
 
     def __init__(self, enqueue_func: Callable[[str, dict], Any]):
         """
         Args:
-            enqueue_func: Функция для постановки задачи в очередь (например, DjangoArqClient.enqueue_job).
+            enqueue_func: Function to enqueue the task (e.g., DjangoArqClient.enqueue_job).
         """
         self.enqueue_func = enqueue_func
 
     def enqueue(self, task_name: str, payload: dict) -> bool:
-        """Постановка задачи в очередь через переданную функцию."""
+        """Enqueue the task via the provided function."""
         try:
             self.enqueue_func(task_name, payload_dict=payload)
             return True
@@ -36,15 +36,15 @@ class DjangoNotificationAdapter:
 
     @staticmethod
     def get_cached_value(key: str) -> str | None:
-        """Получение текста из кэша Django."""
+        """Retrieving text from Django cache."""
         return cache.get(f"email_content_{key}")
 
     @staticmethod
     def set_cached_value(key: str, value: str, timeout: int):
-        """Сохранение текста в кэш Django."""
+        """Saving text to Django cache."""
         cache.set(f"email_content_{key}", value, timeout)
 
     @staticmethod
     def translation_override(lang: str):
-        """Контекстный менеджер для смены языка на лету."""
+        """Context manager for on-the-fly language switching."""
         return override(lang)

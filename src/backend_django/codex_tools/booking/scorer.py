@@ -1,17 +1,17 @@
 """
-codexn_tools.booking.scorer
+codex_tools.booking.scorer
 ============================
-Оценка и ранжирование решений движка бронирования.
+Evaluation and ranking of booking engine solutions.
 
-Чистый Python — никаких Django-зависимостей.
-Применяется ПОСЛЕ ChainFinder.find() для сортировки решений по качеству.
+Pure Python — no Django dependencies.
+Applied AFTER ChainFinder.find() to sort solutions by quality.
 
-Не влияет на алгоритм поиска — только на порядок вывода.
-BookingChainSolution.score устанавливается здесь.
+Does not affect the search algorithm — only the output order.
+BookingChainSolution.score is set here.
 
-Быстрый старт:
-    from codexn_tools.booking import ChainFinder
-    from codexn_tools.booking.scorer import BookingScorer, ScoringWeights
+Quick start:
+    from codex_tools.booking import ChainFinder
+    from codex_tools.booking.scorer import BookingScorer, ScoringWeights
 
     result = ChainFinder().find(request, availability)
 
@@ -20,7 +20,7 @@ BookingChainSolution.score устанавливается здесь.
         preferred_master_ids=["3", "7"],
     )
     ranked = scorer.score(result)
-    best = ranked.best  # решение с наивысшим score
+    best = ranked.best  # solution with the highest score
 """
 
 from dataclasses import dataclass
@@ -31,31 +31,31 @@ from .dto import BookingChainSolution, EngineResult
 @dataclass
 class ScoringWeights:
     """
-    Веса критериев оценки решения. Настраиваются под конкретный проект.
+    Weights for solution evaluation criteria. Configurable per project.
 
-    Все веса аддитивны: итоговый score = сумма применимых бонусов.
-    Более высокий score = более предпочтительное решение.
+    All weights are additive: total score = sum of applicable bonuses.
+    Higher score = more preferred solution.
 
-    Поля:
+    Fields:
         preferred_master_bonus (float):
-            Бонус за каждую услугу у предпочтительного мастера.
-            Передаётся через BookingScorer(preferred_master_ids=[...]).
-            Пример: клиент всегда ходит к Ане → preferred_master_ids=["3"].
+            Bonus for each service with a preferred master.
+            Passed via BookingScorer(preferred_master_ids=[...]).
+            Example: client always visits Anya -> preferred_master_ids=["3"].
 
         same_master_bonus (float):
-            Бонус если один мастер выполняет несколько услуг.
-            Уменьшает число пересадок клиента.
+            Bonus if one master performs multiple services.
+            Reduces the number of times the client must switch masters.
 
         min_idle_bonus_per_hour (float):
-            Бонус за каждый час минимального простоя между услугами.
-            Поощряет компактные цепочки.
+            Bonus for each hour of minimized idle time between services.
+            Encourages compact chains.
 
         early_slot_penalty_per_hour (float):
-            Штраф за каждый час от начала рабочего дня до первой услуги.
-            Поощряет ранние слоты (меньше = лучше).
-            Отрицательное значение здесь не нужно — вычитается автоматически.
+            Penalty for each hour from the start of the workday to the first service.
+            Encourages earlier slots (less index = better).
+            Negative value is not needed here — subtracted automatically.
 
-    Пример (поощрять раннее время И предпочтительного мастера):
+    Example (encourage early times AND preferred master):
         ScoringWeights(
             preferred_master_bonus=20.0,
             early_slot_penalty_per_hour=1.0,
@@ -70,25 +70,25 @@ class ScoringWeights:
 
 class BookingScorer:
     """
-    Оценивает решения движка и возвращает EngineResult с проставленными score.
+    Evaluates engine solutions and returns an EngineResult with populated scores.
 
-    Использование:
+    Usage:
         scorer = BookingScorer(
             weights=ScoringWeights(preferred_master_bonus=15.0),
             preferred_master_ids=["3", "7"],
         )
         ranked = scorer.score(result)
 
-        # Лучшее решение по score (не просто самое раннее):
+        # Best solution by score (not just the earliest):
         print(ranked.best.score)
         print(ranked.best.to_display())
 
-        # Все решения отсортированы по score (высокий → первый):
+        # All solutions sorted by score (highest -> first):
         for solution in ranked.solutions:
             print(solution.score, solution.starts_at)
 
-    Интеграция в Django-сервис:
-        # В v2_booking_service.py, после ChainFinder.find():
+    Integration in a Django service:
+        # In v2_booking_service.py, after ChainFinder.find():
         from features.booking.engine.scorer import BookingScorer
 
         scorer = BookingScorer(
@@ -107,73 +107,73 @@ class BookingScorer:
     ) -> None:
         """
         Args:
-            weights: Веса критериев. None = ScoringWeights() с дефолтами.
-            preferred_master_ids: Список id предпочтительных мастеров.
-                                  Строки (str(master.pk)).
-                                  При совпадении → preferred_master_bonus.
+            weights: Criteria weights. None = ScoringWeights() with defaults.
+            preferred_master_ids: List of IDs for preferred masters.
+                                  Must be strings (str(master.pk)).
+                                  On match -> preferred_master_bonus applied.
         """
         self.weights = weights or ScoringWeights()
         self.preferred_ids: set[str] = set(preferred_master_ids or [])
 
     def score(self, result: EngineResult) -> EngineResult:
         """
-        Проставляет score каждому решению и возвращает пересортированный EngineResult.
+        Populates a score for each solution and returns a re-sorted EngineResult.
 
-        Сортировка: по убыванию score (лучшее = первое = result.best).
-        Решения с одинаковым score сортируются по starts_at (раньше = лучше).
+        Sorting: descending by score (best = first = result.best).
+        Solutions with the same score are sorted by starts_at (earlier = better).
 
         Args:
-            result: EngineResult от ChainFinder.find().
+            result: EngineResult from ChainFinder.find().
 
         Returns:
-            Новый EngineResult (frozen=True → model_copy) с проставленными score
-            и решениями отсортированными по score DESC.
-            Пустой result возвращается без изменений.
+            New EngineResult (using frozen=True -> model_copy) with populated scores
+            and solutions sorted by score DESC.
+            If result is empty, it is returned unchanged.
         """
         if not result.solutions:
             return result
 
         scored = [self._score_solution(s) for s in result.solutions]
-        # Сортировка: score DESC, затем starts_at ASC (раньше лучше при равном score)
+        # Sorting: score DESC, then starts_at ASC (earlier is better on equal score)
         scored.sort(key=lambda s: (-s.score, s.starts_at))
 
         return result.model_copy(update={"solutions": scored})
 
     def _score_solution(self, solution: BookingChainSolution) -> BookingChainSolution:
-        """Рассчитывает score для одного решения."""
+        """Calculates score for a single solution."""
         score = 0.0
         w = self.weights
 
-        # --- Бонус за предпочтительного мастера ---
+        # --- Bonus for preferred master ---
         if self.preferred_ids:
             for item in solution.items:
                 if item.master_id in self.preferred_ids:
                     score += w.preferred_master_bonus
 
-        # --- Бонус за одного мастера на несколько услуг ---
+        # --- Bonus for one master carrying out multiple services ---
         if w.same_master_bonus > 0 and len(solution.items) > 1:
             master_counts: dict[str, int] = {}
             for item in solution.items:
                 master_counts[item.master_id] = master_counts.get(item.master_id, 0) + 1
-            # Бонус за каждую пару услуг у одного мастера
+            # Bonus for each pair of services with the same master
             for count in master_counts.values():
                 if count > 1:
                     score += w.same_master_bonus * (count - 1)
 
-        # --- Бонус за компактность цепочки (минимальный простой) ---
+        # --- Bonus for chain compactness (minimal idle time) ---
         if w.min_idle_bonus_per_hour > 0 and len(solution.items) > 1:
-            # Простой = span - суммарная длительность услуг
+            # Idle time = span - total service duration
             total_service_minutes = sum(item.duration_minutes for item in solution.items)
             idle_minutes = solution.span_minutes - total_service_minutes
             idle_hours = idle_minutes / 60.0
-            # Меньше простоя = выше бонус (максимум за 0 простоя)
+            # Less idle = higher bonus (max for 0 idle)
             max_idle_hours = solution.span_minutes / 60.0
             compactness = 1.0 - (idle_hours / max_idle_hours) if max_idle_hours > 0 else 1.0
             score += w.min_idle_bonus_per_hour * compactness * max_idle_hours
 
-        # --- Штраф за позднее начало (поощрение ранних слотов) ---
+        # --- Penalty for late start (encourages early slots) ---
         if w.early_slot_penalty_per_hour > 0:
-            # Считаем часы от начала дня (00:00) до starts_at
+            # Calculate hours from the start of the day (00:00) to starts_at
             starts_hour = solution.starts_at.hour + solution.starts_at.minute / 60.0
             score -= w.early_slot_penalty_per_hour * starts_hour
 

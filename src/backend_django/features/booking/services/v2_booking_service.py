@@ -121,7 +121,6 @@ class BookingV2Service:
 
         return dict(sorted(valid_starts.items()))
 
-    @transaction.atomic
     def create_group(
         self,
         client: Client,
@@ -135,9 +134,15 @@ class BookingV2Service:
         source: str = Appointment.SOURCE_WEBSITE,
         initial_status: str = Appointment.STATUS_PENDING,
     ) -> AppointmentGroup:
+        """
+        Создает группу записей с оптимистичной блокировкой.
+        Сначала ищет решение без блокировок, затем блокирует только выбранных мастеров и перепроверяет.
+        """
+        selected_start_time = self._normalize_time(selected_start_time)
         settings = BookingSettings.load()
         min_start = self._get_min_start(settings)
 
+        # 1. Строим запрос
         request = self._adapter.build_engine_request(
             service_ids=service_ids,
             target_date=target_date,
@@ -149,68 +154,111 @@ class BookingV2Service:
         if not request.service_requests:
             raise NoAvailabilityError(booking_date=target_date)
 
-        master_ids = self._collect_master_ids(request)
-        availability = self._adapter.build_masters_availability(master_ids, target_date)
+        # 2. Оптимистичный поиск (Snapshot Read)
+        # Собираем всех возможных мастеров, чтобы найти хоть какое-то решение
+        all_potential_master_ids = self._collect_master_ids(request)
 
-        restricted_availability = self._restrict_first_service_availability(
-            availability=availability,
+        # Получаем доступность без блокировки
+        snapshot_availability = self._adapter.build_masters_availability(all_potential_master_ids, target_date)
+
+        # Ограничиваем поиск выбранным временем старта
+        snapshot_restricted = self._restrict_first_service_availability(
+            availability=snapshot_availability,
             request=request,
             target_date=target_date,
             selected_start_time=selected_start_time,
         )
 
         finder = ChainFinder(step_minutes=self._step_minutes, min_start=min_start)
-        result = finder.find(request, restricted_availability, max_solutions=50)
+        snapshot_result = finder.find(request, snapshot_restricted, max_solutions=50)
 
-        if not result.has_solutions:
+        if not snapshot_result.has_solutions:
             raise NoAvailabilityError(
                 booking_date=target_date,
                 service_ids=[s.service_id for s in request.service_requests],
+                message="Выбранное время уже занято (snapshot check).",
             )
 
-        ranked_result = self._scorer.score(result)
-        chain = self._pick_chain_by_start_time(ranked_result, selected_start_time)
-        if not chain:
-            raise NoAvailabilityError(booking_date=target_date)
+        # Выбираем лучшее решение из snapshot-результатов
+        ranked_snapshot = self._scorer.score(snapshot_result)
+        best_chain = self._pick_chain_by_start_time(ranked_snapshot, selected_start_time)
 
-        total_duration = sum(item.duration_minutes for item in chain.items)
+        if not best_chain:
+            raise NoAvailabilityError(booking_date=target_date, message="Слот недоступен (snapshot check).")
 
-        group = AppointmentGroup.objects.create(
-            client=client,
-            booking_date=target_date,
-            status=initial_status,
-            engine_mode=mode.value,
-            total_duration_minutes=total_duration,
-            notes=notes,
-        )
+        # Определяем конкретных мастеров, которых нужно заблокировать
+        target_master_ids = [int(item.master_id) for item in best_chain.items]
 
-        services_map = {str(s.id): s for s in Service.objects.filter(id__in=service_ids)}
-        masters_map = {str(m.pk): m for m in Master.objects.filter(pk__in=master_ids)}
+        # 3. Атомарная блокировка и финальная проверка (Critical Section)
+        with transaction.atomic():
+            # Блокируем ТОЛЬКО участников сделки
+            self._adapter.lock_masters(target_master_ids)
 
-        for order, sol_item in enumerate(chain.items):
-            service = services_map.get(sol_item.service_id)
-            master = masters_map.get(sol_item.master_id)
+            # Получаем СВЕЖИЕ данные только по этим мастерам
+            fresh_availability = self._adapter.build_masters_availability(target_master_ids, target_date)
 
-            appointment = Appointment.objects.create(
+            # Снова ограничиваем временем старта
+            fresh_restricted = self._restrict_first_service_availability(
+                availability=fresh_availability,
+                request=request,
+                target_date=target_date,
+                selected_start_time=selected_start_time,
+            )
+
+            # Финальная проверка: сможет ли этот конкретный набор мастеров выполнить заказ?
+            # Важно: здесь мы уже не ищем "любого" мастера, мы проверяем конкретных,
+            # так как fresh_availability содержит ключи только target_master_ids.
+            final_result = finder.find(request, fresh_restricted, max_solutions=1)
+
+            if not final_result.has_solutions:
+                # Слот ушел за миллисекунды между snapshot и lock
+                # В теории можно было бы уйти на ретрай (попробовать других мастеров),
+                # но для простоты и надежности пока просто отказываем.
+                raise NoAvailabilityError(
+                    booking_date=target_date, message="К сожалению, выбранный слот только что был занят."
+                )
+
+            # Берем подтвержденное решение
+            final_chain = final_result.best
+
+            # 4. Создание записей
+            total_duration = sum(item.duration_minutes for item in final_chain.items)
+
+            group = AppointmentGroup.objects.create(
                 client=client,
-                master=master,
-                service=service,
-                datetime_start=sol_item.start_time,
-                duration_minutes=sol_item.duration_minutes,
+                booking_date=target_date,
                 status=initial_status,
-                source=source,
+                engine_mode=mode.value,
+                total_duration_minutes=total_duration,
+                notes=notes,
             )
 
-            AppointmentGroupItem.objects.create(
-                group=group,
-                appointment=appointment,
-                service=service,
-                order=order,
-            )
+            services_map = {str(s.id): s for s in Service.objects.filter(id__in=service_ids)}
+            masters_map = {str(m.pk): m for m in Master.objects.filter(pk__in=target_master_ids)}
+
+            for order, sol_item in enumerate(final_chain.items):
+                service = services_map.get(sol_item.service_id)
+                master = masters_map.get(sol_item.master_id)
+
+                appointment = Appointment.objects.create(
+                    client=client,
+                    master=master,
+                    service=service,
+                    datetime_start=sol_item.start_time,
+                    duration_minutes=sol_item.duration_minutes,
+                    status=initial_status,
+                    source=source,
+                )
+
+                AppointmentGroupItem.objects.create(
+                    group=group,
+                    appointment=appointment,
+                    service=service,
+                    order=order,
+                )
 
         return group
 
-    @transaction.atomic
     def reschedule_group(
         self,
         group_id: int,
@@ -218,9 +266,9 @@ class BookingV2Service:
         selected_start_time: str,
     ) -> AppointmentGroup:
         """
-        Переносит существующую группу на новую дату/время.
-        Использует ChainFinder для валидации всей цепочки.
+        Переносит существующую группу на новую дату/время с оптимистичной блокировкой.
         """
+        selected_start_time = self._normalize_time(selected_start_time)
         group = AppointmentGroup.objects.get(pk=group_id)
         items = list(group.items.all().order_by("order"))
 
@@ -233,49 +281,71 @@ class BookingV2Service:
             mode=BookingMode.SINGLE_DAY,
         )
 
-        master_ids = self._collect_master_ids(request)
-        availability = self._adapter.build_masters_availability(
-            master_ids, target_date, exclude_appointment_ids=appointment_ids
+        # 1. Optimistic Search
+        all_potential_ids = self._collect_master_ids(request)
+
+        snapshot_avail = self._adapter.build_masters_availability(
+            all_potential_ids, target_date, exclude_appointment_ids=appointment_ids
         )
 
-        restricted_availability = self._restrict_first_service_availability(
-            availability=availability,
+        snapshot_restricted = self._restrict_first_service_availability(
+            availability=snapshot_avail,
             request=request,
             target_date=target_date,
             selected_start_time=selected_start_time,
         )
 
         finder = ChainFinder(step_minutes=self._step_minutes, min_start=None)
-        result = finder.find(request, restricted_availability, max_solutions=50)
+        snapshot_result = finder.find(request, snapshot_restricted, max_solutions=50)
 
-        if not result.has_solutions:
-            raise NoAvailabilityError(
-                booking_date=target_date, message="Выбранное время недоступно для всей группы услуг."
-            )
+        if not snapshot_result.has_solutions:
+            raise NoAvailabilityError(booking_date=target_date, message="Время недоступно.")
 
-        ranked_result = self._scorer.score(result)
-        chain = self._pick_chain_by_start_time(ranked_result, selected_start_time)
+        ranked_snapshot = self._scorer.score(snapshot_result)
+        best_chain = self._pick_chain_by_start_time(ranked_snapshot, selected_start_time)
 
-        if not chain:
+        if not best_chain:
             raise NoAvailabilityError(booking_date=target_date)
 
-        masters_map = {str(m.pk): m for m in Master.objects.filter(pk__in=master_ids)}
+        target_master_ids = [int(item.master_id) for item in best_chain.items]
 
-        for i, sol_item in enumerate(chain.items):
-            appt = items[i].appointment
-            master = masters_map.get(sol_item.master_id)
+        # 2. Atomic Lock & Update
+        with transaction.atomic():
+            self._adapter.lock_masters(target_master_ids)
 
-            appt.datetime_start = sol_item.start_time
-            appt.master = master
-            appt.save(update_fields=["datetime_start", "master", "updated_at"])
+            fresh_avail = self._adapter.build_masters_availability(
+                target_master_ids, target_date, exclude_appointment_ids=appointment_ids
+            )
 
-        group.booking_date = target_date
-        group.save(update_fields=["booking_date", "updated_at"])
+            fresh_restricted = self._restrict_first_service_availability(
+                availability=fresh_avail,
+                request=request,
+                target_date=target_date,
+                selected_start_time=selected_start_time,
+            )
+
+            final_result = finder.find(request, fresh_restricted, max_solutions=1)
+
+            if not final_result.has_solutions:
+                raise NoAvailabilityError(booking_date=target_date, message="Слот был занят.")
+
+            final_chain = final_result.best
+            masters_map = {str(m.pk): m for m in Master.objects.filter(pk__in=target_master_ids)}
+
+            for i, sol_item in enumerate(final_chain.items):
+                appt = items[i].appointment
+                master = masters_map.get(sol_item.master_id)
+
+                appt.datetime_start = sol_item.start_time
+                appt.master = master
+                appt.save(update_fields=["datetime_start", "master", "updated_at"])
+
+            group.booking_date = target_date
+            group.save(update_fields=["booking_date", "updated_at"])
 
         log.info("BookingV2Service: Group #{} rescheduled to {} {}", group_id, target_date, selected_start_time)
         return group
 
-    @transaction.atomic
     def reschedule_single(
         self,
         appointment_id: int,
@@ -283,8 +353,9 @@ class BookingV2Service:
         selected_start_time: str,
     ) -> Appointment:
         """
-        Переносит ОДНУ запись на новую дату/время через V2 движок.
+        Переносит ОДНУ запись на новую дату/время через V2 движок с оптимистичной блокировкой.
         """
+        selected_start_time = self._normalize_time(selected_start_time)
         appointment = Appointment.objects.get(pk=appointment_id)
 
         request = self._adapter.build_engine_request(
@@ -293,31 +364,56 @@ class BookingV2Service:
             mode=BookingMode.SINGLE_DAY,
         )
 
-        master_ids = self._collect_master_ids(request)
-        availability = self._adapter.build_masters_availability(
-            master_ids, target_date, exclude_appointment_ids=[appointment.id]
+        # 1. Optimistic
+        all_potential_ids = self._collect_master_ids(request)
+
+        snapshot_avail = self._adapter.build_masters_availability(
+            all_potential_ids, target_date, exclude_appointment_ids=[appointment.id]
         )
 
-        restricted_availability = self._restrict_first_service_availability(
-            availability=availability,
+        snapshot_restricted = self._restrict_first_service_availability(
+            availability=snapshot_avail,
             request=request,
             target_date=target_date,
             selected_start_time=selected_start_time,
         )
 
         finder = ChainFinder(step_minutes=self._step_minutes, min_start=None)
-        result = finder.find(request, restricted_availability, max_solutions=1)
+        snapshot_result = finder.find(request, snapshot_restricted, max_solutions=1)
 
-        if not result.has_solutions:
-            raise NoAvailabilityError(booking_date=target_date, message="Выбранное время недоступно для этой услуги.")
+        if not snapshot_result.has_solutions:
+            raise NoAvailabilityError(booking_date=target_date, message="Время недоступно.")
 
-        solution = result.best
-        masters_map = {str(m.pk): m for m in Master.objects.filter(pk__in=master_ids)}
-        master = masters_map.get(solution.items[0].master_id)
+        best_chain = snapshot_result.best
+        target_master_ids = [int(item.master_id) for item in best_chain.items]
 
-        appointment.datetime_start = solution.items[0].start_time
-        appointment.master = master
-        appointment.save(update_fields=["datetime_start", "master", "updated_at"])
+        # 2. Atomic
+        with transaction.atomic():
+            self._adapter.lock_masters(target_master_ids)
+
+            fresh_avail = self._adapter.build_masters_availability(
+                target_master_ids, target_date, exclude_appointment_ids=[appointment.id]
+            )
+
+            fresh_restricted = self._restrict_first_service_availability(
+                availability=fresh_avail,
+                request=request,
+                target_date=target_date,
+                selected_start_time=selected_start_time,
+            )
+
+            final_result = finder.find(request, fresh_restricted, max_solutions=1)
+
+            if not final_result.has_solutions:
+                raise NoAvailabilityError(booking_date=target_date, message="Слот был занят.")
+
+            solution = final_result.best
+            masters_map = {str(m.pk): m for m in Master.objects.filter(pk__in=target_master_ids)}
+            master = masters_map.get(solution.items[0].master_id)
+
+            appointment.datetime_start = solution.items[0].start_time
+            appointment.master = master
+            appointment.save(update_fields=["datetime_start", "master", "updated_at"])
 
         log.info(
             "BookingV2Service: Appointment #{} rescheduled to {} {}", appointment_id, target_date, selected_start_time
@@ -326,6 +422,19 @@ class BookingV2Service:
 
     def _get_min_start(self, settings: BookingSettings) -> datetime:
         return timezone.localtime() + timedelta(minutes=settings.default_min_advance_minutes)
+
+    @staticmethod
+    def _normalize_time(time_str: str) -> str:
+        """
+        Гарантирует формат HH:MM (например, '9:00' -> '09:00').
+        Выбрасывает ValueError если формат неверный.
+        """
+        try:
+            # Парсим гибко, форматируем жестко
+            dt = datetime.strptime(time_str.strip(), "%H:%M")
+            return dt.strftime("%H:%M")
+        except ValueError as e:
+            raise ValueError(f"Неверный формат времени: {time_str}. Ожидается HH:MM.") from e
 
     @staticmethod
     def _collect_master_ids(request) -> list[int]:
@@ -353,6 +462,8 @@ class BookingV2Service:
             return availability
 
         service_0_req = request.service_requests[0]
+
+        # selected_start_time уже нормализован через _normalize_time
         selected_dt = timezone.make_aware(
             datetime.combine(
                 target_date,

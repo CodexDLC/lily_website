@@ -1,12 +1,12 @@
 """
 codexn_tools.booking.validators
 =================================
-Валидаторы корректности данных бронирования.
+Validators for ensuring booking data correctness.
 
-Используются ChainFinder-ом для проверки найденных решений,
-а также могут применяться независимо в тестах или сервисном слое.
+Used by ChainFinder to verify found solutions,
+and can also be used independently in tests or the service layer.
 
-Импорт:
+Imports:
     from codexn_tools.booking import BookingValidator
 """
 
@@ -17,26 +17,26 @@ from .dto import SingleServiceSolution
 
 class BookingValidator:
     """
-    Набор проверок корректности данных бронирования.
-    Не знает об ORM — работает с DTO.
+    A set of correctness checks for booking data.
+    Unaffected by the ORM — operates exclusively on DTOs.
 
-    Используется:
-        - ChainFinder: проверка отсутствия конфликтов в найденных цепочках.
-        - Адаптер: финальная проверка перед созданием Appointment в БД.
-        - Тесты: изолированная проверка логики без Django.
+    Used by:
+        - ChainFinder: Ensuring found chains have no conflicts.
+        - Adapter: Final verification before creating Appointment instances in the DB.
+        - Tests: Isolated logic verification without Django.
 
-    Пример:
+    Example:
         v = BookingValidator()
 
-        # Проверить что слот свободен:
+        # Check if a slot is free:
         ok = v.is_slot_free(
             slot_start=datetime(2024,5,10,10,0),
             slot_end=datetime(2024,5,10,11,0),
             busy_intervals=[(datetime(2024,5,10,9,0), datetime(2024,5,10,9,30))],
         )
-        # → True (нет пересечения)
+        # → True (no overlap)
 
-        # Проверить всю цепочку на конфликты:
+        # Check entire chain for conflicts:
         ok = v.no_conflicts(solutions)
     """
 
@@ -47,25 +47,25 @@ class BookingValidator:
         busy_intervals: list[tuple[datetime, datetime]],
     ) -> bool:
         """
-        Проверяет что слот [slot_start, slot_end) не пересекается
-        ни с одним из занятых интервалов.
+        Verifies that the slot [slot_start, slot_end) does not overlap
+        with any of the busy intervals.
 
-        Использует "открытый конец" — [start, end), то есть если slot_end == busy_start,
-        это НЕ считается конфликтом (смежные слоты допустимы).
+        Uses a "half-open" interval — [start, end). If slot_end == busy_start,
+        it is NOT considered a conflict (adjacent slots are allowed).
 
         Args:
-            slot_start: Начало проверяемого слота.
-            slot_end: Конец проверяемого слота.
-            busy_intervals: Список занятых отрезков [(start, end), ...].
+            slot_start: Start of the slot to check.
+            slot_end: End of the slot to check.
+            busy_intervals: List of busy intervals [(start, end), ...].
 
         Returns:
-            True если слот свободен. False если есть пересечение.
+            True if the slot is free. False if there is an overlap.
 
-        Пример:
-            # Занято 10:00-11:00. Хотим 10:30-11:30 → конфликт:
+        Example:
+            # Busy 10:00-11:00. Requesting 10:30-11:30 → conflict:
             is_slot_free(10:30, 11:30, [(10:00, 11:00)]) → False
 
-            # Хотим 11:00-12:00 → OK (смежные):
+            # Requesting 11:00-12:00 → OK (adjacent slots):
             is_slot_free(11:00, 12:00, [(10:00, 11:00)]) → True
         """
         return all(not (slot_start < busy_end and slot_end > busy_start) for busy_start, busy_end in busy_intervals)
@@ -75,26 +75,26 @@ class BookingValidator:
         solutions: list[SingleServiceSolution],
     ) -> bool:
         """
-        Проверяет что в наборе решений нет конфликтов по мастерам.
-        Один мастер не может быть занят двумя услугами одновременно.
+        Verifies that there are no master conflicts within a set of solutions.
+        A professional cannot be occupied by two services simultaneously.
 
-        Группирует решения по master_id и проверяет каждую группу на пересечения.
-        Используется ChainFinder после сборки цепочки для финальной проверки.
+        Groups solutions by master_id and checks each group for overlaps.
+        Used by ChainFinder after assembling the chain for final verification.
 
         Args:
-            solutions: Список SingleServiceSolution — найденных слотов.
+            solutions: List of SingleServiceSolution objects (found slots).
 
         Returns:
-            True если конфликтов нет. False если хотя бы один мастер занят дважды.
+            True if no conflicts exist. False if at least one professional is double-booked.
 
-        Пример:
+        Example:
             no_conflicts([
                 SingleServiceSolution(master_id="1", start=9:00, gap_end=10:10),
                 SingleServiceSolution(master_id="1", start=10:10, gap_end=11:10),
             ])
-            # → True (слоты смежные, нет пересечения)
+            # → True (slots are adjacent, no overlap)
         """
-        # Группируем по мастерам
+        # Group by master
         by_master: dict[str, list[SingleServiceSolution]] = {}
         for sol in solutions:
             by_master.setdefault(sol.master_id, []).append(sol)
@@ -102,12 +102,12 @@ class BookingValidator:
         for _master_id, master_solutions in by_master.items():
             if len(master_solutions) < 2:
                 continue
-            # Сортируем по времени начала
+            # Sort by start time
             sorted_sols = sorted(master_solutions, key=lambda s: s.start_time)
             for i in range(len(sorted_sols) - 1):
                 current = sorted_sols[i]
                 next_sol = sorted_sols[i + 1]
-                # gap_end_time учитывает паузу — следующий должен начаться после неё
+                # gap_end_time includes the buffer — the next one must start after it
                 if next_sol.start_time < current.gap_end_time:
                     return False
 
@@ -119,16 +119,16 @@ class BookingValidator:
         free_windows: list[tuple[datetime, datetime]],
     ) -> bool:
         """
-        Проверяет что слот решения [start_time, gap_end_time) находится
-        внутри одного из свободных окон мастера.
+        Verifies that a solution's slot [start_time, gap_end_time) fits entirely
+        inside one of the professional's free windows.
 
-        Используется ChainFinder для верификации каждого найденного слота.
+        Used by ChainFinder to verify each found slot.
 
         Args:
-            solution: Найденный слот для одной услуги.
-            free_windows: Свободные окна мастера (из MasterAvailability).
+            solution: Found slot for a single service.
+            free_windows: Professional's free windows (from MasterAvailability).
 
         Returns:
-            True если слот помещается в одно из окон.
+            True if the slot fits perfectly inside one of the given free windows.
         """
         return any(solution.start_time >= w_start and solution.gap_end_time <= w_end for w_start, w_end in free_windows)

@@ -1,10 +1,10 @@
 """
 codex_tools.booking.adapters.django_adapter
 =============================================
-Универсальный адаптер для Django.
+Universal adapter for Django.
 
-НЕ содержит импортов из конкретных фич проекта.
-Работает с любыми моделями, реализующими интерфейс бронирования.
+Does NOT contain imports from specific project features.
+Works with any models implementing the booking interface.
 """
 
 from datetime import date, datetime, time, timedelta
@@ -24,10 +24,10 @@ from django.utils import timezone
 
 class DjangoAvailabilityAdapter:
     """
-    Универсальный мост между Django ORM и движком бронирования.
+    Universal bridge between Django ORM and the booking engine.
 
-    Все модели передаются при инициализации, что делает адаптер
-    пригодным для использования в любом проекте.
+    All models are passed upon initialization, making the adapter
+    suitable for use in any project.
     """
 
     def __init__(
@@ -39,16 +39,19 @@ class DjangoAvailabilityAdapter:
         booking_settings_model: type[Any],
         site_settings_model: type[Any],
         step_minutes: int = 30,
+        appointment_status_filter: list[str] | None = None,
     ) -> None:
         """
         Args:
-            master_model: Класс модели Мастера.
-            appointment_model: Класс модели Записи.
-            service_model: Класс модели Услуги.
-            day_off_model: Класс модели Выходных.
-            booking_settings_model: Класс настроек бронирования.
-            site_settings_model: Класс общих настроек сайта.
-            step_minutes: Шаг сетки слотов.
+            master_model: Master model class.
+            appointment_model: Appointment model class.
+            service_model: Service model class.
+            day_off_model: Day Off model class.
+            booking_settings_model: Booking Settings model class.
+            site_settings_model: Global Site Settings model class.
+            step_minutes: Time grid step size.
+            appointment_status_filter: List of statuses considered "busy".
+                                       If None, the default ones (PENDING, CONFIRMED) are used.
         """
         self.master_model = master_model
         self.appointment_model = appointment_model
@@ -60,7 +63,21 @@ class DjangoAvailabilityAdapter:
         self.step_minutes = step_minutes
         self._calc = SlotCalculator(step_minutes)
 
-        # Кэш настроек внутри инстанса
+        # If the filter is not passed, try to guess (for backward compatibility)
+        # But it is better to pass it explicitly.
+        if appointment_status_filter:
+            self.appointment_status_filter = appointment_status_filter
+        else:
+            # Fallback to defaults if model has these constants
+            self.appointment_status_filter = [
+                getattr(appointment_model, "STATUS_PENDING", "pending"),
+                getattr(appointment_model, "STATUS_CONFIRMED", "confirmed"),
+            ]
+            # Optionally add RESCHEDULE_PROPOSED if it exists
+            if hasattr(appointment_model, "STATUS_RESCHEDULE_PROPOSED"):
+                self.appointment_status_filter.append(appointment_model.STATUS_RESCHEDULE_PROPOSED)
+
+        # Cache settings inside the instance
         self._booking_settings = None
         self._site_settings = None
 
@@ -72,7 +89,7 @@ class DjangoAvailabilityAdapter:
         locked_master_id: int | None = None,
         master_selections: dict[str, str] | None = None,
     ) -> BookingEngineRequest:
-        """Строит запрос к движку, используя переданные модели."""
+        """Builds an engine request using the passed models."""
         services = self.service_model.objects.filter(id__in=service_ids).select_related("category")
         service_map = {s.id: s for s in services}
 
@@ -130,14 +147,14 @@ class DjangoAvailabilityAdapter:
         exclude_appointment_ids: list[int] | None = None,
     ) -> dict[str, MasterAvailability]:
         """
-        Вычисляет доступность, используя переданные модели.
+        Calculates availability using the passed models.
 
         Args:
-            master_ids: Список ID мастеров.
-            target_date: Дата.
-            cache_ttl: Время жизни кэша.
-            exclude_appointment_ids: Список ID записей, которые нужно игнорировать
-                                     (используется при переносе записей).
+            master_ids: List of master IDs.
+            target_date: Target date.
+            cache_ttl: Cache TTL.
+            exclude_appointment_ids: List of appointment IDs to ignore
+                                     (used when rescheduling).
         """
         cache_key = None
         if cache_ttl > 0 and not exclude_appointment_ids:
@@ -156,20 +173,16 @@ class DjangoAvailabilityAdapter:
             )
         )
 
-        # Фильтр записей
+        # Filter appointments (using self.appointment_status_filter)
         appt_filter = {
             "master_id__in": master_ids,
             "datetime_start__date": target_date,
-            "status__in": [
-                self.appointment_model.STATUS_PENDING,
-                self.appointment_model.STATUS_CONFIRMED,
-                self.appointment_model.STATUS_RESCHEDULE_PROPOSED,
-            ],
+            "status__in": self.appointment_status_filter,
         }
 
         appointments_qs = self.appointment_model.objects.filter(**appt_filter)
 
-        # Исключаем записи, если нужно (для корректного переноса на то же время)
+        # Exclude appointments if needed (to accurately reschedule to the same time)
         if exclude_appointment_ids:
             appointments_qs = appointments_qs.exclude(id__in=exclude_appointment_ids)
 
@@ -177,7 +190,8 @@ class DjangoAvailabilityAdapter:
 
         busy_by_master: dict[int, list[tuple[datetime, datetime]]] = {mid: [] for mid in master_ids}
         for app in appointments:
-            s = timezone.localtime(app.datetime_start)
+            # Clear seconds and microseconds for clean calculations
+            s = timezone.localtime(app.datetime_start).replace(second=0, microsecond=0)
             e = s + timedelta(minutes=app.duration_minutes)
             busy_by_master[app.master_id].append((s, e))
 
@@ -204,6 +218,7 @@ class DjangoAvailabilityAdapter:
                 busy_intervals=busy_by_master.get(master.pk, []),
                 break_interval=break_interval,
                 buffer_minutes=buffer,
+                min_duration_minutes=self.step_minutes,  # Filter out useless garbage windows
             )
 
             result[str(master.pk)] = MasterAvailability(
@@ -217,15 +232,31 @@ class DjangoAvailabilityAdapter:
 
         return result
 
+    def lock_masters(self, master_ids: list[int]) -> None:
+        """
+        Locks master rows in the DB for atomic availability check.
+        Must be called within transaction.atomic().
+        Uses list() to force the execution of the query.
+        """
+        if not master_ids:
+            return
+        # Sorting IDs is important to prevent deadlocks
+        sorted_ids = sorted(master_ids)
+        list(self.master_model.objects.select_for_update().filter(pk__in=sorted_ids))
+
     def result_to_slots_map(self, result: EngineResult) -> dict[str, bool]:
         times = result.get_unique_start_times()
         return {t: True for t in times}
 
     # ---------------------------------------------------------------------------
-    # Внутренние методы (используют self.models)
+    # Internal methods (use self.models)
     # ---------------------------------------------------------------------------
 
     def _get_master_working_hours(self, master, target_date: date) -> tuple[time, time] | None:
+        """
+        Determines the working hours of the master.
+        Can be overridden in a subclass for custom logic.
+        """
         weekday = target_date.weekday()
         if master.work_days and weekday not in master.work_days:
             return None
@@ -245,6 +276,10 @@ class DjangoAvailabilityAdapter:
             return None
 
     def _get_break_interval(self, master, target_date: date) -> tuple[datetime, datetime] | None:
+        """
+        Determines the master's break.
+        Can be overridden in a subclass.
+        """
         break_start = getattr(master, "break_start", None)
         break_end = getattr(master, "break_end", None)
 

@@ -1,36 +1,36 @@
 """
 codex_tools.common.phone
 ========================
-Универсальные инструменты для работы с телефонными номерами.
-Не зависит от Django.
+Universal tools for working with phone numbers.
+Framework-agnostic (does not depend on Django).
 """
 
 
 def normalize_phone(phone: str) -> str:
     """
-    Приводит номер телефона к каноническому формату: только цифры, без плюса.
+    Brings a phone number to a canonical format: only digits, no plus sign.
 
-    Логика:
-    1. Оставить только цифры.
-    2. Если начинается с '0' (немецкий местный формат), заменить '0' на '49'.
-    3. В остальных случаях вернуть только цифры (предполагая, что код страны уже есть).
+    Logic:
+    1. Keep only digits.
+    2. If it starts with '0' (German local format), replace '0' with '49'.
+    3. Otherwise, return only digits (assuming the country code is already present).
 
-    Пример:
+    Example:
     '0151 1234567' -> '491511234567'
     '+49 151 1234567' -> '491511234567'
     """
     if not phone:
         return ""
 
-    # 1. Только цифры
+    # 1. Only digits
     digits = "".join(filter(str.isdigit, phone))
 
     if not digits:
         return ""
 
-    # 2. Обработка местного немецкого формата (0...)
+    # 2. Handle local German format (0...)
     if digits.startswith("0") and len(digits) >= 10:
         return "49" + digits[1:]
 
-    # 3. Возвращаем как есть (предполагаем международный формат)
+    # 3. Return as is (assuming international format)
     return digits

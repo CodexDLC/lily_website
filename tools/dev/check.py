@@ -152,7 +152,8 @@ def check_types():
 def run_tests():
     print_step("Running Unit Tests (Pytest)")
     os.environ["SECRET_KEY"] = "local_test_key"  # pragma: allowlist secret
-    return run_command("poetry run pytest src -m unit -v")[0]
+    # Run ALL tests locally (removed -m unit filter)
+    return run_command("poetry run pytest src -v")[0]
 
 
 def run_docker_validation():
