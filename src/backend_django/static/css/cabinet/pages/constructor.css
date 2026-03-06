@@ -24,6 +24,21 @@
     min-height: 0;
 }
 
+/* Ensure blocks are flex containers to support internal scrollers */
+.constructor-grid > .c-cabinet-block {
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Critical for nested flex scrolling */
+}
+
+/* Internal scroller must take remaining space and enable scrolling */
+.constructor-grid .c-cabinet-scroller {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 8px;
+}
+
 /* --- Block 1: Services Grid (base — MUST be before media queries) --- */
 .services-grid {
     display: grid;
@@ -159,6 +174,7 @@
     padding-bottom: 20px;
     margin-bottom: 10px;
     border-bottom: 1px solid rgba(237, 208, 113, 0.15);
+    flex-shrink: 0; /* Header should not shrink */
 }
 
 .constructor-header-top-row {
