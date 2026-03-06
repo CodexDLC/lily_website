@@ -107,6 +107,7 @@ class SlotCalculator:
         busy_intervals: list[tuple[datetime, datetime]],
         break_interval: tuple[datetime, datetime] | None = None,
         buffer_minutes: int = 0,
+        min_duration_minutes: int = 0,
     ) -> list[tuple[datetime, datetime]]:
         """
         Вычисляет список свободных окон из рабочего дня.
@@ -125,6 +126,8 @@ class SlotCalculator:
             break_interval: Перерыв мастера (обед), tuple (start, end) или None.
             buffer_minutes: Буфер в минутах добавляемый после каждой занятой записи.
                             Даёт мастеру время на подготовку к следующему клиенту.
+            min_duration_minutes: Минимальная длина окна. Окна короче этого значения
+                                  отбрасываются как "мусорные".
 
         Returns:
             Список свободных окон [(start, end), ...] отсортированных по времени.
@@ -164,13 +167,25 @@ class SlotCalculator:
             b_end = min(b_end, work_end)
 
             if b_start > current_ptr:
+                # Фильтр мусорных окон
+                if min_duration_minutes > 0:
+                    duration = (b_start - current_ptr).total_seconds() / 60
+                    if duration < min_duration_minutes:
+                        current_ptr = max(current_ptr, b_end)
+                        continue
+
                 free_windows.append((current_ptr, b_start))
 
             current_ptr = max(current_ptr, b_end)
 
         # Остаток после последнего занятого блока
         if current_ptr < work_end:
-            free_windows.append((current_ptr, work_end))
+            if min_duration_minutes > 0:
+                duration = (work_end - current_ptr).total_seconds() / 60
+                if duration >= min_duration_minutes:
+                    free_windows.append((current_ptr, work_end))
+            else:
+                free_windows.append((current_ptr, work_end))
 
         return free_windows
 

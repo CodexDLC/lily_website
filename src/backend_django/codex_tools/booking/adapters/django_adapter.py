@@ -39,6 +39,7 @@ class DjangoAvailabilityAdapter:
         booking_settings_model: type[Any],
         site_settings_model: type[Any],
         step_minutes: int = 30,
+        appointment_status_filter: list[str] | None = None,
     ) -> None:
         """
         Args:
@@ -49,6 +50,8 @@ class DjangoAvailabilityAdapter:
             booking_settings_model: Класс настроек бронирования.
             site_settings_model: Класс общих настроек сайта.
             step_minutes: Шаг сетки слотов.
+            appointment_status_filter: Список статусов, которые считаются "занятыми".
+                                       Если None, используются дефолтные (PENDING, CONFIRMED).
         """
         self.master_model = master_model
         self.appointment_model = appointment_model
@@ -59,6 +62,20 @@ class DjangoAvailabilityAdapter:
 
         self.step_minutes = step_minutes
         self._calc = SlotCalculator(step_minutes)
+
+        # Если фильтр не передан, пытаемся угадать (для обратной совместимости)
+        # Но лучше передавать явно.
+        if appointment_status_filter:
+            self.appointment_status_filter = appointment_status_filter
+        else:
+            # Fallback to defaults if model has these constants
+            self.appointment_status_filter = [
+                getattr(appointment_model, "STATUS_PENDING", "pending"),
+                getattr(appointment_model, "STATUS_CONFIRMED", "confirmed"),
+            ]
+            # Опционально добавляем RESCHEDULE_PROPOSED если он есть
+            if hasattr(appointment_model, "STATUS_RESCHEDULE_PROPOSED"):
+                self.appointment_status_filter.append(appointment_model.STATUS_RESCHEDULE_PROPOSED)
 
         # Кэш настроек внутри инстанса
         self._booking_settings = None
@@ -156,15 +173,11 @@ class DjangoAvailabilityAdapter:
             )
         )
 
-        # Фильтр записей
+        # Фильтр записей (используем self.appointment_status_filter)
         appt_filter = {
             "master_id__in": master_ids,
             "datetime_start__date": target_date,
-            "status__in": [
-                self.appointment_model.STATUS_PENDING,
-                self.appointment_model.STATUS_CONFIRMED,
-                self.appointment_model.STATUS_RESCHEDULE_PROPOSED,
-            ],
+            "status__in": self.appointment_status_filter,
         }
 
         appointments_qs = self.appointment_model.objects.filter(**appt_filter)
@@ -177,7 +190,8 @@ class DjangoAvailabilityAdapter:
 
         busy_by_master: dict[int, list[tuple[datetime, datetime]]] = {mid: [] for mid in master_ids}
         for app in appointments:
-            s = timezone.localtime(app.datetime_start)
+            # Очистка секунд и микросекунд для чистоты расчетов
+            s = timezone.localtime(app.datetime_start).replace(second=0, microsecond=0)
             e = s + timedelta(minutes=app.duration_minutes)
             busy_by_master[app.master_id].append((s, e))
 
@@ -204,6 +218,7 @@ class DjangoAvailabilityAdapter:
                 busy_intervals=busy_by_master.get(master.pk, []),
                 break_interval=break_interval,
                 buffer_minutes=buffer,
+                min_duration_minutes=self.step_minutes,  # Фильтр мусорных окон
             )
 
             result[str(master.pk)] = MasterAvailability(
@@ -217,6 +232,18 @@ class DjangoAvailabilityAdapter:
 
         return result
 
+    def lock_masters(self, master_ids: list[int]) -> None:
+        """
+        Блокирует строки мастеров в БД для атомарной проверки доступности.
+        Должен вызываться внутри transaction.atomic().
+        Использует list() для принудительного выполнения запроса.
+        """
+        if not master_ids:
+            return
+        # Сортировка ID важна для предотвращения deadlocks
+        sorted_ids = sorted(master_ids)
+        list(self.master_model.objects.select_for_update().filter(pk__in=sorted_ids))
+
     def result_to_slots_map(self, result: EngineResult) -> dict[str, bool]:
         times = result.get_unique_start_times()
         return {t: True for t in times}
@@ -226,6 +253,10 @@ class DjangoAvailabilityAdapter:
     # ---------------------------------------------------------------------------
 
     def _get_master_working_hours(self, master, target_date: date) -> tuple[time, time] | None:
+        """
+        Определяет рабочие часы мастера.
+        Можно переопределить в наследнике для кастомной логики.
+        """
         weekday = target_date.weekday()
         if master.work_days and weekday not in master.work_days:
             return None
@@ -245,6 +276,10 @@ class DjangoAvailabilityAdapter:
             return None
 
     def _get_break_interval(self, master, target_date: date) -> tuple[datetime, datetime] | None:
+        """
+        Определяет перерыв мастера.
+        Можно переопределить в наследнике.
+        """
         break_start = getattr(master, "break_start", None)
         break_end = getattr(master, "break_end", None)
 

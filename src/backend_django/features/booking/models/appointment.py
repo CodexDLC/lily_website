@@ -196,16 +196,20 @@ class Appointment(TimestampMixin, models.Model):
 
     def clean(self):
         """Validate no double-booking"""
-        if not self.pk:  # Only for new appointments
-            conflicts = Appointment.objects.filter(
-                master=self.master,
-                datetime_start__lt=self.datetime_end,
-                datetime_start__gt=self.datetime_start - timedelta(minutes=self.duration_minutes or 60),
-                status__in=[self.STATUS_PENDING, self.STATUS_CONFIRMED, self.STATUS_RESCHEDULE_PROPOSED],
-            ).exists()
+        # Проверка нахлестов с другими записями
+        conflicts = Appointment.objects.filter(
+            master=self.master,
+            datetime_start__lt=self.datetime_end,
+            datetime_start__gt=self.datetime_start - timedelta(minutes=self.duration_minutes or 60),
+            status__in=[self.STATUS_PENDING, self.STATUS_CONFIRMED, self.STATUS_RESCHEDULE_PROPOSED],
+        )
 
-            if conflicts:
-                raise ValidationError({"datetime_start": _("This time slot is already booked.")})
+        # Исключаем саму себя при редактировании
+        if self.pk:
+            conflicts = conflicts.exclude(pk=self.pk)
+
+        if conflicts.exists():
+            raise ValidationError({"datetime_start": _("This time slot is already booked.")})
 
     @property
     def datetime_end(self):

@@ -46,6 +46,7 @@ class _SlotCandidate:
         "start_time",
         "end_time",
         "gap_end_time",
+        "parallel_group",
     )
 
     def __init__(
@@ -55,12 +56,14 @@ class _SlotCandidate:
         start_time: datetime,
         end_time: datetime,
         gap_end_time: datetime,
+        parallel_group: str | None = None,
     ) -> None:
         self.service_id = service_id
         self.master_id = master_id
         self.start_time = start_time
         self.end_time = end_time
         self.gap_end_time = gap_end_time
+        self.parallel_group = parallel_group
 
     def to_solution(self) -> SingleServiceSolution:
         """Конвертирует в Pydantic DTO для финального результата."""
@@ -149,10 +152,15 @@ class ChainFinder:
             EngineResult с найденными решениями.
             solutions отсортированы по времени начала первой услуги.
         """
+        # Fail Fast: Проверка неподдерживаемых фич
+        if request.group_size > 1:
+            raise NotImplementedError("Group bookings (group_size > 1) are not yet supported.")
+
+        if request.mode == BookingMode.MULTI_DAY:
+            raise NotImplementedError("MULTI_DAY booking mode is not yet implemented.")
+
         if request.mode in (BookingMode.SINGLE_DAY, BookingMode.MASTER_LOCKED):
             solutions = self._find_single_day(request, masters_availability, max_solutions, max_unique_starts)
-        elif request.mode == BookingMode.MULTI_DAY:
-            solutions = []  # TODO: реализовать MULTI_DAY
         else:
             solutions = []
 
@@ -264,6 +272,16 @@ class ChainFinder:
             duration_delta = timedelta(minutes=service_req.duration_minutes)
             gap_delta = timedelta(minutes=service_req.min_gap_after_minutes)
 
+            # --- Parallel Group Logic ---
+            # Если у текущей услуги есть parallel_group, ищем "напарника" в уже собранной цепочке.
+            # Если находим, то время старта должно строго совпадать.
+            forced_start_time: datetime | None = None
+            if service_req.parallel_group:
+                for item in chain:
+                    if item.parallel_group == service_req.parallel_group:
+                        forced_start_time = item.start_time
+                        break
+
             for master_id in service_req.possible_master_ids:
                 availability = masters_availability.get(master_id)
                 if not availability:
@@ -272,6 +290,42 @@ class ChainFinder:
                 # Занятые интервалы этого мастера в текущей цепочке
                 master_busy = [(c.start_time, c.gap_end_time) for c in chain if c.master_id == master_id]
 
+                # Если есть forced_start_time, проверяем только его
+                if forced_start_time:
+                    # Проверяем, свободен ли мастер в это конкретное время
+                    slot_end = forced_start_time + duration_delta
+                    gap_end = slot_end + gap_delta
+
+                    # 1. Проверка занятости мастера в цепочке
+                    if not self._is_slot_free_fast(forced_start_time, gap_end, master_busy):
+                        continue
+
+                    # 2. Проверка попадания в свободные окна мастера
+                    in_window = False
+                    for w_start, w_end in availability.free_windows:
+                        if w_start <= forced_start_time and w_end >= slot_end:
+                            in_window = True
+                            break
+
+                    if not in_window:
+                        continue
+
+                    # Если все ок - добавляем и идем дальше
+                    chain.append(
+                        _SlotCandidate(
+                            service_id=service_req.service_id,
+                            master_id=master_id,
+                            start_time=forced_start_time,
+                            end_time=slot_end,
+                            gap_end_time=gap_end,
+                            parallel_group=service_req.parallel_group,
+                        )
+                    )
+                    backtrack(service_index + 1)
+                    chain.pop()
+                    continue  # Переходим к следующему мастеру, слоты перебирать не нужно
+
+                # --- Standard Logic (No forced start time) ---
                 effective_min = self._effective_min_start(master_busy, availability.buffer_between_minutes)
 
                 # overlap_allowed=False: каждая услуга начинается после конца всех предыдущих
@@ -317,6 +371,7 @@ class ChainFinder:
                                 start_time=slot_start,
                                 end_time=slot_end,
                                 gap_end_time=gap_end,
+                                parallel_group=service_req.parallel_group,
                             )
                         )
                         backtrack(service_index + 1)

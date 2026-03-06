@@ -124,11 +124,8 @@ class BookingEngineRequest(BaseModel, frozen=True):
             начинаться одновременно (педикюр + ресницы в одно время).
 
         group_size (int):
+            DEPRECATED. Используйте дублирование ServiceRequest с parallel_group.
             Количество клиентов в группе. По умолчанию 1.
-            При group_size=2 движок ищет 2 параллельных набора слотов
-            (для подружек, парного маникюра и т.д.).
-            ВАЖНО: текущая реализация ChainFinder поддерживает только 1.
-            Поле зарезервировано для будущего расширения.
 
         max_chain_duration_minutes (int | None):
             Максимальная суммарная длительность всей записи в минутах
@@ -174,7 +171,7 @@ class BookingEngineRequest(BaseModel, frozen=True):
     group_size: int = Field(
         default=1,
         ge=1,
-        description="Количество клиентов в группе (1 = одиночная запись)",
+        description="DEPRECATED. Используйте дублирование ServiceRequest с parallel_group.",
     )
     max_chain_duration_minutes: int | None = Field(
         default=None,
