@@ -50,5 +50,5 @@ class PromoMessageAdmin(ModelAdmin):
             "expired": "bg-red-500/20 text-red-700 dark:text-red-400",
             "inactive": "bg-gray-500/20 text-gray-700 dark:text-gray-400",
         }
-        color = colors.get(status_key, "bg-gray-500/20")
+        color = colors.get(status_key, "bg-gray-500/20 text-gray-700 dark:text-gray-400")
         return mark_safe(f'<span class="px-2 py-1 rounded-md text-xs font-medium {color}">{status_text}</span>')

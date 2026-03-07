@@ -12,7 +12,7 @@ Example:
 import argparse
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 
 
 def get_project_root() -> Path:
@@ -50,8 +50,10 @@ def resize_image(image_path_str: str, target_width: int, suffix: str = "-mobile"
 
             print(f"Successfully saved: {output_path.name} ({output_path.stat().st_size / 1024:.1f} KB)")
 
-    except Exception as e:
+    except (OSError, ValueError, UnidentifiedImageError) as e:
         print(f"Error processing image: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
 
 
 if __name__ == "__main__":

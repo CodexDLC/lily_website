@@ -125,10 +125,11 @@ class MasterAdmin(ModelAdmin):
             "fired": "bg-red-500/20 text-red-700 dark:text-red-400",
             "training": "bg-blue-500/20 text-blue-700 dark:text-blue-400",
         }
+        color_classes = colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400")
         # Admin-only status coloring
         # nosec B308,B703
         return mark_safe(
-            f'<span class="px-2 py-1 rounded-md text-xs font-medium {colors.get(obj.status, "bg-gray-500/20")}">{obj.get_status_display()}</span>'
+            f'<span class="px-2 py-1 rounded-md text-xs font-medium {color_classes}">{obj.get_status_display()}</span>'
         )
 
 
@@ -173,8 +174,9 @@ class ClientAdmin(ModelAdmin):
             "active": "bg-green-500/20 text-green-700 dark:text-green-400",
             "blocked": "bg-red-500/20 text-red-700 dark:text-red-400",
         }
+        color_classes = colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400")
         return mark_safe(
-            f'<span class="px-2 py-1 rounded-md text-xs font-medium {colors.get(obj.status, "bg-gray-500/20")}">{obj.get_status_display()}</span>'
+            f'<span class="px-2 py-1 rounded-md text-xs font-medium {color_classes}">{obj.get_status_display()}</span>'
         )
 
 
@@ -228,10 +230,11 @@ class AppointmentAdmin(ModelAdmin):
             "no_show": "bg-gray-500/20 text-gray-700 dark:text-gray-400",
             "reschedule_proposed": "bg-purple-500/20 text-purple-700 dark:text-purple-400",
         }
+        color_classes = colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400")
         # Admin-only status coloring
         # nosec B308,B703
         return mark_safe(
-            f'<span class="px-2 py-1 rounded-md text-xs font-medium {colors.get(obj.status, "bg-gray-500/20")}">{obj.get_status_display()}</span>'
+            f'<span class="px-2 py-1 rounded-md text-xs font-medium {color_classes}">{obj.get_status_display()}</span>'
         )
 
     @admin.display(description=_("Client"))
@@ -274,7 +277,7 @@ class AppointmentGroupAdmin(ModelAdmin):
             "cancelled": "bg-red-500/20 text-red-700 dark:text-red-400",
             "partial": "bg-orange-500/20 text-orange-700 dark:text-orange-400",
         }
-        color_classes = mark_safe(colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400"))  # nosec
+        color_classes = colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400")
         return mark_safe(
             f'<span class="px-2 py-1 rounded-md text-xs font-medium {color_classes}">{obj.get_status_display()}</span>'
         )
