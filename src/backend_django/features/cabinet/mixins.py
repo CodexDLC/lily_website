@@ -75,26 +75,3 @@ class MasterRequiredMixin(LoginRequiredMixin):
             raise PermissionDenied("Your master profile is not active.")
 
         return super().dispatch(request, *args, **kwargs)
-
-
-class TelegramAuthMixin:
-    """
-    Mixin for views that handle Telegram Web App authentication data.
-    """
-
-    def get_telegram_user(self, request):
-        """
-        Extracts and validates Telegram user data from request.
-        This is a placeholder - real implementation needs to validate hash.
-        """
-        # TODO: Implement real Telegram hash validation
-        # For now, we might look for a session variable or GET param (insecure for prod)
-        tg_user = request.GET.get("tg_user")
-        if tg_user:
-            import json
-
-            try:
-                return json.loads(tg_user)
-            except Exception:  # nosec: B110  # failing to normalize a username as phone is expected/safe
-                return None
-        return None
