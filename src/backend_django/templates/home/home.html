@@ -17,14 +17,17 @@
             <a href="{% url 'booking:booking_wizard' %}" class="btn-pill">{% trans "btn_cta_booking" %}</a>
         </div>
         <div class="hero-visual-col">
-            <!-- Local Model PNG -->
-            <img src="{% static 'img/5.webp' %}"
-                 class="hero-model-png"
-                 alt="Model"
-                 fetchpriority="high"
-                 loading="eager"
-                 width="908"
-                 height="1008">
+            <!-- Adaptive Model Image -->
+            <picture>
+                <source srcset="{% static 'img/5-mobile.webp' %}" media="(max-width: 767px)">
+                <img src="{% static 'img/5.webp' %}"
+                     class="hero-model-png"
+                     alt="Model"
+                     fetchpriority="high"
+                     loading="eager"
+                     width="908"
+                     height="1008">
+            </picture>
         </div>
     </div>
 </section>

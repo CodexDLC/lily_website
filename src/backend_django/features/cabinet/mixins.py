@@ -6,18 +6,39 @@ from features.booking.models import Master
 class CabinetAccessMixin(LoginRequiredMixin):
     """
     Base mixin for all cabinet views.
-    Ensures user is logged in.
+    Ensures user is logged in and adds common context.
     """
 
-    pass
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["is_admin"] = self.request.user.is_staff or self.request.user.is_superuser
+        return ctx
 
 
 class HtmxCabinetMixin:
     """
     Mixin for HTMX views in cabinet.
+    Automatically switches base template for HTMX requests to avoid nesting.
     """
 
-    pass
+    def get_context_data(self, **kwargs):
+        # Call super() to get context from other mixins/views
+        # We use getattr because HtmxCabinetMixin might be first in MRO
+        context_func = getattr(super(), "get_context_data", lambda **kw: kw)
+        ctx = context_func(**kwargs)
+
+        # Fix for Mypy: safely get request from self
+        request = getattr(self, "request", None)
+        is_htmx = False
+        if request:
+            is_htmx = request.headers.get("HX-Request", False)
+
+        if is_htmx:
+            ctx["cabinet_base_template"] = "cabinet/base/base_htmx.html"
+        else:
+            ctx["cabinet_base_template"] = "cabinet/base_cabinet.html"
+
+        return ctx
 
 
 class AdminRequiredMixin(UserPassesTestMixin):

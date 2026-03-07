@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.utils.safestring import mark_safe
+from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from features.booking.models import (
     Appointment,
@@ -135,7 +135,7 @@ class MasterAdmin(ModelAdmin):
 
 @admin.register(Client)
 class ClientAdmin(ModelAdmin):
-    list_display = ("full_name", "phone", "email", "telegram", "status", "total_appointments")
+    list_display = ("full_name", "phone", "email", "telegram", "total_appointments", "status_badge")
     list_filter = ("status", "consent_marketing", "created_at")
     search_fields = ("first_name", "last_name", "phone", "email", "telegram")
     readonly_fields = ("created_at", "updated_at")
@@ -143,11 +143,11 @@ class ClientAdmin(ModelAdmin):
     fieldsets = (
         (
             _("Personal Info"),
-            {"fields": ("first_name", "last_name", "phone", "email")},
+            {"fields": ("first_name", "last_name", "phone", "email", "photo")},
         ),
         (
             _("Socials"),
-            {"fields": ("instagram", "telegram")},
+            {"fields": ("telegram", "instagram")},
         ),
         (
             _("Status"),
@@ -155,7 +155,7 @@ class ClientAdmin(ModelAdmin):
         ),
         (
             _("System"),
-            {"fields": ("created_at", "updated_at")},
+            {"fields": ("created_at", "updated_at", "user")},
         ),
     )
 
@@ -166,6 +166,18 @@ class ClientAdmin(ModelAdmin):
     @admin.display(description=_("Appointments"))
     def total_appointments(self, obj):
         return obj.appointments.count()
+
+    @admin.display(description=_("Status"))
+    def status_badge(self, obj):
+        colors = {
+            "guest": "bg-gray-500/20 text-gray-700 dark:text-gray-400",
+            "active": "bg-green-500/20 text-green-700 dark:text-green-400",
+            "blocked": "bg-red-500/20 text-red-700 dark:text-red-400",
+        }
+        color_classes = colors.get(obj.status, "bg-gray-500/20 text-gray-700 dark:text-gray-400")
+        return mark_safe(
+            f'<span class="px-2 py-1 rounded-md text-xs font-medium {color_classes}">{obj.get_status_display()}</span>'
+        )
 
 
 @admin.register(Appointment)
