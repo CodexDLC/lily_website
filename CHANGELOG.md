@@ -2,6 +2,22 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.8.0] - 2026-03-06
+### Added
+- **Documentation:** Comprehensive technical documentation for `codex_tools` (EN/RU) covering engine architecture and DTOs.
+- **Codex Tools (Core):** Added support for `parallel_group` and `overlap_allowed` in the booking engine (backend-only for now).
+- **Codex Tools (Core):** New `WaitlistEntry` DTO to support future "nearest slot" notification features.
+
+### Changed / Refactored
+- **Codex Tools (Booking):** Major internal refactoring of `ChainFinder` and `SlotCalculator` to improve maintainability.
+- **Localization:** Translated all internal docstrings, comments, and DTO descriptions in `codex_tools` from Russian to English.
+- **Admin UI:** Simplified `PromoMessageAdmin` (removed redundant statistics and design fields).
+- **Admin UI:** Removed `TranslationAdmin` from promos to streamline the management interface.
+- **DTOs:** Standardized field names in `BookingEngineRequest` and `EngineResult` (e.g., `target_date` -> `booking_date`).
+
+### Fixed
+- **Tests:** Updated performance and logic tests to align with the new internal engine architecture.
+
 ## [1.7.0] - 2026-03-05
 ### Added
 - **Booking Engine V2:** Fully integrated the new `ChainFinder` engine for atomic booking of service chains.
@@ -36,5 +52,3 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 ### Changed / Refactored
 - **Booking Wizard:** Continued refactoring of the Wizard v2 flow, including updated selectors and step templates (Masters, Calendar, Confirm).
-
-... (rest of the file)
