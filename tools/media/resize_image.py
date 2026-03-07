@@ -32,8 +32,8 @@ def resize_image(image_path_str: str, target_width: int, suffix: str = "-mobile"
             original_width, original_height = img.size
 
             # Calculate new height maintaining aspect ratio
-            ratio = target_width / float(original_width)
-            target_height = int(float(original_height) * ratio)
+            ratio = target_width / original_width
+            target_height = int(original_height * ratio)
 
             print(f"Original size: {original_width}x{original_height}")
             print(f"Target size: {target_width}x{target_height} (Ratio: {ratio:.2f})")

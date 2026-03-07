@@ -1659,7 +1659,7 @@ body.legal-page .promo-floating-button {
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: #003831;
+    background: var(--color-emerald);
     color: white;
     padding: 16px 24px;
     border-radius: 8px;
@@ -1673,12 +1673,12 @@ body.legal-page .promo-floating-button {
     max-width: 90%;
     width: max-content;
     animation: slideUp 0.3s ease;
-    border: 1px solid #d4af37;
+    border: 1px solid var(--color-gold);
 }
 
 #pwa-install-btn {
-    background: #d4af37;
-    color: #003831;
+    background: var(--color-gold);
+    color: var(--color-emerald);
     border: none;
     padding: 8px 16px;
     border-radius: 4px;
@@ -1690,7 +1690,7 @@ body.legal-page .promo-floating-button {
 }
 
 #pwa-install-btn:hover {
-    background: #f0c448;
+    filter: brightness(1.1);
 }
 
 #pwa-dismiss-btn {
