@@ -134,9 +134,9 @@ class MasterAdmin(ModelAdmin):
 
 @admin.register(Client)
 class ClientAdmin(ModelAdmin):
-    list_display = ("full_name", "phone", "email", "telegram_id", "total_appointments", "is_blocked")
-    list_filter = ("is_blocked", "consent_marketing", "created_at")
-    search_fields = ("first_name", "last_name", "phone", "email", "telegram_username")
+    list_display = ("full_name", "phone", "email", "telegram", "total_appointments", "status_badge")
+    list_filter = ("status", "consent_marketing", "created_at")
+    search_fields = ("first_name", "last_name", "phone", "email", "telegram")
     readonly_fields = ("created_at", "updated_at")
 
     fieldsets = (
@@ -145,16 +145,16 @@ class ClientAdmin(ModelAdmin):
             {"fields": ("first_name", "last_name", "phone", "email", "photo")},
         ),
         (
-            _("Telegram"),
-            {"fields": ("telegram_id", "telegram_username", "telegram_language")},
+            _("Socials"),
+            {"fields": ("telegram", "instagram")},
         ),
         (
             _("Status"),
-            {"fields": ("is_blocked", "block_reason", "notes", "consent_marketing")},
+            {"fields": ("status", "notes", "consent_marketing")},
         ),
         (
             _("System"),
-            {"fields": ("created_at", "updated_at")},
+            {"fields": ("created_at", "updated_at", "user")},
         ),
     )
 
@@ -165,6 +165,17 @@ class ClientAdmin(ModelAdmin):
     @admin.display(description=_("Appointments"))
     def total_appointments(self, obj):
         return obj.appointments.count()
+
+    @admin.display(description=_("Status"))
+    def status_badge(self, obj):
+        colors = {
+            "guest": "bg-gray-500/20 text-gray-700 dark:text-gray-400",
+            "active": "bg-green-500/20 text-green-700 dark:text-green-400",
+            "blocked": "bg-red-500/20 text-red-700 dark:text-red-400",
+        }
+        return mark_safe(
+            f'<span class="px-2 py-1 rounded-md text-xs font-medium {colors.get(obj.status, "bg-gray-500/20")}">{obj.get_status_display()}</span>'
+        )
 
 
 @admin.register(Appointment)

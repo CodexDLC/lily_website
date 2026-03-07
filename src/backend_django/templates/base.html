@@ -7,7 +7,9 @@
     {% include "includes/_meta.html" %}
     {% include "includes/_analytics_head.html" %}
 
-    <link rel="preload" as="image" href="{% static 'img/5.webp' %}" fetchpriority="high">
+    <!-- LCP Preload (Adaptive) -->
+    <link rel="preload" as="image" href="{% static 'img/5-mobile.webp' %}" media="(max-width: 767px)" fetchpriority="high">
+    <link rel="preload" as="image" href="{% static 'img/5.webp' %}" media="(min-width: 768px)" fetchpriority="high">
 
     <script>
         /*! loadCSS rel=preload polyfill. MIT License. */
@@ -15,9 +17,6 @@
     </script>
 
     <script src="{% static 'js/vendor/htmx.min.js' %}" defer></script>
-
-    <!-- PWA Styles -->
-    <link rel="stylesheet" href="{% static 'css/pwa.css' %}">
 
     {% block extra_css %}{% endblock %}
 </head>

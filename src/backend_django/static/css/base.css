@@ -19,6 +19,7 @@
 @import url('components/wizard.css');
 @import url('components/utils.css');
 @import url('components/promo-notification.css');
+@import url('pwa.css');
 
 /* Site Pages */
 @import url('site/pages/home.css');
