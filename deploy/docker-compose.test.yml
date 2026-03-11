@@ -79,10 +79,8 @@ services:
       - ../src/shared:/app/src/shared:ro
     restart: unless-stopped
     depends_on:
-      redis:
-        condition: service_healthy
-      backend:
-        condition: service_healthy
+      - redis
+      - backend
     networks:
       - lily_test-network
 
@@ -100,10 +98,8 @@ services:
       - logs_test_volume:/app/logs
     restart: unless-stopped
     depends_on:
-      redis:
-        condition: service_healthy
-      backend:
-        condition: service_healthy
+      - redis
+      - backend
     networks:
       - lily_test-network
 
@@ -118,8 +114,7 @@ services:
       - ../src/backend_django/media:/app/media:ro
       - static_test_volume:/app/staticfiles:ro
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     restart: unless-stopped
     networks:
       - lily_test-network
