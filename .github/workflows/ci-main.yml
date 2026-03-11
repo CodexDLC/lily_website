@@ -10,6 +10,13 @@ jobs:
     name: Linting, Types & Tests
     runs-on: ubuntu-latest
 
+    services:
+      mailpit:
+        image: axllent/mailpit:latest
+        ports:
+          - 1025:1025
+          - 8025:8025
+
     steps:
       - uses: actions/checkout@v4
 
