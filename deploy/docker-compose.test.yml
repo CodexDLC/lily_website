@@ -12,9 +12,9 @@ services:
       - POSTGRES_PASSWORD=lily_password
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U lily_user -d lily_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      interval: 5s
+      timeout: 3s
+      retries: 10
     networks:
       - lily_test-network
 
@@ -31,9 +31,9 @@ services:
       - redis_test_data:/data
     healthcheck:
       test: ["CMD", "sh", "-c", "REDISCLI_AUTH=${REDIS_PASSWORD} redis-cli ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+      interval: 5s
+      timeout: 3s
+      retries: 10
     restart: unless-stopped
     networks:
       - lily_test-network
@@ -59,10 +59,10 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
     restart: unless-stopped
     networks:
       - lily_test-network
