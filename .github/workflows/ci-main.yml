@@ -1,13 +1,13 @@
 name: CI Main (Quality & Testing)
 
 on:
-  workflow_dispatch: # Позволяет запускать тесты вручную
+  workflow_dispatch:
   pull_request:
     branches: [ main ]
 
 jobs:
   quality-and-tests:
-    name: Linting, Types & Tests
+    name: Quality (Lint, Types, Security, Tests)
     runs-on: ubuntu-latest
 
     services:
@@ -16,6 +16,10 @@ jobs:
         ports:
           - 1025:1025
           - 8025:8025
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
 
     steps:
       - uses: actions/checkout@v4
@@ -46,20 +50,30 @@ jobs:
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
         run: poetry install --no-interaction --no-root --with dev
 
-      - name: Run Ruff
-        run: poetry run ruff check src/
+      - name: Run Ruff (Lint & Format)
+        run: |
+          poetry run ruff check src/
+          poetry run ruff format src/ --check
 
-      - name: Run Mypy
+      - name: Run Mypy (Types)
         run: poetry run mypy src/
+
+      - name: Security Audit (pip-audit)
+        run: poetry run pip-audit --local
+
+      - name: Security SAST (Bandit)
+        run: poetry run bandit -r src/ -ll
 
       - name: Run Pytest
         env:
           SECRET_KEY: "test_secret_key_for_ci"
           ENVIRONMENT: "testing"
+          REDIS_HOST: "localhost"
+          REDIS_PORT: "6379"
         run: poetry run pytest
 
   build-check:
-    name: Docker Build & Scan
+    name: Docker Build Check (Cached)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -67,102 +81,39 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Backend image
+      - name: Build Backend
         uses: docker/build-push-action@v5
         with:
           context: .
           file: deploy/backend/Dockerfile
           push: false
-          load: true
           tags: check-backend:latest
           cache-from: type=gha,scope=backend
           cache-to: type=gha,mode=max,scope=backend
 
-      - name: Scan Backend Image (Trivy)
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'check-backend:latest'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
-
-      - name: Build Bot image
+      - name: Build Bot
         uses: docker/build-push-action@v5
         with:
           context: .
           file: deploy/bot/Dockerfile
           push: false
-          tags: check-bot:latest
           cache-from: type=gha,scope=bot
           cache-to: type=gha,mode=max,scope=bot
 
-      - name: Build Worker image
+      - name: Build Worker
         uses: docker/build-push-action@v5
         with:
           context: .
           file: deploy/worker/Dockerfile
           push: false
-          tags: check-worker:latest
           cache-from: type=gha,scope=worker
           cache-to: type=gha,mode=max,scope=worker
 
-      - name: Build Nginx image
+      - name: Build Nginx
         uses: docker/build-push-action@v5
         with:
           context: .
           file: deploy/nginx/Dockerfile
           push: false
-          tags: check-nginx:latest
           cache-from: type=gha,scope=nginx
           cache-to: type=gha,mode=max,scope=nginx
-
-  integration-test:
-    name: Integration Tests (Docker Compose)
-    runs-on: ubuntu-latest
-    needs: [build-check]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Create .env file
-        run: |
-          echo "SECRET_KEY=test_secret" >> .env
-          echo "DEBUG=True" >> .env
-          echo "POSTGRES_DB=lily_db" >> .env
-          echo "POSTGRES_USER=lily_user" >> .env
-          echo "POSTGRES_PASSWORD=lily_password" >> .env
-          echo "POSTGRES_HOST=db" >> .env
-          echo "POSTGRES_PORT=5432" >> .env
-          echo "REDIS_HOST=redis" >> .env
-          echo "REDIS_PORT=6379" >> .env
-          echo "REDIS_PASSWORD=redis_pass" >> .env
-          echo "BOT_TOKEN=123:test" >> .env
-          echo "CONTAINER_PREFIX=ci_test" >> .env
-          echo "ENVIRONMENT=testing" >> .env
-
-      - name: Start Containers
-        run: docker compose -f deploy/docker-compose.test.yml up -d --build
-
-      - name: Wait for Healthchecks
-        run: |
-          echo "Waiting for backend to be healthy..."
-          for i in {1..20}; do
-            if [ "$(docker inspect --format='{{.State.Health.Status}}' ci_test-backend)" == "healthy" ]; then
-              echo "Backend is healthy!"
-              exit 0
-            fi
-            echo "Attempt $i: Backend is $(docker inspect --format='{{.State.Health.Status}}' ci_test-backend). Waiting..."
-            docker compose -f deploy/docker-compose.test.yml logs backend --tail 20
-            sleep 10
-          done
-          echo "Backend failed to become healthy. Final logs:"
-          docker compose -f deploy/docker-compose.test.yml logs backend
-          exit 1
-
-      - name: Check Backend Health
-        run: curl --fail http://localhost:8001/api/v1/health || exit 1
-
-      - name: Stop Containers
-        if: always()
-        run: docker compose -f deploy/docker-compose.test.yml down

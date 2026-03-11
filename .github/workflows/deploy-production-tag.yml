@@ -3,41 +3,65 @@ name: Deploy Production (Tag-based)
 on:
   push:
     tags:
-      - 'v*'  # Триггерится на любой тег начинающийся с 'v' (например v1.2.3)
-  workflow_dispatch:  # Ручной запуск
+      - 'v*'
+  workflow_dispatch:
 
 jobs:
-  pre-deploy-check:
-    name: Check Server Availability
+  db-backup:
+    name: Pre-deploy DB Backup
     runs-on: ubuntu-latest
     steps:
-      - name: Test SSH Connection
+      - name: Create DB Backup on VPS
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          script: echo "SSH Connection Successful!"
+          envs: ENV_FILE
+          script: |
+            set -e
+            mkdir -p /opt/lily_website/backups
+            echo "$ENV_FILE" > /tmp/.env_tmp
+            DATABASE_URL=$(grep "^DATABASE_URL=" /tmp/.env_tmp | cut -d'=' -f2-)
+            rm /tmp/.env_tmp
 
-  deploy:
-    name: Build & Deploy to VPS
-    needs: pre-deploy-check
+            if [ -z "$DATABASE_URL" ]; then
+              echo "❌ DATABASE_URL not found in secrets!"
+              exit 1
+            fi
+
+            BACKUP_FILE="/opt/lily_website/backups/pre-deploy-$(date +%F_%H-%M).sql.gz"
+            echo "🗄 Starting backup to $BACKUP_FILE..."
+
+            # Run pg_dump with error checking. -f is used inside container to write to a mount.
+            if docker run --rm \
+                -v /opt/lily_website/backups:/backups \
+                postgres:16-alpine \
+                sh -c "pg_dump '$DATABASE_URL' | gzip > /backups/tmp_backup.gz"; then
+                    mv /opt/lily_website/backups/tmp_backup.gz "$BACKUP_FILE"
+                    echo "✅ Database backup saved successfully."
+            else
+                echo "❌ Database backup failed!"
+                exit 1
+            fi
+
+  build-and-push:
+    name: Build & Push Images
+    needs: db-backup
     runs-on: ubuntu-latest
-
     permissions:
       contents: read
       packages: write
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Extract version from tag
-        run: |
-          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Lowercase repo name
-        run: |
-          echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+        run: echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -58,7 +82,6 @@ jobs:
           tags: |
             ghcr.io/${{ env.REPO_LOWER }}-backend:latest
             ghcr.io/${{ env.REPO_LOWER }}-backend:${{ env.VERSION }}
-            ghcr.io/${{ env.REPO_LOWER }}-backend:${{ github.sha }}
           cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-backend:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-backend:buildcache,mode=max
 
@@ -71,7 +94,6 @@ jobs:
           tags: |
             ghcr.io/${{ env.REPO_LOWER }}-bot:latest
             ghcr.io/${{ env.REPO_LOWER }}-bot:${{ env.VERSION }}
-            ghcr.io/${{ env.REPO_LOWER }}-bot:${{ github.sha }}
           cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-bot:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-bot:buildcache,mode=max
 
@@ -84,7 +106,6 @@ jobs:
           tags: |
             ghcr.io/${{ env.REPO_LOWER }}-worker:latest
             ghcr.io/${{ env.REPO_LOWER }}-worker:${{ env.VERSION }}
-            ghcr.io/${{ env.REPO_LOWER }}-worker:${{ github.sha }}
           cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-worker:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-worker:buildcache,mode=max
 
@@ -97,29 +118,26 @@ jobs:
           tags: |
             ghcr.io/${{ env.REPO_LOWER }}-nginx:latest
             ghcr.io/${{ env.REPO_LOWER }}-nginx:${{ env.VERSION }}
-            ghcr.io/${{ env.REPO_LOWER }}-nginx:${{ github.sha }}
           cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-nginx:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-nginx:buildcache,mode=max
 
-      - name: Prepare .env file
+  deploy:
+    name: Apply Deployment on VPS
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Lowercase repo name
+        run: echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Prepare configs
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: echo "$ENV_FILE" > deploy/.env
-
-      - name: Backup current configuration
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            mkdir -p /opt/lily_website/deploy
-            if [ -f /opt/lily_website/deploy/.env ]; then
-              cp /opt/lily_website/deploy/.env /opt/lily_website/deploy/.env.bak
-              echo "✅ Config backup created"
-            else
-              echo "⚠️ No existing .env found, skipping config backup"
-            fi
 
       - name: Copy configs to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -152,87 +170,24 @@ jobs:
           envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_BOT,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DOMAIN_NAME,REDIS_PASSWORD,GITHUB_TOKEN,GITHUB_ACTOR,VERSION
           script: |
             set -e
-
             cd /opt/lily_website/deploy
 
-            echo "🚀 Deploying version: $VERSION"
-
-            # Load env vars for script usage (needed for DB backup)
-            set -a
-            [ -f .env ] && . ./.env
-            set +a
-
-            # --- 1. DB Backup (Neon / Remote) ---
-            echo "🗄 Creating DB backup (Remote)..."
-            mkdir -p /opt/lily_website/backups
-
-            # Используем DATABASE_URL из .env
-            if [ -z "$DATABASE_URL" ]; then
-                echo "❌ DATABASE_URL not found in .env! Cannot backup Neon DB."
-                exit 1
-            fi
-
-            # Запускаем временный контейнер postgres для дампа удаленной базы
-            if docker run --rm \
-                postgres:16-alpine \
-                pg_dump "$DATABASE_URL" | gzip > "/opt/lily_website/backups/pre-deploy-$(date +%F_%H-%M).sql.gz"; then
-                    echo "✅ Database backup saved."
-            else
-                echo "❌ Database backup failed! Check connection details."
-                exit 1
-            fi
-
-            # --- 2. Update Configuration ---
+            # 1. Update .env with new images
             update_var() {
               grep -q "^$1=" .env && sed -i "s|^$1=.*|$1=$2|g" .env || echo "$1=$2" >> .env
             }
-
-            # Update image versions
             update_var "DOCKER_IMAGE_BACKEND" "$DOCKER_IMAGE_BACKEND"
             update_var "DOCKER_IMAGE_BOT" "$DOCKER_IMAGE_BOT"
             update_var "DOCKER_IMAGE_WORKER" "$DOCKER_IMAGE_WORKER"
             update_var "DOCKER_IMAGE_NGINX" "$DOCKER_IMAGE_NGINX"
 
-            [ ! -z "$DOMAIN_NAME" ] && update_var "DOMAIN_NAME" "$DOMAIN_NAME"
-            [ ! -z "$REDIS_PASSWORD" ] && update_var "REDIS_PASSWORD" "$REDIS_PASSWORD"
-
-            if ! grep -q "DOMAIN_NAME" .env; then
-              DOMAIN=$(grep "SITE_BASE_URL" .env 2>/dev/null | cut -d'/' -f3 | cut -d':' -f1 || echo "")
-              [ ! -z "$DOMAIN" ] && update_var "DOMAIN_NAME" "$DOMAIN"
-            fi
-
-            # Login & Pull
+            # 2. Pull & Migrate
             echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
             docker compose -f docker-compose.prod.yml pull
-
-            # --- 3. Migrations ---
-            echo "🔄 Running migrations..."
-            if ! docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py migrate --noinput; then
-              echo "❌ Migration failed! Database is intact (or backup exists). Aborting."
-              exit 1
-            fi
-
-            echo "📦 Collecting static files..."
+            docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py migrate --noinput
             docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py collectstatic --noinput
 
-            # --- 4. Rolling Update (Atomic) ---
-            echo "🚀 Rolling update of services..."
-            # --no-deps ensures we don't restart Redis/DB if not needed
-            if ! docker compose -f docker-compose.prod.yml up -d --no-deps --wait --wait-timeout 120 backend bot worker nginx; then
-              echo "❌ Healthcheck failed! Rolling back to previous version..."
-
-              if [ -f .env.bak ]; then
-                cp .env.bak .env
-                echo "🔄 Restored .env from backup"
-                # Restore old version
-                docker compose -f docker-compose.prod.yml up -d --no-deps backend bot worker nginx
-                echo "✅ Rollback completed. Previous version is live."
-              else
-                echo "❌ No config backup found! Manual intervention required."
-              fi
-              exit 1
-            fi
-
-            # Cleanup
+            # 3. Rolling Update
+            docker compose -f docker-compose.prod.yml up -d --no-deps --wait backend bot worker nginx
             docker image prune -f
-            echo "✅ Deployment $VERSION completed successfully!"
+            echo "✅ Deployment $VERSION completed!"
