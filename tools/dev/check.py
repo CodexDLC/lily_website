@@ -76,45 +76,43 @@ def cleanup_docker():
 # --- Check Functions ---
 
 
-def check_linters():
+def check_linters(ci_mode=False):
     print_step("Running Linters (Ruff & Pre-commit hooks)")
 
-    # --- Auto-fixing and formatting with Ruff ---
-    print("Attempting to auto-fix Ruff issues...")
-    # Changed capture_output to False to see output in real-time
-    fix_success, _ = run_command(f"poetry run ruff check {PYTHON_DIRS} --fix", capture_output=False)
-    if not fix_success:
-        print_error("Ruff auto-fix command failed.")
-        return False
-    print_success("Ruff auto-fix completed.")
+    # In CI, we only VERIFY. No auto-fixes allowed to ensure repository consistency.
+    if not ci_mode:
+        print("Attempting to auto-fix Ruff issues...")
+        fix_success, _ = run_command(f"poetry run ruff check {PYTHON_DIRS} --fix", capture_output=False)
+        if not fix_success:
+            print_error("Ruff auto-fix command failed.")
+            return False
+        print_success("Ruff auto-fix completed.")
 
-    print("Attempting to auto-format with Ruff...")
-    # Changed capture_output to False to see output in real-time
-    format_success, _ = run_command(f"poetry run ruff format {PYTHON_DIRS}", capture_output=False)
-    if not format_success:
-        print_error("Ruff auto-format command failed.")
-        return False
-    print_success("Ruff auto-format completed.")
+        print("Attempting to auto-format with Ruff...")
+        format_success, _ = run_command(f"poetry run ruff format {PYTHON_DIRS}", capture_output=False)
+        if not format_success:
+            print_error("Ruff auto-format command failed.")
+            return False
+        print_success("Ruff auto-format completed.")
 
-    # --- Verification checks after auto-fixing/formatting ---
-    print("Verifying Ruff check (no fixable issues remaining)...")
+    # --- Verification checks (The only ones that run in CI) ---
+    print("Verifying Ruff check...")
     ruff_check_success, ruff_check_out = run_command(f"poetry run ruff check {PYTHON_DIRS}", capture_output=True)
     if not ruff_check_success:
-        print_error(f"Ruff check failed (unfixable issues or issues after fix):\n{ruff_check_out}")
+        print_error(f"Ruff check failed:\n{ruff_check_out}")
         return False
     print_success("Ruff check passed.")
 
-    print("Verifying Ruff format (no formatting issues remaining)...")
+    print("Verifying Ruff format...")
     ruff_format_check_success, ruff_format_check_out = run_command(
         f"poetry run ruff format {PYTHON_DIRS} --check", capture_output=True
     )
     if not ruff_format_check_success:
-        print_error(f"Ruff format check failed (files still need formatting):\n{ruff_format_check_out}")
+        print_error(f"Ruff format check failed:\n{ruff_format_check_out}")
         return False
     print_success("Ruff format check passed.")
 
     print("Running basic pre-commit hooks...")
-    # These hooks will check all files (including .md and .json) based on .pre-commit-config.yaml
     basic_hooks = [
         "trailing-whitespace",
         "end-of-file-fixer",
@@ -125,7 +123,6 @@ def check_linters():
         "detect-secrets",
     ]
     for hook in basic_hooks:
-        # Added 'poetry run' to ensure pre-commit is found in the virtual environment
         if not run_command(f"poetry run pre-commit run {hook} --all-files")[0]:
             print_error(f"Pre-commit hook '{hook}' failed")
             return False
@@ -156,7 +153,29 @@ def run_tests():
     return run_command("poetry run pytest src -v")[0]
 
 
-def run_docker_validation():
+def check_security_deep():
+    """Глубокий аудит безопасности: зависимости + статика."""
+    print_step("Deep Security Audit")
+
+    # Запускаем аудит зависимостей через poetry напрямую (дополнительная страховка)
+    print("Checking for vulnerable dependencies...")
+    success, out = run_command("poetry run pip-audit")
+    if not success:
+        print_error(f"Security vulnerabilities found in packages:\n{out}")
+        return False
+
+    # Запускаем Bandit для поиска дыр в логике (SQL инъекции, небезопасный random и т.д.)
+    print("Running Bandit (SAST)...")
+    success, out = run_command("poetry run bandit -r src/ -ll")
+    if not success:
+        print_error(f"Bandit found security risks:\n{out}")
+        return False
+
+    print_success("Security audit passed.")
+    return True
+
+
+def run_docker_validation(ci_mode=False):
     print_step(f"Starting Docker Validation (Isolated Project: {TEST_PROJECT_NAME})")
 
     success, _ = run_command("docker info", capture_output=True)
@@ -213,10 +232,13 @@ def run_docker_validation():
 
                 if failed_services:
                     print_error(f"The following services failed to start: {', '.join(failed_services)}")
-                    for service in failed_services:
-                        print(f"\n{Colors.CYAN}Logs for {service}:{Colors.ENDC}")
-                        _, logs = docker_compose(f"logs --tail=20 {service}")
-                        print(logs)
+                    if not ci_mode:
+                        for service in failed_services:
+                            print(f"\n{Colors.CYAN}Logs for {service}:{Colors.ENDC}")
+                            _, logs = docker_compose(f"logs --tail=20 {service}")
+                            print(logs)
+                    else:
+                        print(f"{Colors.YELLOW}Logs are hidden in CI mode to prevent secret leakage.{Colors.ENDC}")
                     return False
 
                 if containers:
@@ -266,16 +288,20 @@ def run_docker_validation():
 # --- Main Logic ---
 
 
-def run_all(with_docker=False):
-    os.system("cls" if os.name == "nt" else "clear")
+def run_all(with_docker=False, ci_mode=False):
+    if not ci_mode:
+        os.system("cls" if os.name == "nt" else "clear")
 
-    if not check_linters():
+    if not check_linters(ci_mode=ci_mode):
         sys.exit(1)
     if not check_types():
         sys.exit(1)
+    if not check_security_deep():
+        sys.exit(1)
 
     # Prompt for tests
-    test_choice = input(f"\n{Colors.YELLOW}🚀 Run Unit Tests? [y/N]: {Colors.ENDC}").strip().lower()
+    test_choice = "y" if ci_mode else input(f"\n{Colors.YELLOW}🚀 Run Unit Tests? [y/N]: {Colors.ENDC}").strip().lower()
+
     if test_choice == "y":
         if not run_tests():
             sys.exit(1)
@@ -284,14 +310,20 @@ def run_all(with_docker=False):
 
     # Prompt for Docker
     if with_docker:
-        docker_choice = input(f"\n{Colors.YELLOW}🐳 Run Full Docker Validation? [y/N]: {Colors.ENDC}").strip().lower()
+        docker_choice = (
+            "y"
+            if ci_mode
+            else input(f"\n{Colors.YELLOW}🐳 Run Full Docker Validation? [y/N]: {Colors.ENDC}").strip().lower()
+        )
+
         if docker_choice == "y":
-            if not run_docker_validation():
+            if not run_docker_validation(ci_mode=ci_mode):
                 sys.exit(1)
         else:
             print(f"{Colors.BLUE}ℹ️ Skipping Docker validation.{Colors.ENDC}")
     else:
-        print(f"\n{Colors.BLUE}ℹ️ Docker validation skipped. Use --docker to enable the prompt.{Colors.ENDC}")
+        if not ci_mode:
+            print(f"\n{Colors.BLUE}ℹ️ Docker validation skipped. Use --docker to enable the prompt.{Colors.ENDC}")
 
     print(f"\n{Colors.GREEN}{Colors.BOLD}🎉 ALL CHECKS PASSED! You are ready to push.{Colors.ENDC}")
 
@@ -331,13 +363,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Lily Project Quality Checker")
     parser.add_argument("--settings", action="store_true", help="Open interactive menu")
     parser.add_argument("--docker", action="store_true", help="Include Docker build validation")
+    parser.add_argument("--ci", action="store_true", help="Run in CI mode (non-interactive, all checks)")
     args = parser.parse_args()
 
     try:
         if args.settings:
             interactive_menu()
         else:
-            run_all(with_docker=args.docker)
+            # In CI mode, we always want docker validation
+            run_all(with_docker=(args.docker or args.ci), ci_mode=args.ci)
     except KeyboardInterrupt:
         print(f"\n{Colors.RED}Aborted by user.{Colors.ENDC}")
         sys.exit(1)

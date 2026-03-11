@@ -25,3 +25,4 @@ This job performs static code analysis (linting) and type checking.
     6.  **Install dependencies:** Installs project dependencies using Poetry if the cache is not hit.
     7.  **Run Ruff:** Executes the `ruff` linter to check for code style violations and potential errors.
     8.  **Run Mypy:** Performs static type checking using `mypy`.
+    9.  **Run Trivy (FS Scan):** Scans the file system for vulnerabilities and secrets using Trivy.

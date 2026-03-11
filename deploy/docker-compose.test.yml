@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: ${CONTAINER_PREFIX:-lily_test}-db
+    container_name: lily_test-db
     ports:
       - "5433:5432"
     volumes:
@@ -12,15 +12,15 @@ services:
       - POSTGRES_PASSWORD=lily_password
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U lily_user -d lily_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      interval: 5s
+      timeout: 3s
+      retries: 10
     networks:
       - lily_test-network
 
   redis:
     image: redis:7-alpine
-    container_name: ${CONTAINER_PREFIX:-lily_test}-redis
+    container_name: lily_test-redis
     env_file:
       - ../.env
     command: >
@@ -31,9 +31,9 @@ services:
       - redis_test_data:/data
     healthcheck:
       test: ["CMD", "sh", "-c", "REDISCLI_AUTH=${REDIS_PASSWORD} redis-cli ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+      interval: 5s
+      timeout: 3s
+      retries: 10
     restart: unless-stopped
     networks:
       - lily_test-network
@@ -42,11 +42,17 @@ services:
     build:
       context: ..
       dockerfile: deploy/backend/Dockerfile
-    container_name: ${CONTAINER_PREFIX:-lily_test}-backend
+    container_name: lily_test-backend
     ports:
       - "8001:8000"
     env_file:
       - ../.env
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ENVIRONMENT=testing
     volumes:
       - ../src/backend_django:/app
       - ../src/backend_django/media:/app/media
@@ -59,10 +65,10 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
     restart: unless-stopped
     networks:
       - lily_test-network
@@ -71,9 +77,13 @@ services:
     build:
       context: ..
       dockerfile: deploy/bot/Dockerfile
-    container_name: ${CONTAINER_PREFIX:-lily_test}-telegram_bot
+    container_name: lily_test-telegram_bot
     env_file:
       - ../.env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - BACKEND_URL=http://backend:8000
     volumes:
       - ../src/telegram_bot:/app/src/telegram_bot:ro
       - ../src/shared:/app/src/shared:ro
@@ -90,10 +100,14 @@ services:
     build:
       context: ..
       dockerfile: deploy/worker/Dockerfile
-    container_name: ${CONTAINER_PREFIX:-lily_test}-notification_worker
+    container_name: lily_test-notification_worker
     command: arq src.workers.notification_worker.worker.WorkerSettings
     env_file:
       - ../.env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - BACKEND_URL=http://backend:8000
     volumes:
       - ../src/workers:/app/src/workers:ro
       - ../src/shared:/app/src/shared:ro
@@ -111,7 +125,7 @@ services:
     build:
       context: ..
       dockerfile: deploy/nginx/Dockerfile.local
-    container_name: ${CONTAINER_PREFIX:-lily_test}-nginx
+    container_name: lily_test-nginx
     ports:
       - "8081:80"
     volumes:
@@ -126,7 +140,7 @@ services:
 
   mailpit:
     image: axllent/mailpit:v1.21
-    container_name: ${CONTAINER_PREFIX:-lily_test}-mailpit
+    container_name: lily_test-mailpit
     ports:
       - "8026:8025"
       - "1026:1025"
@@ -146,5 +160,5 @@ volumes:
 
 networks:
   lily_test-network:
-    name: ${CONTAINER_PREFIX:-lily_test}-network
+    name: lily_test-network
     driver: bridge

@@ -16,6 +16,7 @@ from features.booking.services.utils.calendar_service import CalendarService
 from features.booking.services.v2_booking_service import BookingV2Service
 from features.cabinet.mixins import CabinetAccessMixin, HtmxCabinetMixin
 from features.cabinet.selector.appointment_selectors import get_cabinet_appointments
+from features.system.services.notification import NotificationService
 
 
 class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
@@ -124,7 +125,7 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
                 )
 
             # --- 3. Single Appointment Reschedule ---
-            if action == "reschedule":
+            if action in ["reschedule", "propose_reschedule"]:
                 new_date_str = request.POST.get("new_date")
                 new_time_str = request.POST.get("new_time")
                 appt_id = request.POST.get("id")
@@ -133,12 +134,20 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
                     return HttpResponse('<div class="alert alert-warning">Missing data for reschedule</div>')
 
                 appointment = get_object_or_404(Appointment, id=appt_id)
-                booking_service.reschedule_single(appointment.id, date.fromisoformat(new_date_str), new_time_str)
 
-                if hasattr(appointment, "group_item"):
-                    self._trigger_group_notification(appointment.group_item.group)
+                if action == "propose_reschedule":
+                    from features.cabinet.services.appointment_service import AppointmentService
+
+                    dt_str = f"{date.fromisoformat(new_date_str).strftime('%d.%m.%Y')} {new_time_str}"
+                    AppointmentService.propose_reschedule(appointment, dt_str, dt_str)
                 else:
-                    self._trigger_notification(appointment)
+                    booking_service.reschedule_single(appointment.id, date.fromisoformat(new_date_str), new_time_str)
+
+                    if hasattr(appointment, "group_item"):
+                        self._trigger_group_notification(appointment.group_item.group, event_type="confirmation")
+                    else:
+                        # For direct reschedule, send an updated confirmation, not a proposal
+                        self._trigger_notification(appointment, event_type="confirmation")
 
                 appointment.refresh_from_db()
                 return render(
@@ -160,7 +169,7 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
                     appointment.admin_notes = notes
                 appointment.status = Appointment.STATUS_CONFIRMED
                 appointment.save()
-                self._trigger_notification(appointment)
+                self._trigger_notification(appointment, event_type="confirmation")
 
             elif action == "complete":
                 price = request.POST.get("price")
@@ -176,10 +185,17 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
                 reason_code = request.POST.get("reason_code", "other")
                 reason_text = request.POST.get("reason_text", "")
                 appointment.cancel(reason=reason_code, note=reason_text)
+                self._trigger_notification(
+                    appointment, event_type="cancellation", extra_context={"reason_text": reason_text}
+                )
 
             elif action == "no_show":
                 appointment.status = Appointment.STATUS_NO_SHOW
                 appointment.save()
+                self._trigger_notification(appointment, event_type="no_show")
+
+            elif action == "resend_notification":
+                self._trigger_notification(appointment, event_type="auto")
 
             appointment.refresh_from_db()
             return render(
@@ -192,27 +208,125 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
             log.error(f"AppointmentsView: Action Error | {e}")
             return HttpResponse(f'<div class="alert alert-danger">Error: {str(e)}</div>', status=200)
 
-    def _trigger_group_notification(self, group: AppointmentGroup):
-        """Отправить групповое уведомление боту через ARQ."""
+    def _trigger_group_notification(self, group: AppointmentGroup, event_type: str = "confirmation"):
+        """Отправить групповое уведомление через NotificationService."""
         try:
-            from core.arq.client import DjangoArqClient
-            from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
+            items = group.items.select_related("appointment__master", "appointment__service").order_by("order")
+            target_lang = group.lang or "de"
+            from django.utils import translation
 
-            NotificationCacheManager.seed_group_appointment(group.id, extra_data={"is_admin_action": True})
-            DjangoArqClient.enqueue_job("send_group_booking_notification_task", group_id=group.id)
-            log.info(f"AppointmentsView: group notification triggered for Group #{group.id}")
+            with translation.override(target_lang):
+                context = {
+                    "group_id": group.id,
+                    "booking_date": group.booking_date.strftime("%d.%m.%Y"),
+                    "total_price": float(sum(item.appointment.price for item in items)),
+                    "total_duration": group.total_duration_minutes,
+                    "notes": group.notes,
+                    "items": [],
+                }
+                for item in items:
+                    appt = item.appointment
+                    local_dt = timezone.localtime(appt.datetime_start)
+                    context["items"].append(
+                        {
+                            "appointment_id": appt.id,
+                            "service_name": appt.service.title,
+                            "master_name": appt.master.name,
+                            "time": local_dt.strftime("%H:%M"),
+                            "price": float(appt.price),
+                            "duration": appt.duration_minutes,
+                        }
+                    )
+
+            # Для конструктора админки это всегда подтверждение (Terminbestätigung)
+            NotificationService.send_group_booking_confirmation(
+                recipient_email=group.client.email,
+                client_name=f"{group.client.first_name} {group.client.last_name}",
+                recipient_phone=group.client.phone,
+                context=context,
+                lang=target_lang,
+            )
+            log.info(f"AppointmentsView: group notification ({event_type}) triggered for Group #{group.id}")
         except Exception as e:
             log.error(f"AppointmentsView: group notification error: {e}")
 
-    def _trigger_notification(self, appointment: Appointment):
-        """Отправить одиночное уведомление боту через ARQ."""
+    def _trigger_notification(
+        self, appointment: Appointment, event_type: str = "auto", extra_context: dict | None = None
+    ):
+        """Отправить одиночное уведомление через NotificationService."""
         try:
-            from core.arq.client import DjangoArqClient
-            from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
+            # Авто-определение типа события по статусу записи
+            if event_type == "auto":
+                status_map = {
+                    Appointment.STATUS_PENDING: "receipt",
+                    Appointment.STATUS_CONFIRMED: "confirmation",
+                    Appointment.STATUS_CANCELLED: "cancellation",
+                    Appointment.STATUS_NO_SHOW: "no_show",
+                    Appointment.STATUS_RESCHEDULE_PROPOSED: "reschedule",
+                }
+                event_type = status_map.get(appointment.status, "confirmation")
 
-            NotificationCacheManager.seed_appointment(appointment.id, extra_data={"is_admin_action": True})
-            DjangoArqClient.enqueue_job("send_booking_notification_task", appointment_id=appointment.id)
-            log.info(f"AppointmentsView: notification triggered for Appointment #{appointment.id}")
+            target_lang = appointment.lang or "de"
+            from django.utils import translation
+
+            with translation.override(target_lang):
+                local_dt = timezone.localtime(appointment.datetime_start)
+                context = {
+                    "id": appointment.id,
+                    "service_name": appointment.service.title,
+                    "master_name": appointment.master.name,
+                    "datetime": local_dt.strftime("%d.%m.%Y %H:%M"),
+                    "price": float(appointment.price),
+                    "duration_minutes": appointment.duration_minutes,
+                    "client_notes": appointment.client_notes or "",
+                }
+
+            if extra_context:
+                context.update(extra_context)
+
+            # Выбираем метод в зависимости от типа события
+            if event_type == "receipt":
+                NotificationService.send_booking_receipt(
+                    recipient_email=appointment.client.email,
+                    client_name=appointment.client.first_name,
+                    recipient_phone=appointment.client.phone,
+                    context=context,
+                    lang=target_lang,
+                )
+            elif event_type == "confirmation":
+                NotificationService.send_booking_confirmation(
+                    recipient_email=appointment.client.email,
+                    client_name=appointment.client.first_name,
+                    recipient_phone=appointment.client.phone,
+                    context=context,
+                    lang=target_lang,
+                )
+            elif event_type == "cancellation":
+                NotificationService.send_booking_cancellation(
+                    recipient_email=appointment.client.email,
+                    client_name=appointment.client.first_name,
+                    recipient_phone=appointment.client.phone,
+                    context=context,
+                    lang=target_lang,
+                )
+            elif event_type == "no_show":
+                NotificationService.send_booking_no_show(
+                    recipient_email=appointment.client.email,
+                    client_name=appointment.client.first_name,
+                    recipient_phone=appointment.client.phone,
+                    context=context,
+                    lang=target_lang,
+                )
+            elif event_type == "reschedule":
+                NotificationService.send_booking_reschedule(
+                    recipient_email=appointment.client.email,
+                    client_name=appointment.client.first_name,
+                    recipient_phone=appointment.client.phone,
+                    context=context,
+                    lang=target_lang,
+                )
+
+            log.info(f"AppointmentsView: notification ({event_type}) triggered for Appointment #{appointment.id}")
         except Exception as e:
             log.error(f"AppointmentsView: notification error: {e}")
 
@@ -223,9 +337,14 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
         else:
             selected_date = appointment.datetime_start.date()
 
+        today = date.today()
+
+        # We now generate a 14-day strip starting from 'today' to allow scrolling
+        start = today
+
         calendar_days = []
-        for i in range(10):
-            d = date.today() + timedelta(days=i)
+        for i in range(14):
+            d = start + timedelta(days=i)
             calendar_days.append(
                 {"date": d.isoformat(), "day": d.day, "weekday": d.strftime("%a"), "is_selected": d == selected_date}
             )

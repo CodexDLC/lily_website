@@ -129,6 +129,12 @@ server {
         access_log off;
     }
 
+    # === Language Redirect Optimization ===
+    # Handle root path redirect at Nginx level to avoid Django hit
+    location = / {
+        return 302 /$lang/;
+    }
+
     # === API → Backend ===
     location /api/ {
         limit_req zone=api_limit burst=5 nodelay;

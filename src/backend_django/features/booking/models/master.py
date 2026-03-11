@@ -121,6 +121,14 @@ class Master(BookableMasterMixin, TimestampMixin, SeoMixin, models.Model):
         help_text=_("List of weekday numbers the master works (0=Mon … 6=Sun)"),
     )
 
+    # === Timezone ===
+    timezone = models.CharField(
+        max_length=50,
+        default="Europe/Berlin",
+        verbose_name=_("Timezone"),
+        help_text=_("Master's local timezone (e.g. 'Europe/Berlin')"),
+    )
+
     # === Display Order ===
     order = models.PositiveIntegerField(
         default=0, verbose_name=_("Display Order"), help_text=_("Lower numbers appear first")

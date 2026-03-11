@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.sitemaps import Sitemap
-from django.urls import reverse
+from django.urls import NoReverseMatch, reverse
 from django.utils import translation
 
 
@@ -45,7 +45,15 @@ class BaseSitemap(Sitemap):
         # Handle cases where Django passes (item, lang_code) tuple
         actual_item = item[0] if isinstance(item, list | tuple) else item
         if isinstance(actual_item, str):
-            return reverse(actual_item)
+            try:
+                return reverse(actual_item)
+            except NoReverseMatch:
+                # Fallback for namespaced booking routes
+                try:
+                    return reverse(f"booking:{actual_item}")
+                except NoReverseMatch:
+                    # If still not found, let it raise the original error for debugging
+                    return reverse(actual_item)
         return actual_item.get_absolute_url()
 
 

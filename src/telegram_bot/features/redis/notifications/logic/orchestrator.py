@@ -34,22 +34,22 @@ class NotificationsOrchestrator:
 
     # --- Booking ---
 
-    def handle_notification(self, raw_payload: dict[str, Any]) -> UnifiedViewDTO:
+    async def handle_notification(self, raw_payload: dict[str, Any]) -> UnifiedViewDTO:
         """Delegates booking notification processing."""
         logger.debug(f"Bot: NotificationsOrchestrator | Action: HandleBooking | payload={raw_payload}")
-        return self.booking.handle_notification(raw_payload)
+        return await self.booking.handle_notification(raw_payload)
 
     async def handle_status_update(self, message_data: dict[str, Any]) -> UnifiedViewDTO | None:
         """Delegates booking status update."""
         logger.debug(f"Bot: NotificationsOrchestrator | Action: HandleStatusUpdate | data={message_data}")
         return await self.booking.handle_status_update(message_data)
 
-    def handle_failure(self, raw_payload: dict[str, Any], error_msg: str) -> UnifiedViewDTO:
+    async def handle_failure(self, raw_payload: dict[str, Any], error_msg: str) -> UnifiedViewDTO:
         """Delegates booking failure processing."""
         logger.error(
             f"Bot: NotificationsOrchestrator | Action: HandleFailure | error={error_msg} | payload={raw_payload}"
         )
-        return self.booking.handle_failure(raw_payload, error_msg)
+        return await self.booking.handle_failure(raw_payload, error_msg)
 
     async def handle_expire_reschedule(self, message_data: dict[str, Any]) -> None:
         """Delegates reschedule expiration processing."""

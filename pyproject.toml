@@ -1,6 +1,6 @@
 [project]
 name = "lily_website"
-version = "1.8.0"
+version = "1.9.0"
 description = ""
 authors = [
     {name = "CodexDLC",email = "primecodex@gmail.com"}
@@ -15,7 +15,7 @@ dependencies = [
     "redis (>=5.2.1,<6.0.0)",
     "httpx (>=0.28.1,<0.29.0)",
     "django-modeltranslation (>=0.19.19,<0.20.0)",
-    "pillow (>=11.1.0,<12.0.0)",
+    "pillow (>=12.1.1,<13.0.0)",
     "django-debug-toolbar (>=6.2.0,<7.0.0)",
     "holidays (>=0.63)",
     "jinja2 (>=3.1.5,<4.0.0)",
@@ -42,7 +42,7 @@ twilio = "^9.10.2"
 tabulate = "^0.9.0"
 
 [tool.poetry.group.django.dependencies]
-django = ">=5.1,<6.0"
+django = ">=5.2.12,<6.0"
 python-dotenv = ">=1.0.0,<2.0.0"
 psycopg2-binary = ">=2.9.10,<3.0.0"
 dj-database-url = ">=2.3.0,<3.0.0"
@@ -66,6 +66,9 @@ pytest-django = "*"
 pre-commit = "*"
 qrcode = ">=7.0,<8.0"
 djlint = "^1.36.4"
+pip-audit = "*"
+bandit = "*"
+types-requests = "^2.32.4.20260107"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

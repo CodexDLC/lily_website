@@ -1,16 +1,25 @@
 name: CI Main (Quality & Testing)
 
 on:
-  workflow_dispatch: # Позволяет запускать тесты вручную
+  workflow_dispatch:
   pull_request:
     branches: [ main ]
 
-
-
 jobs:
   quality-and-tests:
-    name: Linting, Types & Tests
+    name: Quality (Lint, Types, Security, Tests)
     runs-on: ubuntu-latest
+
+    services:
+      mailpit:
+        image: axllent/mailpit:latest
+        ports:
+          - 1025:1025
+          - 8025:8025
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
 
     steps:
       - uses: actions/checkout@v4
@@ -35,26 +44,38 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .venv
-          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          # Снова меняем ключ (v3), чтобы форсировать --sync установку
+          key: v3-venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root --with dev
+        # Добавляем --sync, чтобы окружение точно соответствовало lock-файлу и включало dev-группу
+        run: poetry install --no-interaction --no-root --with dev --sync
 
-      - name: Run Ruff
-        run: poetry run ruff check src/
+      - name: Run Ruff (Lint & Format)
+        run: |
+          poetry run ruff check src/
+          poetry run ruff format src/ --check
 
-      - name: Run Mypy
+      - name: Run Mypy (Types)
         run: poetry run mypy src/
+
+      - name: Security Audit (pip-audit)
+        run: poetry run pip-audit --local
+
+      - name: Security SAST (Bandit)
+        # Возвращаем стандартный вызов, так как --sync гарантирует наличие бинарника
+        run: poetry run bandit -r src/ -ll
 
       - name: Run Pytest
         env:
           SECRET_KEY: "test_secret_key_for_ci"
           ENVIRONMENT: "testing"
+          REDIS_HOST: "localhost"
+          REDIS_PORT: "6379"
         run: poetry run pytest
 
   build-check:
-    name: Docker Build Verification
+    name: Docker Build Check (Cached)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -62,7 +83,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Backend image
+      - name: Build Backend
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -72,32 +93,29 @@ jobs:
           cache-from: type=gha,scope=backend
           cache-to: type=gha,mode=max,scope=backend
 
-      - name: Build Bot image
+      - name: Build Bot
         uses: docker/build-push-action@v5
         with:
           context: .
           file: deploy/bot/Dockerfile
           push: false
-          tags: check-bot:latest
           cache-from: type=gha,scope=bot
           cache-to: type=gha,mode=max,scope=bot
 
-      - name: Build Worker image
+      - name: Build Worker
         uses: docker/build-push-action@v5
         with:
           context: .
           file: deploy/worker/Dockerfile
           push: false
-          tags: check-worker:latest
           cache-from: type=gha,scope=worker
           cache-to: type=gha,mode=max,scope=worker
 
-      - name: Build Nginx image
+      - name: Build Nginx
         uses: docker/build-push-action@v5
         with:
           context: .
           file: deploy/nginx/Dockerfile
           push: false
-          tags: check-nginx:latest
           cache-from: type=gha,scope=nginx
           cache-to: type=gha,mode=max,scope=nginx

@@ -27,47 +27,58 @@ class BookingWizardView(TemplateView):
     def get(self, request, *args, **kwargs):
         session_service = BookingSessionService(request)
 
-        # 1. Update state from request params
+        # 0. Get current step from session BEFORE update
+        old_state = session_service.get_state()
+        old_step = old_state.step
+
+        # 1. Update state from request params (new step, selected date/time etc.)
         session_service.update_from_request(request.GET)
 
-        # 2. Get the typed state object
+        # 2. Get the newly updated state object
         state: BookingState = session_service.get_state()
+        new_step = state.step
+        current_step = str(new_step)
 
-        # 3. Determine current step
-        current_step = str(state.step)
-
-        # 4. Get Step Class & Object
+        # 3. Get Step Class & Object
         step_class = self.STEP_CLASSES.get(current_step, ServiceStep)
         step_obj = step_class(state, request)
 
-        # 5. Get Context
+        # 4. Get Context
         try:
             step_context = step_obj.get_context()
         except Exception as e:
             log.error(f"Error getting context for step {current_step}: {e}", exc_info=True)
-            # Don't clear session, just fallback to step 1
-            return redirect("booking_wizard")
+            return redirect("booking:booking_wizard")
 
         if step_context is None:
             log.warning(f"Missing data for step {current_step}, falling back to previous step")
             if state.step > 1:
                 state.step -= 1
                 session_service.save_state(state)
-                return redirect("booking_wizard")
+                return redirect("booking:booking_wizard")
 
             session_service.clear()
-            return redirect("booking_wizard")
+            return redirect("booking:booking_wizard")
 
         # Auto-skip step 3 when no named (public) masters are available at the chosen slot,
-        # but the "any master" pool has someone free — assign "any" and jump to confirmation.
+        # but the "any master" pool has someone free.
         if current_step == "3" and not step_context.get("available_masters") and step_context.get("has_any_masters"):
-            log.info("No public masters at chosen slot — auto-assigning 'any' master, skipping to step 4")
-            state.master_id = "any"
-            state.step = 4
-            session_service.save_state(state)
-            return redirect("booking_wizard")
+            # Detect direction: if new_step < old_step, it's a backward move.
+            is_backward = new_step < old_step
 
-        # 6. Prepare Full Context
+            if is_backward:
+                log.info("Backward move: skipping back to step 2 (Calendar)")
+                state.step = 2
+                session_service.save_state(state)
+                return redirect("booking:booking_wizard")
+            else:
+                log.info("Forward move: auto-assigning 'any' master, skipping to step 4")
+                state.master_id = "any"
+                state.step = 4
+                session_service.save_state(state)
+                return redirect("booking:booking_wizard")
+
+        # 5. Prepare Full Context
         context: dict[str, Any] = {"steps": wizard_selectors.get_stepper_context(state.step), **step_context}
 
         # 7. Render
@@ -98,7 +109,7 @@ class BookingWizardView(TemplateView):
         if not state.is_valid_for_submission:
             log.warning(f"Submission with incomplete state (Session expired?): {state}")
             # Redirect to start of wizard
-            return redirect("booking_wizard")
+            return redirect("booking:booking_wizard")
 
         # 3. Create Appointment
         appointment = BookingService.create_appointment(state, form_data)

@@ -38,6 +38,7 @@ venv/
 .DS_Store
 Thumbs.db
 desktop.ini
+nul
 
 # ═══════════════════════════════════════════
 # Testing & Quality
@@ -58,6 +59,7 @@ db.sqlite3
 db.sqlite3-journal
 staticfiles/
 mediafiles/
+src/backend_django/logs/
 
 # ═══════════════════════════════════════════
 # Poetry
@@ -85,12 +87,7 @@ deploy/docker-compose.override.yml
 .env.test
 
 # ═══════════════════════════════════════════
-# Application Logs (JSON error logs)
+# Agent Context
 # ═══════════════════════════════════════════
-logs/
-**/logs/**/*.json
-src/*/logs/
-!**/logs/.gitkeep
-!**/logs/README.md
-
-nul
+AGENTS.md
+project_structure.txt

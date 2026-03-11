@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.utils.safestring import mark_safe
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from features.promos.models import PromoMessage
 from unfold.admin import ModelAdmin
@@ -41,4 +41,5 @@ class PromoMessageAdmin(ModelAdmin):
             _("Inactive"): "bg-gray-500/20 text-gray-700 dark:text-gray-400",
         }
         color = colors.get(status, "bg-gray-500/20")
-        return mark_safe(f'<span class="px-2 py-1 rounded-md text-xs font-medium {color}">{status}</span>')
+        # Use format_html for safety and avoid Bandit B308/B703
+        return format_html('<span class="px-2 py-1 rounded-md text-xs font-medium {}">{}</span>', color, status)

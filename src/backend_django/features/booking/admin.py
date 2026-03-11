@@ -77,6 +77,7 @@ class MasterAdmin(ModelAdmin):
     search_fields = ("name", "telegram_username", "phone")
     prepopulated_fields = {"slug": ("name",)}
     inlines = [MasterDayOffInline, MasterPortfolioInline, MasterCertificateInline]
+    readonly_fields = ("bot_access_code", "qr_token")
     save_on_top = True
 
     fieldsets = (
@@ -192,6 +193,7 @@ class AppointmentAdmin(ModelAdmin):
         "price",
         "source",
     )
+    list_display_links = ("id", "client_link")
     list_filter = ("status", "source", "master", "datetime_start", "created_at")
     search_fields = ("client__first_name", "client__last_name", "client__phone", "id")
     date_hierarchy = "datetime_start"

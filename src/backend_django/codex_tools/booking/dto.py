@@ -97,6 +97,9 @@ class ServiceRequest(BaseModel, frozen=True):
         """Total time that blocks the master: duration + gap after."""
         return self.duration_minutes + self.min_gap_after_minutes
 
+    def __repr__(self) -> str:
+        return f"<ServiceRequest id={self.service_id} dur={self.duration_minutes}>"
+
 
 class BookingEngineRequest(BaseModel, frozen=True):
     """
@@ -161,7 +164,7 @@ class BookingEngineRequest(BaseModel, frozen=True):
         )
     """
 
-    service_requests: list[ServiceRequest] = Field(min_length=1, description="Минимум одна услуга")
+    service_requests: list[ServiceRequest] = Field(default_factory=list, description="Список запрашиваемых услуг")
     booking_date: date
     mode: BookingMode = BookingMode.SINGLE_DAY
     overlap_allowed: bool = Field(
@@ -195,6 +198,9 @@ class BookingEngineRequest(BaseModel, frozen=True):
         Used for quick check: does the chain fit into the window.
         """
         return sum(s.total_block_minutes for s in self.service_requests)
+
+    def __repr__(self) -> str:
+        return f"<BookingEngineRequest date={self.booking_date} services={len(self.service_requests)}>"
 
 
 # ---------------------------------------------------------------------------
@@ -244,6 +250,9 @@ class MasterAvailability(BaseModel, frozen=True):
                 raise ValueError(f"Мастер {self.master_id}: start={start} >= end={end}")
         return self
 
+    def __repr__(self) -> str:
+        return f"<MasterAvailability master={self.master_id} windows={len(self.free_windows)}>"
+
 
 # ---------------------------------------------------------------------------
 # Выходные DTO (результат работы движка)
@@ -273,6 +282,14 @@ class SingleServiceSolution(BaseModel, frozen=True):
         """Actual duration of the service in minutes."""
         return int((self.end_time - self.start_time).total_seconds() / 60)
 
+    def __repr__(self) -> str:
+        # GDPR Safe: Only IDs and Times. No notes, names, or PII.
+        return (
+            f"<SingleServiceSolution svc={self.service_id} "
+            f"mst={self.master_id} "
+            f"start={self.start_time.strftime('%H:%M')}>"
+        )
+
 
 class BookingChainSolution(BaseModel, frozen=True):
     """
@@ -296,7 +313,7 @@ class BookingChainSolution(BaseModel, frozen=True):
     Properties:
         starts_at: start time of the first service
         ends_at:   end time of the last service
-        span_minutes: total time from the start of the first to the end of the last
+        span_minutes: total time from the start of the first to the end of the last service
     """
 
     items: list[SingleServiceSolution] = Field(min_length=1)
@@ -330,6 +347,10 @@ class BookingChainSolution(BaseModel, frozen=True):
             }
             for item in self.items
         }
+
+    def __repr__(self) -> str:
+        # GDPR Safe: Only structural info.
+        return f"<BookingChainSolution score={self.score:.2f} items={self.items}>"
 
 
 class EngineResult(BaseModel, frozen=True):
@@ -400,6 +421,9 @@ class EngineResult(BaseModel, frozen=True):
         """
         times = {s.starts_at.strftime("%H:%M") for s in self.solutions}
         return sorted(times)
+
+    def __repr__(self) -> str:
+        return f"<EngineResult mode={self.mode} solutions_count={len(self.solutions)}>"
 
 
 # ---------------------------------------------------------------------------
@@ -474,3 +498,6 @@ class WaitlistEntry(BaseModel, frozen=True):
             solution=solution,
             days_from_request=max(0, days_delta),
         )
+
+    def __repr__(self) -> str:
+        return f"<WaitlistEntry date={self.available_date} time={self.available_time}>"

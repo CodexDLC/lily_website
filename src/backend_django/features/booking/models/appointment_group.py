@@ -29,6 +29,12 @@ class AppointmentGroup(TimestampMixin, models.Model):
         related_name="appointment_groups",
         verbose_name=_("Client"),
     )
+    lang = models.CharField(
+        max_length=10,
+        default="de",
+        verbose_name=_("Language"),
+        help_text=_("Language used during booking"),
+    )
     booking_date = models.DateField(
         verbose_name=_("Booking Date"),
         help_text=_("Primary date for the visit (all services for SINGLE_DAY mode)."),

@@ -88,5 +88,18 @@
             document.getElementById('selected-time-group-' + groupId).value = time;
             document.getElementById('confirm-reschedule-group-' + groupId).disabled = false;
         }
+
+        // Enable horizontal scrolling with mouse wheel for the date scroller
+        (function() {
+            const scroller = document.querySelector('#group-{{ group_id }} .date-scroller');
+            if (scroller) {
+                scroller.addEventListener('wheel', function(e) {
+                    if (e.deltaY !== 0) {
+                        e.preventDefault();
+                        scroller.scrollLeft += e.deltaY;
+                    }
+                });
+            }
+        })();
     </script>
 </div>
