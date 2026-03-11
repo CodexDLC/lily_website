@@ -57,14 +57,14 @@ class ContactRequestsView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
             req.is_processed = True
             req.save()
 
-            # 3. Send Email via Universal Gateway
+            # 3. Send Email via Specialized Service
             if req.client.email:
-                NotificationService.send_universal(
+                NotificationService.send_admin_reply(
                     recipient_email=req.client.email,
-                    template_name="ct_reply",
-                    subject=f"Re: Your inquiry [Ref: #{req.id}]",
-                    context_data={"reply_text": new_reply, "history_text": history, "request_id": req.id},
-                    channels=["email"],
+                    reply_text=new_reply,
+                    history_text=history,
+                    request_id=req.id,
+                    recipient_phone=req.client.phone,
                 )
                 log.info(f"CRM: Email response sent for Request {req.id}")
 
