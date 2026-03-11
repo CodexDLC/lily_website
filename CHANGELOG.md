@@ -2,6 +2,11 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.9.1] - 2026-03-11
+
+### Fixed
+- **CRM:** Fixed `AttributeError` in `ContactRequestsView` by replacing the non-existent `send_universal` method with the correct `send_admin_reply` service call. This restores the ability to reply to contact requests via email from the admin cabinet.
+
 ## [1.9.0] - 2026-03-11
 
 ### Added
@@ -13,7 +18,7 @@ All notable changes to the **Lily Website** project will be documented in this f
 ### Fixed
 - **Security:** Patched critical vulnerabilities by updating `django` to `5.2.12` (CVE-2026-25674) and `pillow` to `12.1.1` (CVE-2026-25990).
 - **Security:** Resolved multiple `Bandit` security issues (missing timeouts in tests, unsafe HTML rendering in admin).
-- **Telegram Bot:** Fixed an issue where `localhost` URLs in inline buttons caused message delivery failure.
+- **Telegram Bot:** Fixed an issue where `localhost` URLs in delete inline buttons caused message delivery failure.
 
 ### Changed / Refactored
 - **Telegram Bot:** Major refactoring of the notification system (`BookingProcessor`, `NotificationsUI`, `Keyboards`).
