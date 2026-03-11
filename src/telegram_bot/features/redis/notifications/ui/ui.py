@@ -16,6 +16,7 @@ class NotificationsUI:
         topic_id: int | None = None,
         email_status: str = "none",
         twilio_status: str = "none",
+        base_url: str = "https://lily-salon.de",
     ) -> ViewResultDTO:
         """Рендерит полную карточку записи со статусами."""
         text = format_new_booking(payload, email_status=email_status, twilio_status=twilio_status)
@@ -24,6 +25,6 @@ class NotificationsUI:
         if email_status != "none" or twilio_status != "none":
             kb = build_post_action_kb(payload.id, topic_id=topic_id)
         else:
-            kb = build_main_kb(payload.id, topic_id=topic_id)
+            kb = build_main_kb(payload.id, topic_id=topic_id, base_url=base_url)
 
         return ViewResultDTO(text=text, kb=kb)

@@ -2,14 +2,16 @@ from django.core.cache import cache
 from django.db.utils import ProgrammingError
 from loguru import logger as log
 
-from .models import SiteSettings, StaticTranslation
+from .models import StaticTranslation
+from .redis_managers.site_settings_manager import SiteSettingsManager
 
 
 def site_settings(request):
     """
-    Exposes SiteSettings to all templates.
+    Exposes SiteSettings to all templates from Redis.
+    Usage: {{ site_settings.phone }}
     """
-    return {"site_settings": SiteSettings.load()}
+    return {"site_settings": SiteSettingsManager.load_from_redis()}
 
 
 def static_content(request):
@@ -24,7 +26,6 @@ def static_content(request):
     if content_dict is None:
         try:
             # We fetch all objects to let django-modeltranslation handle the language.
-            # Using values_list('text') would bypass translation logic.
             translations = StaticTranslation.objects.all()
             content_dict = {t.key: t.text for t in translations}
 

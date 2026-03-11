@@ -7,6 +7,7 @@ from datetime import date, datetime, timedelta
 from codex_tools.booking import (
     BookingMode,
     ChainFinder,
+    EngineResult,
     MasterAvailability,
     NoAvailabilityError,
     SlotCalculator,
@@ -14,6 +15,7 @@ from codex_tools.booking import (
 from codex_tools.booking.adapters import DjangoAvailabilityAdapter
 from codex_tools.booking.scorer import BookingScorer, ScoringWeights
 from core.logger import log
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils import timezone
 
@@ -121,6 +123,74 @@ class BookingV2Service:
 
         return dict(sorted(valid_starts.items()))
 
+    def find_nearest_slot(
+        self,
+        service_ids: list[int],
+        start_date: date,
+        search_days: int = 60,
+        mode: BookingMode = BookingMode.SINGLE_DAY,
+        locked_master_id: int | None = None,
+        master_selections: dict[int, str] | None = None,
+    ) -> EngineResult | None:
+        """
+        Ищет ближайший доступный слот в диапазоне search_days.
+        Использует пакетную загрузку данных (Batching) для производительности.
+        """
+        settings = BookingSettings.load()
+        min_start = self._get_min_start(settings)
+        end_date = start_date + timedelta(days=search_days)
+
+        # 1. Определяем всех возможных мастеров для этих услуг
+        services = Service.objects.filter(id__in=service_ids)
+        categories = services.values_list("category", flat=True)
+
+        if locked_master_id:
+            master_ids = [locked_master_id]
+        else:
+            # Берем всех активных мастеров, которые умеют делать эти услуги
+            master_ids = list(
+                Master.objects.filter(categories__in=categories, status=Master.STATUS_ACTIVE)
+                .values_list("id", flat=True)
+                .distinct()
+            )
+
+        if not master_ids:
+            return None
+
+        # 2. Пакетная загрузка доступности (Batch Fetch)
+        # Один запрос к БД вместо 60
+        batch_data = self._adapter.build_availability_batch(master_ids, start_date, end_date)
+
+        finder = ChainFinder(step_minutes=self._step_minutes, min_start=min_start)
+
+        # 3. Ленивый поиск по дням
+        for offset in range(search_days + 1):
+            check_date = start_date + timedelta(days=offset)
+
+            # Получаем доступность из кэша/батча
+            availability = batch_data.get(check_date)
+            if not availability:
+                continue
+
+            # Строим запрос для конкретного дня
+            request = self._adapter.build_engine_request(
+                service_ids=service_ids,
+                target_date=check_date,
+                mode=mode,
+                locked_master_id=locked_master_id,
+                master_selections=master_selections,
+            )
+
+            if not request.service_requests:
+                continue
+
+            # Ищем решение
+            result = finder.find(request, availability, max_solutions=1)
+            if result.has_solutions:
+                return result
+
+        return None
+
     def create_group(
         self,
         client: Client,
@@ -133,6 +203,7 @@ class BookingV2Service:
         master_selections: dict[int, str] | None = None,
         source: str = Appointment.SOURCE_WEBSITE,
         initial_status: str = Appointment.STATUS_PENDING,
+        lang: str = "de",
     ) -> AppointmentGroup:
         """
         Создает группу записей с оптимистичной блокировкой.
@@ -212,8 +283,6 @@ class BookingV2Service:
 
             if not final_result.has_solutions:
                 # Слот ушел за миллисекунды между snapshot и lock
-                # В теории можно было бы уйти на ретрай (попробовать других мастеров),
-                # но для простоты и надежности пока просто отказываем.
                 raise NoAvailabilityError(
                     booking_date=target_date, message="К сожалению, выбранный слот только что был занят."
                 )
@@ -228,9 +297,9 @@ class BookingV2Service:
                 client=client,
                 booking_date=target_date,
                 status=initial_status,
-                engine_mode=mode.value,
                 total_duration_minutes=total_duration,
                 notes=notes,
+                lang=lang,
             )
 
             services_map = {str(s.id): s for s in Service.objects.filter(id__in=service_ids)}
@@ -240,7 +309,12 @@ class BookingV2Service:
                 service = services_map.get(sol_item.service_id)
                 master = masters_map.get(sol_item.master_id)
 
-                appointment = Appointment.objects.create(
+                if not service or not master:
+                    log.warning(f"V2: missing service/master for sol_item {sol_item}")
+                    continue
+
+                # Создаем объект, но не сохраняем сразу
+                appointment = Appointment(
                     client=client,
                     master=master,
                     service=service,
@@ -248,7 +322,21 @@ class BookingV2Service:
                     duration_minutes=sol_item.duration_minutes,
                     status=initial_status,
                     source=source,
+                    # Явно задаем цену, чтобы пройти валидацию full_clean
+                    price=service.price,
+                    lang=lang,
                 )
+
+                # Defense in Depth: Финальная проверка на уровне БД перед записью
+                try:
+                    appointment.full_clean()
+                except ValidationError as e:
+                    # Если валидация не прошла (например, слот занят), выбрасываем понятную ошибку
+                    raise NoAvailabilityError(
+                        booking_date=target_date, message="Слот занят (проверка целостности данных)."
+                    ) from e
+
+                appointment.save()
 
                 AppointmentGroupItem.objects.create(
                     group=group,
@@ -338,6 +426,15 @@ class BookingV2Service:
 
                 appt.datetime_start = sol_item.start_time
                 appt.master = master
+
+                # Defense in Depth
+                try:
+                    appt.full_clean()
+                except ValidationError as e:
+                    raise NoAvailabilityError(
+                        booking_date=target_date, message="Слот занят (проверка целостности данных)."
+                    ) from e
+
                 appt.save(update_fields=["datetime_start", "master", "updated_at"])
 
             group.booking_date = target_date
@@ -413,6 +510,15 @@ class BookingV2Service:
 
             appointment.datetime_start = solution.items[0].start_time
             appointment.master = master
+
+            # Defense in Depth
+            try:
+                appointment.full_clean()
+            except ValidationError as e:
+                raise NoAvailabilityError(
+                    booking_date=target_date, message="Слот занят (проверка целостности данных)."
+                ) from e
+
             appointment.save(update_fields=["datetime_start", "master", "updated_at"])
 
         log.info(

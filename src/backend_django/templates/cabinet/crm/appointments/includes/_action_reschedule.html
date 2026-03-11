@@ -66,14 +66,21 @@
     <form hx-post="{% url 'cabinet:appointments' %}" hx-target="#appt-{{ appt.id }}" hx-swap="outerHTML">
         {% csrf_token %}
         <input type="hidden" name="id" value="{{ appt.id }}">
-        <input type="hidden" name="action" value="reschedule">
         <input type="hidden" name="new_date" value="{{ selected_date }}">
         <input type="hidden" name="new_time" id="selected-time-{{ appt.id }}">
 
-        <button type="submit" id="confirm-reschedule-{{ appt.id }}" class="btn-create-submit" disabled
-                style="background: #a855f7; color: white; border: none;">
-            {% trans "Confirm Reschedule" %}
-        </button>
+        <div style="display: flex; gap: 8px; margin-top: 10px;">
+            <button type="submit" name="action" value="reschedule" id="confirm-reschedule-{{ appt.id }}" disabled
+                    style="background: #a855f7; color: white; border: none; border-radius: 6px; padding: 10px; flex: 1; cursor: pointer; transition: all 0.2s;"
+                    onmouseover="if(!this.disabled) this.style.opacity='0.9'" onmouseout="if(!this.disabled) this.style.opacity='1'">
+                {% trans "Изменить" %}
+            </button>
+            <button type="submit" name="action" value="propose_reschedule" id="propose-reschedule-{{ appt.id }}" disabled
+                    style="background: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid #a855f7; border-radius: 6px; padding: 10px; flex: 1; cursor: pointer; transition: all 0.2s;"
+                    onmouseover="if(!this.disabled) this.style.background='rgba(168, 85, 247, 0.2)'" onmouseout="if(!this.disabled) this.style.background='rgba(168, 85, 247, 0.1)'">
+                {% trans "Предложить" %}
+            </button>
+        </div>
     </form>
 
     <script>
@@ -89,9 +96,23 @@
             btn.style.background = 'rgba(168, 85, 247, 0.2)';
             btn.style.borderColor = '#a855f7';
 
-            // Update hidden input and enable button
+            // Update hidden input and enable buttons
             document.getElementById('selected-time-{{ appt.id }}').value = time;
             document.getElementById('confirm-reschedule-{{ appt.id }}').disabled = false;
+            document.getElementById('propose-reschedule-{{ appt.id }}').disabled = false;
         }
+
+        // Enable horizontal scrolling with mouse wheel for the date scroller
+        (function() {
+            const scroller = document.querySelector('#appt-{{ appt.id }} .date-scroller');
+            if (scroller) {
+                scroller.addEventListener('wheel', function(e) {
+                    if (e.deltaY !== 0) {
+                        e.preventDefault();
+                        scroller.scrollLeft += e.deltaY;
+                    }
+                });
+            }
+        })();
     </script>
 </div>

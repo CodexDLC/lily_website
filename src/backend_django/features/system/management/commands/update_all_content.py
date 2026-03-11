@@ -10,17 +10,14 @@ class Command(BaseCommand):
         log.info("Command: update_all_content | Action: Start")
 
         try:
-            log.debug("Command: update_all_content | Action: SubCommand | name=update_site_settings")
-            call_command("update_site_settings")
+            # log.debug("Command: update_all_content | Action: SubCommand | name=update_site_settings")
+            # call_command("update_site_settings")
 
             log.debug("Command: update_all_content | Action: SubCommand | name=update_static_translations")
             call_command("update_static_translations")
 
             log.debug("Command: update_all_content | Action: SubCommand | name=update_email_content")
             call_command("update_email_content")
-
-            log.debug("Command: update_all_content | Action: SubCommand | name=update_services_seo")
-            call_command("update_services_seo")
 
             log.debug("Command: update_all_content | Action: SubCommand | name=update_static_seo")
             call_command("update_static_seo")

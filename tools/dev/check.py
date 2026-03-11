@@ -156,6 +156,28 @@ def run_tests():
     return run_command("poetry run pytest src -v")[0]
 
 
+def check_security_deep():
+    """Глубокий аудит безопасности: зависимости + статика."""
+    print_step("Deep Security Audit")
+
+    # Запускаем аудит зависимостей через poetry напрямую (дополнительная страховка)
+    print("Checking for vulnerable dependencies...")
+    success, out = run_command("poetry run pip-audit")
+    if not success:
+        print_error(f"Security vulnerabilities found in packages:\n{out}")
+        return False
+
+    # Запускаем Bandit для поиска дыр в логике (SQL инъекции, небезопасный random и т.д.)
+    print("Running Bandit (SAST)...")
+    success, out = run_command("poetry run bandit -r src/ -ll")
+    if not success:
+        print_error(f"Bandit found security risks:\n{out}")
+        return False
+
+    print_success("Security audit passed.")
+    return True
+
+
 def run_docker_validation():
     print_step(f"Starting Docker Validation (Isolated Project: {TEST_PROJECT_NAME})")
 
@@ -272,6 +294,8 @@ def run_all(with_docker=False):
     if not check_linters():
         sys.exit(1)
     if not check_types():
+        sys.exit(1)
+    if not check_security_deep():
         sys.exit(1)
 
     # Prompt for tests

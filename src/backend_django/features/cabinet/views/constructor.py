@@ -25,6 +25,7 @@ from features.booking.services.v2_booking_service import BookingV2Service
 from features.cabinet.mixins import AdminRequiredMixin, HtmxCabinetMixin
 from features.main.models.category import Category
 from features.main.models.service import Service
+from features.system.services.notification import NotificationService
 
 
 class AdminConstructorView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
@@ -335,6 +336,7 @@ class AdminConstructorView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
         notes = request.POST.get("notes", "")
+        lang = request.POST.get("lang", "de")
 
         if not phone and not email:
             return HttpResponse("Phone or Email is required", status=400)
@@ -355,9 +357,9 @@ class AdminConstructorView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
         try:
             with transaction.atomic():
                 if mode == "complex":
-                    group = self._create_complex(request, client, booking_service, service_ids, notes)
+                    group = self._create_complex(request, client, booking_service, service_ids, notes, lang=lang)
                 else:
-                    group = self._create_separate(request, client, service_ids, notes)
+                    group = self._create_separate(request, client, service_ids, notes, lang=lang)
 
             return HttpResponse(f'<div class="alert alert-success">Booking #{group.pk} created successfully!</div>')
 
@@ -374,7 +376,7 @@ class AdminConstructorView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
                 status=400,
             )
 
-    def _create_complex(self, request, client, booking_service, service_ids, notes):
+    def _create_complex(self, request, client, booking_service, service_ids, notes, lang="de"):
         """Complex mode: все услуги через BookingV2Service (движок подбирает цепочку)."""
         date_str = request.session.get(self.SESSION_DATE)
         time_val = request.session.get(self.SESSION_TIME)
@@ -399,6 +401,7 @@ class AdminConstructorView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
             master_selections=selected_masters,
             source=Appointment.SOURCE_ADMIN,
             initial_status=Appointment.STATUS_CONFIRMED,  # Auto-confirm admin bookings
+            lang=lang,
         )
 
         # Trigger unified group notification
@@ -412,7 +415,7 @@ class AdminConstructorView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
         )
         return group
 
-    def _create_separate(self, request, client, service_ids, notes):
+    def _create_separate(self, request, client, service_ids, notes, lang="de"):
         """Separate mode: каждая услуга со своей датой/временем, без движка."""
         slots = request.session.get(self.SESSION_SLOTS, {})
         selected_masters = request.session.get(self.SESSION_MASTERS, {})
@@ -439,6 +442,7 @@ class AdminConstructorView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
             engine_mode=BookingMode.SEPARATE.value,
             total_duration_minutes=total_dur,
             notes=notes,
+            lang=lang,
         )
         log.debug(
             "Constructor._create_separate: AppointmentGroup #{} | booking_date={}",
@@ -498,6 +502,7 @@ class AdminConstructorView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
                 duration_minutes=service.duration,
                 status=Appointment.STATUS_CONFIRMED,  # Auto-confirm
                 source=Appointment.SOURCE_ADMIN,
+                lang=lang,
             )
             log.debug(
                 "Constructor._create_separate: Appointment #{} | master={} | service={} | dt={}",
@@ -559,28 +564,73 @@ class AdminConstructorView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
         )
 
     def _trigger_group_notification(self, group: AppointmentGroup):
-        """Отправить групповое уведомление боту через ARQ."""
+        """Отправить групповое уведомление через NotificationService."""
         try:
-            from core.arq.client import DjangoArqClient
-            from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
+            items = group.items.select_related("appointment__master", "appointment__service").order_by("order")
+            target_lang = getattr(group, "lang", "de")
+            from django.utils import translation
 
-            # Seed the unified group data to Redis
-            NotificationCacheManager.seed_group_appointment(group.id, extra_data={"is_admin_booking": True})
+            with translation.override(target_lang):
+                context = {
+                    "group_id": group.id,
+                    "booking_date": group.booking_date.strftime("%d.%m.%Y"),
+                    "total_price": float(sum(item.appointment.price for item in items)),
+                    "total_duration": group.total_duration_minutes,
+                    "notes": group.notes,
+                    "items": [],
+                }
+                for item in items:
+                    appt = item.appointment
+                    local_dt = timezone.localtime(appt.datetime_start)
+                    context["items"].append(
+                        {
+                            "appointment_id": appt.id,
+                            "service_name": appt.service.title,
+                            "master_name": appt.master.name,
+                            "time": local_dt.strftime("%H:%M"),
+                            "price": float(appt.price),
+                            "duration": appt.duration_minutes,
+                        }
+                    )
 
-            # Enqueue the NEW group task
-            DjangoArqClient.enqueue_job("send_group_booking_notification_task", group_id=group.id)
+            # Для конструктора админки это всегда подтверждение (Terminbestätigung)
+            NotificationService.send_group_booking_confirmation(
+                recipient_email=group.client.email,
+                client_name=f"{group.client.first_name} {group.client.last_name}",
+                recipient_phone=group.client.phone,
+                context=context,
+                lang=target_lang,
+            )
             log.info("Constructor: group notification triggered for Group #{}", group.id)
         except Exception as e:
             log.error("Constructor: group notification error for Group #{}: {}", group.id, e)
 
     def _trigger_notification(self, appointment: Appointment):
-        """Отправить уведомление боту через ARQ (Solo - legacy/fallback)."""
+        """Отправить одиночное уведомление через NotificationService."""
         try:
-            from core.arq.client import DjangoArqClient
-            from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
+            target_lang = getattr(appointment, "lang", "de")
+            from django.utils import translation
 
-            NotificationCacheManager.seed_appointment(appointment.id, extra_data={"is_admin_booking": True})
-            DjangoArqClient.enqueue_job("send_booking_notification_task", appointment_id=appointment.id)
+            with translation.override(target_lang):
+                local_dt = timezone.localtime(appointment.datetime_start)
+                context = {
+                    "id": appointment.id,
+                    "service_name": appointment.service.title,
+                    "master_name": appointment.master.name,
+                    "datetime": local_dt.strftime("%d.%m.%Y %H:%M"),
+                    "price": float(appointment.price),
+                    "duration_minutes": appointment.duration_minutes,
+                    "client_notes": appointment.client_notes or "",
+                }
+
+            # Для конструктора админки это всегда подтверждение (Terminbestätigung)
+            NotificationService.send_booking_confirmation(
+                recipient_email=appointment.client.email,
+                client_name=appointment.client.first_name,
+                recipient_phone=appointment.client.phone,
+                context=context,
+                lang=target_lang,
+            )
             log.info("Constructor: notification triggered for Appointment #{}", appointment.id)
         except Exception as e:
             log.error("Constructor: notification error for Appointment #{}: {}", appointment.id, e)

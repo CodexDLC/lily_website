@@ -1,10 +1,16 @@
-{% extends cabinet_base_template|default:"cabinet/base_cabinet.html" %}
+{% extends "base.html" %}
 {% load i18n static %}
+
+{% block extra_css %}
+    <!-- Load cabinet CSS specifically for this standalone card since it uses cabinet classes -->
+    <link rel="stylesheet" href="{% static 'css/cabinet_app.css' %}?v={% now "U" %}">
+{% endblock %}
 
 {% block title %}{% trans "Reschedule Appointment" %}{% endblock title %}
 
 {% block content %}
-    <div class="cabinet-card mx-auto reschedule-card-wide" id="reschedule-main-card">
+<div class="container d-flex flex-column justify-content-center align-items-center" style="min-height: 60vh; padding-top: 50px; padding-bottom: 50px;">
+    <div class="cabinet-card shadow-sm w-100" id="reschedule-main-card" style="max-width: 500px;">
         <h2 class="mb-4 text-center font-serif italic text-gold-italic">
             {% trans "Reschedule Appointment" %}
         </h2>
@@ -60,8 +66,9 @@
                 </button>
             </div>
 
-            <!-- HTMX target for calendar and slots -->
-            <div id="reschedule-picker" class="mt-4"></div>
-        {% endif %}
+        <!-- HTMX target for calendar and slots -->
+        <div id="reschedule-picker" class="mt-4"></div>
+    {% endif %}
     </div>
+</div>
 {% endblock content %}

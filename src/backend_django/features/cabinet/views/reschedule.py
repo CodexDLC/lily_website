@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 from features.booking.models.appointment import Appointment
 from features.booking.services.reschedule import RescheduleTokenService
 from features.booking.services.slots import SlotService
-from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
+from features.system.services.notification import NotificationService
 from loguru import logger
 
 
@@ -38,17 +38,21 @@ class RescheduleAppointmentView(TemplateView):
             # If the appointment was already acted upon, it shouldn't be valid anymore
             if appointment.status != Appointment.STATUS_RESCHEDULE_PROPOSED:
                 ctx["valid_token"] = False
-                ctx["error_message"] = "Данное предложение уже обработано или истекло."
+                from django.utils.translation import gettext as _
+
+                ctx["error_message"] = _("This proposal has already been processed or has expired.")
 
         return ctx
 
     def post(self, request, *args, **kwargs):
         """Handle confirmations and slot selections (HTMX)."""
         logger.info("RescheduleAppointmentView.post: token={}", self.token)
+        from django.utils.translation import gettext as _
 
         if not self.token_data:
             logger.error("RescheduleAppointmentView.post: Invalid or expired token.")
-            return HttpResponse('<div class="alert alert-danger">Токен недействителен или истек.</div>')
+            error_msg = _("The token is invalid or has expired.")
+            return HttpResponse(f'<div class="alert alert-danger">{error_msg}</div>')
 
         appointment_id = self.token_data["appointment_id"]
         appointment = get_object_or_404(Appointment, id=appointment_id)
@@ -61,7 +65,8 @@ class RescheduleAppointmentView(TemplateView):
                 appointment.status,
                 Appointment.STATUS_RESCHEDULE_PROPOSED,
             )
-            return HttpResponse('<div class="alert alert-danger">Предложение больше не актуально.</div>')
+            error_msg = _("The proposal is no longer relevant.")
+            return HttpResponse(f'<div class="alert alert-danger">{error_msg}</div>')
 
         action = request.POST.get("action")
         logger.info("RescheduleAppointmentView.post: action={}", action)
@@ -71,14 +76,25 @@ class RescheduleAppointmentView(TemplateView):
             logger.info("Confirming proposed slot for appointment {}", appointment_id)
             appointment.status = Appointment.STATUS_CONFIRMED
             appointment.save(update_fields=["status", "updated_at"])
-            NotificationCacheManager.seed_appointment(appointment.id)
             RescheduleTokenService.delete_token(self.token)
 
-            from core.arq.client import DjangoArqClient
-
-            # Notify client and master about confirmation
-            DjangoArqClient.enqueue_job(
-                "send_appointment_notification", appointment_id=appointment.id, status="confirmed"
+            # Notify client and admin
+            local_dt = timezone.localtime(appointment.datetime_start)
+            context = {
+                "id": appointment.id,
+                "service_name": appointment.service.title,
+                "master_name": appointment.master.name,
+                "datetime": local_dt.strftime("%d.%m.%Y %H:%M"),
+                "price": float(appointment.price),
+                "duration_minutes": appointment.duration_minutes,
+                "client_notes": appointment.client_notes or "",
+                "is_rescheduled": True,
+            }
+            NotificationService.send_booking_confirmation(
+                recipient_email=appointment.client.email,
+                client_name=appointment.client.first_name,
+                recipient_phone=appointment.client.phone,
+                context=context,
             )
             logger.success("Appointment {} confirmed successfully (proposed time).", appointment_id)
 
@@ -99,14 +115,26 @@ class RescheduleAppointmentView(TemplateView):
                 appointment.admin_notes = appointment.admin_notes + "\n(Время изменено клиентом при переносе)"
                 appointment.save(update_fields=["datetime_start", "status", "admin_notes", "updated_at"])
 
-                NotificationCacheManager.seed_appointment(appointment.id)
                 RescheduleTokenService.delete_token(self.token)
 
-                from core.arq.client import DjangoArqClient
-
-                # Notify client and master about confirmation
-                DjangoArqClient.enqueue_job(
-                    "send_appointment_notification", appointment_id=appointment.id, status="confirmed"
+                # Notify client and admin
+                local_dt = timezone.localtime(appointment.datetime_start)
+                context = {
+                    "id": appointment.id,
+                    "service_name": appointment.service.title,
+                    "master_name": appointment.master.name,
+                    "datetime": local_dt.strftime("%d.%m.%Y %H:%M"),
+                    "price": float(appointment.price),
+                    "duration_minutes": appointment.duration_minutes,
+                    "client_notes": appointment.client_notes or "",
+                    "is_rescheduled": True,
+                    "is_new_slot": True,
+                }
+                NotificationService.send_booking_confirmation(
+                    recipient_email=appointment.client.email,
+                    client_name=appointment.client.first_name,
+                    recipient_phone=appointment.client.phone,
+                    context=context,
                 )
                 logger.success("Appointment {} confirmed successfully with NEW time {}.", appointment_id, datetime_str)
 
@@ -115,10 +143,12 @@ class RescheduleAppointmentView(TemplateView):
                 )
             except ValueError as e:
                 logger.error("ValueError parsing datetime {}: {}", datetime_str, e)
-                return HttpResponse('<div class="alert alert-danger">Неверный формат времени.</div>')
+                error_msg = _("Invalid time format.")
+                return HttpResponse(f'<div class="alert alert-danger">{error_msg}</div>')
 
         logger.warning("Unknown action received: {}", action)
-        return HttpResponse('<div class="alert alert-danger">Неизвестное действие.</div>')
+        error_msg = _("Unknown action.")
+        return HttpResponse(f'<div class="alert alert-danger">{error_msg}</div>')
 
     def _get_calendar_grid(self, year: int, month: int):
         """Helper to generate calendar matrix for grid view."""
@@ -168,8 +198,11 @@ class RescheduleAppointmentView(TemplateView):
         if not request.headers.get("HX-Request"):
             return super().get(request, *args, **kwargs)
 
+        from django.utils.translation import gettext as _
+
         if not self.token_data:
-            return HttpResponse('<div class="alert alert-danger">Токен недействителен или истек.</div>')
+            error_msg = _("The token is invalid or has expired.")
+            return HttpResponse(f'<div class="alert alert-danger">{error_msg}</div>')
 
         appointment_id = self.token_data["appointment_id"]
         appointment = get_object_or_404(Appointment, id=appointment_id)
@@ -221,6 +254,8 @@ class RescheduleAppointmentView(TemplateView):
                     {"slots": slots_data, "token": self.token, "selected_date": date_obj},
                 )
             except ValueError:
-                return HttpResponse('<div class="alert alert-danger">Неверная дата.</div>')
+                error_msg = _("Invalid date.")
+                return HttpResponse(f'<div class="alert alert-danger">{error_msg}</div>')
 
-        return HttpResponse('<div class="alert alert-warning">Unknown action.</div>')
+        error_msg = _("Unknown action.")
+        return HttpResponse(f'<div class="alert alert-warning">{error_msg}</div>')

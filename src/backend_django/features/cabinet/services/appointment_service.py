@@ -160,21 +160,21 @@ class AppointmentService:
 
         # 5. Send Email via Universal Gateway
         if appointment.client.email:
+            from django.urls import reverse
+
             site_settings = SiteSettings.load()
             base_url = site_settings.site_base_url.rstrip("/")
-            reschedule_url = f"{base_url}/de/cabinet/appointments/reschedule/{token}/"
+            path = reverse("cabinet:reschedule_appointment", kwargs={"token": token})
+            reschedule_url = f"{base_url}{path}"
 
             ctx = AppointmentService._build_email_context(new_appointment)
             ctx["link_reschedule"] = reschedule_url
             ctx["is_reschedule_offer"] = True
 
-            NotificationService.send_universal(
+            NotificationService.send_booking_reschedule(
                 recipient_email=appointment.client.email,
-                first_name=appointment.client.first_name,
-                template_name="bk_reschedule",
-                subject="Terminvorschlag - Lily Beauty Salon",
-                context_data=ctx,
-                channels=["email"],
+                client_name=appointment.client.first_name,
+                context=ctx,
             )
 
     @staticmethod

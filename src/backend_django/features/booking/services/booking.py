@@ -10,6 +10,7 @@ from features.booking.models.client import Client
 from features.booking.models.master import Master
 from features.booking.services.utils.client_service import ClientService
 from features.main.models.service import Service
+from features.system.services.notification import NotificationService
 
 
 class BookingService:
@@ -22,6 +23,9 @@ class BookingService:
         """
         Main entry point. Orchestrates validation, object fetching, and creation.
         """
+        from django.utils import translation
+
+        lang = translation.get_language() or "de"
         # 1. Validate & Parse
         validated_data = BookingService._validate_and_parse(state)
         if not validated_data:
@@ -65,7 +69,9 @@ class BookingService:
             )
 
             # 5. Create Appointment
-            appointment = BookingService._create_appointment_record(client, master, service, start_dt, form_data)
+            appointment = BookingService._create_appointment_record(
+                client, master, service, start_dt, form_data, lang=lang
+            )
 
         # 6. Post-processing (Notifications)
         BookingService._handle_post_creation(appointment, form_data)
@@ -144,7 +150,12 @@ class BookingService:
 
     @staticmethod
     def _create_appointment_record(
-        client: Client, master: Master, service: Service, start_dt: datetime, form_data: dict[str, Any]
+        client: Client,
+        master: Master,
+        service: Service,
+        start_dt: datetime,
+        form_data: dict[str, Any],
+        lang: str = "de",
     ) -> Appointment:
         # Get active promo at booking time (only for website bookings)
         active_promo = None
@@ -167,22 +178,36 @@ class BookingService:
             source="website",
             client_notes=form_data.get("client_notes", ""),
             active_promo=active_promo,
+            lang=lang,
         )
 
     @staticmethod
     def _handle_post_creation(appointment: Appointment, form_data: dict[str, Any]) -> None:
-        from core.arq.client import DjangoArqClient
-        from features.system.redis_managers.notification_cache_manager import NotificationCacheManager
-
-        # Seed the rich metadata to Redis for the Bot/Worker
-        NotificationCacheManager.seed_appointment(
-            appointment.id, extra_data={"request_call": form_data.get("request_call", False)}
-        )
-
+        """
+        Уведомление о новом онлайн-бронировании (V1 Wizard).
+        """
         try:
-            DjangoArqClient.enqueue_job(
-                "send_booking_notification_task",
-                appointment_id=appointment.id,
+            local_dt = timezone.localtime(appointment.datetime_start)
+            context = {
+                "id": appointment.id,
+                "service_name": appointment.service.title,
+                "master_name": appointment.master.name,
+                "datetime": local_dt.strftime("%d.%m.%Y %H:%M"),
+                "duration_minutes": appointment.duration_minutes,
+                "price": float(appointment.price),
+                "client_notes": appointment.client_notes or "",
+                "request_call": form_data.get("request_call", False),
+            }
+
+            # Отправляем "Запрос получен" (bk_receipt)
+            # NotificationService сам добавит 'telegram' канал, чтобы админ тоже узнал
+            NotificationService.send_booking_receipt(
+                recipient_email=appointment.client.email,
+                client_name=appointment.client.first_name,
+                recipient_phone=appointment.client.phone,
+                context=context,
+                lang=appointment.lang,
             )
+            log.info(f"BookingService: notification triggered for Appointment #{appointment.id}")
         except Exception as e:
-            log.error(f"Failed to queue notification: {e}")
+            log.error(f"BookingService: notification error for Appointment #{appointment.id}: {e}")

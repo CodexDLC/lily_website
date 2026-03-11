@@ -18,6 +18,13 @@ class Appointment(TimestampMixin, models.Model):
     Client booking/appointment with a master for a specific service.
     """
 
+    lang = models.CharField(
+        max_length=5,
+        default="de",
+        verbose_name=_("Language"),
+        help_text=_("Language used during booking (for notifications)"),
+    )
+
     # === Core Relationships ===
     client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name="appointments", verbose_name=_("Client"))
 

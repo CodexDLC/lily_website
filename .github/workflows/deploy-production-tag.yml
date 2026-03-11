@@ -101,6 +101,26 @@ jobs:
           cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-nginx:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-nginx:buildcache,mode=max
 
+      - name: Prepare .env file
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: echo "$ENV_FILE" > deploy/.env
+
+      - name: Backup current configuration
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            mkdir -p /opt/lily_website/deploy
+            if [ -f /opt/lily_website/deploy/.env ]; then
+              cp /opt/lily_website/deploy/.env /opt/lily_website/deploy/.env.bak
+              echo "✅ Config backup created"
+            else
+              echo "⚠️ No existing .env found, skipping config backup"
+            fi
+
       - name: Copy configs to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -116,21 +136,20 @@ jobs:
       - name: SSH Deploy
         uses: appleboy/ssh-action@v1.0.3
         env:
-          DOCKER_IMAGE_BACKEND: ghcr.io/${{ env.REPO_LOWER }}-backend:latest
-          DOCKER_IMAGE_BOT: ghcr.io/${{ env.REPO_LOWER }}-bot:latest
-          DOCKER_IMAGE_WORKER: ghcr.io/${{ env.REPO_LOWER }}-worker:latest
-          DOCKER_IMAGE_NGINX: ghcr.io/${{ env.REPO_LOWER }}-nginx:latest
+          DOCKER_IMAGE_BACKEND: ghcr.io/${{ env.REPO_LOWER }}-backend:${{ env.VERSION }}
+          DOCKER_IMAGE_BOT: ghcr.io/${{ env.REPO_LOWER }}-bot:${{ env.VERSION }}
+          DOCKER_IMAGE_WORKER: ghcr.io/${{ env.REPO_LOWER }}-worker:${{ env.VERSION }}
+          DOCKER_IMAGE_NGINX: ghcr.io/${{ env.REPO_LOWER }}-nginx:${{ env.VERSION }}
           DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
           VERSION: ${{ env.VERSION }}
-          ENV_FILE_CONTENT: ${{ secrets.ENV_FILE }}
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_BOT,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DOMAIN_NAME,REDIS_PASSWORD,GITHUB_TOKEN,GITHUB_ACTOR,VERSION,ENV_FILE_CONTENT
+          envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_BOT,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DOMAIN_NAME,REDIS_PASSWORD,GITHUB_TOKEN,GITHUB_ACTOR,VERSION
           script: |
             set -e
 
@@ -138,13 +157,37 @@ jobs:
 
             echo "🚀 Deploying version: $VERSION"
 
-            # Создаем .env в папке deploy (там где docker-compose.prod.yml)
-            printf '%s\n' "$ENV_FILE_CONTENT" > .env
+            # Load env vars for script usage (needed for DB backup)
+            set -a
+            [ -f .env ] && . ./.env
+            set +a
 
+            # --- 1. DB Backup (Neon / Remote) ---
+            echo "🗄 Creating DB backup (Remote)..."
+            mkdir -p /opt/lily_website/backups
+
+            # Используем DATABASE_URL из .env
+            if [ -z "$DATABASE_URL" ]; then
+                echo "❌ DATABASE_URL not found in .env! Cannot backup Neon DB."
+                exit 1
+            fi
+
+            # Запускаем временный контейнер postgres для дампа удаленной базы
+            if docker run --rm \
+                postgres:16-alpine \
+                pg_dump "$DATABASE_URL" | gzip > "/opt/lily_website/backups/pre-deploy-$(date +%F_%H-%M).sql.gz"; then
+                    echo "✅ Database backup saved."
+            else
+                echo "❌ Database backup failed! Check connection details."
+                exit 1
+            fi
+
+            # --- 2. Update Configuration ---
             update_var() {
               grep -q "^$1=" .env && sed -i "s|^$1=.*|$1=$2|g" .env || echo "$1=$2" >> .env
             }
 
+            # Update image versions
             update_var "DOCKER_IMAGE_BACKEND" "$DOCKER_IMAGE_BACKEND"
             update_var "DOCKER_IMAGE_BOT" "$DOCKER_IMAGE_BOT"
             update_var "DOCKER_IMAGE_WORKER" "$DOCKER_IMAGE_WORKER"
@@ -158,31 +201,38 @@ jobs:
               [ ! -z "$DOMAIN" ] && update_var "DOMAIN_NAME" "$DOMAIN"
             fi
 
-            # Безопасный логин в GHCR через переменную окружения
+            # Login & Pull
             echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
-
-            # Pull образов
             docker compose -f docker-compose.prod.yml pull
 
-            # Проверяем успешность миграций перед запуском
+            # --- 3. Migrations ---
             echo "🔄 Running migrations..."
             if ! docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py migrate --noinput; then
-              echo "❌ Migration failed! Aborting deployment."
+              echo "❌ Migration failed! Database is intact (or backup exists). Aborting."
               exit 1
             fi
 
             echo "📦 Collecting static files..."
             docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py collectstatic --noinput
 
-            # Запуск с таймаутом ожидания
-            echo "🚀 Starting services..."
-            docker compose -f docker-compose.prod.yml up -d --remove-orphans --wait --wait-timeout 120
+            # --- 4. Rolling Update (Atomic) ---
+            echo "🚀 Rolling update of services..."
+            # --no-deps ensures we don't restart Redis/DB if not needed
+            if ! docker compose -f docker-compose.prod.yml up -d --no-deps --wait --wait-timeout 120 backend bot worker nginx; then
+              echo "❌ Healthcheck failed! Rolling back to previous version..."
 
-            # Проверка что все контейнеры запущены
-            echo "✅ Checking container health..."
-            docker compose -f docker-compose.prod.yml ps
+              if [ -f .env.bak ]; then
+                cp .env.bak .env
+                echo "🔄 Restored .env from backup"
+                # Restore old version
+                docker compose -f docker-compose.prod.yml up -d --no-deps backend bot worker nginx
+                echo "✅ Rollback completed. Previous version is live."
+              else
+                echo "❌ No config backup found! Manual intervention required."
+              fi
+              exit 1
+            fi
 
-            # Очистка старых образов
+            # Cleanup
             docker image prune -f
-
             echo "✅ Deployment $VERSION completed successfully!"

@@ -2,25 +2,24 @@ from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from .callbacks import NotificationsCallback
-from .texts import NotificationsTexts
 
 
-def build_main_kb(booking_id: int | str, topic_id: int | None = None) -> InlineKeyboardMarkup:
+def build_main_kb(
+    booking_id: int | str, topic_id: int | None = None, base_url: str = "https://lily-salon.de"
+) -> InlineKeyboardMarkup:
     """
-    Основная клавиатура (Подтвердить / Отклонить).
+    Основная клавиатура (Ссылка на CRM).
     """
     builder = InlineKeyboardBuilder()
 
+    # Формируем чистую ссылку на записи в CRM
+    crm_url = f"{base_url.rstrip('/')}/ru/cabinet/crm/appointments/"
+
     builder.button(
-        text=NotificationsTexts.BTN_APPROVE,
-        callback_data=NotificationsCallback(action="approve", session_id=booking_id, topic_id=topic_id).pack(),
-    )
-    builder.button(
-        text=NotificationsTexts.BTN_REJECT,
-        callback_data=NotificationsCallback(action="reject", session_id=booking_id, topic_id=topic_id).pack(),
+        text="🔗 Открыть в CRM",
+        url=crm_url,
     )
 
-    builder.adjust(2)
     return builder.as_markup()
 
 

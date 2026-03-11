@@ -101,6 +101,16 @@
             </button>
         {% endif %}
 
+        <button hx-post="{% url 'cabinet:appointments' %}"
+                hx-vals='{"action": "resend_notification", "id": "{{ appt.id }}"}'
+                hx-target="#appt-{{ appt.id }}"
+                hx-swap="outerHTML"
+                class="btn-mgmt"
+                style="justify-content: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #aaa; cursor: pointer; min-width: 40px;"
+                title="{% trans 'Resend Email' %}">
+            ✉️
+        </button>
+
         {% if appt.status == 'cancelled' %}
              <button class="btn-mgmt btn-reschedule" style="opacity: 0.5; cursor: not-allowed; width: 100%;">
                 🚫 {% trans "Cancelled" %}

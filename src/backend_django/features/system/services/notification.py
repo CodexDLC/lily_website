@@ -16,7 +16,13 @@ class NotificationService(BaseNotificationEngine):
 
     @classmethod
     def send_contact_receipt(
-        cls, recipient_email: str, client_name: str, message_text: str, request_id: int, lang: str = "de"
+        cls,
+        recipient_email: str,
+        client_name: str,
+        message_text: str,
+        request_id: int,
+        recipient_phone: str | None = None,
+        lang: str = "de",
     ):
         adapter = DjangoNotificationAdapter(enqueue_func=DjangoArqClient.enqueue_job)
         with adapter.translation_override(lang):
@@ -29,6 +35,7 @@ class NotificationService(BaseNotificationEngine):
 
         return cls().dispatch(
             recipient_email=recipient_email,
+            recipient_phone=recipient_phone,
             first_name=client_name,
             template_name="ct_receipt",
             event_type="new_contact_request",
@@ -43,14 +50,23 @@ class NotificationService(BaseNotificationEngine):
                 "quoted_message_label": quoted_label,
                 "signature": signature,
             },
+            channels=["email", "telegram"],
         )
 
     @classmethod
-    def send_admin_reply(cls, recipient_email: str, reply_text: str, history_text: str, request_id: int):
+    def send_admin_reply(
+        cls,
+        recipient_email: str,
+        reply_text: str,
+        history_text: str,
+        request_id: int,
+        recipient_phone: str | None = None,
+    ):
         signature = selector.get_value("email_signature_common", "Mit freundlichen Grüßen\nIhr LILY Beauty Team")
 
         return cls().dispatch(
             recipient_email=recipient_email,
+            recipient_phone=recipient_phone,
             template_name="ct_reply",
             subject=f"Re: Your inquiry [Ref: #{request_id}]",
             context_data={
@@ -65,7 +81,14 @@ class NotificationService(BaseNotificationEngine):
     # --- Booking Notifications ---
 
     @classmethod
-    def send_booking_confirmation(cls, recipient_email: str, client_name: str, context: dict, lang: str = "de"):
+    def send_booking_confirmation(
+        cls,
+        recipient_email: str,
+        client_name: str,
+        context: dict,
+        recipient_phone: str | None = None,
+        lang: str = "de",
+    ):
         adapter = DjangoNotificationAdapter(enqueue_func=DjangoArqClient.enqueue_job)
         with adapter.translation_override(lang):
             subject = selector.get_value("bk_confirmation_subject", "Terminbestätigung")
@@ -88,15 +111,24 @@ class NotificationService(BaseNotificationEngine):
 
         return cls().dispatch(
             recipient_email=recipient_email,
+            recipient_phone=recipient_phone,
             first_name=client_name,
             template_name="bk_confirmation",
+            event_type="new_appointment",
             subject=subject,
             context_data=full_context,
-            channels=["email"],
+            channels=["email", "telegram"],
         )
 
     @classmethod
-    def send_booking_cancellation(cls, recipient_email: str, client_name: str, context: dict, lang: str = "de"):
+    def send_booking_cancellation(
+        cls,
+        recipient_email: str,
+        client_name: str,
+        context: dict,
+        recipient_phone: str | None = None,
+        lang: str = "de",
+    ):
         adapter = DjangoNotificationAdapter(enqueue_func=DjangoArqClient.enqueue_job)
         with adapter.translation_override(lang):
             subject = selector.get_value("bk_cancellation_subject", "Terminabsage")
@@ -113,15 +145,24 @@ class NotificationService(BaseNotificationEngine):
 
         return cls().dispatch(
             recipient_email=recipient_email,
+            recipient_phone=recipient_phone,
             first_name=client_name,
             template_name="bk_cancellation",
+            event_type="new_appointment",
             subject=subject,
             context_data=full_context,
-            channels=["email"],
+            channels=["email", "telegram"],
         )
 
     @classmethod
-    def send_booking_no_show(cls, recipient_email: str, client_name: str, context: dict, lang: str = "de"):
+    def send_booking_no_show(
+        cls,
+        recipient_email: str,
+        client_name: str,
+        context: dict,
+        recipient_phone: str | None = None,
+        lang: str = "de",
+    ):
         adapter = DjangoNotificationAdapter(enqueue_func=DjangoArqClient.enqueue_job)
         with adapter.translation_override(lang):
             subject = selector.get_value("bk_noshow_subject", "Termin verpasst?")
@@ -139,15 +180,61 @@ class NotificationService(BaseNotificationEngine):
 
         return cls().dispatch(
             recipient_email=recipient_email,
+            recipient_phone=recipient_phone,
             first_name=client_name,
             template_name="bk_no_show",
+            event_type="new_appointment",
             subject=subject,
             context_data=full_context,
-            channels=["email"],
+            channels=["email", "telegram"],
         )
 
     @classmethod
-    def send_booking_reschedule(cls, recipient_email: str, client_name: str, context: dict, lang: str = "de"):
+    def send_booking_receipt(
+        cls,
+        recipient_email: str,
+        client_name: str,
+        context: dict,
+        recipient_phone: str | None = None,
+        lang: str = "de",
+    ):
+        adapter = DjangoNotificationAdapter(enqueue_func=DjangoArqClient.enqueue_job)
+        with adapter.translation_override(lang):
+            subject = selector.get_value("bk_receipt_subject", "Buchungsanfrage erhalten")
+            email_tag = selector.get_value("bk_receipt_tag", "ANFRAGE ERHALTEN")
+            greeting = f"{selector.get_value('bk_greeting', 'Hallo')} {client_name},"
+            email_body = selector.get_value(
+                "bk_receipt_body",
+                "Vielen Dank für Ihre Buchungsanfrage. Wir prüfen Ihren Wunschtermin "
+                "und bestätigen Ihnen den Termin in Kürze.",
+            )
+            signature = selector.get_value("email_signature_common", "Ihr LILY Beauty Team")
+
+        full_context = context.copy()
+        full_context.update(
+            {"email_tag": email_tag, "greeting": greeting, "email_body": email_body, "signature": signature}
+        )
+
+        return cls().dispatch(
+            recipient_email=recipient_email,
+            recipient_phone=recipient_phone,
+            first_name=client_name,
+            template_name="bk_receipt",
+            event_type="new_appointment",
+            subject=subject,
+            context_data=full_context,
+            channels=["email", "telegram"],
+        )
+
+    @classmethod
+    def send_booking_reschedule(
+        cls,
+        recipient_email: str,
+        client_name: str,
+        context: dict,
+        recipient_phone: str | None = None,
+        lang: str = "de",
+    ):
         adapter = DjangoNotificationAdapter(enqueue_func=DjangoArqClient.enqueue_job)
         with adapter.translation_override(lang):
             subject = selector.get_value("bk_reschedule_subject", "Terminvorschlag")
@@ -170,8 +257,131 @@ class NotificationService(BaseNotificationEngine):
 
         return cls().dispatch(
             recipient_email=recipient_email,
+            recipient_phone=recipient_phone,
             first_name=client_name,
             template_name="bk_reschedule",
+            event_type="new_appointment",
+            subject=subject,
+            context_data=full_context,
+            channels=["email", "telegram"],
+        )
+
+    @classmethod
+    def send_booking_reminder(
+        cls,
+        recipient_email: str,
+        client_name: str,
+        context: dict,
+        recipient_phone: str | None = None,
+        lang: str = "de",
+    ):
+        adapter = DjangoNotificationAdapter(enqueue_func=DjangoArqClient.enqueue_job)
+        with adapter.translation_override(lang):
+            subject = selector.get_value("bk_reminder_subject", "Terminerinnerung")
+            email_tag = selector.get_value("bk_reminder_tag", "ERINNERUNG")
+            greeting = f"{selector.get_value('bk_greeting', 'Hallo')} {client_name},"
+            intro_text = selector.get_value(
+                "bk_reminder_body", "Wir freuen uns auf Sie! Hier ist eine kleine Erinnerung an Ihren Termin."
+            )
+            button_text = selector.get_value("bk_btn_reschedule", "Termin umbuchen")
+            signature = selector.get_value("email_signature_common", "Ihr LILY Beauty Team")
+
+        full_context = context.copy()
+        full_context.update(
+            {
+                "email_tag": email_tag,
+                "greeting": greeting,
+                "intro_text": intro_text,
+                "email_button_text": button_text,
+                "signature": signature,
+                "salon_address": "Lohmannstraße 111, 06366 Köthen (Anhalt)",
+            }
+        )
+
+        return cls().dispatch(
+            recipient_email=recipient_email,
+            recipient_phone=recipient_phone,
+            first_name=client_name,
+            template_name="bk_reminder",
+            event_type="new_appointment",
+            subject=subject,
+            context_data=full_context,
+            channels=["email", "telegram"],
+        )
+
+    @classmethod
+    def send_group_booking_confirmation(
+        cls,
+        recipient_email: str,
+        client_name: str,
+        context: dict,
+        recipient_phone: str | None = None,
+        lang: str = "de",
+    ):
+        """Unified confirmation for multiple services."""
+        adapter = DjangoNotificationAdapter(enqueue_func=DjangoArqClient.enqueue_job)
+        with adapter.translation_override(lang):
+            subject = selector.get_value("bk_group_confirmation_subject", "Terminbestätigung")
+            email_tag = selector.get_value("bk_group_confirmation_tag", "TERMINBESTÄTIGUNG")
+            greeting = f"{selector.get_value('bk_greeting', 'Hallo')} {client_name},"
+            button_text = selector.get_value("bk_btn_calendar", "In den Kalender eintragen")
+            signature = selector.get_value("email_signature_common", "Ihr LILY Beauty Team")
+
+        full_context = context.copy()
+        full_context.update(
+            {
+                "email_tag": email_tag,
+                "greeting": greeting,
+                "email_button_text": button_text,
+                "signature": signature,
+            }
+        )
+
+        return cls().dispatch(
+            recipient_email=recipient_email,
+            recipient_phone=recipient_phone,
+            first_name=client_name,
+            template_name="bk_group_booking",
+            event_type="new_appointment",
+            subject=subject,
+            context_data=full_context,
+            channels=["email", "telegram"],
+        )
+
+    # --- Marketing ---
+
+    @classmethod
+    def send_marketing_reengagement(
+        cls,
+        recipient_email: str,
+        client_name: str,
+        context: dict,
+        recipient_phone: str | None = None,
+        lang: str = "de",
+    ):
+        adapter = DjangoNotificationAdapter(enqueue_func=DjangoArqClient.enqueue_job)
+        with adapter.translation_override(lang):
+            subject = selector.get_value("mk_reengagement_subject", "Zeit für Dich")
+            email_tag = selector.get_value("mk_reengagement_tag", "ZEIT FÜR DICH")
+            greeting = f"{selector.get_value('bk_greeting', 'Hallo')} {client_name},"
+            body_text = selector.get_value("mk_reengagement_body", "Wir haben Sie schon lange nicht mehr gesehen...")
+            signature = selector.get_value("email_signature_common", "Ihr LILY Beauty Team")
+
+        full_context = context.copy()
+        full_context.update(
+            {
+                "email_tag": email_tag,
+                "greeting": greeting,
+                "body_text": body_text,
+                "signature": signature,
+            }
+        )
+
+        return cls().dispatch(
+            recipient_email=recipient_email,
+            recipient_phone=recipient_phone,
+            first_name=client_name,
+            template_name="mk_reengagement",
             subject=subject,
             context_data=full_context,
             channels=["email"],

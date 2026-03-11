@@ -28,11 +28,11 @@ async def handle_new_appointment_notification(message_data: dict[str, Any], cont
 
         # 2. Пытаемся обработать штатно (формируем UnifiedViewDTO)
         try:
-            view_dto = orchestrator.handle_notification(message_data)
+            view_dto = await orchestrator.handle_notification(message_data)
         except Exception as e:
             log.error(f"Notifications | Orchestrator failed: {e}")
             # 3. Если упало — шлем аварийное уведомление
-            view_dto = orchestrator.handle_failure(message_data, str(e))
+            view_dto = await orchestrator.handle_failure(message_data, str(e))
 
         # 4. Отправляем уведомление в Telegram
         await view_sender.send(view_dto)

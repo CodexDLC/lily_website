@@ -2,6 +2,27 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.9.0] - 2026-03-11
+
+### Added
+- **Booking Engine V2:** Finalized integration of the atomic booking engine with Django adapters and DTOs.
+- **Models:** Added `timezone` field to `Master` and `lang` (language) to `Appointment` and `AppointmentGroup` for better internationalization support.
+- **Migrations:** Implemented migrations `0010` and `0011` to support new booking features.
+- **Notifications:** Added a new email template `bk_receipt.html` for booking confirmations.
+
+### Fixed
+- **Security:** Patched critical vulnerabilities by updating `django` to `5.2.12` (CVE-2026-25674) and `pillow` to `12.1.1` (CVE-2026-25990).
+- **Security:** Resolved multiple `Bandit` security issues (missing timeouts in tests, unsafe HTML rendering in admin).
+- **Telegram Bot:** Fixed an issue where `localhost` URLs in inline buttons caused message delivery failure.
+
+### Changed / Refactored
+- **Telegram Bot:** Major refactoring of the notification system (`BookingProcessor`, `NotificationsUI`, `Keyboards`).
+- **SEO:** Migrated Service-specific SEO data directly into service fixtures; deprecated and removed `initial_seo.json`.
+- **Infrastructure:** Updated Nginx configurations and optimized GitHub Actions workflows for deployment.
+- **Dev Experience:** Disabled automatic `SiteSettings` overwrite from fixtures to preserve local development configurations (e.g., `localhost`).
+- **Project Cleanup:** Removed obsolete `BOOKING_ENGINE_V2_PLAN.md` and temporary structure files.
+- **Git:** Updated `.gitignore` to strictly exclude local logs, `nul` files, and temporary project structure reports.
+
 ## [1.8.1] - 2026-03-07
 ### Fixed
 - **UI/UX:** Fixed "nested" layout duplication in the admin cabinet by restoring `HtmxCabinetMixin` logic for HTMX requests.

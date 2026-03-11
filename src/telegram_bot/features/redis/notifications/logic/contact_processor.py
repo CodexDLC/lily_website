@@ -36,8 +36,8 @@ class ContactProcessor:
 
         request_id = payload.request_id
 
-        # For contact forms, we force use General (no topic)
-        message_thread_id = None
+        # Use the configured contact topic if available
+        message_thread_id = self.settings.telegram_topics.get("contact") if self.settings.telegram_topics else None
 
         # Fetch bot user name dynamically
         bot_username = await self.container.site_settings.get_field("telegram_bot_username")
@@ -56,7 +56,7 @@ class ContactProcessor:
             content=ViewResultDTO(text=text, kb=kb),
             chat_id=self.settings.telegram_admin_channel_id,
             session_key=f"contact_{request_id}",
-            mode="channel",
+            mode="topic" if message_thread_id else "channel",
             message_thread_id=message_thread_id,
         )
 

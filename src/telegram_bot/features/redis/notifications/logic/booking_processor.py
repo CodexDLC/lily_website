@@ -31,25 +31,27 @@ class BookingProcessor:
         self.appointments_provider = appointments_provider
 
     def _get_target_topic(self, payload: BookingNotificationPayload) -> int | None:
-        """Calculates topic ID based on service category."""
-        message_thread_id = self.settings.telegram_notification_topic_id
-        if payload.category_slug and self.settings.telegram_topics:
-            topic_id = self.settings.telegram_topics.get(payload.category_slug)
+        """Returns the configured topic ID for booking notifications."""
+        if self.settings.telegram_topics:
+            topic_id = self.settings.telegram_topics.get("termin")
             if topic_id:
-                message_thread_id = topic_id
-        return message_thread_id
+                return topic_id
+        return self.settings.telegram_notification_topic_id
 
-    def handle_notification(self, raw_payload: dict[str, Any]) -> UnifiedViewDTO:
+    async def handle_notification(self, raw_payload: dict[str, Any]) -> UnifiedViewDTO:
         """Processes incoming notification about a new booking."""
         log.debug(f"Bot: BookingProcessor | Action: HandleNotification | appt_id={raw_payload.get('id')}")
         try:
             payload = BookingNotificationPayload(**raw_payload)
         except Exception as e:
             log.error(f"Bot: BookingProcessor | Action: ValidationFailed | error={e} | payload={raw_payload}")
-            return self.handle_failure(raw_payload, str(e))
+            return await self.handle_failure(raw_payload, str(e))
+
+        # Get base URL from site settings
+        base_url = await self.container.site_settings.get_field("site_base_url") or "https://lily-salon.de"
 
         message_thread_id = self._get_target_topic(payload)
-        view_result = self.ui.render_notification(payload, topic_id=message_thread_id)
+        view_result = self.ui.render_notification(payload, topic_id=message_thread_id, base_url=base_url)
 
         log.info(f"Bot: BookingProcessor | Action: Success | appt_id={payload.id} | topic={message_thread_id}")
         return UnifiedViewDTO(
@@ -103,9 +105,16 @@ class BookingProcessor:
         email_status = appointment_cache.get("email_delivery_status", "waiting")
         twilio_status = appointment_cache.get("twilio_delivery_status", "waiting")
 
+        # Get base URL from site settings
+        base_url = await self.container.site_settings.get_field("site_base_url") or "https://lily-salon.de"
+
         # 5. Re-render FULL card with actual status icons
         view_result = self.ui.render_notification(
-            payload, topic_id=message_thread_id, email_status=email_status, twilio_status=twilio_status
+            payload,
+            topic_id=message_thread_id,
+            email_status=email_status,
+            twilio_status=twilio_status,
+            base_url=base_url,
         )
 
         log.info(
@@ -119,7 +128,7 @@ class BookingProcessor:
             message_thread_id=message_thread_id,
         )
 
-    def handle_failure(self, raw_payload: dict[str, Any], error_msg: str) -> UnifiedViewDTO:
+    async def handle_failure(self, raw_payload: dict[str, Any], error_msg: str) -> UnifiedViewDTO:
         booking_id = raw_payload.get("id", "???")
         log.error(f"Bot: BookingProcessor | Action: FailureHandled | appt_id={booking_id} | error={error_msg}")
         text = f"⚠️ <b>Error processing notification #{booking_id}</b>\n<b>Error:</b> {error_msg}"

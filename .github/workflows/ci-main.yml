@@ -5,8 +5,6 @@ on:
   pull_request:
     branches: [ main ]
 
-
-
 jobs:
   quality-and-tests:
     name: Linting, Types & Tests
@@ -54,7 +52,7 @@ jobs:
         run: poetry run pytest
 
   build-check:
-    name: Docker Build Verification
+    name: Docker Build & Scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -68,9 +66,20 @@ jobs:
           context: .
           file: deploy/backend/Dockerfile
           push: false
+          load: true
           tags: check-backend:latest
           cache-from: type=gha,scope=backend
           cache-to: type=gha,mode=max,scope=backend
+
+      - name: Scan Backend Image (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'check-backend:latest'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
 
       - name: Build Bot image
         uses: docker/build-push-action@v5
@@ -101,3 +110,35 @@ jobs:
           tags: check-nginx:latest
           cache-from: type=gha,scope=nginx
           cache-to: type=gha,mode=max,scope=nginx
+
+  integration-test:
+    name: Integration Tests (Docker Compose)
+    runs-on: ubuntu-latest
+    needs: [build-check]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          echo "SECRET_KEY=test_secret" >> .env
+          echo "DEBUG=True" >> .env
+          echo "POSTGRES_DB=lily_db" >> .env
+          echo "POSTGRES_USER=lily_user" >> .env
+          echo "POSTGRES_PASSWORD=lily_password" >> .env
+          echo "REDIS_PASSWORD=redis_pass" >> .env
+          echo "BOT_TOKEN=123:test" >> .env
+          echo "CONTAINER_PREFIX=ci_test" >> .env
+
+      - name: Start Containers
+        run: docker compose -f deploy/docker-compose.test.yml up -d --build
+
+      - name: Wait for Healthchecks
+        run: |
+          timeout 60s bash -c 'until docker ps | grep "healthy"; do sleep 2; done' || docker compose -f deploy/docker-compose.test.yml logs
+
+      - name: Check Backend Health
+        run: curl --fail http://localhost:8001/api/v1/health || exit 1
+
+      - name: Stop Containers
+        if: always()
+        run: docker compose -f deploy/docker-compose.test.yml down

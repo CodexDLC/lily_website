@@ -7,7 +7,8 @@ Does NOT contain imports from specific project features.
 Works with any models implementing the booking interface.
 """
 
-from datetime import date, datetime, time, timedelta
+import zoneinfo
+from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 from codex_tools.booking.dto import (
@@ -191,7 +192,8 @@ class DjangoAvailabilityAdapter:
         busy_by_master: dict[int, list[tuple[datetime, datetime]]] = {mid: [] for mid in master_ids}
         for app in appointments:
             # Clear seconds and microseconds for clean calculations
-            s = timezone.localtime(app.datetime_start).replace(second=0, microsecond=0)
+            # Ensure we work with UTC or consistent timezone
+            s = app.datetime_start.astimezone(UTC).replace(second=0, microsecond=0)
             e = s + timedelta(minutes=app.duration_minutes)
             busy_by_master[app.master_id].append((s, e))
 
@@ -201,14 +203,14 @@ class DjangoAvailabilityAdapter:
             if master.pk in day_off_ids:
                 continue
 
-            working_hours = self._get_master_working_hours(master, target_date)
-            if not working_hours:
+            # Get working hours in UTC, respecting master's timezone
+            working_hours_utc = self._get_master_working_hours(master, target_date)
+            if not working_hours_utc:
                 continue
 
-            work_start_t, work_end_t = working_hours
-            work_start_dt = timezone.make_aware(datetime.combine(target_date, work_start_t))
-            work_end_dt = timezone.make_aware(datetime.combine(target_date, work_end_t))
+            work_start_dt, work_end_dt = working_hours_utc
 
+            # Get break interval in UTC
             break_interval = self._get_break_interval(master, target_date)
             buffer = self._get_buffer_minutes(master, settings)
 
@@ -232,6 +234,105 @@ class DjangoAvailabilityAdapter:
 
         return result
 
+    def build_availability_batch(
+        self,
+        master_ids: list[int],
+        start_date: date,
+        end_date: date,
+    ) -> dict[date, dict[str, MasterAvailability]]:
+        """
+        Retrieves availability data for a date range in a single batch query.
+        Returns: {date: {master_id: MasterAvailability}}
+        """
+        # 1. Batch query for appointments
+        appointments = self.appointment_model.objects.filter(
+            master_id__in=master_ids,
+            datetime_start__date__range=(start_date, end_date),
+            status__in=self.appointment_status_filter,
+        ).order_by("datetime_start")
+
+        # Group appointments by date and master in memory
+        # Structure: {date: {master_id: [(start, end)]}}
+        data_by_day: dict[date, dict[int, list[tuple[datetime, datetime]]]] = {}
+
+        for app in appointments:
+            # Use local date for grouping, but keep times in UTC
+            # Note: app.datetime_start.date() depends on DB timezone or Django timezone.
+            # Ideally we should use the master's timezone to determine "the day",
+            # but for batching we assume the query date matches.
+            day = app.datetime_start.astimezone(timezone.get_current_timezone()).date()
+
+            # Fallback: if the appointment falls on previous/next day in local time vs UTC,
+            # we might need to be careful. But for now, let's trust Django's date lookup.
+            # Actually, app.datetime_start__date__range uses the DB's timezone logic.
+            # Let's use the date from the object as Django sees it.
+            day = app.datetime_start.date()
+
+            if day < start_date or day > end_date:
+                continue
+
+            day_data = data_by_day.setdefault(day, {})
+            master_slots = day_data.setdefault(app.master_id, [])
+
+            s = app.datetime_start.astimezone(UTC).replace(second=0, microsecond=0)
+            e = s + timedelta(minutes=app.duration_minutes)
+            master_slots.append((s, e))
+
+        # 2. Batch query for days off
+        days_off = self.day_off_model.objects.filter(
+            master_id__in=master_ids,
+            date__range=(start_date, end_date),
+        ).values_list("master_id", "date")
+
+        day_off_set = set(days_off)  # (master_id, date)
+
+        # 3. Build result
+        full_result: dict[date, dict[str, MasterAvailability]] = {}
+        masters = list(self.master_model.objects.filter(pk__in=master_ids))
+        settings = self._get_booking_settings()
+
+        current_date = start_date
+        while current_date <= end_date:
+            day_availability = {}
+            for master in masters:
+                # Check day off
+                if (master.pk, current_date) in day_off_set:
+                    continue
+
+                # Get working hours (UTC, timezone aware)
+                working_hours = self._get_master_working_hours(master, current_date)
+                if not working_hours:
+                    continue
+
+                work_start_dt, work_end_dt = working_hours
+                buffer = self._get_buffer_minutes(master, settings)
+
+                # Get busy slots for this day
+                busy_slots = data_by_day.get(current_date, {}).get(master.pk, [])
+
+                # Get break interval (UTC)
+                break_interval = self._get_break_interval(master, current_date)
+
+                free_windows = self._calc.merge_free_windows(
+                    work_start=work_start_dt,
+                    work_end=work_end_dt,
+                    busy_intervals=busy_slots,
+                    break_interval=break_interval,
+                    buffer_minutes=buffer,
+                    min_duration_minutes=self.step_minutes,
+                )
+
+                day_availability[str(master.pk)] = MasterAvailability(
+                    master_id=str(master.pk),
+                    free_windows=free_windows,
+                    buffer_between_minutes=buffer,
+                )
+
+            full_result[current_date] = day_availability
+            current_date += timedelta(days=1)
+
+        return full_result
+
     def lock_masters(self, master_ids: list[int]) -> None:
         """
         Locks master rows in the DB for atomic availability check.
@@ -252,41 +353,66 @@ class DjangoAvailabilityAdapter:
     # Internal methods (use self.models)
     # ---------------------------------------------------------------------------
 
-    def _get_master_working_hours(self, master, target_date: date) -> tuple[time, time] | None:
+    def _get_master_working_hours(self, master, target_date: date) -> tuple[datetime, datetime] | None:
         """
-        Determines the working hours of the master.
-        Can be overridden in a subclass for custom logic.
+        Determines the working hours of the master, respecting their timezone.
+        Returns tuple (start, end) in UTC.
         """
         weekday = target_date.weekday()
         if master.work_days and weekday not in master.work_days:
             return None
 
+        # 1. Get timezone
+        tz_name = getattr(master, "timezone", None) or self._get_site_settings().timezone
+        try:
+            tz = zoneinfo.ZoneInfo(tz_name)
+        except Exception:
+            # Fallback to default if invalid
+            tz = zoneinfo.ZoneInfo("Europe/Berlin")
+
+        # 2. Get raw times
+        start_t, end_t = None, None
         individual_start = getattr(master, "work_start", None)
         individual_end = getattr(master, "work_end", None)
 
         if individual_start and individual_end:
-            return individual_start, individual_end
-
-        site = self._get_site_settings()
-        if weekday < 5:
-            return site.work_start_weekdays, site.work_end_weekdays
-        elif weekday == 5:
-            return site.work_start_saturday, site.work_end_saturday
+            start_t, end_t = individual_start, individual_end
         else:
+            site = self._get_site_settings()
+            if weekday < 5:
+                start_t, end_t = site.work_start_weekdays, site.work_end_weekdays
+            elif weekday == 5:
+                start_t, end_t = site.work_start_saturday, site.work_end_saturday
+
+        if not start_t or not end_t:
             return None
+
+        # 3. Combine with timezone (DST aware)
+        work_start_dt = datetime.combine(target_date, start_t, tzinfo=tz)
+        work_end_dt = datetime.combine(target_date, end_t, tzinfo=tz)
+
+        # 4. Convert to UTC
+        return (work_start_dt.astimezone(UTC), work_end_dt.astimezone(UTC))
 
     def _get_break_interval(self, master, target_date: date) -> tuple[datetime, datetime] | None:
         """
-        Determines the master's break.
-        Can be overridden in a subclass.
+        Determines the master's break in UTC.
         """
         break_start = getattr(master, "break_start", None)
         break_end = getattr(master, "break_end", None)
 
         if break_start and break_end:
-            bs = timezone.make_aware(datetime.combine(target_date, break_start))
-            be = timezone.make_aware(datetime.combine(target_date, break_end))
-            return bs, be
+            # Get timezone
+            tz_name = getattr(master, "timezone", None) or self._get_site_settings().timezone
+            try:
+                tz = zoneinfo.ZoneInfo(tz_name)
+            except Exception:
+                tz = zoneinfo.ZoneInfo("Europe/Berlin")
+
+            bs = datetime.combine(target_date, break_start, tzinfo=tz)
+            be = datetime.combine(target_date, break_end, tzinfo=tz)
+
+            return (bs.astimezone(UTC), be.astimezone(UTC))
 
         return None
 

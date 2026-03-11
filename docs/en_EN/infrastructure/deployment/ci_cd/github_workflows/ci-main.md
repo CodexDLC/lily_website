@@ -39,6 +39,20 @@ This job verifies that all Docker images required for the project can be built s
     3.  **Build Backend image:** Builds the Docker image for the backend service (`deploy/backend/Dockerfile`).
         *   `push: false`: The image is built but not pushed to a registry.
         *   `cache-from`, `cache-to`: Uses GitHub Actions cache for Docker layers to speed up builds.
-    4.  **Build Bot image:** Builds the Docker image for the Telegram bot service (`deploy/bot/Dockerfile`).
-    5.  **Build Worker image:** Builds the Docker image for the worker service (`deploy/worker/Dockerfile`).
-    6.  **Build Nginx image:** Builds the Docker image for the Nginx service (`deploy/nginx/Dockerfile`).
+    4.  **Scan Backend Image (Trivy):** Scans the built backend image for OS and library vulnerabilities using Trivy.
+    5.  **Build Bot image:** Builds the Docker image for the Telegram bot service (`deploy/bot/Dockerfile`).
+    6.  **Build Worker image:** Builds the Docker image for the worker service (`deploy/worker/Dockerfile`).
+    7.  **Build Nginx image:** Builds the Docker image for the Nginx service (`deploy/nginx/Dockerfile`).
+
+### 3. `integration-test`
+
+This job performs a full integration test by spinning up the entire stack using Docker Compose.
+
+*   **Runs on:** `ubuntu-latest`
+*   **Needs:** `build-check`
+*   **Steps:**
+    1.  **Create .env file:** Generates a temporary `.env` file with test credentials.
+    2.  **Start Containers:** Runs `docker compose -f deploy/docker-compose.test.yml up -d --build`.
+    3.  **Wait for Healthchecks:** Waits for all containers (Backend, DB, Redis) to report as "healthy".
+    4.  **Check Backend Health:** Curls the backend health endpoint to verify API responsiveness.
+    5.  **Stop Containers:** Tears down the test environment.

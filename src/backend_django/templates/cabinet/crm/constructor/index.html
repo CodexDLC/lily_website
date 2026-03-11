@@ -280,6 +280,14 @@
                     <input type="text" id="client-first-name" name="first_name" class="create-input" placeholder="{% trans 'First Name' %}">
                     <input type="text" id="client-last-name" name="last_name" class="create-input" placeholder="{% trans 'Last Name' %}">
                 </div>
+                <div class="create-row">
+                    <select id="client-lang" name="lang" class="create-input">
+                        <option value="de" selected>Deutsch (DE)</option>
+                        <option value="ru">Русский (RU)</option>
+                        <option value="en">English (EN)</option>
+                    </select>
+                    <div style="flex: 1;"></div>
+                </div>
                 <textarea id="admin-notes" name="notes" class="create-textarea" rows="2" placeholder="{% trans 'Internal notes...' %}"></textarea>
             </div>
         </div>
@@ -329,7 +337,7 @@
                             {% if not can_confirm %}disabled{% endif %}
                             hx-post="{% url 'cabinet:constructor' %}"
                             hx-vals='{"action": "create_booking"}'
-                            hx-include="#client-phone, #client-email, #client-first-name, #client-last-name, #admin-notes, #selected-time-val">
+                            hx-include="#client-phone, #client-email, #client-first-name, #client-last-name, #admin-notes, #selected-time-val, #client-lang">
                         {% trans "Confirm Booking" %}
                     </button>
                 </div>
