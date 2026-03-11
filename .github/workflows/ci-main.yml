@@ -44,12 +44,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .venv
-          # Добавлен префикс v2 к ключу кэша, чтобы принудительно обновить окружение
-          key: v2-venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          # Снова меняем ключ (v3), чтобы форсировать --sync установку
+          key: v3-venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
 
       - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root --with dev
+        # Добавляем --sync, чтобы окружение точно соответствовало lock-файлу и включало dev-группу
+        run: poetry install --no-interaction --no-root --with dev --sync
 
       - name: Run Ruff (Lint & Format)
         run: |
@@ -63,8 +63,8 @@ jobs:
         run: poetry run pip-audit --local
 
       - name: Security SAST (Bandit)
-        # Запуск через python -m гарантирует нахождение модуля
-        run: poetry run python -m bandit -r src/ -ll
+        # Возвращаем стандартный вызов, так как --sync гарантирует наличие бинарника
+        run: poetry run bandit -r src/ -ll
 
       - name: Run Pytest
         env:
