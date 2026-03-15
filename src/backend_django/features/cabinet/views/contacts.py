@@ -45,19 +45,13 @@ class ContactRequestsView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
         timestamp = datetime.now().strftime("%d.%m.%Y %H:%M")
 
         if action == "send_email":
-            # 1. Prepare history for the email
+            # 1. Prepare history for the email BEFORE updating the database
+            # This ensures the current response isn't included in the 'Previous Correspondence' block.
             history = f"--- Original Message ---\n{req.message}\n\n"
             if req.admin_notes:
                 history += f"--- Previous Correspondence ---\n{req.admin_notes}"
 
-            # 2. Update internal notes (Newest on top)
-            new_note = f"[{timestamp}] SENT EMAIL:\n{new_reply}\n"
-            separator = "\n" if req.admin_notes else ""
-            req.admin_notes = new_note + separator + req.admin_notes
-            req.is_processed = True
-            req.save()
-
-            # 3. Send Email via Specialized Service
+            # 2. Send Email via Specialized Service
             if req.client.email:
                 NotificationService.send_admin_reply(
                     recipient_email=req.client.email,
@@ -66,7 +60,14 @@ class ContactRequestsView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
                     request_id=req.id,
                     recipient_phone=req.client.phone,
                 )
-                log.info(f"CRM: Email response sent for Request {req.id}")
+                log.info(f"CRM: Email response task enqueued for Request {req.id}")
+
+            # 3. Finally, update internal notes for CRM history
+            new_note = f"[{timestamp}] SENT EMAIL:\n{new_reply}\n"
+            separator = "\n" if req.admin_notes else ""
+            req.admin_notes = new_note + separator + req.admin_notes
+            req.is_processed = True
+            req.save()
 
             return render(request, "cabinet/crm/contacts/_single_card.html", {"req": req})
 

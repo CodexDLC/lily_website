@@ -4,7 +4,7 @@
     {% if appt.group_item %}
         <div class="group-indicator-top">
             <i class="bi bi-link-45deg" style="font-size: 14px;"></i>
-            Групповая бронь #{{ appt.group_item.group_id }}
+            {% trans "Group Booking" %} #{{ appt.group_item.group_id }}
         </div>
     {% endif %}
 
@@ -18,20 +18,15 @@
             <span class="status-badge status-{{ appt.status }}">{{ appt.get_status_display }}</span>
             <div class="card-datetime" style="font-size: 13px; opacity: 0.8; text-align: right;">
                 <div style="font-weight: bold; font-size: 14px;">{{ appt.datetime_start|date:"d.m.Y" }}</div>
-                <div style="font-size: 14px;">{{ appt.datetime_start|time:"H:i" }}</div>
+                <div style="font-size: 14px; white-space: nowrap;">
+                    {{ appt.datetime_start|time:"H:i" }} – {{ appt.datetime_end|time:"H:i" }}
+                </div>
+                <div style="font-size: 11px; opacity: 0.6; margin-top: 2px;">
+                    <i class="bi bi-clock"></i> {{ appt.duration_minutes }} min
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- Part of Group Indicator -->
-    {% if appt.group_item %}
-    <div class="group-badge-wrapper" style="margin-top: -10px; margin-bottom: -5px;">
-        <a href="?mode=groups&group_id={{ appt.group_item.group_id }}" class="badge-group-link" style="font-size: 11px; color: #60a5fa; text-decoration: none; border: 1px solid rgba(96, 165, 250, 0.2); padding: 5px 12px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(96, 165, 250, 0.08); font-weight: 600; width: 100%;">
-            <i class="bi bi-layers-half" style="font-size: 13px;"></i>
-            <span>Групповая запись #{{ appt.group_item.group_id }}</span>
-        </a>
-    </div>
-    {% endif %}
 
     <!-- BLOCK 2: Service & Master Info -->
     <div class="card-service-block" style="background: rgba(255,255,255,0.02); border-radius: 8px; padding: 12px; border: 1px solid rgba(255,255,255,0.05);">
@@ -51,70 +46,79 @@
             👤 {{ appt.master.name }}
         </div>
 
-        <!-- Notes -->
+        <!-- 💬 Question/Notes from Client -->
         {% if appt.client_notes %}
-        <div class="card-note client-note" style="margin-top: 10px;">
-            <i class="bi bi-chat-quote"></i> {{ appt.client_notes }}
+        <div class="card-note client-note" style="margin-top: 10px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; border-left: 3px solid #60a5fa;">
+            <div style="font-size: 11px; color: #60a5fa; font-weight: bold; margin-bottom: 3px; text-transform: uppercase;">
+                <i class="bi bi-chat-quote-fill"></i> {% trans "Client Message" %}
+            </div>
+            <div style="font-size: 13px; color: #eee; line-height: 1.4;">
+                {{ appt.client_notes }}
+            </div>
         </div>
         {% endif %}
 
-        {% if appt.client.notes %}
-        <div class="card-note profile-note" style="margin-top: 8px; color: #f59e0b; border-color: #f59e0b;">
-            <i class="bi bi-person-exclamation"></i> <strong>{% trans "Client Info" %}:</strong> {{ appt.client.notes }}
+        <!-- 🔒 Admin Reply/Notes History -->
+        {% if appt.admin_notes %}
+        <div class="card-note admin-note" style="margin-top: 10px; background: rgba(74, 222, 128, 0.03); padding: 8px; border-radius: 6px; border-left: 3px solid #4ade80;">
+            <div style="font-size: 11px; color: #4ade80; font-weight: bold; margin-bottom: 3px; text-transform: uppercase;">
+                <i class="bi bi-reply-all-fill"></i> {% trans "Admin History" %}
+            </div>
+            <div style="font-size: 12px; color: #ccc; line-height: 1.4; white-space: pre-wrap;">{{ appt.admin_notes }}</div>
         </div>
         {% endif %}
     </div>
 
-    <!-- BLOCK 3: Actions -->
-    {% if is_admin %}
-    <div class="card-mgmt-row" id="mgmt-row-{{ appt.id }}" style="margin-top: 0;">
+    <!-- BLOCK 3: Actions (admin sees all; master sees only approve/complete for own appts) -->
+    {% if is_admin or is_master %}
+    <div class="card-mgmt-row" id="mgmt-row-{{ appt.id }}" style="margin-top: 0; display: flex; flex-wrap: wrap; gap: 8px;">
 
         {% if appt.status == 'pending' %}
             <button class="btn-mgmt btn-approve"
                     hx-get="{% url 'cabinet:appointments' %}?action=confirm_form&id={{ appt.id }}"
                     hx-target="#appt-{{ appt.id }}"
-                    hx-swap="outerHTML">
+                    hx-swap="outerHTML"
+                    style="flex: 1 1 120px; min-width: 120px;">
                 ✅ {% trans "Approve" %}
             </button>
         {% elif appt.status == 'confirmed' %}
             <button class="btn-mgmt btn-approve"
                     hx-get="{% url 'cabinet:appointments' %}?action=complete_form&id={{ appt.id }}"
                     hx-target="#appt-{{ appt.id }}"
-                    hx-swap="outerHTML">
+                    hx-swap="outerHTML"
+                    style="flex: 1 1 120px; min-width: 120px;">
                 🏁 {% trans "Complete" %}
             </button>
         {% endif %}
 
-        {% if appt.status != 'cancelled' and appt.status != 'completed' %}
+        {% if is_admin and appt.status != 'cancelled' and appt.status != 'completed' %}
             <button class="btn-mgmt btn-reject"
                     hx-get="{% url 'cabinet:appointments' %}?action=cancel_form&id={{ appt.id }}"
                     hx-target="#appt-{{ appt.id }}"
-                    hx-swap="outerHTML">
+                    hx-swap="outerHTML"
+                    style="flex: 1; border: 1px solid rgba(255,100,100,0.2); background: rgba(255,100,100,0.05);">
                 ❌ {% trans "Reject" %}
             </button>
 
             <button class="btn-mgmt btn-reschedule"
                     hx-get="{% url 'cabinet:appointments' %}?action=reschedule_form&id={{ appt.id }}"
                     hx-target="#appt-{{ appt.id }}"
-                    hx-swap="outerHTML">
+                    hx-swap="outerHTML"
+                    style="flex: 1;">
                 📅 {% trans "Reschedule" %}
             </button>
         {% endif %}
 
+        {% if is_admin %}
         <button hx-post="{% url 'cabinet:appointments' %}"
                 hx-vals='{"action": "resend_notification", "id": "{{ appt.id }}"}'
                 hx-target="#appt-{{ appt.id }}"
                 hx-swap="outerHTML"
                 class="btn-mgmt"
-                style="justify-content: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #aaa; cursor: pointer; min-width: 40px;"
-                title="{% trans 'Resend Email' %}">
+                style="justify-content: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #aaa; cursor: pointer; min-width: 44px; padding: 0;"
+                title="{% trans 'Resend Notification' %}">
             ✉️
         </button>
-
-        {% if appt.status == 'cancelled' %}
-             <button class="btn-mgmt btn-reschedule" style="opacity: 0.5; cursor: not-allowed; width: 100%;">
-                🚫 {% trans "Cancelled" %}
-            </button>
         {% endif %}
     </div>
     {% endif %}

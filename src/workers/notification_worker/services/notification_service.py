@@ -7,6 +7,93 @@ from src.shared.utils.text import transliterate
 from src.workers.core.base_module.email_client import AsyncEmailClient
 from src.workers.core.base_module.template_renderer import TemplateRenderer
 
+# ---------------------------------------------------------------------------
+# Helpers: MessageBuilder and CalendarUrlBuilder
+# Extracted from the NotificationService God Object to satisfy SRP.
+# ---------------------------------------------------------------------------
+
+
+class MessageBuilder:
+    """Builds plain-text message bodies (e.g. SMS) from notification context."""
+
+    @staticmethod
+    def get_sms_text(data: dict, *, site_name: str = "LILY Beauty Salon") -> str:
+        """
+        Generates an SMS confirmation text.
+
+        Falls back gracefully when the datetime string is missing or malformed —
+        uses the raw date string rather than silently returning empty.
+        """
+        first_name: str = data.get("first_name", "Guest")
+        dt_str: str = str(data.get("datetime", ""))
+        date_val: str = dt_str
+        time_val: str = ""
+
+        if dt_str:
+            try:
+                dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
+                date_val = dt_obj.strftime("%d.%m.%Y")
+                time_val = dt_obj.strftime("%H:%M")
+            except (ValueError, TypeError) as exc:
+                log.warning(f"MessageBuilder: date parse failed for '{dt_str}': {exc}")
+
+        clean_name = transliterate(first_name)
+        time_part = f" um {time_val}" if time_val else ""
+        return (
+            f"Hallo {clean_name}, Ihr Termin am {date_val}{time_part}"
+            f" im {site_name} ist bestätigt. Wir freuen uns auf Sie!"
+        )
+
+
+class CalendarUrlBuilder:
+    """Builds a Google Calendar deep-link URL for appointment bookings."""
+
+    @staticmethod
+    def build_url(data: dict, *, site_url: str) -> str:
+        """
+        Returns a Google Calendar event URL.
+
+        The salon location is read from ``data["salon_address"]``.
+        If the key is absent, the location parameter is simply omitted
+        rather than falling back to a hardcoded string.
+        """
+        dt_str: str | None = data.get("datetime")
+        if not dt_str:
+            return ""
+
+        try:
+            service_name: str = data.get("service_name", "Beauty Termin")
+            duration: int = int(data.get("duration_minutes", 30))
+            start_dt = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
+            end_dt = start_dt + timedelta(minutes=duration)
+
+            fmt = "%Y%m%dT%H%M%S"
+            dates = f"{start_dt.strftime(fmt)}/{end_dt.strftime(fmt)}"
+
+            salon_address: str = data.get("salon_address", "")
+            base_url = "https://www.google.com/calendar/render?action=TEMPLATE"
+            params: dict[str, str] = {
+                "text": f"LILY Salon: {service_name}",
+                "dates": dates,
+                "details": f"Ihr Termin im LILY Beauty Salon. Web: {site_url}",
+                "sf": "true",
+                "output": "xml",
+            }
+            if salon_address:
+                params["location"] = salon_address
+
+            query_str = "&".join(f"{k}={quote(str(v))}" for k, v in params.items())
+            return f"{base_url}&{query_str}"
+        except (ValueError, TypeError) as exc:
+            log.warning(f"CalendarUrlBuilder: failed to build URL for datetime='{dt_str}': {exc}")
+            return ""
+
+
+# ---------------------------------------------------------------------------
+# NotificationService
+# Handles email rendering and dispatch. SMS/calendar logic delegated above.
+# ---------------------------------------------------------------------------
+
 
 class NotificationService:
     def __init__(
@@ -49,7 +136,7 @@ class NotificationService:
 
     # --- Core Sending Methods ---
 
-    async def send_notification(self, email: str, subject: str, template_name: str, data: dict):
+    async def send_notification(self, email: str, subject: str, template_name: str, data: dict) -> None:
         """Base method for sending any email notification."""
         full_context = self.enrich_email_context(data)
         full_template_path = self.resolve_template_path(template_name)
@@ -60,19 +147,19 @@ class NotificationService:
 
     # --- Specific Helpers (Legacy/Convenience) ---
 
-    async def send_booking_confirmation(self, recipient_email: str, client_name: str, context: dict):
+    async def send_booking_confirmation(self, recipient_email: str, client_name: str, context: dict) -> None:
         """Sends a standard booking confirmation."""
         data = context.copy()
         data["first_name"] = client_name
         await self.send_notification(recipient_email, "Terminbestätigung - LILY Beauty Salon", "bk_confirmation", data)
 
-    async def send_booking_cancellation(self, recipient_email: str, client_name: str, context: dict):
+    async def send_booking_cancellation(self, recipient_email: str, client_name: str, context: dict) -> None:
         """Sends a booking cancellation notice."""
         data = context.copy()
         data["first_name"] = client_name
         await self.send_notification(recipient_email, "Terminstornierung - LILY Beauty Salon", "bk_cancellation", data)
 
-    async def send_booking_no_show(self, recipient_email: str, client_name: str, context: dict):
+    async def send_booking_no_show(self, recipient_email: str, client_name: str, context: dict) -> None:
         """Sends a no-show notification."""
         data = context.copy()
         data["first_name"] = client_name
@@ -80,7 +167,7 @@ class NotificationService:
 
     async def send_universal(
         self, recipient_email: str, first_name: str, template_name: str, subject: str, context_data: dict, **kwargs
-    ):
+    ) -> None:
         """Universal gateway for any template."""
         data = context_data.copy()
         data["first_name"] = first_name
@@ -97,7 +184,7 @@ class NotificationService:
             return f"marketing/{template_name}.html"
         return f"{template_name}.html" if not template_name.endswith(".html") else template_name
 
-    def get_absolute_logo_url(self) -> str | None:
+    def get_absolute_logo_url(self) -> str:
         if not self.logo_url:
             return f"{self.site_url}/static/img/_source/logo_lily.png"
         if self.logo_url.startswith("http"):
@@ -106,19 +193,8 @@ class NotificationService:
         return f"{self.site_url}{path}"
 
     def get_sms_text(self, data: dict) -> str:
-        """Генерирует текст SMS."""
-        first_name = data.get("first_name", "Guest")
-        dt_str = data.get("datetime", "")
-        try:
-            dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
-            date_val = dt_obj.strftime("%d.%m.%Y")
-            time_val = dt_obj.strftime("%H:%M")
-        except (ValueError, TypeError):
-            date_val = dt_str
-            time_val = ""
-
-        clean_name = transliterate(first_name)
-        return f"Hallo {clean_name}, Ihr Termin am {date_val} um {time_val} im Lily Beauty Salon ist bestätigt. Wir freuen uns на Sie!"
+        """Delegates to MessageBuilder. Kept for backwards compatibility."""
+        return MessageBuilder.get_sms_text(data)
 
     def enrich_email_context(self, data: dict) -> dict:
         context = data.copy()
@@ -129,13 +205,14 @@ class NotificationService:
             dt_obj = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
             context["date"] = dt_obj.strftime("%d.%m.%Y")
             context["time"] = dt_obj.strftime("%H:%M")
-        except (ValueError, TypeError):
+        except (ValueError, TypeError) as exc:
+            log.warning(f"NotificationService.enrich_email_context: date parse failed for '{dt_str}': {exc}")
             context["date"] = context.get("booking_date", dt_str)
             context["time"] = ""
 
         context["site_url"] = self.site_url
         context["logo_url"] = self.get_absolute_logo_url()
-        context["calendar_url"] = self._generate_google_calendar_url(data)
+        context["calendar_url"] = CalendarUrlBuilder.build_url(data, site_url=self.site_url)
 
         if "name" in context and "greeting" not in context:
             visits = int(context.get("visits_count", 0))
@@ -150,26 +227,5 @@ class NotificationService:
         return context
 
     def _generate_google_calendar_url(self, data: dict) -> str:
-        try:
-            service_name = data.get("service_name", "Beauty Termin")
-            dt_str = data.get("datetime")
-            duration = int(data.get("duration_minutes", 30))
-            if not dt_str:
-                return ""
-            start_dt = datetime.strptime(dt_str, "%d.%m.%Y %H:%M")
-            end_dt = start_dt + timedelta(minutes=duration)
-            fmt = "%Y%m%dT%H%M%S"
-            dates = f"{start_dt.strftime(fmt)}/{end_dt.strftime(fmt)}"
-            base_url = "https://www.google.com/calendar/render?action=TEMPLATE"
-            params = {
-                "text": f"LILY Salon: {service_name}",
-                "dates": dates,
-                "details": f"Ihr Termin im LILY Beauty Salon. Web: {self.site_url}",
-                "location": "Lohmannstraße 111, 06366 Köthen (Anhalt)",
-                "sf": "true",
-                "output": "xml",
-            }
-            query_str = "&".join([f"{k}={quote(str(v))}" for k, v in params.items()])
-            return f"{base_url}&{query_str}"
-        except Exception:
-            return ""
+        """Delegates to CalendarUrlBuilder. Kept for backwards compatibility."""
+        return CalendarUrlBuilder.build_url(data, site_url=self.site_url)

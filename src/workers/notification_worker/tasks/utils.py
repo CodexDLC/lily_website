@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING, Any, cast
 
 from loguru import logger as log
 
+from src.shared.core.constants import RedisStreams
+
 if TYPE_CHECKING:
     from src.shared.core.manager_redis.manager import StreamManager
 
@@ -26,7 +28,7 @@ async def send_status_update(ctx: dict[str, Any], appointment_id: int | None, ch
         "status": status,
     }
     try:
-        await stream_manager.add_event("bot_events", payload)
+        await stream_manager.add_event(RedisStreams.BotEvents.NAME, payload)
         log.info(f"Status update sent: {payload}")
     except Exception as e:
         log.error(f"Failed to send status update: {e}")

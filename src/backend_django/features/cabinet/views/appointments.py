@@ -69,18 +69,36 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
                 return render(
                     request,
                     "cabinet/crm/appointments/includes/_appointment_card.html",
-                    {"appt": appointment, "is_admin": request.user.is_staff},
+                    {
+                        "appt": appointment,
+                        "is_admin": request.user.is_staff or request.user.is_superuser,
+                        "is_master": hasattr(request.user, "master_profile"),
+                    },
                 )
 
         return super().get(request, *args, **kwargs)
 
+    def _check_master_ownership(self, request, appointment):
+        """Return True if user is the master assigned to this appointment."""
+        master_profile = getattr(request.user, "master_profile", None)
+        return master_profile and appointment.master_id == master_profile.id
+
     def post(self, request, *args, **kwargs):
-        """HTMX inline status update (Admin only)."""
-        if not request.user.is_staff:
+        """HTMX inline status update (Admin or owning Master)."""
+        is_admin = request.user.is_staff or request.user.is_superuser
+        is_master = hasattr(request.user, "master_profile")
+
+        if not is_admin and not is_master:
             return HttpResponse('<div class="alert alert-danger">Forbidden</div>', status=403)
 
         action = request.POST.get("action")
         log.info(f"AppointmentsView.post: action={action}")
+
+        # Masters can only perform single-appointment actions on their own appointments
+        master_allowed_actions = {"approve", "complete", "no_show", "resend_notification"}
+        if not is_admin and action not in master_allowed_actions:
+            return HttpResponse('<div class="alert alert-danger">Forbidden</div>', status=403)
+
         booking_service = BookingV2Service()
 
         try:
@@ -102,7 +120,7 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
                 return render(
                     request,
                     "cabinet/crm/appointments/includes/_group_large_card.html",
-                    {"group": group, "is_admin": True},
+                    {"group": group, "is_admin": is_admin},
                 )
 
             # --- 2. Group Reschedule ---
@@ -121,7 +139,7 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
                 return render(
                     request,
                     "cabinet/crm/appointments/includes/_group_large_card.html",
-                    {"group": group, "is_admin": True},
+                    {"group": group, "is_admin": is_admin},
                 )
 
             # --- 3. Single Appointment Reschedule ---
@@ -153,7 +171,7 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
                 return render(
                     request,
                     "cabinet/crm/appointments/includes/_appointment_card.html",
-                    {"appt": appointment, "is_admin": True},
+                    {"appt": appointment, "is_admin": is_admin},
                 )
 
             # --- 4. Other Single Appointment Actions ---
@@ -163,13 +181,31 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
 
             appointment = get_object_or_404(Appointment, id=appt_id)
 
+            # Masters can only modify their own appointments
+            if not is_admin and not self._check_master_ownership(request, appointment):
+                return HttpResponse('<div class="alert alert-danger">Forbidden</div>', status=403)
+
             if action == "approve":
-                notes = request.POST.get("admin_notes")
-                if notes:
-                    appointment.admin_notes = notes
+                admin_reply = request.POST.get("admin_reply", "").strip()
+                internal_notes = request.POST.get("admin_notes", "").strip()
+
+                # Concatenate for internal storage if both exist
+                final_notes = ""
+                if admin_reply:
+                    final_notes += f"[Reply to Client]: {admin_reply}\n"
+                if internal_notes:
+                    final_notes += f"[Internal]: {internal_notes}"
+
+                if final_notes:
+                    appointment.admin_notes = final_notes
+
                 appointment.status = Appointment.STATUS_CONFIRMED
                 appointment.save()
-                self._trigger_notification(appointment, event_type="confirmation")
+
+                # Trigger notification with the reply text as extra context
+                self._trigger_notification(
+                    appointment, event_type="confirmation", extra_context={"admin_reply": admin_reply}
+                )
 
             elif action == "complete":
                 price = request.POST.get("price")
@@ -201,7 +237,7 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
             return render(
                 request,
                 "cabinet/crm/appointments/includes/_appointment_card.html",
-                {"appt": appointment, "is_admin": True},
+                {"appt": appointment, "is_admin": is_admin},
             )
 
         except Exception as e:
@@ -452,7 +488,8 @@ class AppointmentsView(HtmxCabinetMixin, CabinetAccessMixin, TemplateView):
                 "calendar_days": calendar_data["days"],
                 "month_label": calendar_data["month_label"],
                 "selected_date": date_str,
-                "is_admin": self.request.user.is_staff,
+                "is_admin": self.request.user.is_staff or self.request.user.is_superuser,
+                "is_master": hasattr(self.request.user, "master_profile"),
                 "group_id": group_id,
                 "status_filter": status_filter,
                 "date_filter": date_str,

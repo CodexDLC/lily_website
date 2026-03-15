@@ -1,23 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls \"C:\\\\install\\\\progect\\\\project-template\\\\docs\\\\en_EN\\\\architecture\\\\telegram_bot\\\\services\\\\sender\"\" 2>/dev/null; ls \"C:installprogectproject-templatedocsen_ENarchitecturetelegram_botservicesfsm\"\")",
-      "Bash(python -c:*)",
-      "Bash(python -m tools.init_project:*)",
-      "Bash(ls:*)",
-      "Bash(python:*)",
-      "Bash(poetry run python:*)",
-      "Bash(dir:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(find:*)",
-      "Bash(python3:*)",
-      "Bash(git checkout feat/admin-cabinet-qr)",
-      "Bash(where pytest)",
-      "Bash(.venv/Scripts/pytest src/backend_django/features/booking/tests/test_v2_slots.py -v --tb=short)",
-      "Bash(.venv/Scripts/pytest src/backend_django/features/booking/tests/test_v2_slots.py::TestSlotsStartTime::test_single_service_starts_at_master_work_start --tb=long)",
-      "Bash(.venv/Scripts/python -m pytest src/backend_django/features/booking/engine/tests/test_new_features.py -v)",
-      "Bash(.venv/Scripts/python tools/dev/check.py)"
+      "Bash(python -m pytest src/backend_django/features/cabinet/tests/test_cabinet_permissions.py -v --no-header)",
+      "Bash(pip list:*)",
+      "Bash(pip install:*)",
+      "Bash(poetry run:*)",
+      "Bash(xargs grep:*)",
+      "Bash(find C:installprogectlily_websitesrcbackend_djangotemplates -name *.html -exec grep -l script {})",
+      "Bash(2)"
     ]
   }
 }

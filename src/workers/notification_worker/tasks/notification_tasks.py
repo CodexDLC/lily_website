@@ -13,92 +13,140 @@ if TYPE_CHECKING:
     from src.workers.notification_worker.services.notification_service import NotificationService
 
 
+# ---------------------------------------------------------------------------
+# BotPayloadEnricher
+# Responsible for building the Redis Stream payload dict from a
+# NotificationPayload. Keeps business-logic mapping out of the task layer.
+# ---------------------------------------------------------------------------
+
+
+class BotPayloadEnricher:
+    """
+    Transforms a validated ``NotificationPayload`` into a flat ``dict[str, str]``
+    ready to be written to the Redis Stream.
+
+    All missing fields are filled with sensible defaults; nested objects
+    (e.g. group booking items) are flattened into scalar strings.
+    """
+
+    @staticmethod
+    def enrich(payload: NotificationPayload) -> dict[str, str]:
+        bot: dict[str, Any] = payload.context_data.copy()
+
+        # --- Group booking: flatten items list into scalar fields ---
+        items: list[dict] = bot.get("items", [])
+        if items and isinstance(items, list):
+            if "service_name" not in bot:
+                bot["service_name"] = ", ".join(str(i.get("service_name", "")) for i in items)
+            if "master_name" not in bot:
+                masters = list(dict.fromkeys(str(i.get("master_name", "")) for i in items))
+                bot["master_name"] = ", ".join(masters)
+            if "price" not in bot:
+                bot["price"] = bot.get("total_price", 0.0)
+            if "datetime" not in bot:
+                bot["datetime"] = bot.get("booking_date", "")
+
+        # --- Required identification fields ---
+        if "id" not in bot:
+            bot["id"] = bot.get("group_id") or payload.notification_id
+        if "client_name" not in bot:
+            bot["client_name"] = f"{payload.recipient.first_name} {payload.recipient.last_name}".strip()
+        if "first_name" not in bot:
+            bot["first_name"] = payload.recipient.first_name
+        if "last_name" not in bot:
+            bot["last_name"] = payload.recipient.last_name
+        if "client_phone" not in bot:
+            bot["client_phone"] = payload.recipient.phone
+        if "client_email" not in bot:
+            bot["client_email"] = payload.recipient.email
+
+        # --- Pydantic-validated field defaults ---
+        bot.setdefault("service_name", "N/A")
+        bot.setdefault("master_name", "N/A")
+        bot.setdefault("price", 0.0)
+        bot.setdefault("datetime", "N/A")
+        bot.setdefault("request_call", False)
+
+        # Flatten to str; drop the already-processed items list
+        return {k: str(v) if v is not None else "" for k, v in bot.items() if k != "items"}
+
+
+# ---------------------------------------------------------------------------
+# Private channel helpers
+# ---------------------------------------------------------------------------
+
+
+async def _send_email(
+    ctx: dict[str, Any],
+    payload: NotificationPayload,
+    notification_service: "NotificationService",
+) -> None:
+    """Sends the email channel. Raises Retry on failure (primary channel)."""
+    await notification_service.send_notification(
+        email=payload.recipient.email,  # type: ignore[arg-type]
+        subject=payload.subject or "Notification from LILY Salon",
+        template_name=payload.template_name,  # type: ignore[arg-type]
+        data=payload.context_data,
+    )
+
+
+async def _send_to_stream(
+    ctx: dict[str, Any],
+    payload: NotificationPayload,
+    stream_manager: "StreamManager",
+) -> None:
+    """
+    Sends the Telegram channel via Redis Stream.
+
+    Telegram notification is secondary: failures are logged but never cause
+    a task retry — doing so would resend the already-delivered email.
+    """
+    try:
+        bot_payload = BotPayloadEnricher.enrich(payload)
+        await stream_manager.add_event(
+            RedisStreams.BotEvents.NAME,
+            {"type": str(payload.event_type), **bot_payload},
+        )
+        log.info(f"Task: universal_notification | Action: StreamSent | event={payload.event_type}")
+    except Exception as exc:
+        log.error(f"Task: universal_notification | Action: StreamFailed | error={exc}")
+        # Intentionally not re-raising: email already sent, retrying would duplicate it.
+
+
+# ---------------------------------------------------------------------------
+# Universal task
+# ---------------------------------------------------------------------------
+
+
 async def send_universal_notification_task(ctx: dict[str, Any], payload_dict: dict[str, Any]) -> None:
     """
-    Universal task to route notifications.
+    Universal task to route notifications across email and Telegram channels.
     """
     try:
         payload = NotificationPayload(**payload_dict)
-        log.info(f"Task: universal_notification | ID: {payload.notification_id} | Channels: {payload.channels}")
-    except Exception as e:
-        log.error(f"Task: universal_notification | Action: ValidationFailed | error={e}")
+    except Exception as exc:
+        log.error(f"Task: universal_notification | Action: ValidationFailed | error={exc}")
         return
+
+    log.info(f"Task: universal_notification | ID: {payload.notification_id} | Channels: {payload.channels}")
 
     notification_service = cast("NotificationService", ctx.get("notification_service"))
     stream_manager = cast("StreamManager", ctx.get("stream_manager"))
 
-    # For universal task, we still use the service's logic but respect the requested channels
-    # 1. Email Channel
     if "email" in payload.channels and payload.recipient.email and payload.template_name:
         try:
-            await notification_service.send_notification(
-                email=payload.recipient.email,
-                subject=payload.subject or "Notification from LILY Salon",
-                template_name=payload.template_name,
-                data=payload.context_data,
-            )
-        except Exception as e:
-            log.error(f"Task: universal_notification | Action: EmailFailed | error={e}")
-            raise Retry(defer=ctx["job_try"] * 30) from e
+            await _send_email(ctx, payload, notification_service)
+        except Exception as exc:
+            log.error(f"Task: universal_notification | Action: EmailFailed | error={exc}")
+            raise Retry(defer=ctx["job_try"] * 30) from exc
 
-    # 2. Telegram Channel (Notify Bot via Redis Stream)
     if "telegram" in payload.channels and payload.event_type and stream_manager:
-        try:
-            # Reconstruct bot payload from context_data or recipient
-            bot_payload = payload.context_data.copy()
+        await _send_to_stream(ctx, payload, stream_manager)
 
-            # Handle Group Bookings (multiple items)
-            items = bot_payload.get("items", [])
-            if items and isinstance(items, list):
-                if "service_name" not in bot_payload:
-                    bot_payload["service_name"] = ", ".join([str(i.get("service_name", "")) for i in items])
-                if "master_name" not in bot_payload:
-                    # Unique masters
-                    masters = list(dict.fromkeys([str(i.get("master_name", "")) for i in items]))
-                    bot_payload["master_name"] = ", ".join(masters)
-                if "price" not in bot_payload:
-                    bot_payload["price"] = bot_payload.get("total_price", 0.0)
-                if "datetime" not in bot_payload:
-                    # Use booking_date if available
-                    bot_payload["datetime"] = bot_payload.get("booking_date", "")
 
-            # Ensure basic fields are present if not in context_data
-            if "id" not in bot_payload:
-                bot_payload["id"] = bot_payload.get("group_id") or payload.notification_id
-            if "client_name" not in bot_payload:
-                bot_payload["client_name"] = f"{payload.recipient.first_name} {payload.recipient.last_name}".strip()
-            if "first_name" not in bot_payload:
-                bot_payload["first_name"] = payload.recipient.first_name
-            if "last_name" not in bot_payload:
-                bot_payload["last_name"] = payload.recipient.last_name
-            if "client_phone" not in bot_payload:
-                bot_payload["client_phone"] = payload.recipient.phone
-            if "client_email" not in bot_payload:
-                bot_payload["client_email"] = payload.recipient.email
-
-            # Ensure required fields for Pydantic validation (in case they are still missing)
-            if "service_name" not in bot_payload:
-                bot_payload["service_name"] = "N/A"
-            if "master_name" not in bot_payload:
-                bot_payload["master_name"] = "N/A"
-            if "price" not in bot_payload:
-                bot_payload["price"] = 0.0
-            if "datetime" not in bot_payload:
-                bot_payload["datetime"] = "N/A"
-            if "request_call" not in bot_payload:
-                bot_payload["request_call"] = False
-
-            # Ensure all values are strings for Redis Stream
-            bot_payload = {k: str(v) if v is not None else "" for k, v in bot_payload.items() if k != "items"}
-
-            await stream_manager.add_event(
-                RedisStreams.BotEvents.NAME, {"type": str(payload.event_type), **bot_payload}
-            )
-            log.info(f"Task: universal_notification | Action: StreamSent | event={payload.event_type}")
-        except Exception as e:
-            log.error(f"Task: universal_notification | Action: StreamFailed | error={e}")
-            # We don't necessarily want to retry only because of stream failure if email worked,
-            # but usually, we want both. For now, just log the error.
+# ---------------------------------------------------------------------------
+# Group booking task
+# ---------------------------------------------------------------------------
 
 
 async def send_group_booking_notification_task(ctx: dict[str, Any], group_id: int) -> None:
@@ -110,12 +158,11 @@ async def send_group_booking_notification_task(ctx: dict[str, Any], group_id: in
     redis_service = cast("RedisService", ctx.get("redis_service"))
     notification_service = cast("NotificationService", ctx.get("notification_service"))
 
-    # 1. Fetch data from Redis
     cache_key = f"notifications:group_cache:{group_id}"
     try:
         raw_data = await redis_service.get_value(cache_key)
-    except Exception as e:
-        raise Retry(defer=10) from e
+    except Exception as exc:
+        raise Retry(defer=10) from exc
 
     if not raw_data:
         log.error(f"Task: send_group_booking_notification_task | Action: CacheNotFound | key={cache_key}")
@@ -124,33 +171,32 @@ async def send_group_booking_notification_task(ctx: dict[str, Any], group_id: in
     try:
         data = json.loads(raw_data)
     except json.JSONDecodeError:
+        log.error(f"Task: send_group_booking_notification_task | Action: JSONDecodeError | key={cache_key}")
         return
 
-    # 2. Notify Telegram bot via Redis Stream
     stream_manager = cast("StreamManager", ctx.get("stream_manager"))
     if stream_manager:
-        items = data.get("items", [])
-        bot_payload = {
-            "id": data["group_id"],
-            "client_name": data.get("client_name", ""),
-            "first_name": data.get("first_name", ""),
-            "last_name": data.get("last_name", ""),
-            "client_phone": data.get("client_phone", ""),
-            "client_email": data.get("client_email", ""),
+        items: list[dict] = data.get("items", [])
+        bot_payload: dict[str, str] = {
+            "id": str(data["group_id"]),
+            "client_name": str(data.get("client_name", "")),
+            "first_name": str(data.get("first_name", "")),
+            "last_name": str(data.get("last_name", "")),
+            "client_phone": str(data.get("client_phone", "")),
+            "client_email": str(data.get("client_email", "")),
             "service_name": f"Gruppe ({len(items)})",
-            "master_name": items[0]["master_name"] if items else "",
-            "datetime": data.get("booking_date", ""),
-            "duration_minutes": data.get("total_duration", 0),
-            "price": data.get("total_price", 0.0),
-            "request_call": False,
+            "master_name": str(items[0]["master_name"]) if items else "",
+            "datetime": str(data.get("booking_date", "")),
+            "duration_minutes": str(data.get("total_duration", 0)),
+            "price": str(data.get("total_price", 0.0)),
+            "request_call": "False",
         }
         try:
             await stream_manager.add_event(RedisStreams.BotEvents.NAME, {"type": "new_appointment", **bot_payload})
             log.info(f"Task: send_group_booking_notification_task | Action: StreamSent | group_id={group_id}")
-        except Exception as e:
-            log.error(f"Task: send_group_booking_notification_task | Action: StreamFailed | error={e}")
+        except Exception as exc:
+            log.error(f"Task: send_group_booking_notification_task | Action: StreamFailed | error={exc}")
 
-    # 3. Send via Service (Service handles Email -> SendGrid fallback)
     if data.get("client_email"):
         try:
             await notification_service.send_notification(
@@ -159,11 +205,13 @@ async def send_group_booking_notification_task(ctx: dict[str, Any], group_id: in
                 template_name="bk_group_booking",
                 data=data,
             )
-        except Exception as e:
-            raise Retry(defer=ctx["job_try"] * 60) from e
+        except Exception as exc:
+            raise Retry(defer=ctx["job_try"] * 60) from exc
 
 
-# --- Legacy Tasks ---
+# ---------------------------------------------------------------------------
+# Legacy tasks
+# ---------------------------------------------------------------------------
 
 
 async def send_booking_notification_task(ctx: dict[str, Any], appointment_id: int, admin_id: int | None = None) -> None:
@@ -187,8 +235,8 @@ async def send_booking_notification_task(ctx: dict[str, Any], appointment_id: in
         try:
             await stream_manager.add_event(RedisStreams.BotEvents.NAME, {"type": "new_appointment", **data})
             log.info(f"Task: send_booking_notification_task | Action: StreamSent | appointment_id={appointment_id}")
-        except Exception as e:
-            log.error(f"Task: send_booking_notification_task | Action: StreamFailed | error={e}")
+        except Exception as exc:
+            log.error(f"Task: send_booking_notification_task | Action: StreamFailed | error={exc}")
 
     if data.get("client_email"):
         try:
@@ -198,8 +246,8 @@ async def send_booking_notification_task(ctx: dict[str, Any], appointment_id: in
                 template_name="bk_receipt",
                 data=data,
             )
-        except Exception as e:
-            raise Retry(defer=ctx["job_try"] * 60) from e
+        except Exception as exc:
+            raise Retry(defer=ctx["job_try"] * 60) from exc
 
 
 async def send_contact_notification_task(ctx: dict[str, Any], request_id: int) -> None:
@@ -218,8 +266,8 @@ async def send_contact_notification_task(ctx: dict[str, Any], request_id: int) -
     if stream_manager:
         try:
             await stream_manager.add_event(RedisStreams.BotEvents.NAME, {"type": "new_contact_request", **data})
-        except Exception as e:
-            raise Retry(defer=10) from e
+        except Exception as exc:
+            raise Retry(defer=10) from exc
 
 
 async def requeue_event_task(ctx: dict[str, Any], event_data: dict[str, Any]) -> None:
