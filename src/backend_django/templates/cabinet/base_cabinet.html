@@ -23,14 +23,41 @@
     <!-- Cabinet CSS -->
     <link rel="stylesheet" href="{% static 'css/cabinet_app.css' %}?v={% now "U" %}">
 
-    <!-- Alpine.js with Collapse plugin -->
+    <!-- HTMX: sync (no defer) so it registers DOMContentLoaded listener before Alpine.js -->
+    <script src="{% static 'js/vendor/htmx.min.js' %}"></script>
+
+    <!-- HTMX CSRF injection (more reliable than hx-headers on body) -->
+    <script>
+        document.addEventListener('htmx:configRequest', function(evt) {
+            if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(evt.detail.verb.toUpperCase())) {
+                evt.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+            }
+        });
+    </script>
+
+    {% if debug %}
+    <!-- HTMX diagnostics (dev only) -->
+    <script>
+        document.addEventListener('htmx:responseError', function(e) {
+            console.error('[HTMX] Response error:', e.detail.xhr.status, e.detail.xhr.responseURL);
+        });
+        document.addEventListener('htmx:sendError', function(e) {
+            console.error('[HTMX] Send error:', e.detail);
+        });
+        document.addEventListener('htmx:targetError', function(e) {
+            console.error('[HTMX] Target not found:', e.detail.target, 'elt:', e.detail.elt);
+        });
+    </script>
+    {% endif %}
+
+    <!-- Alpine.js with Collapse plugin (defer — runs after HTMX has processed the DOM) -->
     <script defer src="{% static 'js/vendor/alpine-collapse.min.js' %}"></script>
     <script defer src="{% static 'js/vendor/alpine.min.js' %}"></script>
 
     {% block extra_css %}{% endblock extra_css %}
 </head>
 
-<body class="cabinet-body" x-data="{ sidebarOpen: false }" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+<body class="cabinet-body" x-data="{ sidebarOpen: false }">
 
     <!-- Mobile overlay -->
     <div class="sidebar-overlay" :class="{ 'active': sidebarOpen }" @click="sidebarOpen = false"></div>
@@ -60,9 +87,6 @@
 
         </div>
     </div>
-
-    <!-- HTMX -->
-    <script src="{% static 'js/vendor/htmx.min.js' %}" defer></script>
 
     <!-- Sidebar active link sync -->
     <script>

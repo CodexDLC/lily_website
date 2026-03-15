@@ -23,8 +23,8 @@ class MastersView(HtmxCabinetMixin, AdminRequiredMixin, TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         # Handle HTMX actions (edit, save, view)
-        action = request.GET.get("action")
-        master_id = request.GET.get("id")
+        action = request.POST.get("action") or request.GET.get("action")
+        master_id = request.POST.get("id") or request.GET.get("id")
 
         if action and master_id:
             master = get_object_or_404(Master, id=master_id)

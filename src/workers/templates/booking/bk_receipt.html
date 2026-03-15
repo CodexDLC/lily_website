@@ -1,15 +1,15 @@
 {% extends "base_email.html" %}
 
-{% block title %}{{ email_subject | default('Buchungsanfrage erhalten') }}{% endblock title %}
+{% block title %}{{ email_subject | default('Eingangsbestätigung: Ihre Terminanfrage') }}{% endblock title %}
 
 {% block content %}
     <tr>
         <td align="center" style="padding-bottom: 30px;">
             <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td align="center" style="border-bottom: 2px solid #edd071; padding-bottom: 5px;">
-                        <span style="font-family: Arial, sans-serif; color: #003831; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold;">
-                            {{ email_tag | default('ANFRAGE ERHALTEN') }}
+                    <td align="center" style="border: 2px solid #ffcc80; padding: 10px 20px; border-radius: 4px; background-color: #fffaf0;">
+                        <span style="font-family: Arial, sans-serif; color: #e67e22; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;">
+                            {{ email_tag | default('STATUS: IN PRÜFUNG ⏳') }}
                         </span>
                     </td>
                 </tr>
@@ -30,11 +30,11 @@
     </tr>
 
     <tr>
-        <td bgcolor="#fcfaf5" style="padding: 30px 40px; border: 1px solid #f0e6d2; border-radius: 8px;">
-            <p style="margin: 0 0 20px 0; color: #888888; font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold;">Ihre Anfrage</p>
+        <td bgcolor="#f9f9f9" style="padding: 30px 40px; border: 2px dashed #ffcc80; border-radius: 8px;">
+            <p style="margin: 0 0 20px 0; color: #888888; font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold;">Ihre Anfrage (unverbindlich)</p>
             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
-                    <td style="padding-bottom: 12px; border-bottom: 1px solid #f0e6d2;">
+                    <td style="padding-bottom: 12px; border-bottom: 1px solid #e0e0e0;">
                         <table border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                                 <td width="40%" style="color: #888888; font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Behandlung</td>
@@ -44,10 +44,10 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="padding: 12px 0; border-bottom: 1px solid #f0e6d2;">
+                    <td style="padding: 12px 0; border-bottom: 1px solid #e0e0e0;">
                         <table border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
-                                <td width="40%" style="color: #888888; font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Datum</td>
+                                <td width="40%" style="color: #888888; font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Datum (angefragt)</td>
                                 <td style="color: #333333; font-family: Arial, sans-serif; font-size: 16px;">{{ date }}</td>
                             </tr>
                         </table>
@@ -57,7 +57,7 @@
                     <td style="padding-top: 12px;">
                         <table border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
-                                <td width="40%" style="color: #888888; font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Uhrzeit</td>
+                                <td width="40%" style="color: #888888; font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Wunschzeit</td>
                                 <td style="color: #333333; font-family: Arial, sans-serif; font-size: 16px;">{{ time }}</td>
                             </tr>
                         </table>
@@ -68,8 +68,8 @@
     </tr>
 
     <tr>
-        <td align="center" style="padding-top: 30px; padding-bottom: 10px; color: #888888; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; font-style: italic;">
-            Sobald wir Ihren Termin bestätigt haben, erhalten Sie eine Bestätigungs-E-Mail.
+        <td align="left" style="padding-top: 30px; padding-bottom: 10px; color: #999999; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.6;">
+            <strong>Wichtiger Hinweis:</strong> Diese E-Mail dient только zur Information über den Eingang Ihrer Anfrage und stellt noch keine feste Buchung dar. Ein Vertrag kommt erst mit der separaten Bestätigungs-E-Mail zustande.
         </td>
     </tr>
 

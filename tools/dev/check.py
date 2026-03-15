@@ -3,6 +3,7 @@ import os
 import subprocess
 import sys
 import time
+import warnings
 from pathlib import Path
 
 # --- Configuration ---
@@ -12,6 +13,15 @@ TEST_PROJECT_NAME = "lily-quality-check"
 
 # Directories to check for Python tools (Ruff, Mypy)
 PYTHON_DIRS = "src/ tools/"
+
+# --- Silence non-critical warnings in CURRENT process ---
+try:
+    # This handles warnings if requests is imported in this script
+    from requests.exceptions import RequestsDependencyWarning
+
+    warnings.filterwarnings("ignore", category=RequestsDependencyWarning)
+except ImportError:
+    pass
 
 
 # ANSI Colors
@@ -41,6 +51,11 @@ def print_error(msg):
 def run_command(command, cwd=PROJECT_ROOT, capture_output=False, env=None):
     """Runs a system command and returns result."""
     current_env = os.environ.copy()
+
+    # --- THE FIX: Silence warnings for ALL subprocesses ---
+    # This prevents the "RequestsDependencyWarning" from showing up in Ruff, Mypy, etc.
+    current_env["PYTHONWARNINGS"] = "ignore"
+
     if env:
         current_env.update(env)
 

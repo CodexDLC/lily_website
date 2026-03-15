@@ -7,7 +7,7 @@
 <div class="cabinet-search">
     <input class="cabinet-search-input" type="text" name="q" value="{{ search }}"
         placeholder="{% trans "Search by name, phone, email..." %}" hx-get="{% url 'cabinet:clients' %}"
-        hx-trigger="keyup changed delay:400ms" hx-target="#clients-list" hx-swap="outerHTML" hx-include="[name='q']">
+        hx-trigger="keyup changed delay:400ms" hx-target="#clients-list" hx-swap="outerHTML" hx-select="#clients-list" hx-include="[name='q']">
 </div>
 
 <div class="results-count">{% trans "Found: " %}{{ page_obj.paginator.count }}</div>

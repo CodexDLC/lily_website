@@ -1,4 +1,5 @@
 {% load i18n %}
+<div class="cabinet-card master-card" id="master-card-{{ master.id }}">
 <form hx-post="{% url 'cabinet:masters' %}?action=save&id={{ master.id }}"
       hx-target="#master-card-{{ master.id }}"
       hx-swap="outerHTML"
@@ -66,3 +67,4 @@
         </button>
     </div>
 </form>
+</div>

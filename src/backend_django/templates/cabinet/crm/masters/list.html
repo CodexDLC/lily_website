@@ -4,7 +4,7 @@
 {% block topbar_title %}{% trans "Masters" %}{% endblock topbar_title %}
 {% block content %}
 
-<div class="crm-filter-bar" hx-boost="true" hx-target="#masters-list" hx-swap="outerHTML">
+<div class="crm-filter-bar" hx-boost="true" hx-target="#masters-list" hx-swap="outerHTML" hx-select="#masters-list">
     <a href="{% url 'cabinet:masters' %}" class="filter-tag {% if not status_filter and not show_fired %}active{% endif %}">
         {% trans "All Active" %}
     </a>
