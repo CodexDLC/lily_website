@@ -2,6 +2,22 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.9.2] - 2026-03-15
+
+### Added
+- **API Documentation:** Expanded technical documentation with detailed specifications for `admin`, `booking`, `instance`, `promos`, and `urls` endpoints.
+- **Documentation:** Added new feature-specific guides for `cabinet` and `promos` modules.
+- **Testing:** Introduced permission-based test suite for the admin cabinet and centralized `conftest.py` for API testing.
+
+### Changed / Refactored
+- **Cabinet:** Refined logic and UI for appointment, contact request, and master management views.
+- **Notifications:** Updated notification worker services and refined localized booking email templates.
+- **Dependencies:** Synchronized project dependencies in `pyproject.toml` and `poetry.lock`.
+
+### Fixed
+- **Cleanup:** Removed obsolete Telegram bot files and temporary initialization scripts.
+- **CI/CD:** Fixed minor issues in the automated project initialization and check tools.
+
 ## [1.9.1] - 2026-03-11
 
 ### Fixed
@@ -185,6 +201,12 @@ All notable changes to the **Lily Website** project will be documented in this f
 - **Fixed:** Corrected type hints in project initialization scripts (`tools/init_project`).
 - **Fixed:** Deployment issue by removing explicit command for backend to allow `entrypoint.sh` execution.
 - **Fixed:** Service category assignment logic in `load_services` management command.
+
+## [1.1.2] - 2026-02-19
+### Notifications Reliability
+- **Added:** SendGrid API fallback implementation for reliable email delivery.
+- **Added:** Isolated test environment configuration for notification services.
+- **Fixed:** Admin category display issues.
 
 ## [1.1.2] - 2026-02-19
 ### Notifications Reliability
