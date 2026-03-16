@@ -54,7 +54,8 @@ def _get_salon_address() -> str:
 _BOT_WIRE_PASSTHROUGH_EVENTS: frozenset[str] = frozenset(
     {
         NotificationEventType.CONTACT_REQUEST,
-        NotificationEventType.GROUP_BOOKING,
+        # GROUP_BOOKING intentionally excluded: bot has no handler for "new_group_booking",
+        # so it maps to "new_appointment" like all other booking events.
     }
 )
 

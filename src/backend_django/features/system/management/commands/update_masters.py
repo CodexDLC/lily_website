@@ -3,14 +3,21 @@ import json
 from core.logger import log
 from django.conf import settings
 from django.core.cache import cache
-from django.core.management.base import BaseCommand
 from features.booking.models import Master
+from features.system.management.commands.base_hash_command import HashProtectedCommand
 
 
-class Command(BaseCommand):
+class Command(HashProtectedCommand):
     help = "Update content fields for Masters from JSON fixtures (Bulk Update)"
+    fixture_key = "update_masters"
 
-    def handle(self, *args, **options):
+    def get_fixture_paths(self) -> list:
+        fixtures_dir = settings.BASE_DIR / "features" / "system" / "fixtures" / "content"
+        if not fixtures_dir.exists():
+            return []
+        return [fixtures_dir / "masters.json"]
+
+    def handle_import(self, *args, **options):
         log.info("Command: update_masters | Action: Start")
 
         fixtures_dir = settings.BASE_DIR / "features" / "system" / "fixtures" / "content"

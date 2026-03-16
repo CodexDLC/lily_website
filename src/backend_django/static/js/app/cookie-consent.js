@@ -75,7 +75,25 @@
    * Shows the cookie consent banner
    */
   function showBanner() {
-    const banner = document.getElementById(BANNER_ID);
+    let banner = document.getElementById(BANNER_ID);
+
+    // If banner not in DOM, inject it from template
+    if (!banner) {
+      const template = document.getElementById('cookieConsentTemplate');
+      if (template) {
+        // We use insertAdjacentHTML to keep it lightweight
+        document.body.insertAdjacentHTML('beforeend', template.innerHTML);
+        banner = document.getElementById(BANNER_ID);
+
+        // After injection, we MUST attach listeners to the new buttons
+        attachEventListeners();
+        console.log('[Cookie Consent] Banner injected from template');
+      } else {
+        console.error('[Cookie Consent] Template #cookieConsentTemplate not found');
+        return;
+      }
+    }
+
     if (banner) {
       banner.style.display = 'block';
       console.log('[Cookie Consent] Banner displayed');
@@ -114,28 +132,37 @@
   }
 
   /**
+   * Attaches click handlers to banner buttons
+   */
+  function attachEventListeners() {
+    const acceptBtn = document.getElementById(ACCEPT_BTN_ID);
+    const rejectBtn = document.getElementById(REJECT_BTN_ID);
+
+    if (acceptBtn) {
+      // Use removeEventListener first to avoid double binding if called multiple times
+      acceptBtn.removeEventListener('click', handleAccept);
+      acceptBtn.addEventListener('click', handleAccept);
+    }
+
+    if (rejectBtn) {
+      rejectBtn.removeEventListener('click', handleReject);
+      rejectBtn.addEventListener('click', handleReject);
+    }
+  }
+
+  /**
    * Initializes the cookie consent manager
    */
   function init() {
     const savedConsent = getConsent();
 
-    // If no consent decision yet, show banner
+    // If no consent decision yet, show banner (this will trigger injection)
     if (!savedConsent) {
       showBanner();
     } else {
       console.log('[Cookie Consent] Existing consent found:', savedConsent);
-    }
-
-    // Attach event listeners
-    const acceptBtn = document.getElementById(ACCEPT_BTN_ID);
-    const rejectBtn = document.getElementById(REJECT_BTN_ID);
-
-    if (acceptBtn) {
-      acceptBtn.addEventListener('click', handleAccept);
-    }
-
-    if (rejectBtn) {
-      rejectBtn.addEventListener('click', handleReject);
+      // We still might want to attach listeners if revokeCookieConsent is used later
+      // but revokeCookieConsent calls showBanner() which handles it.
     }
   }
 

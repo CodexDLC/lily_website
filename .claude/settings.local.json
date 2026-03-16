@@ -1,13 +1,22 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -m pytest src/backend_django/features/cabinet/tests/test_cabinet_permissions.py -v --no-header)",
-      "Bash(pip list:*)",
-      "Bash(pip install:*)",
-      "Bash(poetry run:*)",
+      "Bash(git checkout:*)",
+      "Bash(git stash:*)",
+      "Bash(python manage.py makemigrations system --name fixtureversion)",
+      "Bash(docker run:*)",
+      "Bash(mkdir -p /c/Users/prime/.claude/mcp-memory)",
+      "Read(//c/Users/prime/.claude//**)",
+      "Read(//c/Users/prime/AppData/Roaming/Claude//**)",
+      "Read(//c/Users/prime/AppData/Local/claude-cli-nodejs//**)",
+      "Bash(curl -s http://localhost:3001/sse --max-time 3)",
+      "WebSearch",
+      "Bash(find /c/Users/prime/AppData/Roaming/Antigravity -name *.json)",
       "Bash(xargs grep:*)",
-      "Bash(find C:installprogectlily_websitesrcbackend_djangotemplates -name *.html -exec grep -l script {})",
-      "Bash(2)"
+      "Bash(python -c \"import subprocess; r = subprocess.run\\([''''pip'''', ''''show'''', ''''codex-tools''''], capture_output=True, text=True\\); print\\(r.stdout\\)\")",
+      "Read(//c//**)",
+      "Read(//c/install/**)",
+      "Read(//c/Users/**)"
     ]
   }
 }

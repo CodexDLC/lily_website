@@ -1,40 +1,42 @@
 from core.logger import log
 from django.core.management import call_command
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 
 class Command(BaseCommand):
     help = "Run all content update commands and clear cache"
 
+    def add_arguments(self, parser):
+        parser.add_argument("--force", action="store_true", help="Ignore hash checks and force all updates")
+
     def handle(self, *args, **options):
         log.info("Command: update_all_content | Action: Start")
+        force = options.get("force", False)
+        errors = []
 
-        try:
-            # log.debug("Command: update_all_content | Action: SubCommand | name=update_site_settings")
-            # call_command("update_site_settings")
+        commands = [
+            "update_static_translations",
+            "update_email_content",
+            "update_static_seo",
+            "load_main_data",
+            "load_services",
+            "update_masters",
+        ]
 
-            log.debug("Command: update_all_content | Action: SubCommand | name=update_static_translations")
-            call_command("update_static_translations")
+        for cmd in commands:
+            try:
+                log.debug(f"Command: update_all_content | Action: SubCommand | name={cmd}")
+                call_command(cmd, force=force)
+            except Exception as e:
+                msg = f"Subcommand {cmd} failed: {e}"
+                log.error(f"Command: update_all_content | Action: SubError | error={msg}")
+                errors.append(msg)
 
-            log.debug("Command: update_all_content | Action: SubCommand | name=update_email_content")
-            call_command("update_email_content")
+        if errors:
+            self.stdout.write(self.style.ERROR(f"Update completed with {len(errors)} errors."))
+            for err in errors:
+                self.stdout.write(self.style.ERROR(f" - {err}"))
+            raise CommandError("One or more subcommands failed.")
 
-            log.debug("Command: update_all_content | Action: SubCommand | name=update_static_seo")
-            call_command("update_static_seo")
-
-            log.debug("Command: update_all_content | Action: SubCommand | name=load_main_data")
-            call_command("load_main_data")
-
-            log.debug("Command: update_all_content | Action: SubCommand | name=load_services")
-            call_command("load_services")
-
-            log.debug("Command: update_all_content | Action: SubCommand | name=update_masters")
-            call_command("update_masters")
-
-            log.info("Command: update_all_content | Action: Success")
-            self.stdout.write(self.style.SUCCESS("\nAll updates completed. Cache invalidated selectively per change."))
-
-        except Exception as e:
-            log.error(f"Command: update_all_content | Action: Failed | error={e}")
-            self.stdout.write(self.style.ERROR(f"Update failed: {e}"))
-            raise
+        log.info("Command: update_all_content | Action: Success")
+        self.stdout.write(self.style.SUCCESS("\nAll updates completed. Cache invalidated selectively per change."))

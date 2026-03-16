@@ -12,6 +12,7 @@ from features.booking.models import (
     MasterPortfolio,
 )
 from features.booking.models.client import Client
+from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 from unfold.admin import ModelAdmin, TabularInline
 
 
@@ -58,45 +59,45 @@ class MasterDayOffInline(TabularInline):
     classes = ["collapse"]
 
 
-class MasterPortfolioInline(TabularInline):
+class MasterPortfolioInline(TabularInline, TranslationTabularInline):
     model = MasterPortfolio
     extra = 1
     classes = ["collapse"]
 
 
-class MasterCertificateInline(TabularInline):
+class MasterCertificateInline(TabularInline, TranslationTabularInline):
     model = MasterCertificate
     extra = 1
     classes = ["collapse"]
 
 
 @admin.register(Master)
-class MasterAdmin(ModelAdmin):
-    list_display = ("name", "status_badge", "is_owner", "is_public", "order", "telegram_id")
-    list_filter = ("status", "is_public", "is_owner", "categories")
-    search_fields = ("name", "telegram_username", "phone")
-    prepopulated_fields = {"slug": ("name",)}
+class MasterAdmin(TranslationAdmin, ModelAdmin):
+    list_display = ["name", "status_badge", "is_owner", "is_public", "order", "telegram_id"]
+    list_filter = ["status", "is_public", "is_owner", "categories"]
+    search_fields = ["name", "telegram_username", "phone"]
+    prepopulated_fields = {"slug": ["name"]}
     inlines = [MasterDayOffInline, MasterPortfolioInline, MasterCertificateInline]
-    readonly_fields = ("bot_access_code", "qr_token")
+    readonly_fields = ["bot_access_code", "qr_token"]
     save_on_top = True
 
-    fieldsets = (
-        (
+    fieldsets = [
+        [
             _("Basic Info"),
-            {"fields": ("name", "slug", "photo", "title", "short_description", "bio")},
-        ),
-        (
+            {"fields": ["name", "slug", "photo", "title", "short_description", "bio"]},
+        ],
+        [
             _("Status & Visibility"),
-            {"fields": ("status", "is_public", "is_owner", "is_featured", "order")},
-        ),
-        (
+            {"fields": ["status", "is_public", "is_owner", "is_featured", "order"]},
+        ],
+        [
             _("Professional"),
-            {"fields": ("categories", "years_experience")},
-        ),
-        (
+            {"fields": ["categories", "years_experience"]},
+        ],
+        [
             _("Schedule & Booking"),
             {
-                "fields": (
+                "fields": [
                     "work_days",
                     "work_start",
                     "work_end",
@@ -104,19 +105,26 @@ class MasterAdmin(ModelAdmin):
                     "break_end",
                     "buffer_between_minutes",
                     "max_clients_parallel",
-                ),
+                ],
                 "classes": ["collapse"],
             },
-        ),
-        (
+        ],
+        [
             _("Contacts & Socials"),
-            {"fields": ("phone", "instagram", "user")},
-        ),
-        (
+            {"fields": ["phone", "instagram", "user"]},
+        ],
+        [
             _("Telegram Integration"),
-            {"fields": ("telegram_id", "telegram_username", "bot_access_code", "qr_token")},
-        ),
-    )
+            {"fields": ["telegram_id", "telegram_username", "bot_access_code", "qr_token"]},
+        ],
+        [
+            _("SEO"),
+            {
+                "fields": ["seo_title", "seo_description", "seo_image"],
+                "classes": ["collapse"],
+            },
+        ],
+    ]
 
     @admin.display(description=_("Status"))
     def status_badge(self, obj):

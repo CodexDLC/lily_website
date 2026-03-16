@@ -6,7 +6,6 @@
 INSTALLED_FEATURES: list[str] = [
     "features.telegram.commands",
     "features.telegram.bot_menu",
-    "features.telegram.notifications",
 ]
 
 # Фичи-слушатели (Redis Stream)

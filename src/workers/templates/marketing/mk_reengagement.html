@@ -1,47 +1,67 @@
 {% extends "base_email.html" %}
 
-{% block title %}Zeit für Dich{% endblock %}
+{% block title %}Wir vermissen Sie - LILY Salon{% endblock title %}
 
 {% block content %}
-    <!-- ТЭГ -->
     <tr>
-        <td align="center" style="padding-bottom: 20px;">
-            <span style="font-family: 'Lato', sans-serif; color: #003831; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; border-bottom: 1px solid #EDD071; padding-bottom: 5px;">
-                ZEIT FÜR DICH
-            </span>
-        </td>
-    </tr>
-
-    <!-- ПРИВЕТСТВИЕ -->
-    <tr>
-        <td style="color: #333333; font-family: 'Lato', sans-serif; font-size: 18px; line-height: 1.5; padding-bottom: 20px; text-align: center;">
-            <b>{{ greeting }}</b>
-        </td>
-    </tr>
-    <tr>
-        <td style="color: #555555; font-family: 'Lato', sans-serif; font-size: 16px; line-height: 1.6; padding-bottom: 30px; text-align: center;">
-            {{ body_text }}
+        <td align="center" style="padding-bottom: 30px;">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td align="center" style="border-bottom: 2px solid #003831; padding-bottom: 5px;">
+                        <span style="font-family: Arial, sans-serif; color: #003831; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold;">
+                            EXKLUSIVES ANGEBOT
+                        </span>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
 
     <tr>
-        <td align="center" style="color: #003831; font-family: 'Playfair Display', serif; font-size: 18px; font-weight: bold; padding-bottom: 20px;">
-            Wir haben passende Termine für Sie gefunden:
+        <td align="center" style="padding-bottom: 20px; color: #333333; font-family: 'Georgia', serif; font-size: 26px; line-height: 1.3;">
+            Zeit für eine kleine Auszeit?
         </td>
     </tr>
 
-    <!-- Кнопка "Anderen Termin wählen" -->
+    <tr>
+        <td align="center" style="padding-bottom: 35px; color: #555555; font-family: Arial, sans-serif; font-size: 17px; line-height: 1.6;">
+            {{ greeting }}<br>
+            {{ body_text or 'Es ist schon einige Zeit her seit Ihrem letzten Besuch bei нам. Wir würden uns freuen, Sie bald wieder bei нам begrüßen zu dürfen и Ihnen eine entspannende Behandlung zu ermöglichen.' }}
+        </td>
+    </tr>
+
+    <tr>
+        <td align="center" style="padding-bottom: 40px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#f9f9f9" style="border: 1px solid #eeeeee; border-radius: 8px;">
+                <tr>
+                    <td style="padding: 30px; text-align: center; color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5;">
+                        Мöchten Sie sich wieder einmal verwöhnen lassen?<br>
+                        Entdecken Sie unsere aktuellen Angebote und finden Sie Ihren nächsten Wunschtermin.
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
     <tr>
         <td align="center" style="padding-top: 20px;">
             <table border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td align="center" style="border-radius: 5px;" bgcolor="#003831">
-                        <a href="{{ link_calendar }}" clicktracking="off" target="_blank" style="font-size: 16px; font-family: 'Lato', sans-serif; color: #EDD071; text-decoration: none; padding: 12px 30px; border-radius: 5px; border: 1px solid #EDD071; display: inline-block; font-weight: bold;">
-                            Anderen Termin wählen
+                    <td align="center" style="border-radius: 6px;" bgcolor="#003831">
+                        <a href="{{ site_url }}/booking" target="_blank" style="font-size: 16px; font-family: Arial, sans-serif; color: #edd071; text-decoration: none; padding: 15px 40px; border-radius: 6px; border: 1px solid #edd071; display: inline-block; font-weight: bold;">
+                            Jetzt Termin buchen
                         </a>
                     </td>
                 </tr>
             </table>
         </td>
     </tr>
-{% endblock %}
+
+    <tr><td height="40" style="font-size: 0; line-height: 0;">&nbsp;</td></tr>
+
+    <tr>
+        <td align="center" style="color: #888888; font-family: Arial, sans-serif; font-size: 14px;">
+            {{ signature or 'Herzliche Grüße,\nIhr LILY Salon Team' | nl2br }}
+        </td>
+    </tr>
+{% endblock content %}

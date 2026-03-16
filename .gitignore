@@ -91,3 +91,4 @@ deploy/docker-compose.override.yml
 # ═══════════════════════════════════════════
 AGENTS.md
 project_structure.txt
+.claude/
