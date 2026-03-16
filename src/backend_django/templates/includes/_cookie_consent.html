@@ -8,7 +8,8 @@ Legal Requirements (Rechtssicherheit):
 4. Users can revoke consent easily via footer link
 {% endcomment %}
 
-<div id="cookieConsentBanner" class="cookie-consent-banner" style="display: none;">
+<script type="text/template" id="cookieConsentTemplate">
+<div id="cookieConsentBanner" class="cookie-consent-banner" data-nosnippet>
   <div class="cookie-consent-container">
     <div class="cookie-consent-content">
       <div class="cookie-consent-text">
@@ -39,6 +40,7 @@ Legal Requirements (Rechtssicherheit):
     </div>
   </div>
 </div>
+</script>
 
 <style>
   /* Cookie Consent Banner Styles - LILY Beauty Salon */

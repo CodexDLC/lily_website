@@ -9,92 +9,101 @@ from .models import Category, ContactRequest, PortfolioImage, Service
 
 
 @admin.register(Category)
-class CategoryAdmin(ModelAdmin, TranslationAdmin):
+class CategoryAdmin(TranslationAdmin, ModelAdmin):
     list_display = ["title", "slug", "is_active", "order"]
     list_display_links = ["title"]
     list_editable = ["order"]
     search_fields = ["title"]
-    prepopulated_fields = {"slug": ("title",)}
+    prepopulated_fields = {"slug": ["title"]}
 
-    fieldsets = (
-        (
+    fieldsets = [
+        [
             _("Basic Info"),
             {
-                "fields": ("title", "slug", "image", "bento_group", "is_active", "is_planned"),
+                "fields": ["title", "slug", "image", "bento_group", "is_active", "is_planned"],
             },
-        ),
-        (
+        ],
+        [
             _("Content"),
             {
-                "fields": ("description", "content"),
+                "fields": ["description", "content"],
             },
-        ),
-        (
+        ],
+        [
             _("System"),
             {
-                "fields": ("order",),
-                "classes": ("collapse",),
+                "fields": ["order"],
+                "classes": ["collapse"],
             },
-        ),
-        (
+        ],
+        [
             _("SEO"),
             {
-                "fields": ("seo_title", "seo_description", "seo_image"),
-                "classes": ("collapse",),
+                "fields": ["seo_title", "seo_description", "seo_image"],
+                "classes": ["collapse"],
             },
-        ),
-    )
+        ],
+    ]
 
 
 @admin.register(Service)
-class ServiceAdmin(ModelAdmin, TranslationAdmin):
+class ServiceAdmin(TranslationAdmin, ModelAdmin):
     list_display = ["title", "category", "price", "duration", "order", "is_active", "is_addon"]
     list_display_links = ["title"]
     list_editable = ["price", "duration", "order", "is_addon"]
     list_filter = ["category", "is_active", "is_addon"]
     ordering = ["order", "title"]
-    prepopulated_fields = {"slug": ("title",)}
+    prepopulated_fields = {"slug": ["title"]}
 
-    fieldsets = (
-        (
+    fieldsets = [
+        [
             _("Basic Info"),
             {
-                "fields": ("title", "slug", "category", "image", "is_active", "is_hit", "is_addon"),
+                "fields": ["title", "slug", "category", "image", "is_active", "is_hit", "is_addon"],
             },
-        ),
-        (
+        ],
+        [
             _("Pricing & Duration"),
             {
-                "fields": (("price", "price_info"), ("duration", "duration_info")),
+                "fields": [("price", "price_info"), ("duration", "duration_info")],
             },
-        ),
-        (
+        ],
+        [
             _("Content"),
             {
-                "fields": ("description", "content"),
+                "fields": ["description", "content"],
             },
-        ),
-        (
+        ],
+        [
             _("System"),
             {
-                "fields": ("order",),
-                "classes": ("collapse",),
+                "fields": ["order"],
+                "classes": ["collapse"],
             },
-        ),
-        (
+        ],
+        [
             _("SEO"),
             {
-                "fields": ("seo_title", "seo_description", "seo_image"),
-                "classes": ("collapse",),
+                "fields": ["seo_title", "seo_description", "seo_image"],
+                "classes": ["collapse"],
             },
-        ),
-    )
+        ],
+    ]
 
 
 @admin.register(PortfolioImage)
-class PortfolioImageAdmin(ModelAdmin):
+class PortfolioImageAdmin(TranslationAdmin, ModelAdmin):
     list_display = ["title", "service", "order"]
     list_editable = ["order"]
+
+    fieldsets = [
+        [
+            _("Basic Info"),
+            {
+                "fields": ["title", "service", "image", "order"],
+            },
+        ],
+    ]
 
 
 @admin.register(ContactRequest)

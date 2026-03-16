@@ -2,14 +2,19 @@ import json
 
 from core.logger import log
 from django.conf import settings
-from django.core.management.base import BaseCommand
+from features.system.management.commands.base_hash_command import HashProtectedCommand
 from features.system.models.seo import StaticPageSeo
 
 
-class Command(BaseCommand):
+class Command(HashProtectedCommand):
     help = "Update SEO fields for Static Pages from static_pages_seo.json"
+    fixture_key = "update_static_seo"
 
-    def handle(self, *args, **options):
+    def get_fixture_paths(self) -> list:
+        path = settings.BASE_DIR / "features" / "system" / "fixtures" / "seo" / "static_pages_seo.json"
+        return [path]
+
+    def handle_import(self, *args, **options):
         log.info("Command: update_static_seo | Action: Start")
 
         # Read specific file for static pages

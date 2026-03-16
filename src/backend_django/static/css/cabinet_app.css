@@ -1895,6 +1895,23 @@ textarea.form-input-boxed {
     background: rgba(237, 208, 113, 0.25);
 }
 
+.registration-note {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(237, 208, 113, 0.1);
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(209, 199, 183, 0.5);
+    text-align: center;
+}
+
+.registration-note strong {
+    display: block;
+    color: var(--color-gold);
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
 
 
 

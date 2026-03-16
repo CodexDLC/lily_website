@@ -1,16 +1,22 @@
 from core.logger import log
+from django.conf import settings
 from django.core.cache import cache
-from django.core.management.base import BaseCommand
 from features.system.fixtures.content.static_translations import DATA
+from features.system.management.commands.base_hash_command import HashProtectedCommand
 from features.system.models.static_translation import StaticTranslation
 
 LANGUAGES = ("de", "ru", "uk", "en")
 
 
-class Command(BaseCommand):
+class Command(HashProtectedCommand):
     help = "Update or create static translations in the database from fixtures file"
+    fixture_key = "update_static_translations"
 
-    def handle(self, *args, **options):
+    def get_fixture_paths(self) -> list:
+        path = settings.BASE_DIR / "features" / "system" / "fixtures" / "content" / "static_translations.py"
+        return [path]
+
+    def handle_import(self, *args, **options):
         log.info("Command: update_static_translations | Action: Start")
 
         count_created = 0

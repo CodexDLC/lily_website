@@ -1,17 +1,20 @@
+import contextlib
 import json
 
 from core.logger import log
 from django.apps import apps
 from django.conf import settings
 from django.core.cache import cache
-from django.core.management.base import BaseCommand
 from django.db import transaction
+from features.system.management.commands.base_hash_command import HashProtectedCommand
 
 
-class Command(BaseCommand):
+class Command(HashProtectedCommand):
     help = "Load services from JSON fixtures in features/system/fixtures/content/service"
+    fixture_key = "load_services"
 
     def add_arguments(self, parser):
+        super().add_arguments(parser)
         parser.add_argument(
             "--clean",
             action="store_true",
@@ -23,8 +26,16 @@ class Command(BaseCommand):
             help="Show what would happen without making changes",
         )
 
-    def handle(self, *args, **options):
-        log.info(f"Command: load_services | Action: Start | clean={options['clean']} | dry_run={options['dry_run']}")
+    def get_fixture_paths(self) -> list:
+        fixtures_dir = settings.BASE_DIR / "features" / "system" / "fixtures" / "content" / "service"
+        if not fixtures_dir.exists():
+            return []
+        return list(fixtures_dir.glob("*.json"))
+
+    def handle_import(self, *args, **options):
+        clean = options.get("clean", False)
+        dry_run = options.get("dry_run", False)
+        log.info(f"Command: load_services | Action: Start | clean={clean} | dry_run={dry_run}")
 
         # 1. Path Configuration
         fixtures_dir = settings.BASE_DIR / "features" / "system" / "fixtures" / "content" / "service"
@@ -78,7 +89,7 @@ class Command(BaseCommand):
 
                             processed_pks.add(pk)
 
-                            if options["dry_run"]:
+                            if dry_run:
                                 log.debug(
                                     f"Command: load_services | Action: DryRun | pk={pk} | title={fields.get('title')}"
                                 )
@@ -126,7 +137,7 @@ class Command(BaseCommand):
                         log.error(f"Command: load_services | Action: JSONError | file={json_file.name} | error={e}")
 
                 # 3. Clean up (Optional)
-                if options["clean"] and not options["dry_run"]:
+                if clean and not dry_run:
                     all_pks = set(Service.objects.values_list("pk", flat=True))
                     to_delete = all_pks - processed_pks
 
@@ -145,26 +156,29 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f"An error occurred: {e}"))
             return
 
-        if options["dry_run"]:
+        if dry_run:
             log.info("Command: load_services | Action: DryRunComplete")
             return
 
         # 4. Invalidate only affected cache keys
         if affected_category_ids or created_count or updated_count:
-            from features.main.models import Category
+            with contextlib.suppress(Exception):
+                from features.main.models import Category
 
-            affected_slugs = list(Category.objects.filter(pk__in=affected_category_ids).values_list("slug", flat=True))
-            keys_to_delete = [
-                "home_bento_cache_v5",
-                "bento_groups_cache",
-                "price_list_cache_all",
-            ]
-            for slug in affected_slugs:
-                keys_to_delete.append(f"category_detail_cache_{slug}")
-                keys_to_delete.append(f"price_list_cache_{slug}")
+                affected_slugs = list(
+                    Category.objects.filter(pk__in=affected_category_ids).values_list("slug", flat=True)
+                )
+                keys_to_delete = [
+                    "home_bento_cache_v5",
+                    "bento_groups_cache",
+                    "price_list_cache_all",
+                ]
+                for slug in affected_slugs:
+                    keys_to_delete.append(f"category_detail_cache_{slug}")
+                    keys_to_delete.append(f"price_list_cache_{slug}")
 
-            cache.delete_many(keys_to_delete)
-            log.info(f"Command: load_services | Action: CacheInvalidated | keys_count={len(keys_to_delete)}")
+                cache.delete_many(keys_to_delete)
+                log.info(f"Command: load_services | Action: CacheInvalidated | keys_count={len(keys_to_delete)}")
 
         log.info(
             f"Command: load_services | Action: Success | created={created_count} | updated={updated_count} | skipped={skipped_count}"

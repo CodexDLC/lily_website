@@ -3,14 +3,19 @@ import os
 
 from core.logger import log
 from django.conf import settings
-from django.core.management.base import BaseCommand
+from features.system.management.commands.base_hash_command import HashProtectedCommand
 from features.system.models.email_content import EmailContent
 
 
-class Command(BaseCommand):
+class Command(HashProtectedCommand):
     help = "Update email content blocks from fixture with translations"
+    fixture_key = "update_email_content"
 
-    def handle(self, *args, **options):
+    def get_fixture_paths(self) -> list:
+        path = settings.BASE_DIR / "features" / "system" / "fixtures" / "initial_email_content.json"
+        return [path]
+
+    def handle_import(self, *args, **options):
         log.info("Command: update_email_content | Action: Start")
 
         fixture_path = os.path.join(settings.BASE_DIR, "features", "system", "fixtures", "initial_email_content.json")

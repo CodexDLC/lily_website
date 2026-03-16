@@ -6,6 +6,7 @@ from loguru import logger as log
 
 from src.shared.core.constants import RedisStreams
 from src.workers.notification_worker.schemas import NotificationPayload
+from src.workers.notification_worker.tasks.utils import send_status_update
 
 if TYPE_CHECKING:
     from src.shared.core.manager_redis.manager import StreamManager
@@ -133,15 +134,22 @@ async def send_universal_notification_task(ctx: dict[str, Any], payload_dict: di
     notification_service = cast("NotificationService", ctx.get("notification_service"))
     stream_manager = cast("StreamManager", ctx.get("stream_manager"))
 
-    if "email" in payload.channels and payload.recipient.email and payload.template_name:
-        try:
-            await _send_email(ctx, payload, notification_service)
-        except Exception as exc:
-            log.error(f"Task: universal_notification | Action: EmailFailed | error={exc}")
-            raise Retry(defer=ctx["job_try"] * 30) from exc
-
+    # 1. Telegram FIRST — бот должен закешировать данные до прихода notification_status
     if "telegram" in payload.channels and payload.event_type and stream_manager:
         await _send_to_stream(ctx, payload, stream_manager)
+
+    # 2. Email SECOND + status update чтобы бот обновил карточку (✅ письмо отправлено + 🗑)
+    if "email" in payload.channels and payload.recipient.email and payload.template_name:
+        appointment_id = payload.context_data.get("id") or payload.context_data.get("group_id")
+        try:
+            await _send_email(ctx, payload, notification_service)
+            if appointment_id and stream_manager:
+                await send_status_update(ctx, int(appointment_id), "email", "success")
+        except Exception as exc:
+            log.error(f"Task: universal_notification | Action: EmailFailed | error={exc}")
+            if appointment_id and stream_manager:
+                await send_status_update(ctx, int(appointment_id), "email", "failed")
+            raise Retry(defer=ctx["job_try"] * 30) from exc
 
 
 # ---------------------------------------------------------------------------
