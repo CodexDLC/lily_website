@@ -1,11 +1,10 @@
-import contextlib
 import json
 
 from core.logger import log
 from django.apps import apps
 from django.conf import settings
 from django.core.cache import cache
-from django.db import transaction
+from django.db import OperationalError, transaction
 from features.system.management.commands.base_hash_command import HashProtectedCommand
 
 
@@ -162,7 +161,7 @@ class Command(HashProtectedCommand):
 
         # 4. Invalidate only affected cache keys
         if affected_category_ids or created_count or updated_count:
-            with contextlib.suppress(Exception):
+            try:
                 from features.main.models import Category
 
                 affected_slugs = list(
@@ -179,6 +178,8 @@ class Command(HashProtectedCommand):
 
                 cache.delete_many(keys_to_delete)
                 log.info(f"Command: load_services | Action: CacheInvalidated | keys_count={len(keys_to_delete)}")
+            except (OperationalError, Exception) as e:
+                log.error(f"Command: load_services | Action: CacheInvalidationFailed | error={e}")
 
         log.info(
             f"Command: load_services | Action: Success | created={created_count} | updated={updated_count} | skipped={skipped_count}"

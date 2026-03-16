@@ -34,29 +34,22 @@ class PromoMessageAdmin(TabbedTranslationAdmin, ModelAdmin):
 
     @admin.display(description=_("Status"))
     def status_badge(self, obj):
-        # Convert lazy proxy to string for comparison
-        status_text = str(obj.status_display)
+        from features.promos.models.promo_message import PromoMessage
 
-        # Color mapping based on translated status text
-        # Includes common translations for reliability
+        status = obj.status
         colors = {
-            "Active": "bg-green-500/20 text-green-700 dark:text-green-400",
-            "Активно": "bg-green-500/20 text-green-700 dark:text-green-400",
-            "Aktiv": "bg-green-500/20 text-green-700 dark:text-green-400",
-            "Scheduled": "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400",
-            "Запланировано": "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400",
-            "Geplant": "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400",
-            "Expired": "bg-red-500/20 text-red-700 dark:text-red-400",
-            "Истекло": "bg-red-500/20 text-red-700 dark:text-red-400",
-            "Abgelaufen": "bg-red-500/20 text-red-700 dark:text-red-400",
-            "Inactive": "bg-gray-500/20 text-gray-700 dark:text-gray-400",
-            "Неактивно": "bg-gray-500/20 text-gray-700 dark:text-gray-400",
-            "Inaktiv": "bg-gray-500/20 text-gray-700 dark:text-gray-400",
+            PromoMessage.PromoStatus.ACTIVE: "bg-green-500/20 text-green-700 dark:text-green-400",
+            PromoMessage.PromoStatus.SCHEDULED: "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400",
+            PromoMessage.PromoStatus.EXPIRED: "bg-red-500/20 text-red-700 dark:text-red-400",
+            PromoMessage.PromoStatus.INACTIVE: "bg-gray-500/20 text-gray-700 dark:text-gray-400",
         }
+        color = colors.get(status, "bg-gray-500/20 text-gray-600")
 
-        color = colors.get(status_text, "bg-gray-500/20 text-gray-600")
-
-        return format_html('<span class="px-2 py-1 rounded-md text-xs font-medium {}">{}</span>', color, status_text)
+        return format_html(
+            '<span class="px-2 py-1 rounded-md text-xs font-medium {}">{}</span>',
+            color,
+            obj.status_display,
+        )
 
     def get_queryset(self, request):
         """Optimize queryset and set default ordering."""

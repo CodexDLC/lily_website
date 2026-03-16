@@ -15,6 +15,12 @@ class PromoMessage(TimestampMixin, models.Model):
     Used to show time-limited promotions, special offers, and announcements to website visitors.
     """
 
+    class PromoStatus(models.TextChoices):
+        ACTIVE = "active", _("Active")
+        SCHEDULED = "scheduled", _("Scheduled")
+        EXPIRED = "expired", _("Expired")
+        INACTIVE = "inactive", _("Inactive")
+
     # --- Content ---
     title = models.CharField(_("Title"), max_length=255, help_text=_("Main title of the promotion"))
 
@@ -119,18 +125,27 @@ class PromoMessage(TimestampMixin, models.Model):
         return self.is_active and self.starts_at <= now <= self.ends_at
 
     @property
-    def status_display(self) -> str:
-        """Human-readable status for display."""
+    def status(self) -> str:
+        """Returns the current status as a choice value string."""
         if not self.is_active:
-            return _("Inactive")
+            return str(self.PromoStatus.INACTIVE)
 
         now = timezone.now()
         if now < self.starts_at:
-            return _("Scheduled")
+            return str(self.PromoStatus.SCHEDULED)
         elif now > self.ends_at:
-            return _("Expired")
+            return str(self.PromoStatus.EXPIRED)
         else:
-            return _("Active")
+            return str(self.PromoStatus.ACTIVE)
+
+    @property
+    def status_display(self) -> str:
+        """Human-readable status for display."""
+        status_val = self.status
+        for choice_val, choice_label in self.PromoStatus.choices:
+            if choice_val == status_val:
+                return str(choice_label)
+        return str(status_val)
 
     @property
     def ctr(self) -> float:

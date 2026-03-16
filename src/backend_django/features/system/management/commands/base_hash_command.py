@@ -1,7 +1,7 @@
 import contextlib
 
 from django.core.management.base import BaseCommand
-from django.db import connection
+from django.db import OperationalError, connection
 from features.system.models.fixture_version import FixtureVersion
 from features.system.utils.fixture_hash import compute_paths_hash
 
@@ -36,7 +36,7 @@ class HashProtectedCommand(BaseCommand):
         table_exists = "system_fixtureversion" in connection.introspection.table_names()
 
         if not force and table_exists:
-            with contextlib.suppress(Exception):
+            with contextlib.suppress(FixtureVersion.DoesNotExist, OperationalError):
                 # Fallback if anything goes wrong with the DB check
                 record, _ = FixtureVersion.objects.get_or_create(name=self.fixture_key, defaults={"content_hash": ""})
                 if record.content_hash == current_hash:
@@ -48,5 +48,5 @@ class HashProtectedCommand(BaseCommand):
 
         # Update hash if table exists
         if table_exists:
-            with contextlib.suppress(Exception):
+            with contextlib.suppress(OperationalError):
                 FixtureVersion.objects.update_or_create(name=self.fixture_key, defaults={"content_hash": current_hash})
