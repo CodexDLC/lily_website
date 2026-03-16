@@ -16,7 +16,6 @@ PYTHON_DIRS = "src/ tools/"
 
 # --- Silence non-critical warnings in CURRENT process ---
 try:
-    # This handles warnings if requests is imported in this script
     from requests.exceptions import RequestsDependencyWarning
 
     warnings.filterwarnings("ignore", category=RequestsDependencyWarning)
@@ -36,54 +35,54 @@ class Colors:
     BOLD = "\033[1m"
 
 
-def print_step(msg):
+def print_step(msg: str) -> None:
     print(f"\n{Colors.YELLOW}🔍 {msg}...{Colors.ENDC}")
 
 
-def print_success(msg):
+def print_success(msg: str) -> None:
     print(f"{Colors.GREEN}✅ {msg}{Colors.ENDC}")
 
 
-def print_error(msg):
+def print_error(msg: str) -> None:
     print(f"{Colors.RED}❌ {msg}{Colors.ENDC}")
 
 
-def run_command(command, cwd=PROJECT_ROOT, capture_output=False, env=None):
+def run_command(
+    command: str, cwd: Path = PROJECT_ROOT, capture_output: bool = False, env: dict | None = None
+) -> tuple[bool, str]:
     """Runs a system command and returns result."""
     current_env = os.environ.copy()
-
-    # --- THE FIX: Silence warnings for ALL subprocesses ---
-    # This prevents the "RequestsDependencyWarning" from showing up in Ruff, Mypy, etc.
     current_env["PYTHONWARNINGS"] = "ignore"
-
     if env:
         current_env.update(env)
 
     try:
-        shell = isinstance(command, str)
         result = subprocess.run(
-            command, cwd=cwd, shell=shell, check=True, text=True, capture_output=capture_output, env=current_env
+            command,
+            cwd=cwd,
+            shell=True,
+            check=False,
+            text=True,
+            capture_output=capture_output,
+            env=current_env,
         )
-        return True, result.stdout
-    except subprocess.CalledProcessError as e:
-        return False, e.stdout if capture_output else str(e)
+        return result.returncode == 0, result.stdout or result.stderr or ""
+    except Exception as e:
+        return False, str(e)
 
 
 # --- Docker Helpers ---
 
 
-def docker_compose(args):
+def docker_compose(args: str) -> tuple[bool, str]:
     env = {"CONTAINER_PREFIX": TEST_PROJECT_NAME}
     cmd = f"docker-compose -p {TEST_PROJECT_NAME} -f {COMPOSE_FILE} {args}"
     return run_command(cmd, env=env)
 
 
-def cleanup_docker():
+def cleanup_docker() -> None:
     print(f"\n{Colors.BLUE}🧹 Cleaning up Docker resources (Project: {TEST_PROJECT_NAME})...{Colors.ENDC}")
-    # 1. Останавливаем и удаляем контейнеры и их тома
     docker_compose("down -v")
-
-    # 2. Удаляем все "висячие" (dangling) тома, которые накопились
     print(f"{Colors.BLUE}🧹 Pruning dangling volumes...{Colors.ENDC}")
     run_command("docker volume prune -f")
 
@@ -91,44 +90,31 @@ def cleanup_docker():
 # --- Check Functions ---
 
 
-def check_linters(ci_mode=False):
+def check_linters(ci_mode: bool = False) -> bool:
     print_step("Running Linters (Ruff & Pre-commit hooks)")
 
-    # In CI, we only VERIFY. No auto-fixes allowed to ensure repository consistency.
     if not ci_mode:
         print("Attempting to auto-fix Ruff issues...")
-        fix_success, _ = run_command(f"poetry run ruff check {PYTHON_DIRS} --fix", capture_output=False)
-        if not fix_success:
-            print_error("Ruff auto-fix command failed.")
-            return False
-        print_success("Ruff auto-fix completed.")
-
+        run_command(f"poetry run ruff check {PYTHON_DIRS} --fix")
         print("Attempting to auto-format with Ruff...")
-        format_success, _ = run_command(f"poetry run ruff format {PYTHON_DIRS}", capture_output=False)
-        if not format_success:
-            print_error("Ruff auto-format command failed.")
-            return False
-        print_success("Ruff auto-format completed.")
+        run_command(f"poetry run ruff format {PYTHON_DIRS}")
 
-    # --- Verification checks (The only ones that run in CI) ---
     print("Verifying Ruff check...")
-    ruff_check_success, ruff_check_out = run_command(f"poetry run ruff check {PYTHON_DIRS}", capture_output=True)
-    if not ruff_check_success:
-        print_error(f"Ruff check failed:\n{ruff_check_out}")
+    success, out = run_command(f"poetry run ruff check {PYTHON_DIRS}", capture_output=True)
+    if not success:
+        print_error(f"Ruff check failed:\n{out}")
         return False
     print_success("Ruff check passed.")
 
     print("Verifying Ruff format...")
-    ruff_format_check_success, ruff_format_check_out = run_command(
-        f"poetry run ruff format {PYTHON_DIRS} --check", capture_output=True
-    )
-    if not ruff_format_check_success:
-        print_error(f"Ruff format check failed:\n{ruff_format_check_out}")
+    success, out = run_command(f"poetry run ruff format {PYTHON_DIRS} --check", capture_output=True)
+    if not success:
+        print_error(f"Ruff format check failed:\n{out}")
         return False
     print_success("Ruff format check passed.")
 
     print("Running basic pre-commit hooks...")
-    basic_hooks = [
+    hooks = [
         "trailing-whitespace",
         "end-of-file-fixer",
         "check-yaml",
@@ -137,7 +123,7 @@ def check_linters(ci_mode=False):
         "bandit",
         "detect-secrets",
     ]
-    for hook in basic_hooks:
+    for hook in hooks:
         if not run_command(f"poetry run pre-commit run {hook} --all-files")[0]:
             print_error(f"Pre-commit hook '{hook}' failed")
             return False
@@ -146,7 +132,7 @@ def check_linters(ci_mode=False):
     return True
 
 
-def check_types():
+def check_types() -> bool:
     print_step("Checking Types (Mypy)")
     cache_dir = PROJECT_ROOT / ".mypy_cache"
     if cache_dir.exists():
@@ -154,34 +140,25 @@ def check_types():
 
         shutil.rmtree(cache_dir)
 
-    # Mypy should only check Python directories
     success, out = run_command(f"poetry run mypy {PYTHON_DIRS}", capture_output=True)
     if not success:
         print_error(f"Mypy check failed:\n{out}")
+    else:
+        print_success("Mypy check passed.")
     return success
 
 
-def run_tests():
-    print_step("Running Unit Tests (Pytest)")
-    os.environ["SECRET_KEY"] = "local_test_key"  # pragma: allowlist secret
-    # Run ALL tests locally (removed -m unit filter)
-    return run_command("poetry run pytest src -v")[0]
-
-
-def check_security_deep():
-    """Глубокий аудит безопасности: зависимости + статика."""
+def check_security_deep() -> bool:
     print_step("Deep Security Audit")
 
-    # Запускаем аудит зависимостей через poetry напрямую (дополнительная страховка)
-    print("Checking for vulnerable dependencies...")
-    success, out = run_command("poetry run pip-audit")
+    print("Checking for vulnerable dependencies (pip-audit)...")
+    success, out = run_command("poetry run pip-audit", capture_output=True)
     if not success:
         print_error(f"Security vulnerabilities found in packages:\n{out}")
         return False
 
-    # Запускаем Bandit для поиска дыр в логике (SQL инъекции, небезопасный random и т.д.)
     print("Running Bandit (SAST)...")
-    success, out = run_command("poetry run bandit -r src/ -ll")
+    success, out = run_command("poetry run bandit -r src/ -ll", capture_output=True)
     if not success:
         print_error(f"Bandit found security risks:\n{out}")
         return False
@@ -190,7 +167,25 @@ def check_security_deep():
     return True
 
 
-def run_docker_validation(ci_mode=False):
+def run_tests(marker: str = "unit") -> bool:
+    """Runs tests with specific marker. 'unit' runs everything NOT marked as 'integration'."""
+    print_step(f"Running {marker.capitalize()} Tests (Pytest)")
+    os.environ["SECRET_KEY"] = "local_test_key"  # pragma: allowlist secret
+
+    if marker == "unit":
+        cmd = 'poetry run pytest src -m "not integration" -v --tb=short'
+    else:
+        cmd = f"poetry run pytest src -m {marker} -v --tb=short"
+
+    success, out = run_command(cmd, capture_output=True)
+    if success:
+        print_success(f"{marker.capitalize()} tests passed.")
+    else:
+        print_error(f"{marker.capitalize()} tests failed:\n{out}")
+    return success
+
+
+def run_docker_validation(ci_mode: bool = False) -> bool:
     print_step(f"Starting Docker Validation (Isolated Project: {TEST_PROJECT_NAME})")
 
     success, _ = run_command("docker info", capture_output=True)
@@ -214,7 +209,6 @@ def run_docker_validation(ci_mode=False):
         print_step("Waiting for services to be ready (15s)")
         time.sleep(15)
 
-        # --- New: Check all containers status ---
         print_step("Verifying all containers are running")
         success, ps_out = docker_compose("ps --format json")
         if success and ps_out:
@@ -222,7 +216,6 @@ def run_docker_validation(ci_mode=False):
 
             try:
                 containers = []
-                # Handle multiple JSON objects (one per line) or a single JSON list
                 lines = ps_out.strip().split("\n")
                 for line in lines:
                     line = line.strip()
@@ -239,7 +232,6 @@ def run_docker_validation(ci_mode=False):
 
                 failed_services = []
                 for c in containers:
-                    # Status can be 'running', 'healthy', 'exited', etc.
                     state = str(c.get("State", "")).lower() or str(c.get("Status", "")).lower()
                     service_name = c.get("Service", "unknown")
                     if "running" not in state and "healthy" not in state:
@@ -252,19 +244,14 @@ def run_docker_validation(ci_mode=False):
                             print(f"\n{Colors.CYAN}Logs for {service}:{Colors.ENDC}")
                             _, logs = docker_compose(f"logs --tail=20 {service}")
                             print(logs)
-                    else:
-                        print(f"{Colors.YELLOW}Logs are hidden in CI mode to prevent secret leakage.{Colors.ENDC}")
                     return False
 
                 if containers:
                     print_success("All containers are running/healthy")
-                else:
-                    print(f"{Colors.YELLOW}Warning: No containers found to check.{Colors.ENDC}")
-
             except Exception as e:
                 print(f"{Colors.YELLOW}Warning: Could not parse docker-compose ps output: {e}{Colors.ENDC}")
 
-        # --- Backend specific checks ---
+        # Backend specific checks
         env = {"CONTAINER_PREFIX": TEST_PROJECT_NAME}
         _, output = run_command(
             f"docker-compose -p {TEST_PROJECT_NAME} -f {COMPOSE_FILE} ps -q backend", capture_output=True, env=env
@@ -303,9 +290,11 @@ def run_docker_validation(ci_mode=False):
 # --- Main Logic ---
 
 
-def run_all(with_docker=False, ci_mode=False):
+def run_all(with_docker: bool = False, ci_mode: bool = False) -> None:
     if not ci_mode:
         os.system("cls" if os.name == "nt" else "clear")
+
+    print(f"{Colors.HEADER}{Colors.BOLD}=== Lily Project Quality Gate ==={Colors.ENDC}")
 
     if not check_linters(ci_mode=ci_mode):
         sys.exit(1)
@@ -314,59 +303,63 @@ def run_all(with_docker=False, ci_mode=False):
     if not check_security_deep():
         sys.exit(1)
 
-    # Prompt for tests
-    test_choice = "y" if ci_mode else input(f"\n{Colors.YELLOW}🚀 Run Unit Tests? [y/N]: {Colors.ENDC}").strip().lower()
+    # Unit Tests
+    if (
+        ci_mode or input(f"\n{Colors.YELLOW}🚀 Run Unit Tests? [y/N]: {Colors.ENDC}").strip().lower() == "y"
+    ) and not run_tests("unit"):
+        sys.exit(1)
 
-    if test_choice == "y":
-        if not run_tests():
-            sys.exit(1)
-    else:
-        print(f"{Colors.BLUE}ℹ️ Skipping Unit Tests.{Colors.ENDC}")
+    # Integration Tests
+    if (
+        ci_mode
+        or input(f"\n{Colors.YELLOW}🧪 Run Integration Tests? (Requires Mailpit) [y/N]: {Colors.ENDC}").strip().lower()
+        == "y"
+    ) and not run_tests("integration"):
+        sys.exit(1)
 
-    # Prompt for Docker
+    # Docker Validation
     if with_docker:
-        docker_choice = (
-            "y"
-            if ci_mode
-            else input(f"\n{Colors.YELLOW}🐳 Run Full Docker Validation? [y/N]: {Colors.ENDC}").strip().lower()
-        )
+        if (
+            ci_mode
+            or input(f"\n{Colors.YELLOW}🐳 Run Full Docker Validation? [y/N]: {Colors.ENDC}").strip().lower() == "y"
+        ) and not run_docker_validation(ci_mode=ci_mode):
+            sys.exit(1)
+    elif not ci_mode:
+        print(f"\n{Colors.BLUE}ℹ️ Docker validation skipped. Use --docker to enable the prompt.{Colors.ENDC}")
 
-        if docker_choice == "y":
-            if not run_docker_validation(ci_mode=ci_mode):
-                sys.exit(1)
-        else:
-            print(f"{Colors.BLUE}ℹ️ Skipping Docker validation.{Colors.ENDC}")
-    else:
-        if not ci_mode:
-            print(f"\n{Colors.BLUE}ℹ️ Docker validation skipped. Use --docker to enable the prompt.{Colors.ENDC}")
-
-    print(f"\n{Colors.GREEN}{Colors.BOLD}🎉 ALL CHECKS PASSED! You are ready to push.{Colors.ENDC}")
+    print(f"\n{Colors.GREEN}{Colors.BOLD}🎉 ALL CHECKS PASSED!{Colors.ENDC}")
 
 
-def interactive_menu():
+def interactive_menu() -> None:
     while True:
         print(f"\n{Colors.CYAN}{Colors.BOLD}🛠 Lily Project Quality Tool{Colors.ENDC}")
         print("1. Fast Check (Lint only)")
         print("2. Type Check (Mypy)")
         print("3. Run Unit Tests")
-        print("4. Full Docker Validation")
-        print("5. Run Everything (Default, no Docker)")
-        print("6. Run Everything (WITH Docker)")
+        print("4. Run Integration Tests (Requires Mailpit)")
+        print("5. Deep Security Audit")
+        print("6. Full Docker Validation")
+        print("7. Run Everything (No Docker)")
+        print("8. Run Everything (WITH Docker)")
         print("0. Exit")
 
-        choice = input(f"\n{Colors.YELLOW}Select an option [5]: {Colors.ENDC}").strip() or "5"
+        choice = input(f"\n{Colors.YELLOW}Select an option [7]: {Colors.ENDC}").strip() or "7"
 
         if choice == "1":
             check_linters()
         elif choice == "2":
             check_types()
         elif choice == "3":
-            run_tests()
+            run_tests("unit")
         elif choice == "4":
-            run_docker_validation()
+            run_tests("integration")
         elif choice == "5":
-            run_all(with_docker=False)
+            check_security_deep()
         elif choice == "6":
+            run_docker_validation()
+        elif choice == "7":
+            run_all(with_docker=False)
+        elif choice == "8":
             run_all(with_docker=True)
         elif choice == "0":
             break
@@ -376,17 +369,25 @@ def interactive_menu():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Lily Project Quality Checker")
-    parser.add_argument("--settings", action="store_true", help="Open interactive menu")
-    parser.add_argument("--docker", action="store_true", help="Include Docker build validation")
+    parser.add_argument("--menu", action="store_true", help="Open interactive menu")
+    parser.add_argument("--docker", action="store_true", help="Include Docker validation")
     parser.add_argument("--ci", action="store_true", help="Run in CI mode (non-interactive, all checks)")
+    parser.add_argument("--tests", choices=["unit", "integration", "all"], help="Run specific test markers")
+
     args = parser.parse_args()
 
     try:
-        if args.settings:
+        if args.menu:
             interactive_menu()
+        elif args.tests:
+            if args.tests == "all":
+                u = run_tests("unit")
+                i = run_tests("integration")
+                sys.exit(0 if u and i else 1)
+            else:
+                sys.exit(0 if run_tests(args.tests) else 1)
         else:
-            # In CI mode, we always want docker validation
             run_all(with_docker=(args.docker or args.ci), ci_mode=args.ci)
     except KeyboardInterrupt:
-        print(f"\n{Colors.RED}Aborted by user.{Colors.ENDC}")
+        print(f"\n{Colors.RED}Aborted.{Colors.ENDC}")
         sys.exit(1)

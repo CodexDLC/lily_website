@@ -1,15 +1,15 @@
 {% extends "base_email.html" %}
 
-{% block title %}{{ email_subject | default('Terminbestätigung') }}{% endblock title %}
+{% block title %}Buchungsbestätigung - LILY Salon{% endblock title %}
 
 {% block content %}
     <tr>
         <td align="center" style="padding-bottom: 30px;">
             <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td align="center" style="border-bottom: 2px solid #edd071; padding-bottom: 5px;">
+                    <td align="center" style="border-bottom: 2px solid #003831; padding-bottom: 5px;">
                         <span style="font-family: Arial, sans-serif; color: #003831; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold;">
-                            {{ email_tag | default('TERMINBESTÄTIGUNG') }}
+                            TERMINBESTÄTIGUNG
                         </span>
                     </td>
                 </tr>
@@ -18,60 +18,53 @@
     </tr>
 
     <tr>
-        <td align="center" style="padding-bottom: 20px; color: #003831; font-family: 'Georgia', serif; font-size: 24px; line-height: 1.3;">
-            {{ greeting }}
+        <td align="center" style="padding-bottom: 20px; color: #333333; font-family: 'Georgia', serif; font-size: 26px; line-height: 1.3;">
+            Vielen Dank für Ihre Buchung!
         </td>
     </tr>
 
     <tr>
-        <td align="center" style="padding-bottom: 30px; color: #555555; font-family: Arial, sans-serif; font-size: 17px; line-height: 1.6;">
-            {{ email_body }}
+        <td align="center" style="padding-bottom: 35px; color: #555555; font-family: Arial, sans-serif; font-size: 17px; line-height: 1.6;">
+            {{ greeting }}<br>
+            Ihr Termin im LILY Salon wurde erfolgreich bestätigt. Wir haben die Zeit exklusiv für Sie reserviert und freuen uns sehr auf Ihren Besuch.
         </td>
     </tr>
 
-    {% if admin_reply %}
     <tr>
-        <td align="left" style="padding: 25px; margin-bottom: 30px; background-color: #f4fcf8; border-left: 4px solid #4ade80; color: #003831; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.5; border-radius: 4px;">
-            <div style="font-weight: bold; color: #166534; margin-bottom: 8px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
-                {% if lang == 'de' %}Antwort von LILY Salon:{% else %}Ответ от салона LILY:{% endif %}
-            </div>
-            <div style="font-style: italic; color: #374151;">
-                "{{ admin_reply }}"
-            </div>
-        </td>
-    </tr>
-    <tr><td height="30" style="font-size: 0; line-height: 0;">&nbsp;</td></tr>
-    {% endif %}
-
-    <tr>
-        <td bgcolor="#fcfaf5" style="padding: 40px; border: 1px solid #f0e6d2; border-radius: 8px;">
-            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <td style="padding-bottom: 40px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#f9f9f9" style="border: 1px solid #eeeeee; border-radius: 8px;">
                 <tr>
-                    <td style="padding-bottom: 15px; border-bottom: 1px solid #f0e6d2;">
+                    <td style="padding: 30px;">
                         <table border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
-                                <td width="40%" style="color: #888888; font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Behandlung</td>
-                                <td style="color: #003831; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;">{{ service_name }}</td>
+                                <td style="padding-bottom: 15px; border-bottom: 1px solid #e0e0e0;">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tr>
+                                            <td style="color: #888888; font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; width: 100px;">Datum</td>
+                                            <td style="color: #333333; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;">{{ date }}</td>
+                                        </tr>
+                                    </table>
+                                </td>
                             </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 15px 0; border-bottom: 1px solid #f0e6d2;">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
-                                <td width="40%" style="color: #888888; font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Datum</td>
-                                <td style="color: #333333; font-family: Arial, sans-serif; font-size: 16px;">{{ date }}</td>
+                                <td style="padding: 15px 0; border-bottom: 1px solid #e0e0e0;">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tr>
+                                            <td style="color: #888888; font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; width: 100px;">Uhrzeit</td>
+                                            <td style="color: #333333; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;">{{ time }} Uhr</td>
+                                        </tr>
+                                    </table>
+                                </td>
                             </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding-top: 15px;">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
-                                <td width="40%" style="color: #888888; font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Uhrzeit</td>
-                                <td style="color: #333333; font-family: Arial, sans-serif; font-size: 16px;">{{ time }}</td>
+                                <td style="padding-top: 15px;">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tr>
+                                            <td style="color: #888888; font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; width: 100px;">Service</td>
+                                            <td style="color: #333333; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold;">{{ service_name }}</td>
+                                        </tr>
+                                    </table>
+                                </td>
                             </tr>
                         </table>
                     </td>
@@ -80,28 +73,16 @@
         </td>
     </tr>
 
-    {% if calendar_url %}
     <tr>
-        <td align="center" style="padding-top: 30px;">
-            <table border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td align="center" style="border-radius: 30px;" bgcolor="#ffffff">
-                        <a href="{{ calendar_url }}" clicktracking="off" target="_blank" style="font-size: 14px; font-family: Arial, sans-serif; color: #003831; text-decoration: none; padding: 10px 25px; border-radius: 30px; border: 1px solid #003831; display: inline-block; font-weight: bold;">
-                            📅 {{ email_button_text | default('In den Kalender eintragen') }}
-                        </a>
-                    </td>
-                </tr>
-            </table>
+        <td align="center" style="padding-bottom: 30px; color: #555555; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.6;">
+            Sollten Sie Ihren Termin nicht wahrnehmen können, bitten wir Sie, uns rechtzeitig zu informieren.
         </td>
     </tr>
-    {% endif %}
-
-    <tr><td height="40" style="font-size: 0; line-height: 0;">&nbsp;</td></tr>
 
     <tr>
-        <td align="center" style="color: #888888; font-family: Arial, sans-serif; font-size: 15px;">
+        <td align="center" style="color: #888888; font-family: Arial, sans-serif; font-size: 14px;">
             Wir freuen uns auf Ihren Besuch!<br>
             <strong style="color: #003831;">Ihr LILY Beauty Team</strong>
         </td>
     </tr>
-{% endblock %}
+{% endblock content %}
