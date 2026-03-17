@@ -2,6 +2,37 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
+## [1.9.3] - 2026-03-17
+
+### Added
+- **System (Fixtures):** Implemented fixture versioning using SHA-256 hashing to track changes and optimize loading performance by preventing redundant data updates.
+- **System (Notifications):** Major refactoring and decoupling of the notification system from the Telegram bot; migrated templates and added a dedicated email preview tool (`tools/dev/preview_emails.py`).
+
+### Fixed
+- **System (Promos):** Applied review fixes and improved system reliability. Updated `PromoMessage` statuses to `TextChoices` and synchronized admin UI badge colors with status slugs.
+- **UI/UX:** Fixed layout issues in localized booking email templates and updated cabinet UI styles.
+- **Management:** Hardened management commands (`update_all_content`, `load_services`) with improved error collection and logging.
+
+### Changed / Refactored
+- **Cleanup:** Removed obsolete Telegram bot handlers, legacy contracts, and redundant test/helper files.
+- **Git:** Updated `.gitignore` to strictly exclude the `.claude/` directory and local settings.
+
+## [1.9.2] - 2026-03-15
+
+### Added
+- **API Documentation:** Expanded technical documentation with detailed specifications for `admin`, `booking`, `instance`, `promos`, and `urls` endpoints.
+- **Documentation:** Added new feature-specific guides for `cabinet` and `promos` modules.
+- **Testing:** Introduced permission-based test suite for the admin cabinet and centralized `conftest.py` for API testing.
+
+### Changed / Refactored
+- **Cabinet:** Refined logic and UI for appointment, contact request, and master management views.
+- **Notifications:** Updated notification worker services and refined localized booking email templates.
+- **Dependencies:** Synchronized project dependencies in `pyproject.toml` and `poetry.lock`.
+
+### Fixed
+- **Cleanup:** Removed obsolete Telegram bot files and temporary initialization scripts.
+- **CI/CD:** Fixed minor issues in the automated project initialization and check tools.
+
 ## [1.9.1] - 2026-03-11
 
 ### Fixed
