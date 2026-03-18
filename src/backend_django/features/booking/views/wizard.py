@@ -31,11 +31,10 @@ class BookingWizardView(TemplateView):
         old_state = session_service.get_state()
         old_step = old_state.step
 
-        # 1. Update state from request params (new step, selected date/time etc.)
-        session_service.update_from_request(request.GET)
+        # 1. Update state from request params without saving yet (save happens once at the end)
+        state: BookingState = session_service.update_from_request(request.GET, save=False)
 
-        # 2. Get the newly updated state object
-        state: BookingState = session_service.get_state()
+        # 2. Determine new step
         new_step = state.step
         current_step = str(new_step)
 
@@ -78,7 +77,10 @@ class BookingWizardView(TemplateView):
                 session_service.save_state(state)
                 return redirect("booking:booking_wizard")
 
-        # 5. Prepare Full Context
+        # 5. Save final state once (no redirect happened)
+        session_service.save_state(state)
+
+        # 6. Prepare Full Context
         context: dict[str, Any] = {"steps": wizard_selectors.get_stepper_context(state.step), **step_context}
 
         # 7. Render

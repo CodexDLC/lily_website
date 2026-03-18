@@ -3,6 +3,7 @@
 import secrets
 from datetime import timedelta
 
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
@@ -200,6 +201,12 @@ class Appointment(TimestampMixin, models.Model):
             self.finalize_token = secrets.token_urlsafe(32)
 
         super().save(*args, **kwargs)
+        cache.delete("dashboard_context_cache")
+
+    def delete(self, *args, **kwargs):
+        result = super().delete(*args, **kwargs)
+        cache.delete("dashboard_context_cache")
+        return result
 
     def clean(self):
         """Validate no double-booking"""

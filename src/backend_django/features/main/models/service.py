@@ -105,6 +105,7 @@ class Service(BookableServiceMixin, TimestampMixin, ActiveMixin, SeoMixin):
                 "home_bento_cache_v5",
                 f"service_detail_{self.slug}",
                 f"category_detail_cache_{self.category.slug}",
+                "dashboard_context_cache",
             ]
             cache.delete_many(cache_keys)
             log.info(f"Model: Service | Action: Success | slug={self.slug} | cache_cleared={len(cache_keys)}")

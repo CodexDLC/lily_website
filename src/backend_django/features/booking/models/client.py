@@ -3,6 +3,7 @@
 import uuid
 
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from features.system.models.mixins import TimestampMixin
@@ -111,6 +112,12 @@ class Client(TimestampMixin, models.Model):
         if not self.access_token:
             self.access_token = uuid.uuid4().hex
         super().save(*args, **kwargs)
+        cache.delete("dashboard_context_cache")
+
+    def delete(self, *args, **kwargs):
+        result = super().delete(*args, **kwargs)
+        cache.delete("dashboard_context_cache")
+        return result
 
     def get_full_name(self):
         """Return full name joined by space"""

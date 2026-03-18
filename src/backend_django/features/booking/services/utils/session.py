@@ -30,7 +30,7 @@ class BookingSessionService:
         self.session.modified = True
         log.info(f"Booking state saved successfully (Step {state.step})")
 
-    def update_from_request(self, params: dict[str, Any]):
+    def update_from_request(self, params: dict[str, Any], save: bool = True) -> "BookingState":
         """Updates state from GET/POST parameters."""
         log.debug(f"Updating booking state from request params: {params}")
         state = self.get_state()
@@ -78,10 +78,11 @@ class BookingSessionService:
             updated = True
             log.debug(f"Updated selected_time to {state.selected_time}")
 
-        if updated:
+        if updated and save:
             self.save_state(state)
-        else:
+        elif not updated:
             log.debug("No valid updates found in request params")
+        return state
 
     def clear(self) -> None:
         """Clears booking data from session."""

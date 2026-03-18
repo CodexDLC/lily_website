@@ -196,7 +196,9 @@ class Master(BookableMasterMixin, TimestampMixin, SeoMixin, models.Model):
 
         super().save(*args, **kwargs)
         # Targeted cache invalidation
-        cache.delete_many(["active_masters_cache", "salon_owner_cache", "team_members_cache"])
+        cache.delete_many(
+            ["active_masters_cache", "salon_owner_cache", "team_members_cache", "dashboard_context_cache"]
+        )
 
     def get_absolute_url(self):
         return reverse("master_detail", kwargs={"slug": self.slug})
