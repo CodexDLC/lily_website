@@ -81,8 +81,9 @@
     if (!banner) {
       const template = document.getElementById('cookieConsentTemplate');
       if (template) {
-        // We use insertAdjacentHTML to keep it lightweight
-        document.body.insertAdjacentHTML('beforeend', template.innerHTML);
+        // Use standard <template> API — works reliably on all mobile browsers
+        const clone = document.importNode(template.content, true);
+        document.body.appendChild(clone);
         banner = document.getElementById(BANNER_ID);
 
         // After injection, we MUST attach listeners to the new buttons
