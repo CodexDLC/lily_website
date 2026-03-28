@@ -66,7 +66,16 @@ def run_command(
             capture_output=capture_output,
             env=current_env,
         )
-        return result.returncode == 0, result.stdout or result.stderr or ""
+
+        output = ""
+        if result.stdout:
+            output += result.stdout
+        if result.stderr:
+            if output:
+                output += "\n"
+            output += result.stderr
+
+        return result.returncode == 0, output.strip()
     except Exception as e:
         return False, str(e)
 
