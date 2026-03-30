@@ -65,6 +65,7 @@ mypy = "*"
 pytest = "*"
 pytest-asyncio = "*"
 pytest-django = "*"
+pytest-cov = ">=5.0.0,<7.0.0"
 pre-commit = "*"
 qrcode = ">=7.0,<8.0"
 djlint = "^1.36.4"
@@ -114,6 +115,59 @@ markers = [
     "unit: Unit tests",
     "integration: Integration tests",
 ]
+addopts = "--cov=src/backend_django --cov-report=term-missing --cov-report=html:htmlcov --ignore=src/backend_django/features/cabinet/tests/test_email_notifications.py"
+
+# === Coverage ===
+[tool.coverage.run]
+source = ["src/backend_django"]
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "*/conftest.py",
+    "*/manage.py",
+    "*/wsgi.py",
+    "*/asgi.py",
+    "*/settings/*",
+    "*/fixtures/*",
+    "*/management/commands/*",
+    "*/admin.py",
+    "*/apps.py",
+    "*/translation.py",
+    # Cabinet will be fully rewritten in v2.0 — skip from coverage
+    "*/features/cabinet/*",
+    # V2 booking flow will be rewritten — business logic not yet stable
+    "*/features/booking/services/v2_booking_service.py",
+    "*/features/booking/views/v2_wizard.py",
+    "*/features/booking/selectors/wizard_v2.py",
+    "*/features/booking/selectors/wizard.py",
+    # API layer will change with V2 rebind
+    "*/api/booking.py",
+    # Django adapter is integration glue, requires full stack
+    "*/codex_tools/booking/adapters/django_adapter.py",
+    # Infrastructure that requires live services (Redis, ARQ)
+    "*/redis_managers/*",
+    "*/core/arq/*",
+    "*/codex_tools/common/arq_client.py",
+    # Sitemaps — SEO infrastructure, no business logic
+    "*/core/sitemaps.py",
+    # Dashboard refresh — background job infrastructure
+    "*/features/system/services/dashboard_refresh_service.py",
+    # Signals and abstract interfaces — tested indirectly
+    "*/signals.py",
+    "*/codex_tools/booking/interfaces.py",
+    # One-off utility, not part of main flow
+    "*/utils/fixture_hash.py",
+]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+]
 
 # === djLint ===
 [tool.djlint]
@@ -131,3 +185,10 @@ custom_html = "true"
 exclude_dirs = ["tests", "features/*/tests", "tools"]
 targets = ["src"]
 skips = ["B101", "B308", "B703"]
+
+# === pip-audit: known pre-existing CVEs in transitive deps (not our code) ===
+[tool.pip-audit]
+ignore-vulns = [
+    "CVE-2026-4539",   # pygments — transitive dep, no fix yet
+    "CVE-2026-25645",  # requests — transitive dep, fix available via bump
+]

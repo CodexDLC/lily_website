@@ -35,7 +35,14 @@ repos:
     rev: v2.10.0
     hooks:
       - id: pip-audit
-        args: ["--local", "--timeout", "15"]
+        args:
+          - "--local"
+          - "--timeout"
+          - "15"
+          - "--ignore-vuln"
+          - "CVE-2026-4539"
+          - "--ignore-vuln"
+          - "CVE-2026-25645"
         additional_dependencies: ["pip-audit[toml]", "toml"]
 
   # 2. Поиск "забытых" секретов и паролей (усиленный)

@@ -43,3 +43,6 @@ EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",
 ]
+
+# Отключаем rate limiting для тестов (ContactsView использует @ratelimit)
+RATELIMIT_ENABLE = False

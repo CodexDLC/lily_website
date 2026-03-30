@@ -49,9 +49,11 @@ Goal:
 - Freeze current behavior before migration work starts.
 
 What moves:
-- Smoke matrix.
-- Minimal critical-path tests.
-- Baseline checks for booking and cabinet.
+- Smoke matrix for all public pages (home, services, team, contacts, legal).
+- Integration tests for the full booking flow (slot selection → appointment create → confirm → complete).
+- Integration tests for reschedule and cancel flows.
+- Baseline checks for cabinet dashboard and core CRUD operations (appointments, clients, masters).
+- Fixture-based tests for context processors (site_settings, static_content).
 
 What does not move:
 - No platform migration yet.
@@ -69,9 +71,11 @@ Can be a separate branch:
 - Yes.
 
 Done criteria:
-- Critical scenarios are written down.
-- Minimal tests exist for public pages, booking flow, and owner cabinet flow.
-- Baseline run is green and documented.
+- Public page smoke tests are green.
+- Booking flow integration tests cover create, confirm, reschedule, cancel, complete.
+- Cabinet baseline tests cover dashboard rendering and key CRUD views.
+- Context processor tests verify template variable contracts.
+- All baseline tests are green and documented as the regression reference for subsequent stages.
 
 ## Stage 1 - Platform Bootstrap in Project
 
@@ -110,7 +114,9 @@ Goal:
 - Normalize project-owned structures that are safe to refactor, especially masters and schedules.
 
 What moves:
-- Replace `work_days` JSON scheduling with relational schedule tables.
+- Drop `work_days` JSONField on Master and replace with `AbstractWorkingDay` relational model (from `codex-django`).
+- The new table supports per-weekday schedule entries and multi-day ranges (covers both regular schedule and vacation/time-off periods).
+- Current `work_days` data is minimal (effectively one record) — safe to clear and recreate directly in the new table, no complex data migration needed.
 - Refactor master-related structures as needed.
 - Refactor system-side tables where safe.
 
@@ -132,8 +138,9 @@ Can be a separate branch:
 Done criteria:
 - Appointments still reference masters correctly.
 - Client and booking history remain intact.
-- New schedule tables are populated and verified.
-- Old JSON schedule path is removable.
+- New `WorkingDay` table is created and replaces the old JSONField.
+- `DjangoAvailabilityAdapter` reads schedule from the new relational model.
+- Old `work_days` JSONField is removed from Master.
 
 ## Stage 3 - Core/System Cutover
 
@@ -172,10 +179,15 @@ Goal:
 - Fully replace local booking runtime with `codex-django` booking adapters/selectors.
 
 What moves:
-- Booking orchestration.
-- Booking selectors.
-- Booking service integration.
+- Engine layer: local `codex_tools.booking` engine (SlotCalculator, ChainFinder) → `codex-services` (via `codex-django` adapters and selectors).
+- Adapter layer: local `DjangoAvailabilityAdapter` → `codex_django.booking.DjangoAvailabilityAdapter`.
+- Booking selectors: local slot service → `codex_django.booking.selectors` (get_available_slots, get_calendar_data, etc.).
 - Exception mapping and transaction path.
+
+What stays as project code:
+- `BookingService` (v1) and `BookingV2Service` — these are project-level orchestration, not engine logic.
+- `BookingScorer` weights and project-specific scoring configuration.
+- Appointment creation, confirmation, cancellation business rules.
 
 What does not move:
 - No redesign of booking UX.
@@ -194,9 +206,10 @@ Can be a separate branch:
 - Yes.
 
 Done criteria:
-- Slot results are validated against baseline.
+- Snapshot tests: slot generation results from `codex-services` engine match baseline results for documented scenarios.
 - Booking create/reschedule/cancel/confirm flows are green.
-- Local `src/backend_django/codex_tools/booking` is removed from runtime use.
+- Local `src/backend_django/codex_tools/booking` engine code is removed from runtime use.
+- Project-level booking services (`BookingService`, `BookingV2Service`) work with the new engine layer.
 
 ## Stage 5 - Cabinet Replacement (Owner/Admin First)
 
@@ -300,4 +313,3 @@ Done criteria:
 - Promo/combo product refactor.
 - Full branded client cabinet.
 - Full env-to-database migration for settings and API keys.
-
