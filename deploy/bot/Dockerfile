@@ -2,13 +2,11 @@
 FROM python:3.13-slim AS builder
 WORKDIR /app
 
-RUN pip install poetry poetry-plugin-export
+RUN pip install --no-cache-dir uv==0.10.7
 
-COPY pyproject.toml poetry.lock ./
-# Обновляем lock-файл внутри контейнера, чтобы он соответствовал измененному pyproject.toml
-RUN poetry lock
+COPY pyproject.toml uv.lock ./
 # Бот использует arq и pydantic из codex_tools
-RUN poetry export --with bot,shared,codex_tools --without-hashes --format=requirements.txt > requirements.txt
+RUN uv export --frozen --format requirements.txt --no-hashes --no-dev --no-default-groups --no-emit-project --group bot --group shared --group codex_tools --output-file requirements.txt
 
 RUN python -m venv /app/.venv
 RUN /app/.venv/bin/pip install --no-cache-dir -r requirements.txt

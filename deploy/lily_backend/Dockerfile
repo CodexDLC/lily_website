@@ -19,8 +19,8 @@ RUN apt-get update && apt-get install -y libpq5 curl procps && rm -rf /var/lib/a
     useradd -m -u 1000 appuser
 
 COPY --from=builder /venv /venv
-COPY src/backend_django /app
-COPY deploy/backend/entrypoint.sh /entrypoint.sh
+COPY src/lily_backend /app
+COPY deploy/lily_backend/entrypoint.sh /entrypoint.sh
 
 # Оптимизируем слои: создаем папки, меняем владельца и права за один RUN
 RUN mkdir -p /app/staticfiles /app/media /app/logs/backend && \
