@@ -1,0 +1,70 @@
+{% load i18n %}
+<div class="cabinet-card master-card" id="master-card-{{ master.id }}">
+<form hx-post="{% url 'cabinet:masters' %}?action=save&id={{ master.id }}"
+      hx-target="#master-card-{{ master.id }}"
+      hx-swap="outerHTML"
+      class="client-edit-form master-edit-form">
+    {% csrf_token %}
+
+    <div class="card-header-row">
+        <span class="card-client-name">{% trans "Editing Master" %} #{{ master.id }}</span>
+    </div>
+
+    <div class="client-info-list">
+        <div class="client-info-item">
+            <i class="bi bi-person"></i>
+            <input type="text" name="name" value="{{ master.name }}" class="client-edit-input" placeholder="{% trans "Full Name" %}">
+        </div>
+        <div class="client-info-item">
+            <i class="bi bi-award"></i>
+            <input type="text" name="title" value="{{ master.title }}" class="client-edit-input" placeholder="{% trans "Professional Title" %}">
+        </div>
+        <div class="client-info-item">
+            <i class="bi bi-telephone"></i>
+            <input type="text" name="phone" value="{{ master.phone }}" class="client-edit-input" placeholder="{% trans "Phone" %}">
+        </div>
+        <div class="client-info-item">
+            <i class="bi bi-instagram"></i>
+            <input type="text" name="instagram" value="{{ master.instagram }}" class="client-edit-input" placeholder="Instagram">
+        </div>
+
+        <div class="client-info-item">
+            <i class="bi bi-activity"></i>
+            <select name="status" class="client-edit-input">
+                {% for code, label in master.STATUS_CHOICES %}
+                <option value="{{ code }}" {% if master.status == code %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="client-info-item">
+            <i class="bi bi-eye"></i>
+            <label class="checkbox-container" style="margin-left: 10px;">
+                <input type="checkbox" name="is_public" {% if master.is_public %}checked{% endif %}>
+                <span class="checkmark"></span>
+                <span class="checkbox-text" style="color: var(--color-white); font-size: 13px;">{% trans "Visible on site" %}</span>
+            </label>
+        </div>
+
+        <div class="client-info-label" style="margin-top: 10px;">{% trans "Working Days" %}</div>
+        <div class="workdays-edit-grid">
+            {% for day_num, day_label in workdays_choices %}
+            <label class="workday-checkbox-label">
+                <input type="checkbox" name="work_days" value="{{ day_num }}" {% if day_num in master.work_days %}checked{% endif %}>
+                <div class="box">{{ day_label }}</div>
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="client-edit-actions">
+        <button type="submit" class="btn-save-client">{% trans "Save" %}</button>
+        <button type="button" class="btn-cancel-client"
+                hx-get="{% url 'cabinet:masters' %}?action=view&id={{ master.id }}"
+                hx-target="#master-card-{{ master.id }}"
+                hx-swap="outerHTML">
+            {% trans "Cancel" %}
+        </button>
+    </div>
+</form>
+</div>

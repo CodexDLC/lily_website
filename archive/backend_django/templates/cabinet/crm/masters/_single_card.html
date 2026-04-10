@@ -1,0 +1,69 @@
+{% load i18n %}
+<div class="cabinet-card master-card" id="master-card-{{ master.id }}">
+    <!-- Top Row: Status and Edit Button -->
+    <div class="card-header-row" style="margin-bottom: 15px;">
+        <div class="card-header-left">
+            <span class="status-badge status-{{ master.status }}">
+                {{ master.get_status_display }}
+            </span>
+        </div>
+        <div class="card-header-right">
+            <button class="master-card-edit-btn-inline"
+                    hx-get="{% url 'cabinet:masters' %}?action=edit&id={{ master.id }}"
+                    hx-target="#master-card-{{ master.id }}"
+                    hx-swap="outerHTML">
+                <i class="bi bi-pencil-fill"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="master-avatar-container">
+        <img src="{% if master.photo %}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}"
+             class="master-avatar" alt="{{ master.name }}">
+    </div>
+
+    <div class="master-name-title">
+        <span class="master-card-name">{{ master.name }}</span>
+        <span class="master-card-title">{{ master.title }}</span>
+    </div>
+
+    <!-- Workdays Display -->
+    <div class="workdays-display">
+        {% for day_num, day_label in workdays_choices %}
+            <span class="day-chip {% if day_num in master.work_days %}active{% endif %}" title="{{ day_label }}">
+                {{ day_label }}
+            </span>
+        {% endfor %}
+    </div>
+
+    <div class="client-info-list" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+        {% if master.phone %}
+        <div class="client-info-item">
+            <i class="bi bi-telephone"></i>
+            <span>{{ master.phone }}</span>
+        </div>
+        {% endif %}
+
+        {% if master.instagram %}
+        <div class="client-info-item">
+            <i class="bi bi-instagram"></i>
+            <span>@{{ master.instagram }}</span>
+        </div>
+        {% endif %}
+
+        <div class="client-info-item">
+            <i class="bi bi-briefcase"></i>
+            <span>{% trans "Experience:" %} {{ master.years_experience }} {% trans "years" %}</span>
+        </div>
+    </div>
+
+    <div class="card-meta mt-auto" style="padding-top: 10px;">
+        <span class="card-meta-item" style="font-size: 11px; opacity: 0.5;">
+            {% if master.is_public %}
+                <i class="bi bi-eye"></i> {% trans "Visible on site" %}
+            {% else %}
+                <i class="bi bi-eye-slash"></i> {% trans "Hidden" %}
+            {% endif %}
+        </span>
+    </div>
+</div>

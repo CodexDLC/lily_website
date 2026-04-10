@@ -1,0 +1,65 @@
+{
+  "name": "LILY Beauty Salon Admin",
+  "short_name": "LILY Admin",
+  "description": "Административная панель для управления салоном красоты LILY",
+  "start_url": "/admin/",
+  "scope": "/admin/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "icons": [
+    {
+      "src": "/static/img/favicon/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/img/favicon/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/img/favicon/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/static/img/favicon/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Записи",
+      "short_name": "Записи",
+      "description": "Управление записями клиентов",
+      "url": "/admin/booking/appointment/",
+      "icons": [
+        {
+          "src": "/static/img/favicon/shortcut-appointments-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Мастера",
+      "short_name": "Мастера",
+      "description": "Управление мастерами",
+      "url": "/admin/booking/master/",
+      "icons": [
+        {
+          "src": "/static/img/favicon/shortcut-masters-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "categories": ["business", "productivity", "lifestyle"],
+  "lang": "ru"
+}

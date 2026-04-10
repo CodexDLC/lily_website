@@ -1,0 +1,29 @@
+/* =========================================
+   LARGE SCREENS (1440px+)
+   @media (min-width: 1440px)
+   ========================================= */
+
+/* Maximum site width applied, full design as intended */
+
+.site-wrapper {
+    /* Max width already set in base_module layout (1440px) */
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+}
+
+/* Full spacing */
+.hero-heading {
+    font-size: 68px;
+}
+
+.price-block {
+    padding: 50px 60px;
+}
+
+.owner-block {
+    padding: 40px;
+}
+
+/* Ensure bento grid looks perfect */
+.bento-grid {
+    gap: 20px;
+}

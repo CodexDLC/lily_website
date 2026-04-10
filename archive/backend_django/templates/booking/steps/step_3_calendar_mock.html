@@ -1,0 +1,92 @@
+{% load i18n %}
+<div class="step-content fade-in">
+    <div class="step-header-row">
+        <h3 class="step-heading">
+            {% trans "Wählen Sie einen Termin" %}
+        </h3>
+        <button class="btn-back"
+                hx-get="{% url 'booking:booking_wizard' %}?step=1&category={{ selected_service.category.slug }}"
+                hx-target="#wizard-content"
+                hx-swap="innerHTML">
+            ← {% trans "Zurück" %}
+        </button>
+    </div>
+
+    <div class="calendar-layout">
+        <!-- CALENDAR WIDGET -->
+        <div class="calendar-widget">
+            <div class="calendar-header">
+                <button class="cal-nav-btn"
+                        hx-get="{% url 'booking:booking_wizard' %}?step=2&month={{ current_month|add:'-1' }}&year={{ current_year }}&service_id={{ selected_service.id }}"
+                        hx-target="#wizard-content"
+                        hx-swap="innerHTML">
+                    ‹
+                </button>
+                <span class="cal-month-title">{{ month_label }}</span>
+                <button class="cal-nav-btn"
+                        hx-get="{% url 'booking:booking_wizard' %}?step=2&month={{ current_month|add:'1' }}&year={{ current_year }}&service_id={{ selected_service.id }}"
+                        hx-target="#wizard-content"
+                        hx-swap="innerHTML">
+                    ›
+                </button>
+            </div>
+
+            <div class="calendar-weekdays">
+                <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+            </div>
+
+            <div class="calendar-days">
+                {% for day in calendar_days %}
+                    {% if day.status == 'empty' %}
+                        <span class="day empty"></span>
+                    {% elif day.status == 'disabled' %}
+                        <button class="day disabled">{{ day.num }}</button>
+                    {% elif day.status == 'holiday' %}
+                        <button class="day holiday" title="{{ day.title }}">{{ day.num }}</button>
+                    {% else %}
+                        <button class="day {% if day.date == selected_date_obj|date:'Y-m-d' %}active{% endif %}"
+                                hx-get="{% url 'booking:booking_wizard' %}?step=2&date={{ day.date }}&service_id={{ selected_service.id }}"
+                                hx-target="#wizard-content"
+                                hx-swap="innerHTML">
+                            {{ day.num }}
+                        </button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- TIME SLOTS -->
+        <div class="time-slots-panel">
+            {% if selected_date_obj %}
+                <h4 class="slots-title">{% trans "Verfügbare Zeit am" %} {{ selected_date_obj|date:"d.m." }}</h4>
+
+                {% if available_slots %}
+                    <div class="slots-grid-compact">
+                        {% for slot in available_slots %}
+                        <button class="slot-btn"
+                                hx-get="{% url 'booking:booking_wizard' %}?step=3&date={{ selected_date_obj|date:'Y-m-d' }}&time={{ slot }}"
+                                hx-target="#wizard-content"
+                                hx-swap="innerHTML">
+                            {{ slot }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div style="text-align: center; color: var(--color-text-muted); padding: 20px;">
+                        {% trans "Keine freien Termine." %}
+                    </div>
+                {% endif %}
+            {% else %}
+                <div style="text-align: center; color: var(--color-text-muted); padding: 40px;">
+                    {% trans "Bitte wählen Sie ein Datum." %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Only include OOB updates for HTMX requests -->
+{% if request.headers.HX_Request %}
+    {% include "booking/includes/summary_card.html" %}
+    {% include "booking/includes/stepper.html" %}
+{% endif %}

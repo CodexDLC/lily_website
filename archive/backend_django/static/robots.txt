@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Allow AI context files
+Allow: /llms.txt
+Allow: /*/llms.txt
+
+# Disallow system paths
+Disallow: /admin/
+Disallow: /api/
+Disallow: /static/
+
+
+Sitemap: https://lily-salon.de/sitemap.xml

@@ -1,0 +1,506 @@
+/* ===== PWA Mobile Optimizations for Unfold Admin ===== */
+/* LILY Beauty Salon Admin PWA Styles */
+
+/* ========================================
+   MOBILE TOUCH TARGETS & FORMS
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Увеличенные кнопки для пальцев (минимум 44px по Apple HIG) */
+    .unfold button,
+    .unfold a.button,
+    .unfold input[type="submit"],
+    .unfold .actions button,
+    .unfold .submit-row input {
+        min-height: 44px !important;
+        padding: 12px 20px !important;
+        font-size: 16px !important;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    /* Улучшенные формы для мобильных */
+    .unfold input[type="text"],
+    .unfold input[type="email"],
+    .unfold input[type="tel"],
+    .unfold input[type="number"],
+    .unfold input[type="password"],
+    .unfold input[type="date"],
+    .unfold input[type="time"],
+    .unfold input[type="datetime-local"],
+    .unfold textarea,
+    .unfold select {
+        font-size: 16px !important; /* Предотвращает zoom на iOS */
+        min-height: 44px !important;
+        padding: 12px 16px !important;
+        border-radius: 8px;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    /* Textarea специально */
+    .unfold textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* Чекбоксы и радио кнопки */
+    .unfold input[type="checkbox"],
+    .unfold input[type="radio"] {
+        min-width: 20px;
+        min-height: 20px;
+        margin: 8px;
+    }
+}
+
+/* ========================================
+   ТАБЛИЦЫ И СПИСКИ
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Компактная таблица для мобильных */
+    .unfold table {
+        font-size: 14px;
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .unfold table thead {
+        display: none; /* Скрываем заголовки на мобильных */
+    }
+
+    .unfold table tbody {
+        display: block;
+    }
+
+    .unfold table tr {
+        display: block;
+        margin-bottom: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .unfold table td {
+        display: block;
+        text-align: left !important;
+        padding: 8px 0 !important;
+        border: none !important;
+    }
+
+    .unfold table td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        display: inline-block;
+        margin-right: 8px;
+        color: #6b7280;
+    }
+
+    /* Скрыть менее важные колонки на очень маленьких экранах */
+    @media (max-width: 480px) {
+        .unfold table td:nth-child(n+5) {
+            display: none;
+        }
+    }
+
+    /* Оптимизация списков changelist */
+    .unfold .changelist {
+        padding: 12px !important;
+    }
+
+    .unfold .results {
+        overflow-x: visible !important;
+    }
+}
+
+/* ========================================
+   SIDEBAR И NAVIGATION
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Sidebar оптимизация */
+    .unfold-sidebar {
+        width: 100% !important;
+        max-width: 280px;
+    }
+
+    /* Улучшенные ссылки в sidebar */
+    .unfold-sidebar a {
+        padding: 12px 16px !important;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* ========================================
+   STICKY HEADER
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Sticky header для скролла */
+    .unfold-header {
+        position: sticky !important;
+        top: 0;
+        z-index: 100;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Breadcrumbs компактнее */
+    .unfold .breadcrumbs {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}
+
+/* ========================================
+   BADGES И STATUS INDICATORS
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Улучшенные badge'и для мобильных */
+    .status-badge,
+    span[class*="bg-"][class*="text-"] {
+        font-size: 11px !important;
+        padding: 6px 12px !important;
+        white-space: nowrap;
+        border-radius: 9999px;
+    }
+}
+
+/* ========================================
+   CARDS И MODULES
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Улучшенные карточки для detail view */
+    .unfold .module,
+    .unfold .module {
+        border-radius: 12px !important;
+        margin-bottom: 16px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .unfold .module h2,
+    .unfold .module h3 {
+        font-size: 16px !important;
+        padding: 12px 16px !important;
+    }
+
+    /* Fieldsets */
+    .unfold fieldset {
+        padding: 16px !important;
+        margin: 0 0 16px 0 !important;
+    }
+}
+
+/* ========================================
+   BOTTOM NAVIGATION (PWA STYLE)
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Bottom Navigation для мобильных */
+    .pwa-bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 64px;
+        background: white;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 1000;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .pwa-bottom-nav a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #6b7280;
+        text-decoration: none;
+        font-size: 11px;
+        padding: 8px 12px;
+        transition: color 0.2s ease;
+        flex: 1;
+        max-width: 120px;
+    }
+
+    .pwa-bottom-nav a.active {
+        color: #3b82f6;
+    }
+
+    .pwa-bottom-nav .material-icons {
+        font-size: 24px;
+        margin-bottom: 2px;
+    }
+
+    /* Добавить padding снизу для bottom nav */
+    .unfold-content,
+    body {
+        padding-bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+    }
+}
+
+/* ========================================
+   FLOATING ACTION BUTTON
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* FAB для быстрых действий */
+    .pwa-fab {
+        position: fixed;
+        bottom: calc(80px + env(safe-area-inset-bottom));
+        right: 20px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 999;
+        transition: all 0.3s ease;
+    }
+
+    .pwa-fab:active {
+        transform: scale(0.95);
+    }
+
+    .pwa-fab:hover {
+        box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+    }
+}
+
+/* ========================================
+   PULL TO REFRESH INDICATOR
+   ======================================== */
+
+.ptr-indicator {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 16px;
+    background: #3b82f6;
+    color: white;
+    border-radius: 0 0 8px 8px;
+    font-size: 14px;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ptr-indicator.active {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ========================================
+   DARK MODE SUPPORT
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    @media (max-width: 768px) {
+        .pwa-bottom-nav {
+            background: #1f2937;
+            border-top-color: #374151;
+        }
+
+        .pwa-bottom-nav a {
+            color: #9ca3af;
+        }
+
+        .pwa-bottom-nav a.active {
+            color: #34d399;
+        }
+
+        .unfold table tr {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        .unfold-header {
+            background: #111827;
+        }
+    }
+}
+
+/* ========================================
+   LANDSCAPE MODE OPTIMIZATIONS
+   ======================================== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+    .pwa-bottom-nav {
+        height: 48px;
+    }
+
+    .pwa-bottom-nav a {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+
+    .pwa-bottom-nav .material-icons {
+        font-size: 20px;
+    }
+
+    .pwa-fab {
+        bottom: calc(60px + env(safe-area-inset-bottom));
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .unfold-content,
+    body {
+        padding-bottom: calc(60px + env(safe-area-inset-bottom)) !important;
+    }
+}
+
+/* ========================================
+   SPECIFIC SCREEN SIZES
+   ======================================== */
+
+/* iPhone SE / Small phones (< 375px) */
+@media (max-width: 374px) {
+    .pwa-bottom-nav {
+        height: 56px;
+    }
+
+    .pwa-bottom-nav a {
+        font-size: 10px;
+        padding: 6px 8px;
+    }
+
+    .pwa-bottom-nav .material-icons {
+        font-size: 20px;
+    }
+}
+
+/* ========================================
+   TOAST NOTIFICATIONS
+   ======================================== */
+
+.pwa-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #3b82f6;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 10000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideDown 0.3s ease;
+}
+
+.pwa-toast.warning {
+    background: #f59e0b;
+}
+
+.pwa-toast.error {
+    background: #ef4444;
+}
+
+.pwa-toast.info {
+    background: #3b82f6;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* ========================================
+   PWA MODE SPECIFIC STYLES
+   ======================================== */
+
+body.pwa-mode {
+    /* Скрыть элементы, которые не нужны в PWA */
+}
+
+body.pwa-mode .unfold-header {
+    padding-top: env(safe-area-inset-top);
+}
+
+/* ========================================
+   SAFE AREA INSETS (iOS NOTCH)
+   ======================================== */
+
+@supports (padding: env(safe-area-inset-top)) {
+    body {
+        padding-top: env(safe-area-inset-top);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+}
+
+/* ========================================
+   LOADING STATES
+   ======================================== */
+
+@media (max-width: 768px) {
+    .loading-spinner {
+        border: 3px solid #f3f4f6;
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+}
+
+/* ========================================
+   SCROLLBAR STYLING (MOBILE)
+   ======================================== */
+
+@media (max-width: 768px) {
+    /* Тонкие scrollbars для мобильных */
+    ::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(59, 130, 246, 0.3);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(59, 130, 246, 0.5);
+    }
+}

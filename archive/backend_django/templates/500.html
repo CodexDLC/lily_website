@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Serverfehler" %} | LILY Beauty Salon{% endblock %}
+
+{% block content %}
+<main class="section error-page-container">
+    <div class="container">
+        <h1 class="hero-title error-code-large">500</h1>
+        <h2 class="error-subtitle">{% trans "Interner Serverfehler" %}</h2>
+        <p class="error-message">
+            {% trans "Es ist ein Fehler aufgetreten. Wir arbeiten bereits daran." %}
+        </p>
+        <a href="{% url 'home' %}" class="btn-pill">{% trans "Zur Startseite" %}</a>
+    </div>
+</main>
+{% endblock %}

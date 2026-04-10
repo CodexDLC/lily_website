@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Termin erfolgreich storniert" %}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 text-success">{% translate "Termin erfolgreich storniert!" %}</h1>
+            <p class="lead">{% translate "Ihr Termin wurde erfolgreich storniert." %}</p>
+            <p>{% translate "Wir hoffen, Sie bald wieder bei uns begrüßen zu dürfen." %}</p>
+            <p class="mt-4">
+                <a href="{% url 'home' %}" class="btn btn-gold">{% translate "Zur Startseite" %}</a>
+            </p>
+            <div class="mt-5 p-3 bg-light border rounded">
+                <p class="mb-0 text-muted">{% translate "Debug-Information: Token" %}: <code>{{ token }}</code></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

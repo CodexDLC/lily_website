@@ -1,0 +1,47 @@
+# LILY Beauty Salon - Website Context for AI Agents
+
+## Project Overview
+LILY Beauty Salon is a premium beauty salon located in Köthen, Germany.
+We offer high-quality beauty services including Hair, Nails, Cosmetology, Brows & Lashes, Massage, and Depilation.
+Our focus is on individual approach, German quality, and premium materials.
+
+## Core Pages & Navigation
+
+- [Home](/) - Main landing page with overview of services and salon philosophy.
+- [Services](/services/) - Full list of beauty services offered.
+  - [Hair](/services/hair/) - Haircuts, coloring (Airtouch, Balayage), and hair care.
+  - [Nails](/services/nails/) - Manicure, pedicure, nail extensions, and design.
+  - [Cosmetology](/services/cosmetology/) - Facial treatments, cleaning, and skincare.
+  - [Brows & Lashes](/services/brows/) - Brow shaping, tinting, lamination, and lash extensions.
+  - [Massage](/services/massage/) - Relaxing and therapeutic massages.
+  - [Depilation](/services/depilation/) - Hair removal services.
+- [Team](/team/) - Information about our beauty experts and masters.
+- [Contacts](/contacts/) - Address, phone number, opening hours, and contact form.
+- [Impressum](/impressum/) - Legal notice (Imprint).
+- [Datenschutz](/datenschutz/) - Privacy Policy.
+
+## Contact Information
+- **Address:** Lohmannstraße 111, 06366 Köthen (Anhalt), Germany
+- **Phone:** +49 176 59423704
+- **Email:** info@lily-salon.de
+
+## Technical Context
+- This site is built with Django.
+- Content is available in German (default), Russian, Ukrainian, and English.
+
+## Frequently Asked Questions (FAQ)
+
+- **How can I book an appointment?**
+  You can easily book an appointment online via our website or contact us by phone.
+
+- **Is parking available at the salon?**
+  Yes, ample parking is available near the salon.
+
+- **Which payment methods are accepted?**
+  We accept cash, EC card, and common credit cards.
+
+- **Do you offer gift vouchers?**
+  Yes, gift vouchers for all our services are available directly at the salon.
+
+- **Can I change or cancel my appointment online?**
+  Please contact us by phone to make changes or cancellations.

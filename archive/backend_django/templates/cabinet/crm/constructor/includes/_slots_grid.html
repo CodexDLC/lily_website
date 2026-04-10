@@ -1,0 +1,25 @@
+{% load i18n %}
+
+{% if has_slots %}
+    <div class="slots-grid-compact">
+        {% for slot in slots %}
+            <button class="slot-btn"
+                    onclick="selectTime('{{ slot }}', this)"
+                    hx-post="{% url 'cabinet:constructor' %}"
+                    hx-vals='{"action": "select_time", "time": "{{ slot }}"}'
+                    {% if mode == 'separate' %}
+                        hx-target="#cabinet-content"
+                        hx-swap="innerHTML"
+                    {% else %}
+                        hx-swap="none"
+                    {% endif %}>
+                {{ slot }}
+            </button>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="text-center py-4 text-white-50 small">
+        <i class="bi bi-exclamation-circle d-block mb-2"></i>
+        {% trans "No slots available for this combination." %}
+    </div>
+{% endif %}

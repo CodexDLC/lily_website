@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Termin buchen" %} | LILY Beauty Salon{% endblock %}
+
+{% block content %}
+<!-- WIZARD WRAPPER -->
+<!-- Background: Emerald (Main Theme) -->
+<div class="booking-wizard-wrapper">
+    <div class="container wizard-container-wide">
+
+        <!-- PAGE TITLE (H1) -->
+        <div class="wizard-page-header">
+            <h1 class="hero-title-small">{% trans "Online Terminbuchung" %}</h1>
+            <p class="hero-subtitle-small">{% trans "IN WENIGEN SCHRITTEN ZUM TERMIN" %}</p>
+        </div>
+
+        <!-- WIZARD ISLAND (Floating Card) -->
+        <div class="wizard-island">
+
+            <!-- WIZARD HEADER (Stepper) -->
+            {% include "booking/includes/stepper.html" %}
+
+            <div class="wizard-grid">
+                <!-- MAIN CONTENT AREA -->
+                <div class="wizard-content" id="wizard-content">
+                    <!-- Dynamic Step Content -->
+                    {% include current_step_template %}
+                </div>
+
+                <!-- SIDEBAR (Summary) -->
+                <aside class="wizard-sidebar">
+                    {% include "booking/includes/summary_card.html" %}
+                </aside>
+            </div>
+
+        </div> <!-- End Wizard Island -->
+
+    </div>
+</div>
+{% endblock %}

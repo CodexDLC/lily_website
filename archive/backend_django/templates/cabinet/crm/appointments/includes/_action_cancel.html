@@ -1,0 +1,62 @@
+{% load i18n %}
+<div class="cabinet-card" id="appt-{{ appt.id }}">
+    <div class="card-header-row">
+        <div class="card-header-left">
+            <span class="card-client-name" style="color: #f87171;">{% trans "Reject Appointment" %}</span>
+        </div>
+    </div>
+
+    <div class="mgmt-grid" style="margin-top: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <!-- Row 1 -->
+        <button class="mgmt-btn" onclick="document.getElementById('reason-{{ appt.id }}').value = 'Leider ist der gewünschte Termin bereits vergeben.';">
+            🕒 {% trans "Master Busy" %}
+        </button>
+        <button class="mgmt-btn" onclick="document.getElementById('reason-{{ appt.id }}').value = 'Leider muss der Termin aufgrund einer Erkrankung verschoben werden.';">
+            🤒 {% trans "Master Ill" %}
+        </button>
+
+        <!-- Row 2 -->
+        <button class="mgmt-btn" onclick="document.getElementById('reason-{{ appt.id }}').value = 'Leider fehlen derzeit die notwendigen Materialien.';">
+            📦 {% trans "No Materials" %}
+        </button>
+        <button class="mgmt-btn" onclick="document.getElementById('reason-{{ appt.id }}').value = 'Leider können wir Ihre Anfrage nicht annehmen.';">
+            🚫 {% trans "Other" %}
+        </button>
+    </div>
+
+    <!-- No Show Button (Full Width or Separate) -->
+    <div style="margin-top: 10px;">
+        <button class="mgmt-btn"
+                hx-post="{% url 'cabinet:appointments' %}"
+                hx-vals='{"id": "{{ appt.id }}", "action": "no_show"}'
+                hx-target="#appt-{{ appt.id }}"
+                hx-swap="outerHTML"
+                style="width: 100%; background: rgba(167, 139, 250, 0.1); color: #a78bfa; border: 1px solid rgba(167, 139, 250, 0.3);">
+            👻 {% trans "Client did not show up (No Show)" %}
+        </button>
+    </div>
+
+    <form hx-post="{% url 'cabinet:appointments' %}" hx-target="#appt-{{ appt.id }}" hx-swap="outerHTML" style="margin-top: 15px;">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ appt.id }}">
+        <input type="hidden" name="action" value="cancel">
+        <input type="hidden" name="reason_code" value="custom">
+
+        <textarea name="reason_text" id="reason-{{ appt.id }}" class="card-edit-textarea"
+                  placeholder="{% trans "Reason for rejection (sent to client)..." %}"
+                  style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px; border-radius: 4px; min-height: 80px;" required></textarea>
+
+        <div class="card-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+            <button type="submit" class="btn-card-save" style="flex: 1; background: #f87171; color: white; border: none; padding: 10px; border-radius: 4px; font-weight: bold;">
+                {% trans "Reject" %}
+            </button>
+            <button type="button" class="btn-card-edit"
+                    hx-get="{% url 'cabinet:appointments' %}?action=view_card&id={{ appt.id }}"
+                    hx-target="#appt-{{ appt.id }}"
+                    hx-swap="outerHTML"
+                    style="flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 4px;">
+                {% trans "Back" %}
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,118 @@
+{% load i18n %}
+<div class="cabinet-card" id="appt-{{ appt.id }}">
+    <div class="card-header-row">
+        <div class="card-header-left">
+            <span class="card-client-name" style="color: #a855f7;">{% trans "Reschedule" %}</span>
+        </div>
+        <div class="card-header-right">
+            <button type="button" class="btn-card-edit"
+                    hx-get="{% url 'cabinet:appointments' %}?action=view_card&id={{ appt.id }}"
+                    hx-target="#appt-{{ appt.id }}"
+                    hx-swap="outerHTML"
+                    style="background: transparent; border: none; color: #888;">
+                ✕
+            </button>
+        </div>
+    </div>
+
+    <!-- Date Scroller -->
+    <div class="date-scroller" style="display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 15px;">
+        {% for day in calendar_days %}
+        <button class="date-chip"
+                hx-get="{% url 'cabinet:appointments' %}?action=reschedule_form&id={{ appt.id }}&date={{ day.date }}"
+                hx-target="#appt-{{ appt.id }}"
+                hx-swap="outerHTML"
+                style="
+                    background: {% if day.is_selected %}#a855f7{% else %}rgba(255,255,255,0.05){% endif %};
+                    border: 1px solid {% if day.is_selected %}#a855f7{% else %}rgba(255,255,255,0.1){% endif %};
+                    border-radius: 8px;
+                    padding: 8px 12px;
+                    color: white;
+                    min-width: 60px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                ">
+            <div style="font-size: 10px; opacity: 0.7;">{{ day.weekday }}</div>
+            <div style="font-weight: bold; font-size: 14px;">{{ day.day }}</div>
+        </button>
+        {% endfor %}
+    </div>
+
+    <!-- Slots Grid -->
+    <div class="slots-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 200px; overflow-y: auto; margin-bottom: 15px;">
+        {% for slot in slots %}
+        <button type="button" class="slot-btn"
+                onclick="selectSlot(this, '{{ slot }}')"
+                style="
+                    background: rgba(255,255,255,0.05);
+                    border: 1px solid rgba(255,255,255,0.1);
+                    color: white;
+                    padding: 8px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                ">
+            {{ slot }}
+        </button>
+        {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; color: #888; padding: 20px;">
+            {% trans "No slots available" %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Hidden Form for Submission -->
+    <form hx-post="{% url 'cabinet:appointments' %}" hx-target="#appt-{{ appt.id }}" hx-swap="outerHTML">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ appt.id }}">
+        <input type="hidden" name="new_date" value="{{ selected_date }}">
+        <input type="hidden" name="new_time" id="selected-time-{{ appt.id }}">
+
+        <div style="display: flex; gap: 8px; margin-top: 10px;">
+            <button type="submit" name="action" value="reschedule" id="confirm-reschedule-{{ appt.id }}" disabled
+                    style="background: #a855f7; color: white; border: none; border-radius: 6px; padding: 10px; flex: 1; cursor: pointer; transition: all 0.2s;"
+                    onmouseover="if(!this.disabled) this.style.opacity='0.9'" onmouseout="if(!this.disabled) this.style.opacity='1'">
+                {% trans "Изменить" %}
+            </button>
+            <button type="submit" name="action" value="propose_reschedule" id="propose-reschedule-{{ appt.id }}" disabled
+                    style="background: rgba(168, 85, 247, 0.1); color: #a855f7; border: 1px solid #a855f7; border-radius: 6px; padding: 10px; flex: 1; cursor: pointer; transition: all 0.2s;"
+                    onmouseover="if(!this.disabled) this.style.background='rgba(168, 85, 247, 0.2)'" onmouseout="if(!this.disabled) this.style.background='rgba(168, 85, 247, 0.1)'">
+                {% trans "Предложить" %}
+            </button>
+        </div>
+    </form>
+
+    <script>
+        function selectSlot(btn, time) {
+            // Reset all slots
+            const container = btn.closest('.slots-grid');
+            container.querySelectorAll('.slot-btn').forEach(b => {
+                b.style.background = 'rgba(255,255,255,0.05)';
+                b.style.borderColor = 'rgba(255,255,255,0.1)';
+            });
+
+            // Highlight selected
+            btn.style.background = 'rgba(168, 85, 247, 0.2)';
+            btn.style.borderColor = '#a855f7';
+
+            // Update hidden input and enable buttons
+            document.getElementById('selected-time-{{ appt.id }}').value = time;
+            document.getElementById('confirm-reschedule-{{ appt.id }}').disabled = false;
+            document.getElementById('propose-reschedule-{{ appt.id }}').disabled = false;
+        }
+
+        // Enable horizontal scrolling with mouse wheel for the date scroller
+        (function() {
+            const scroller = document.querySelector('#appt-{{ appt.id }} .date-scroller');
+            if (scroller) {
+                scroller.addEventListener('wheel', function(e) {
+                    if (e.deltaY !== 0) {
+                        e.preventDefault();
+                        scroller.scrollLeft += e.deltaY;
+                    }
+                });
+            }
+        })();
+    </script>
+</div>

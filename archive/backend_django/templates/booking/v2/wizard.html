@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Запись онлайн V2 | LILY Beauty Salon{% endblock %}
+
+{% block content %}
+<div class="booking-wizard-wrapper">
+    <div class="container wizard-container-wide">
+
+        <div class="wizard-page-header">
+            <h1 class="hero-title-small">{% trans "Online Terminbuchung" %}</h1>
+            <p class="hero-subtitle-small">{% trans "Wählen Sie Ihre Leistungen" %}</p>
+        </div>
+
+        <div class="wizard-island">
+            {# V2 panels swap here via HTMX #}
+            <div id="v2-wizard-panel">
+                {% include "booking/v2/panel_services.html" %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

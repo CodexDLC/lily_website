@@ -1,0 +1,47 @@
+{% load static i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>{% trans "Magic Link Login" %} — LILY</title>
+    <meta name="theme-color" content="#003831">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/favicon/favicon.ico' %}">
+    <link rel="preload" href="{% static 'fonts/lato-v25-latin-regular.woff2' %}" as="font" type="font/woff2"
+        crossorigin>
+    <link rel="stylesheet" href="{% static 'css/cabinet_app.css' %}">
+
+</head>
+
+<body class="cabinet-body">
+
+    <div class="cabinet-form-wrapper">
+        <div class="cabinet-form-box">
+
+            <div class="cabinet-form-logo">
+                <img src="{% static 'img/logo_lily.webp' %}" alt="LILY Beauty" class="login-logo-img">
+            </div>
+
+            {% if error %}
+            <div class="cabinet-form-error">{{ error }}</div>
+            <p class="cabinet-form-subtitle">
+                {% trans "The link may have expired or been used before." %}
+            </p>
+            <div class="text-center">
+                <a href="{% url 'home' %}" class="link-dashed">← {% trans "Return to home" %}</a>
+            </div>
+            {% else %}
+            <p class="cabinet-form-subtitle">
+                {% trans "Signing in..." %}
+            </p>
+            {% endif %}
+
+        </div>
+    </div>
+
+</body>
+
+</html>

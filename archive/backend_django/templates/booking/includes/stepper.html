@@ -1,0 +1,11 @@
+<div class="wizard-stepper" id="wizard-stepper" hx-swap-oob="true">
+    {% for step in steps %}
+    <div class="step-item {% if step.active %}active{% endif %} {% if step.completed %}completed{% endif %}">
+        <div class="step-circle">
+            {% if step.completed %}✓{% else %}{{ step.number }}{% endif %}
+        </div>
+        <span class="step-title">{{ step.title }}</span>
+        {% if not forloop.last %}<div class="step-line"></div>{% endif %}
+    </div>
+    {% endfor %}
+</div>
