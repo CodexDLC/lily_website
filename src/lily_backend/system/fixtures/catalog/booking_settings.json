@@ -1,0 +1,16 @@
+[
+  {
+    "model": "booking.bookingsettings",
+    "pk": 1,
+    "fields": {
+      "step_minutes": 30,
+      "default_buffer_between_minutes": 0,
+      "min_advance_minutes": 60,
+      "max_advance_days": 60,
+      "work_start_weekdays": "09:00:00",
+      "work_end_weekdays": "21:00:00",
+      "work_start_saturday": "10:00:00",
+      "work_end_saturday": "19:00:00"
+    }
+  }
+]
