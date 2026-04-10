@@ -9,11 +9,10 @@ This Dockerfile defines the multi-stage build process for the backend applicatio
 *   **Base Image:** `python:3.13-slim`
 *   **Working Directory:** `/app`
 *   **Dependencies:** Installs `gcc`, `g++`, `libpq-dev` for building Python packages with C extensions.
-*   **Poetry Setup:** Installs `poetry` and `poetry-plugin-export`.
+*   **uv Setup:** Installs `uv==0.10.7` via `pip` inside the builder image.
 *   **Dependency Export:**
-    *   Copies `pyproject.toml` and `poetry.lock`.
-    *   Runs `poetry lock` to ensure the lock file is up-to-date.
-    *   Exports production dependencies (including `django` and `shared` group) to `requirements.txt`.
+    *   Copies `pyproject.toml` and `uv.lock`.
+    *   Exports frozen production dependencies (including `django`, `shared`, and `codex_tools` groups) to `requirements.txt`, without emitting the local project package itself.
 *   **Virtual Environment:** Creates a Python virtual environment at `/venv` and installs dependencies from `requirements.txt` into it.
 
 ## Stage 2: Runtime

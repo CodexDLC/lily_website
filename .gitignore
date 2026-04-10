@@ -60,6 +60,7 @@ db.sqlite3-journal
 staticfiles/
 mediafiles/
 src/backend_django/logs/
+logs/
 
 # ═══════════════════════════════════════════
 # Poetry
@@ -71,6 +72,7 @@ src/backend_django/logs/
 # ═══════════════════════════════════════════
 data/logs/
 data/uploads/
+data/prod_dump/
 !data/logs/.gitkeep
 !data/uploads/.gitkeep
 

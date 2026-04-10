@@ -46,7 +46,7 @@ git log --oneline -10  # Посмотреть последние 10 коммит
 Перед мёрджем в `main` **обязательно** проверьте код локально:
 
 ```bash
-.\tools\dev\check_local.ps1  # Или pwsh tools/dev/check_local.ps1 на Linux
+python tools/dev/check.py
 ```
 
 Должно пройти:

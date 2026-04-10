@@ -1,8 +1,8 @@
-# 📜 Docker Compose (Development) (`docker-compose.yml`)
+# 📜 Docker Compose (Development) (`docker compose`)
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../README.md)
 
-This `docker-compose.yml` file defines the multi-service Docker environment for local development of the Lily Website project. It sets up all necessary services, including databases, application containers, and development tools, allowing developers to run the entire application stack with a single command.
+This `docker-compose.yml` file defines the multi-service Docker environment for local development of the Lily Website project. It sets up all necessary services, including databases, application containers, and development tools, allowing developers to run the entire application stack with a single `docker compose` command.
 
 ## Purpose
 
@@ -38,12 +38,12 @@ The development `docker-compose.yml` aims to:
 
 ### 3. `backend` (FastAPI/Django)
 
-*   **Build:** Uses `deploy/backend/Dockerfile` to build the image from the project root.
+*   **Build:** Uses `deploy/lily_backend/Dockerfile` to build the image from the project root.
 *   **Container Name:** `lily_website-backend`
 *   **Ports:** Maps host port `8000` to container port `8000`.
 *   **Env File:** `../.env`
 *   **Volumes:**
-    *   `../src/backend_django:/app`: Mounts the backend source code for hot-reloading.
+    *   `../src/lily_backend:/app`: Mounts the backend source code for hot-reloading.
     *   `uploads`: Volume for user-uploaded media files.
     *   `static_volume`: Volume for collected static files.
     *   `logs_volume`: Volume for application logs.

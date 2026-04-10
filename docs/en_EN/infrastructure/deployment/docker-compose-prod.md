@@ -1,4 +1,4 @@
-# 📜 Docker Compose (Production) (`docker-compose.prod.yml`)
+# 📜 Docker Compose (Production) (`docker compose`)
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../README.md)
 
