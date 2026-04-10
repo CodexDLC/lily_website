@@ -1,0 +1,371 @@
+{# CODEX_DJANGO_CLI BLUEPRINT STATUS: MOVE_TO_CLI_BLUEPRINT. Reason: generated app-layer or scaffold-owned template for codex-django-cli blueprints. #}
+<div x-data="seriesBookingApp()"
+     x-init="init()"
+     @client-selected.window="onClientSelected($event.detail)"
+     @client-input.window="clientFName = $event.detail.fname; clientLName = $event.detail.lname; clientPhone = $event.detail.phone; clientEmail = $event.detail.email">
+  <div class="row g-4">
+    <div class="col-xl-8 col-lg-7">
+      {% include "cabinet/booking/partials/_series_setup.html" %}
+
+      <div class="cab-builder-card p-4 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="cab-step-num">2</div>
+          <span class="fw-semibold" style="font-size: .92rem;">Client</span>
+        </div>
+        {% include "cabinet/components/widgets/client_selector.html" with obj=client_selector %}
+      </div>
+
+      <div class="cab-builder-card p-4 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="cab-step-num">3</div>
+          <span class="fw-semibold" style="font-size: .92rem;">Service</span>
+        </div>
+        <div class="row g-3">
+          <div class="col-md-8">
+            <label class="form-label small fw-semibold text-secondary">Recurring service</label>
+            <select class="form-select" x-model="selectedServiceId">
+              <option value="">Select service</option>
+              {% for service in series_services %}
+                <option value="{{ service.id }}">{{ service.title }} · {{ service.duration }} min · ${{ service.price }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold text-secondary">Preferred master</label>
+            <select class="form-select" x-model="preferredMasterId">
+              <option value="">Any available</option>
+              {% for master in series_masters %}
+                <option value="{{ master.id }}">{{ master.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="cab-builder-card p-4 mb-3">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <div class="cab-step-num">4</div>
+          <span class="fw-semibold" style="font-size: .92rem;">Sessions</span>
+        </div>
+        {% include "cabinet/booking/partials/_series_session_tabs.html" %}
+        {% include "cabinet/components/widgets/date_time_picker.html" with picker=picker %}
+      </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-5">
+      {% include "cabinet/booking/partials/_series_summary.html" %}
+    </div>
+  </div>
+</div>
+
+<script>
+function seriesBookingApp() {
+    return {
+        selectedClient: null,
+        clientFName: '',
+        clientLName: '',
+        clientPhone: '',
+        clientEmail: '',
+        selectedServiceId: '',
+        preferredMasterId: '',
+        sessionCount: {{ series_defaults.course_length }},
+        minGapDays: {{ series_defaults.min_gap_days }},
+        cadence: '{{ series_defaults.cadence|escapejs }}',
+        selectedDate: '{{ picker.default_date|escapejs }}',
+        selectedTime: '',
+        slotMatrix: {{ picker.slot_matrix_json|safe }},
+        availableDates: {},
+        loadingDates: false,
+        loadingSlots: false,
+        serviceSessions: [],
+        activeSessionIndex: 0,
+        dayLabels: {
+          {% for day in picker.available_days %}
+          '{{ day.iso }}': '{{ day.label|escapejs }}'{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        },
+        dayMonthKeys: {
+          {% for day in picker.available_days %}
+          '{{ day.iso }}': '{{ day.month_key|escapejs }}'{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        },
+        monthLabels: {
+          {% for day in picker.available_days %}
+          {% ifchanged day.month_key %}
+          '{{ day.month_key }}': '{{ day.month_label|escapejs }}',
+          {% endifchanged %}
+          {% endfor %}
+        },
+        monthKeys: [
+          {% for day in picker.available_days %}
+          {% ifchanged day.month_key %}
+          '{{ day.month_key|escapejs }}'{% if not forloop.last %},{% endif %}
+          {% endifchanged %}
+          {% endfor %}
+        ],
+        currentMonthKey: '{{ picker.available_days.0.month_key|default:"" }}',
+
+        init() {
+            this.rebuildSessions();
+            this.$watch('selectedServiceId', () => this.resetCalendarSelection());
+            this.$watch('preferredMasterId', () => this.resetCalendarSelection());
+        },
+
+        applyCadence() {
+            if (this.cadence === 'daily') {
+                this.minGapDays = 1;
+            } else if (this.cadence === 'every_2_days') {
+                this.minGapDays = 2;
+            } else if (this.cadence === 'every_3_days') {
+                this.minGapDays = 3;
+            } else if (this.cadence === 'weekly') {
+                this.minGapDays = 7;
+            }
+        },
+
+        rebuildSessions() {
+            const nextSessions = [];
+            const normalizedCount = Math.min(Math.max(parseInt(this.sessionCount || 1, 10), 1), 20);
+            this.sessionCount = normalizedCount;
+            for (let i = 0; i < normalizedCount; i++) {
+                const existing = this.serviceSessions[i] || {};
+                nextSessions.push({
+                    index: i + 1,
+                    date: existing.date || '',
+                    time: existing.time || '',
+                });
+            }
+            this.serviceSessions = nextSessions;
+            if (this.activeSessionIndex >= this.serviceSessions.length) {
+                this.activeSessionIndex = 0;
+            }
+            this.syncActiveSession();
+        },
+
+        activeSession() {
+            return this.serviceSessions[this.activeSessionIndex] || null;
+        },
+
+        switchSession(index) {
+            this.activeSessionIndex = index;
+            this.syncActiveSession();
+        },
+
+        syncActiveSession() {
+            const session = this.activeSession();
+            if (!session) return;
+            this.selectedDate = session.date || '';
+            this.currentMonthKey = this.dayMonthKeys[this.selectedDate] || this.currentMonthKey;
+            this.selectedTime = session.time || '';
+        },
+
+        assignCurrentSession() {
+            const session = this.activeSession();
+            if (!session) return;
+            session.date = this.selectedDate;
+            session.time = this.selectedTime;
+        },
+
+        visibleTimeSlots() {
+            if (!this.selectedDate) return [];
+            return this.slotMatrix[this.selectedDate] || [];
+        },
+
+        async fetchSlots() {
+            if (!this.selectedDate || !this.selectedServiceId) return;
+            const serviceId = this.selectedServiceId;
+            const masterId = this.preferredMasterId || 0;
+            this.loadingSlots = true;
+            try {
+                const params = new URLSearchParams({
+                    date: this.selectedDate,
+                    service_ids: serviceId
+                });
+                if (masterId) {
+                    params.set('master_id', masterId);
+                }
+                const url = `{% url 'cabinet:booking_fetch_slots' %}?${params.toString()}`;
+                const resp = await fetch(url);
+                const data = await resp.json();
+                this.slotMatrix[this.selectedDate] = Array.isArray(data.slots) ? data.slots : [];
+                this.ensureValidSelectedTime();
+            } catch (err) {
+                console.error("Failed to fetch slots", err);
+                this.slotMatrix[this.selectedDate] = [];
+            } finally {
+                this.loadingSlots = false;
+            }
+        },
+
+        ensureValidSelectedTime() {
+            const slots = this.visibleTimeSlots();
+            if (!slots.includes(this.selectedTime)) {
+                this.selectedTime = slots[0] || '';
+            }
+            this.assignCurrentSession();
+        },
+
+        selectDate(iso) {
+            if (!this.isSelectableDate(iso, false)) {
+                return;
+            }
+            const earliest = this.earliestDateForActiveSession();
+            if (earliest && iso < earliest) {
+                return;
+            }
+            this.selectedDate = iso;
+            this.currentMonthKey = this.dayMonthKeys[iso] || this.currentMonthKey;
+            this.selectedTime = '';
+            this.fetchSlots();
+        },
+
+        earliestDateForActiveSession() {
+            if (this.activeSessionIndex === 0) {
+                return '';
+            }
+            const prev = this.serviceSessions[this.activeSessionIndex - 1];
+            if (!prev || !prev.date) {
+                return '';
+            }
+            const base = new Date(prev.date + 'T00:00:00');
+            base.setDate(base.getDate() + parseInt(this.minGapDays, 10));
+            return base.toISOString().slice(0, 10);
+        },
+
+        isDayEnabled(iso) {
+            const earliest = this.earliestDateForActiveSession();
+            if (!earliest) return true;
+            return iso >= earliest;
+        },
+
+        isDayInCurrentMonth(iso) {
+            return (this.dayMonthKeys[iso] || '') === this.currentMonthKey;
+        },
+
+        currentMonthLabel() {
+            return this.monthLabels[this.currentMonthKey] || '{{ picker.current_month|escapejs }}';
+        },
+
+        monthDayCount() {
+            if (!this.currentMonthKey) return 0;
+            const [year, month] = this.currentMonthKey.split('-').map((value) => parseInt(value, 10));
+            return new Date(year, month, 0).getDate();
+        },
+
+        monthDayIso(dayNumber) {
+            return `${this.currentMonthKey}-${String(dayNumber).padStart(2, '0')}`;
+        },
+
+        visibleMonthDays() {
+            const dayCount = this.monthDayCount();
+            return Array.from({ length: dayCount }, (_, index) => this.monthDayIso(index + 1));
+        },
+
+        monthLeadingBlankDays() {
+            if (!this.currentMonthKey) return [];
+            const weekday = new Date(`${this.currentMonthKey}-01T12:00:00`).getDay();
+            return Array.from({ length: (weekday + 6) % 7 }, (_, index) => index);
+        },
+
+        monthTrailingBlankDays() {
+            const totalCells = this.monthLeadingBlankDays().length + this.visibleMonthDays().length;
+            const trailing = totalCells ? (7 - (totalCells % 7)) % 7 : 0;
+            return Array.from({ length: trailing }, (_, index) => index);
+        },
+
+        goMonth(step) {
+            const index = this.monthKeys.indexOf(this.currentMonthKey);
+            if (index === -1) return;
+            const nextIndex = index + step;
+            if (nextIndex < 0 || nextIndex >= this.monthKeys.length) return;
+            this.currentMonthKey = this.monthKeys[nextIndex];
+            if (!this.isDayInCurrentMonth(this.selectedDate)) {
+                const firstDay = Object.keys(this.dayMonthKeys).find((iso) => this.dayMonthKeys[iso] === this.currentMonthKey);
+                if (firstDay) {
+                    this.selectDate(firstDay);
+                }
+            }
+        },
+
+        resetCalendarSelection() {
+            this.slotMatrix = {};
+            this.selectedTime = '';
+            if (!this.selectedServiceId) {
+                this.selectedDate = '';
+                this.assignCurrentSession();
+                return;
+            }
+            this.availableDates = {};
+            if (this.selectedDate) {
+                this.selectedDate = '';
+            }
+            this.assignCurrentSession();
+        },
+
+        isSelectableDate(iso, fallbackBusy) {
+            if (!this.selectedServiceId) return false;
+            return !fallbackBusy && this.isDayEnabled(iso);
+        },
+
+        dayButtonClass(iso, fallbackBusy) {
+            if (this.selectedDate === iso) {
+                return 'btn-dark';
+            }
+            return this.isSelectableDate(iso, fallbackBusy)
+                ? 'btn-outline-secondary'
+                : 'btn-light text-muted opacity-50';
+        },
+
+        timeSlotHint() {
+            if (!this.selectedServiceId) return 'Select a service first.';
+            if (!this.selectedDate) return 'Select a date for the active session.';
+            if (this.loadingSlots) return 'Loading available times...';
+            if (!this.visibleTimeSlots().length) return 'No valid slots for the selected date.';
+            return '';
+        },
+
+        assignTime(slot) {
+            this.selectedTime = slot;
+            this.assignCurrentSession();
+        },
+
+        selectedDateText(date) {
+            if (!date) return 'Pick date';
+            return this.dayLabels[date] || date;
+        },
+
+        selectedService() {
+            return this.seriesServices().find((service) => String(service.id) === String(this.selectedServiceId)) || null;
+        },
+
+        seriesServices() {
+            return {{ series_services|safe }};
+        },
+
+        totalPrice() {
+            const service = this.selectedService();
+            if (!service) return 0;
+            return parseFloat(service.price || 0) * this.serviceSessions.length;
+        },
+
+        allSessionsScheduled() {
+            return this.serviceSessions.length > 0 && this.serviceSessions.every((session) => session.date && session.time);
+        },
+
+        onClientSelected(client) {
+            this.selectedClient = client;
+            if (client) {
+                this.clientFName = client.name.split(' ')[0] || '';
+                this.clientLName = client.name.split(' ').slice(1).join(' ') || '';
+                this.clientPhone = client.phone || '';
+                this.clientEmail = client.email || '';
+            } else {
+                this.clientFName = '';
+                this.clientLName = '';
+                this.clientPhone = '';
+                this.clientEmail = '';
+            }
+        }
+    }
+}
+</script>

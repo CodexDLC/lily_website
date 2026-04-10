@@ -1,0 +1,285 @@
+{% extends "cabinet/base_client.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Settings" %}{% endblock title %}
+
+{% block cabinet_content %}
+<div class="row g-4">
+  <div class="col-md-9 mx-auto">
+    <!-- Tabs Navigation -->
+    <ul class="nav nav-pills mb-4 gap-2" id="settingsTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active fw-semibold shadow-sm border" id="account-tab" data-bs-toggle="pill" data-bs-target="#account" type="button" role="tab" aria-controls="account" aria-selected="true">
+          <i class="bi bi-person-gear me-2"></i>{% trans "Account" %}
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link fw-semibold shadow-sm border" id="notifications-tab" data-bs-toggle="pill" data-bs-target="#notifications" type="button" role="tab" aria-controls="notifications" aria-selected="false">
+          <i class="bi bi-bell me-2"></i>{% trans "Notifications" %}
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link fw-semibold shadow-sm border" id="privacy-tab" data-bs-toggle="pill" data-bs-target="#privacy" type="button" role="tab" aria-controls="privacy" aria-selected="false">
+          <i class="bi bi-shield-lock me-2"></i>{% trans "Privacy" %}
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tabs Content -->
+    <div class="tab-content" id="settingsTabsContent">
+
+      <!-- Account Tab -->
+      <div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white border-0 pt-3 pb-0">
+            <h6 class="fw-semibold mb-0">{% trans "Personal Information" %}</h6>
+          </div>
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="profile">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small text-muted">{% trans "First Name" %}</label>
+                  <input type="text" name="first_name" class="form-control" value="{{ client.first_name }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small text-muted">{% trans "Last Name" %}</label>
+                  <input type="text" name="last_name" class="form-control" value="{{ client.last_name }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small text-muted">{% trans "Email" %}</label>
+                  <input type="email" name="email" class="form-control" value="{{ client.email }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small text-muted">{% trans "Phone" %}</label>
+                  <input type="text" name="phone" class="form-control" value="{{ client.phone|default:'' }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small text-muted">{% trans "Patronymic / Middle Name" %}</label>
+                  <input type="text" name="patronymic" class="form-control" value="{{ client.patronymic }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small text-muted">{% trans "Date of Birth" %}</label>
+                  <input type="date" name="birth_date" class="form-control" value="{{ profile.birth_date|date:'Y-m-d' }}">
+                </div>
+              </div>
+
+              <hr class="my-4">
+              <h6 class="fw-semibold mb-3">{% trans "Social Media" %}</h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label small text-muted">{% trans "Instagram" %}</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-instagram"></i></span>
+                    <input type="text" name="instagram" class="form-control border-start-0" value="{{ profile.instagram }}" placeholder="{% trans '@username' %}">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label small text-muted">{% trans "Telegram" %}</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-telegram"></i></span>
+                    <input type="text" name="telegram" class="form-control border-start-0" value="{{ profile.telegram }}" placeholder="{% trans '@username' %}">
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary btn-sm px-4">{% trans "Save Changes" %}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white border-0 pt-3 pb-0">
+            <h6 class="fw-semibold mb-0">{% trans "Login Credentials" %}</h6>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <div class="text-muted mb-1" style="font-size:.8rem;">{% trans "Email" %}</div>
+              <div class="d-flex align-items-center justify-content-between">
+                <span style="font-size:.9rem;">{{ request.user.email }}</span>
+                <button class="btn btn-sm btn-outline-secondary">{% trans "Change" %}</button>
+              </div>
+            </div>
+            <hr>
+            <div>
+              <div class="text-muted mb-1" style="font-size:.8rem;">{% trans "Password" %}</div>
+              <div class="d-flex align-items-center justify-content-between">
+                <span style="font-size:.9rem;">••••••••</span>
+                <a href="{% url 'account_reset_password' %}" class="btn btn-sm btn-outline-secondary">{% trans "Change" %}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card border-0 shadow-sm" style="border-left:3px solid #ef4444 !important;">
+          <div class="card-header bg-white border-0 pt-3 pb-0">
+            <h6 class="fw-semibold mb-0 text-danger">{% trans "Danger Zone" %}</h6>
+          </div>
+          <div class="card-body d-flex flex-column gap-3">
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <div style="font-size:.9rem;">{% trans "Deactivate account" %}</div>
+                <div class="text-muted" style="font-size:.8rem;">
+                  {% trans "Login will be blocked, notifications disabled. History is preserved." %}
+                </div>
+              </div>
+              <button class="btn btn-sm btn-outline-danger ms-3" style="white-space:nowrap;">{% trans "Deactivate" %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications Tab -->
+      <div class="tab-pane fade" id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="notifications">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-3 pb-0">
+              <h6 class="fw-semibold mb-0">{% trans "Notification Preferences" %}</h6>
+            </div>
+            <div class="card-body">
+              <div class="d-flex align-items-center justify-content-between py-3 border-bottom">
+                <div>
+                  <div class="fw-medium" style="font-size:.95rem;">{% trans "Marketing newsletter" %}</div>
+                  <div class="text-muted" style="font-size:.85rem;">{% trans "Special offers, news and personalized discounts" %}</div>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" name="consent_marketing" type="checkbox" role="switch"
+                         style="width:2.5rem;height:1.25rem;" {% if client.consent_marketing %}checked{% endif %}>
+                </div>
+              </div>
+              <div class="d-flex align-items-center justify-content-between py-3 border-bottom">
+                <div>
+                  <div class="fw-medium" style="font-size:.95rem;">{% trans "Service notifications" %}</div>
+                  <div class="text-muted" style="font-size:.85rem;">{% trans "Booking confirmations and schedule changes" %}</div>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" name="notify_service" type="checkbox" role="switch"
+                         style="width:2.5rem;height:1.25rem;" {% if profile.notify_service %}checked{% endif %}>
+                </div>
+              </div>
+              <div class="d-flex align-items-center justify-content-between py-3">
+                <div>
+                  <div class="fw-medium" style="font-size:.95rem;">{% trans "Appointment reminders" %}</div>
+                  <div class="text-muted" style="font-size:.85rem;">{% trans "SMS and email reminders 24h before visit" %}</div>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" name="notify_reminders" type="checkbox" role="switch"
+                         style="width:2.5rem;height:1.25rem;" {% if profile.notify_reminders %}checked{% endif %}>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer bg-white border-0 d-flex justify-content-end pb-3 pt-0">
+              <button type="submit" class="btn btn-primary btn-sm px-4">{% trans "Save Preferences" %}</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Privacy Tab -->
+      <div class="tab-pane fade" id="privacy" role="tabpanel" aria-labelledby="privacy-tab">
+        <form method="post">
+          <input type="hidden" name="action" value="privacy">
+          {% csrf_token %}
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0 pt-3 pb-0">
+              <h6 class="fw-semibold mb-0">{% trans "Display Preferences" %}</h6>
+            </div>
+            <div class="card-body">
+              <div class="d-flex align-items-center justify-content-between py-3 border-bottom">
+                <div>
+                  <div class="fw-medium" style="font-size:.95rem;">{% trans "Show profile photo" %}</div>
+                  <div class="text-muted" style="font-size:.85rem;">{% trans "Let masters see your avatar in appointment details" %}</div>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" name="show_avatar" type="checkbox" role="switch"
+                         style="width:2.5rem;height:1.25rem;" {% if profile.show_avatar %}checked{% endif %}>
+                </div>
+              </div>
+              <div class="d-flex align-items-center justify-content-between py-3 border-bottom">
+                <div>
+                  <div class="fw-medium" style="font-size:.95rem;">{% trans "Show birth date" %}</div>
+                  <div class="text-muted" style="font-size:.85rem;">{% trans "Receive birthday gifts and specialized offers" %}</div>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" name="show_birth_date" type="checkbox" role="switch"
+                         style="width:2.5rem;height:1.25rem;" {% if profile.show_birth_date %}checked{% endif %}>
+                </div>
+              </div>
+              <div class="d-flex align-items-center justify-content-between py-3">
+                <div>
+                  <div class="fw-medium" style="font-size:.95rem;">{% trans "Visit history" %}</div>
+                  <div class="text-muted" style="font-size:.85rem;">{% trans "Make your visits history visible for staff analytics" %}</div>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" name="show_visit_history" type="checkbox" role="switch"
+                         style="width:2.5rem;height:1.25rem;" {% if profile.show_visit_history %}checked{% endif %}>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-3 pb-0">
+              <h6 class="fw-semibold mb-0">{% trans "Data & Analytics" %}</h6>
+            </div>
+            <div class="card-body">
+              <div class="d-flex align-items-center justify-content-between py-3 border-bottom">
+                <div>
+                  <div class="fw-medium" style="font-size:.95rem;">{% trans "Personal recommendations" %}</div>
+                  <div class="text-muted" style="font-size:.85rem;">{% trans "Use your visit history for AI-driven advice" %}</div>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" name="use_recommendations" type="checkbox" role="switch"
+                         style="width:2.5rem;height:1.25rem;" {% if profile.use_recommendations %}checked{% endif %}>
+                </div>
+              </div>
+              <div class="d-flex align-items-center justify-content-between py-3">
+                <div>
+                  <div class="fw-medium" style="font-size:.95rem;">{% trans "Usage analytics" %}</div>
+                  <div class="text-muted" style="font-size:.85rem;">{% trans "Allow us to collect anonymous data to improve Lily" %}</div>
+                </div>
+                <div class="form-check form-switch mb-0">
+                  <input class="form-check-input" name="consent_analytics" type="checkbox" role="switch"
+                         style="width:2.5rem;height:1.25rem;" {% if client.consent_analytics %}checked{% endif %}>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer bg-white border-0 d-flex justify-content-end pb-3 pt-0">
+              <button type="submit" class="btn btn-primary btn-sm px-4">{% trans "Save Privacy Settings" %}</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // Preservation of active tab on reload or query param
+  document.addEventListener("DOMContentLoaded", function() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var tabParam = urlParams.get('tab');
+    var activeTab = tabParam ? '#' + tabParam : localStorage.getItem("activeSettingsTab");
+
+    if (activeTab) {
+      var tabEl = document.querySelector('button[data-bs-target="' + activeTab + '"]');
+      if (tabEl) {
+        var tab = new bootstrap.Tab(tabEl);
+        tab.show();
+      }
+    }
+
+    var tabButtons = document.querySelectorAll('button[data-bs-toggle="pill"]');
+    tabButtons.forEach(function(btn) {
+      btn.addEventListener("shown.bs.tab", function(e) {
+        localStorage.setItem("activeSettingsTab", e.target.getAttribute("data-bs-target"));
+      });
+    });
+  });
+</script>
+{% endblock cabinet_content %}

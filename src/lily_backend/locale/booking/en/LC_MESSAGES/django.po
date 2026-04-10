@@ -1,0 +1,86 @@
+# LILY Beauty Salon — booking domain translations
+# Language: en
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: lily_backend\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:76
+msgid "cancellation_policy_text_before"
+msgstr ""
+
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:77
+#, fuzzy
+#| msgid "Cancellation Reason"
+msgid "cancellation_policy_link"
+msgstr "Cancellation Reason"
+
+#: .\src\backend_django\templates\booking\steps\step_4_confirm_mock.html:78
+msgid "cancellation_policy_text_after"
+msgstr ""
+
+#: .\src\backend_django\templates\includes\_promo_notification.html:13
+msgid "btn_ui_show_promo"
+msgstr "Show Promotion"
+
+#: .\templates\features\booking\partials\summary_panel.html:11
+msgid "Ihre Daten"
+msgstr "Your Data"
+
+#: .\templates\features\booking\partials\summary_panel.html:12
+msgid "Bitte geben Sie Ihre Kontaktdaten ein"
+msgstr "Please enter your contact details"
+
+#: .\templates\features\booking\partials\summary_panel.html:27
+msgid "Vorname"
+msgstr "First Name"
+
+#: .\templates\features\booking\partials\summary_panel.html:33
+msgid "Nachname"
+msgstr "Last Name"
+
+#: .\templates\features\booking\partials\summary_panel.html:37
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: .\templates\features\booking\partials\summary_panel.html:42
+msgid "Telefonnummer"
+msgstr "Phone Number"
+
+#: .\templates\features\booking\partials\summary_panel.html:47
+msgid "Anmerkungen (Optional)"
+msgstr "Notes (Optional)"
+
+#: .\templates\features\booking\partials\summary_panel.html:48
+msgid "Besonderheiten, Allergien..."
+msgstr "Special details, allergies..."
+
+#: .\templates\features\booking\partials\summary_panel.html:57
+msgid "Bitte rufen Sie mich zur Bestätigung an"
+msgstr "Please call me for confirmation"
+
+#: .\templates\features\booking\partials\summary_panel.html:64
+msgid "Ich akzeptiere die"
+msgstr "I accept the"
+
+#: .\templates\features\booking\partials\summary_panel.html:64
+msgid "Stornierungsbedingungen"
+msgstr "cancellation policy"
+
+#: .\templates\features\booking\partials\summary_panel.html:71
+msgid "Einwilligung zur Datenverarbeitung"
+msgstr "Consent to data processing"
+
+#: .\templates\features\booking\partials\summary_panel.html:80
+msgid "Zurück"
+msgstr "Back"
+
+#: .\templates\features\booking\partials\summary_panel.html:84
+msgid "Termin verbindlich buchen"
+msgstr "Book appointment"

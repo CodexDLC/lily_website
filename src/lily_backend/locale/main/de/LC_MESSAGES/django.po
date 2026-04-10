@@ -1,0 +1,335 @@
+# LILY Beauty Salon — main domain translations
+# Language: de
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: lily_backend\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\templates\includes\_footer.html:84 .\templates\legal\faq.html:28
+#: .\templates\legal\faq.html:48
+msgid "service_cat_hair"
+msgstr "Frisuren & Haarpflege"
+
+#: .\templates\includes\_footer.html:87
+msgid "service_item_haircuts"
+msgstr "Haarschnitte"
+
+#: .\templates\includes\_footer.html:89
+msgid "service_item_coloring"
+msgstr "Färben"
+
+#: .\templates\includes\_footer.html:91
+msgid "service_item_treatment"
+msgstr "Haarbehandlung"
+
+#: .\templates\includes\_footer.html:93
+msgid "service_item_styling"
+msgstr "Styling"
+
+#: .\templates\includes\_footer.html:100 .\templates\legal\faq.html:27
+#: .\templates\legal\faq.html:47
+msgid "service_cat_nails"
+msgstr "Nagelservice"
+
+#: .\templates\includes\_footer.html:103
+msgid "service_item_manicure"
+msgstr "Maniküre"
+
+#: .\templates\includes\_footer.html:105
+msgid "service_item_pedicure"
+msgstr "Pediküre"
+
+#: .\templates\includes\_footer.html:107
+msgid "service_item_extension"
+msgstr "Verlängerung"
+
+#: .\templates\includes\_footer.html:115
+msgid "service_cat_beauty"
+msgstr "Schönheit & Pflege"
+
+#: .\templates\includes\_footer.html:120 .\templates\legal\faq.html:32
+#: .\templates\legal\faq.html:51
+msgid "service_item_lashes"
+msgstr "Wimpernverlängerung"
+
+#: .\templates\includes\_footer.html:121
+msgid "service_item_lamination"
+msgstr "Laminierung"
+
+#: .\templates\includes\_footer.html:123 .\templates\legal\faq.html:31
+msgid "service_item_massage"
+msgstr "Massage"
+
+#: .\templates\legal\faq.html:29 .\templates\legal\faq.html:49
+msgid "service_item_cosmetology"
+msgstr "Gesichtskosmetik"
+
+#: .\templates\legal\faq.html:30 .\templates\legal\faq.html:50
+msgid "service_item_depilation"
+msgstr "Epilation"
+
+msgid "cookie_modal_title"
+msgstr "Plätzchen? Ja, aber nützliche!"
+
+msgid "cookie_modal_description"
+msgstr "Wir verwenden Cookies, um Ihren Besuch so angenehm wie möglich zu gestalten. Erlauben Sie uns die anonyme Analyse — das hilft uns, unseren Service ständig zu verbessern und die Website für Sie noch komfortabler zu machen."
+
+msgid "cookie_btn_accept_all"
+msgstr "Alle akzeptieren"
+
+msgid "cookie_btn_essential"
+msgstr "Nur Notwendige"
+
+msgid "cookie_btn_settings"
+msgstr "Einstellungen"
+
+msgid "cookie_view_settings_title"
+msgstr "Privatsphäre-Einstellungen"
+
+msgid "cookie_cat_necessary_name"
+msgstr "Notwendig"
+
+msgid "cookie_cat_necessary_desc"
+msgstr "Erforderlich für das Funktionieren der Website (Buchung, Sitzung)."
+
+msgid "cookie_cat_analytics_name"
+msgstr "Analyse"
+
+msgid "cookie_cat_analytics_desc"
+msgstr "Helfen uns zu verstehen, wie Sie die Website nutzen."
+
+msgid "cookie_cat_marketing_name"
+msgstr "Marketing"
+
+msgid "cookie_cat_marketing_desc"
+msgstr "Wird zur Personalisierung von Werbung verwendet (FB Pixel и др.)."
+
+msgid "cookie_btn_save"
+msgstr "Auswahl speichern"
+msgid "impressum_page_title"
+msgstr "Impressum"
+
+msgid "impressum_title"
+msgstr "Impressum"
+
+msgid "impressum_section_tmg"
+msgstr "Angaben gemäß § 5 TMG"
+
+msgid "impressum_owner_label"
+msgstr "Inhaberin"
+
+msgid "impressum_contact_title"
+msgstr "Kontakt"
+
+msgid "impressum_phone_label"
+msgstr "Telefon"
+
+msgid "impressum_email_label"
+msgstr "E-Mail"
+
+msgid "impressum_tax_title"
+msgstr "Umsatzsteuer-ID"
+
+msgid "impressum_tax_id_desc"
+msgstr "Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz"
+
+msgid "impressum_tax_in_progress"
+msgstr "In Beantragung"
+
+msgid "impressum_dispute_title"
+msgstr "Streitschlichtung"
+
+msgid "impressum_dispute_desc_1"
+msgstr "Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:"
+
+msgid "impressum_dispute_desc_2"
+msgstr "Unsere E-Mail-Adresse finden Sie oben im Impressum."
+
+msgid "impressum_dispute_willingness"
+msgstr "Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen."
+
+msgid "impressum_liability_content_title"
+msgstr "Haftung für Inhalte"
+
+msgid "impressum_liability_content_desc"
+msgstr "Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen."
+
+msgid "impressum_liability_links_title"
+msgstr "Haftung für Links"
+
+msgid "impressum_liability_links_desc"
+msgstr "Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich."
+
+msgid "impressum_copyright_title"
+msgstr "Urheberrecht"
+
+msgid "impressum_copyright_desc"
+msgstr "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers."
+
+msgid "datenschutz_page_title"
+msgstr "Datenschutz"
+
+msgid "datenschutz_title"
+msgstr "Datenschutzerklärung"
+
+msgid "ds_section_1_title"
+msgstr "1. Datenschutz auf einen Blick"
+
+msgid "ds_section_1_subtitle_1"
+msgstr "Allgemeine Hinweise"
+
+msgid "ds_section_1_text_1"
+msgstr "Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können."
+
+msgid "ds_section_1_subtitle_2"
+msgstr "Datenerfassung auf dieser Website"
+
+msgid "ds_section_1_q1"
+msgstr "Wer ist verantwortlich für die Datenerfassung auf dieser Website?"
+
+msgid "ds_section_1_a1"
+msgstr "Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen Kontaktdaten können Sie dem Impressum dieser Website entnehmen."
+
+msgid "ds_section_1_q2"
+msgstr "Wie erfassen wir Ihre Daten?"
+
+msgid "ds_section_1_a2"
+msgstr "Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese mitteilen. Hierbei kann es sich z. B. um Daten handeln, die Sie in ein Kontaktformular eingeben. Andere Daten werden automatisch oder nach Ihrer Einwilligung beim Besuch der Website durch unsere IT-Systeme erfasst. Das sind vor allem technische Daten (z. B. Internetbrowser, Betriebssystem oder Uhrzeit des Seitenaufrufs)."
+
+msgid "ds_section_2_title"
+msgstr "2. Hosting und Server-Log-Dateien"
+
+msgid "ds_section_2_text_1"
+msgstr "Wir hosten die Inhalte unserer Website bei einem externen Dienstleister. Der Provider der Seiten erhebt und speichert automatisch Informationen in sogenannten Server-Log-Dateien, die Ihr Browser automatisch an uns übermittelt. Dies sind:"
+
+msgid "ds_section_2_li_1"
+msgstr "Browsertyp und Browserversion"
+
+msgid "ds_section_2_li_2"
+msgstr "verwendetes Betriebssystem"
+
+msgid "ds_section_2_li_3"
+msgstr "Referrer URL"
+
+msgid "ds_section_2_li_4"
+msgstr "Hostname des zugreifenden Rechners"
+
+msgid "ds_section_2_li_5"
+msgstr "Uhrzeit der Serveranfrage"
+
+msgid "ds_section_2_li_6"
+msgstr "IP-Adresse"
+
+msgid "ds_section_2_text_2"
+msgstr "Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen. Grundlage für die Datenverarbeitung ist Art. 6 Abs. 1 lit. f DSGVO."
+
+msgid "ds_section_3_title"
+msgstr "3. Allgemeine Hinweise und Pflichtinformationen"
+
+msgid "ds_section_3_subtitle_1"
+msgstr "SSL- bzw. TLS-Verschlüsselung"
+
+msgid "ds_section_3_text_1"
+msgstr "Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte, wie zum Beispiel Anfragen, die Sie an uns als Seitenbetreiber senden, eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von „http://“ auf „https://“ wechselt."
+
+msgid "ds_section_3_subtitle_2"
+msgstr "Ihre Rechte (Betroffenenrechte)"
+
+msgid "ds_section_3_text_2"
+msgstr "Sie haben im Rahmen der geltenden gesetzlichen Bestimmungen jederzeit das Recht auf:"
+
+msgid "ds_section_3_li_1_title"
+msgstr "Auskunft (Art. 15 DSGVO)"
+
+msgid "ds_section_3_li_1_text"
+msgstr "Sie haben das Recht, unentgeltlich Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung zu erhalten."
+
+msgid "ds_section_3_li_2_title"
+msgstr "Berichtigung (Art. 16 DSGVO)"
+
+msgid "ds_section_3_li_2_text"
+msgstr "Sie haben ein Recht auf Berichtigung unrichtiger Daten."
+
+msgid "ds_section_3_li_3_title"
+msgstr "Löschung (Art. 17 DSGVO)"
+
+msgid "ds_section_3_li_3_text"
+msgstr "Sie können die Löschung Ihrer bei uns gespeicherten Daten verlangen, sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen."
+
+msgid "ds_section_3_li_4_title"
+msgstr "Widerruf (Art. 7 Abs. 3 DSGVO)"
+
+msgid "ds_section_3_li_4_text"
+msgstr "Viele Datenverarbeitungsvorgänge sind nur mit Ihrer ausdrücklichen Einwilligung möglich. Sie können eine bereits erteilte Einwilligung jederzeit widerrufen."
+
+msgid "ds_section_3_li_5_title"
+msgstr "Beschwerderecht (Art. 77 DSGVO)"
+
+msgid "ds_section_3_li_5_text"
+msgstr "Im Falle von datenschutzrechtlichen Verstößen steht Ihnen ein Beschwerderecht bei der zuständigen Aufsichtsbehörde zu."
+
+msgid "ds_section_3_text_3"
+msgstr "Hierzu sowie zu weiteren Fragen zum Thema Datenschutz können Sie sich jederzeit unter der im Impressum angegebenen Adresse an uns wenden."
+
+msgid "ds_section_4_title"
+msgstr "4. Datenerfassung auf dieser Website"
+
+msgid "ds_section_4_subtitle_1"
+msgstr "Cookies"
+
+msgid "ds_section_4_text_1"
+msgstr "Unsere Internetseiten verwenden so genannte „Cookies”. Cookies sind kleine Textdateien und richten auf Ihrem Endgerät keinen Schaden an. Wir nutzen technisch notwendige Cookies, um die Funktionalität der Website zu gewährleisten, sowie Analyse-Cookies (nach Einwilligung), um unser Angebot zu verbessern."
+
+msgid "ds_section_4_subtitle_2"
+msgstr "Cookie-Einwilligungsmanagement"
+
+msgid "ds_section_4_text_2"
+msgstr "Um Ihre Einwilligung zur Verwendung von Cookies einzuholen und zu verwalten, setzen wir ein eigenes Cookie-Einwilligungs-Tool ein. Dieses Tool wird auf unseren eigenen Servern betrieben; es werden keine Daten an Drittanbieter übermittelt."
+
+msgid "ds_section_4_text_3"
+msgstr "Das Tool speichert Ihre Entscheidung (Zustimmung oder Ablehnung) in einem Cookie bzw. im lokalen Speicher (localStorage) Ihres Browsers, damit Sie beim nächsten Besuch nicht erneut gefragt werden müssen. Gespeichert wird ausschließlich Ihre Präferenz (z. B. „accepted” oder „rejected”) — keine personenbezogenen Daten."
+
+msgid "ds_section_4_text_4"
+msgstr "Die gespeicherte Einwilligung wird nach 365 Tagen automatisch zurückgesetzt. Sie können Ihre Entscheidung jederzeit über den entsprechenden Link im Footer widerrufen oder ändern."
+
+msgid "ds_section_4_text_5"
+msgstr "Rechtsgrundlage ist Art. 6 Abs. 1 lit. c DSGVO (rechtliche Verpflichtung zur nachweisbaren Einholung der Einwilligung gemäß Art. 7 DSGVO) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am rechtskonformen Betrieb der Website)."
+
+msgid "ds_section_4_subtitle_3"
+msgstr "Kontaktformular"
+
+msgid "ds_section_4_text_6"
+msgstr "Wenn Sie uns per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben aus dem Anfrageformular inklusive der von Ihnen dort angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der Erfüllung eines Vertrags zusammenhängt oder zur Durchführung vorvertraglicher Maßnahmen erforderlich ist."
+
+msgid "ds_section_5_title"
+msgstr "5. Analyse-Tools und Werbung"
+
+msgid "ds_section_5_subtitle_1"
+msgstr "Google Tag Manager"
+
+msgid "ds_section_5_text_1"
+msgstr "Wir setzen den Google Tag Manager ein. Anbieter ist die Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland. Dieses Tool erlaubt es uns, verschiedene Tracking-Skripte zentral zu verwalten. Der Tag Manager selbst erfasst keine personenbezogenen Daten, erleichtert aber die Einbindung anderer Tools, die dies tun könnten."
+
+msgid "ds_section_5_subtitle_2"
+msgstr "Google Analytics 4"
+
+msgid "ds_section_5_text_2"
+msgstr "Diese Website nutzt Funktionen des Webanalysedienstes Google Analytics 4. Anbieter ist die Google Ireland Limited („Google“). Google Analytics verwendet Cookies, die eine Analyse der Benutzung der Website durch Sie ermöglichen. Die IP-Adresse wird bei GA4 standardmäßig anonymisiert."
+
+msgid "ds_section_5_text_3"
+msgstr "Die Speicherung und Analyse der Daten erfolgt nur, wenn Sie uns hierзу über den Cookie-Banner Ihre ausdrückliche Einwilligung erteilt haben (Art. 6 Abs. 1 lit. a DSGVO)."
+
+msgid "ds_section_6_title"
+msgstr "6. Plugins und Tools"
+
+msgid "ds_section_6_subtitle_1"
+msgstr "Google Maps"
+
+msgid "ds_section_6_text_1"
+msgstr "Diese Seite nutzt den Kartendienst Google Maps. Anbieter ist die Google Ireland Limited. Zur Nutzung der Funktionen von Google Maps ist es notwendig, Ihre IP-Adresse zu speichern. Diese Informationen werden in der Regel an einen Server von Google in den USA übertragen. Der Anbieter dieser Seite hat keinen Einfluss auf diese Datenübertragung."

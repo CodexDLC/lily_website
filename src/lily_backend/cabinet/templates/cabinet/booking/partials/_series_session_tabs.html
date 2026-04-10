@@ -1,0 +1,16 @@
+{# CODEX_DJANGO_CLI BLUEPRINT STATUS: MOVE_TO_CLI_BLUEPRINT. Reason: generated app-layer or scaffold-owned template for codex-django-cli blueprints. #}
+<div class="d-flex flex-wrap gap-2 mb-3">
+  <template x-for="(session, index) in serviceSessions" :key="session.index">
+    <button type="button"
+            class="btn btn-sm"
+            :class="activeSessionIndex === index ? 'btn-dark' : 'btn-outline-secondary'"
+            @click="switchSession(index)">
+      <span x-text="'Session ' + session.index"></span>
+      <span class="ms-2 badge rounded-pill text-bg-light" x-text="selectedDateText(session.date)"></span>
+    </button>
+  </template>
+</div>
+
+<div class="text-muted small mb-3">
+  Choose date and time for each session. The next session cannot be placed earlier than the minimum gap after the previous scheduled session.
+</div>

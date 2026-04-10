@@ -1,0 +1,68 @@
+{% load i18n %}
+
+<div id="category-toggles" class="category-status-controls mb-4 bg-white rounded-3 shadow-sm border p-3 d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-4">
+        {# is_active toggle #}
+        <div class="status-toggle-item d-flex align-items-center gap-2">
+            <span class="small fw-bold text-muted text-uppercase">{% trans "Visibility" %}:</span>
+            <div class="form-check form-switch p-0 m-0 d-flex align-items-center">
+                <input class="form-check-input ms-0 me-2 cursor-pointer"
+                       type="checkbox"
+                       role="switch"
+                       id="toggle-active-{{ active_category.pk }}"
+                       {% if active_category.is_active %}checked{% endif %}
+                       hx-post="{% url "cabinet:service_category_toggle" active_category.pk %}"
+                       hx-vals='{"field": "is_active"}'
+                       hx-target="#category-toggles"
+                       hx-swap="outerHTML">
+                <label class="form-check-label small fw-medium {% if active_category.is_active %}text-success{% else %}text-danger{% endif %}"
+                       for="toggle-active-{{ active_category.pk }}">
+                    {% if active_category.is_active %}{% trans "Active" %}{% else %}{% trans "Hidden" %}{% endif %}
+                </label>
+            </div>
+        </div>
+
+        {# is_planned toggle #}
+        <div class="status-toggle-item d-flex align-items-center gap-3 ms-3 border-start ps-3">
+            <span class="small fw-bold text-muted text-uppercase">{% trans "Mode" %}:</span>
+            <div class="form-check form-switch p-0 m-0 d-flex align-items-center">
+                <input class="form-check-input ms-0 me-2 cursor-pointer"
+                       type="checkbox"
+                       role="switch"
+                       id="toggle-planned-{{ active_category.pk }}"
+                       {% if active_category.is_planned %}checked{% endif %}
+                       hx-post="{% url "cabinet:service_category_toggle" active_category.pk %}"
+                       hx-vals='{"field": "is_planned"}'
+                       hx-target="#category-toggles"
+                       hx-swap="outerHTML">
+                <label class="form-check-label small fw-medium {% if active_category.is_planned %}text-warning{% else %}text-muted{% endif %}"
+                       for="toggle-planned-{{ active_category.pk }}">
+                    {% if active_category.is_planned %}{% trans "Coming Soon" %}{% else %}{% trans "Regular" %}{% endif %}
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="small text-muted italic">
+        <i class="bi bi-info-circle me-1"></i>
+        {% if active_category.is_planned %}
+            {% trans "Clients see 'Coming Soon' badge." %}
+        {% elif not active_category.is_active %}
+            {% trans "Hidden from website." %}
+        {% else %}
+            {% trans "Publicly visible." %}
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .category-status-controls .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    .category-status-controls .form-check-input:checked[id^="toggle-planned"] {
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+    .cursor-pointer { cursor: pointer; }
+</style>

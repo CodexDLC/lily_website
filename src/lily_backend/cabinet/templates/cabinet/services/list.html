@@ -1,0 +1,159 @@
+{% extends "cabinet/base_cabinet.html" %}
+{% load i18n %}
+
+{% block cabinet_content %}
+<div class="container-fluid py-4">
+    {# Header #}
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                {% if active_category %}
+                    {{ active_category.name }}
+                {% else %}
+                    {% trans "Service Catalog" %}
+                {% endif %}
+            </h1>
+            <p class="text-muted small mb-0">
+                {% if active_category %}
+                    {% trans "Manage services in" %} {{ active_category.name }}
+                {% else %}
+                    {% trans "All available services" %}
+                {% endif %}
+                ({{ services.count }})
+            </p>
+        </div>
+        <div>
+            {# Add Service button removed as per request #}
+        </div>
+    </div>
+
+    {# Category Quick Controls #}
+    {% if active_category %}
+        {% include "cabinet/services/includes/category_toggles.html" %}
+    {% endif %}
+
+    {# Services List #}
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-muted small text-uppercase">
+                        <tr>
+                            <th class="px-4 border-0">{% trans "Service" %}</th>
+                            <th class="border-0">{% trans "Category" %}</th>
+                            <th class="border-0">{% trans "Price" %}</th>
+                            <th class="border-0">{% trans "Duration" %}</th>
+                            <th class="border-0 text-end px-4">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in services %}
+                        <tr>
+                            <td class="px-4">
+                                <div class="d-flex align-items-center">
+                                    {% if service.image %}
+                                        <img src="{{ service.image.url }}"
+                                             alt="{{ service.name }}"
+                                             class="rounded me-3 service-img-thumbnail">
+                                    {% else %}
+                                        <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center text-muted service-img-placeholder">
+                                            <i class="bi bi-image"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <div class="fw-bold">{{ service.name }}</div>
+                                        <div class="text-muted small">{{ service.slug|truncatechars:30 }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-info-soft text-info border border-info border-opacity-25 py-1 px-2">
+                                    {{ service.category.name }}
+                                </span>
+                            </td>
+                            <td class="fw-medium">
+                                €{{ service.price }}
+                                {% if service.price_info %}
+                                    <div class="text-muted small fw-normal">{{ service.price_info }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="text-secondary">
+                                <i class="bi bi-clock me-1"></i> {{ service.duration }} {% trans "min" %}
+                            </td>
+                            <td class="text-end px-4">
+                                    <button type="button"
+                                            class="btn btn-outline-secondary border-0"
+                                            title="{% trans "Quick Edit" %}"
+                                            data-codex-modal="{% url "cabinet:service_quick_edit" service.pk %}">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-search display-6 mb-3 d-block"></i>
+                                {% trans "No services found in this category" %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</div>
+
+{# Modal Container #}
+<div id="modal-container" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" id="modal-content"></div>
+    </div>
+</div>
+
+<style>
+    .bg-info-soft { background-color: rgba(13, 202, 240, 0.1); }
+    .table th { font-weight: 600; letter-spacing: 0.02em; }
+    .table td { padding-top: 1rem; padding-bottom: 1rem; }
+    .card { border-radius: 12px; overflow: hidden; }
+    .service-img-thumbnail { width: 40px; height: 40px; object-fit: cover; }
+    .service-img-placeholder { width: 40px; height: 40px; }
+</style>
+{% endblock cabinet_content %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const modalContainer = document.getElementById("modal-container");
+        const modal = new bootstrap.Modal(modalContainer);
+
+        // Listen for the codex-modal trigger or similar
+        document.body.addEventListener("click", function(e) {
+            const btn = e.target.closest("[data-codex-modal]");
+            if (btn) {
+                const url = btn.getAttribute("data-codex-modal");
+                htmx.ajax("GET", url, {target: "#modal-content"}).then(() => {
+                    modal.show();
+                });
+            }
+        });
+
+        // Close modal on success from the view
+        document.body.addEventListener("htmx:afterOnRequest", function(evt) {
+            if (evt.detail.target.id === "modal-content") {
+                try {
+                    const response = JSON.parse(evt.detail.xhr.responseText);
+                    if (response.status === "ok") {
+                        modal.hide();
+                        if (response.refresh) {
+                            window.location.reload();
+                        }
+                    }
+                } catch (e) {
+                    // Not JSON or other response, ignore
+                }
+            }
+        });
+    });
+</script>
+{% endblock extra_js %}

@@ -1,0 +1,160 @@
+{% load i18n static %}
+
+<div class="cab-modal-composer" x-data="{ loading: false }">
+    <!-- Header -->
+    <div class="cab-modal-composer__header d-flex align-items-center justify-content-between p-3 border-bottom">
+        <h5 class="m-0 fw-bold text-gradient">{% trans "Client Details" %}</h5>
+        <button type="button" class="btn-close" @click="$dispatch('close-modal')"></button>
+    </div>
+
+    <div class="cab-modal-composer__body p-0">
+        <!-- Profile Section -->
+        <div class="cab-modal-section cab-modal-section--profile p-4 border-bottom bg-light-subtle">
+            <div class="d-flex align-items-center gap-3">
+                <div class="cab-avatar cab-avatar--lg bg-primary text-white d-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width: 48px; height: 48px; font-weight: 600;">
+                    {{ client.first_name|slice:":1" }}{{ client.last_name|slice:":1" }}
+                </div>
+                <div class="flex-grow-1">
+                    <div class="fs-5 fw-bold text-dark">{{ client.full_name }}</div>
+                    <div class="d-flex gap-2 mt-1">
+                        {% if client.is_ghost %}
+                            <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2">{% trans "Shadow Client" %}</span>
+                        {% else %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2">{% trans "Active" %}</span>
+                        {% endif %}
+
+                        {% if client.status == 'blocked' %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2">{% trans "Blocked" %}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Info -->
+        <div class="cab-modal-section p-4 border-bottom">
+            <div class="row g-4">
+                <div class="col-6">
+                    <div class="text-muted small text-uppercase fw-semibold mb-1" style="font-size: 0.7rem;">{% trans "Phone" %}</div>
+                    <div class="fw-medium text-dark">{{ client.phone|default:"—" }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="text-muted small text-uppercase fw-semibold mb-1" style="font-size: 0.7rem;">{% trans "Email" %}</div>
+                    <div class="fw-medium text-dark">{{ client.email|default:"—" }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="text-muted small text-uppercase fw-semibold mb-1" style="font-size: 0.7rem;">Instagram</div>
+                    <div class="fw-medium text-dark">
+                        {% if client.user.profile.instagram %}
+                            <a href="https://instagram.com/{{ client.user.profile.instagram }}" target="_blank" class="text-decoration-none">@{{ client.user.profile.instagram }}</a>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="text-muted small text-uppercase fw-semibold mb-1" style="font-size: 0.7rem;">Telegram</div>
+                    <div class="fw-medium text-dark">
+                        {% if client.user.profile.telegram %}
+                            <a href="https://t.me/{{ client.user.profile.telegram }}" target="_blank" class="text-decoration-none">@{{ client.user.profile.telegram }}</a>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marketing & Status -->
+        <div class="cab-modal-section p-4 border-bottom bg-light-subtle">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" role="switch" id="marketingConsent"
+                               {% if client.consent_marketing %}checked{% endif %} disabled>
+                        <label class="form-check-label small fw-medium" for="marketingConsent">
+                            {% trans "Marketing Consent" %}
+                            {% if client.consent_date %}
+                                <span class="text-muted ms-1">({{ client.consent_date|date:"d.m.Y" }})</span>
+                            {% endif %}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointment History -->
+        <div class="cab-modal-section p-4">
+            <div class="small text-uppercase fw-semibold text-muted mb-3">{% trans "Appointment History" %}</div>
+            <div class="d-flex flex-column gap-2">
+                {% if client.pk %}
+                    {% for app in client.appointments.all|slice:":5" %}
+                        <div class="border rounded-3 p-3 bg-white shadow-sm">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="fw-semibold text-dark">{{ app.service.title }}</div>
+                                    <div class="text-secondary small">{{ app.datetime_start|date:"d.m.Y · H:i" }}</div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge {% if app.status == 'completed' %}bg-success-subtle text-success{% elif app.status == 'cancelled' %}bg-danger-subtle text-danger{% else %}bg-primary-subtle text-primary{% endif %}">
+                                        {{ app.get_status_display }}
+                                    </span>
+                                    {% if app.status == 'pending' or app.status == 'confirmed' %}
+                                        <a href="{% url 'booking:booking_manage' app.finalize_token %}" class="btn btn-sm btn-link p-0 text-decoration-none" target="_blank" title="{% trans "Client View" %}">
+                                            <i class="bi bi-box-arrow-up-right small"></i>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center py-3 text-muted small border border-dashed rounded-3">
+                            {% trans "No appointments found" %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-3 text-muted small border border-dashed rounded-3">
+                        {% trans "New relationship (no history)" %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Ghost Activation Info -->
+        {% if client.is_ghost %}
+            <div class="cab-modal-section p-4 bg-info-subtle border-top">
+                <div class="d-flex gap-3">
+                    <i class="bi bi-info-circle text-info fs-4"></i>
+                    <div>
+                        <div class="fw-bold text-info-emphasis">{% trans "Unlinked Account" %}</div>
+                        <div class="small text-info-emphasis">{% trans "This client is currently managed manually by staff. Once they register with their phone/email, the system will offer to link these records." %}</div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Actions -->
+    <div class="cab-modal-section cab-modal-section--actions p-4 d-flex gap-2 justify-content-end bg-light-subtle border-top">
+        <button type="button" class="btn btn-outline-secondary px-4" @click="$dispatch('close-modal')">
+            {% trans "Close" %}
+        </button>
+        {% if client.pk %}
+            {% url 'admin:system_client_change' client.pk as client_admin_url %}
+            {% if client_admin_url %}
+            <a href="{{ client_admin_url }}" class="btn btn-primary cab-btn-shadow px-4" target="_blank">
+                <i class="bi bi-pencil me-2"></i>
+                {% trans "Edit in Admin" %}
+            </a>
+            {% endif %}
+        {% elif client.user_id %}
+            {% url 'admin:auth_user_change' client.user_id as user_admin_url %}
+            {% if user_admin_url %}
+            <a href="{{ user_admin_url }}" class="btn btn-primary cab-btn-shadow px-4" target="_blank">
+                <i class="bi bi-person-gear me-2"></i>
+                {% trans "Edit User" %}
+            </a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>

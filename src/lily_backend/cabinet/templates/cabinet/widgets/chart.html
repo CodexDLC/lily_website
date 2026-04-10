@@ -1,0 +1,87 @@
+<div class="card border-0 shadow-sm h-100"
+     x-data="{
+       cfg: {{ data|jsonify|force_escape }},
+       chart: null,
+       init() {
+         const ctx = this.$refs.canvas;
+         if (!ctx) return;
+         const d = this.cfg;
+         this.chart = new Chart(ctx, {
+           type: d.type || 'line',
+           data: {
+             labels: d.chart_labels || [],
+             datasets: d.datasets || [{
+               label: d.title,
+               data: d.chart_data || [],
+               borderColor: d.color || '#4f46e5',
+               backgroundColor: d.bg_color || 'rgba(79,70,229,0.08)',
+               fill: true,
+               tension: 0.3,
+               borderWidth: 2,
+               pointRadius: 0,
+               pointHoverRadius: 4,
+               pointBackgroundColor: '#fff',
+             }]
+           },
+           options: {
+             responsive: true,
+             maintainAspectRatio: false,
+             plugins: {
+               legend: { display: false },
+               tooltip: {
+                 callbacks: {
+                   label: ctx => '€' + ctx.parsed.y.toLocaleString()
+                 }
+               }
+             },
+             scales: {
+               y: {
+                 display: false,
+                 beginAtZero: true,
+               },
+               x: {
+                 grid: { display: false },
+                 ticks: {
+                   font: { size: 10 },
+                   color: '#94a3b8',
+                   maxRotation: 0,
+                   autoSkip: true,
+                   maxTicksLimit: 7,
+                 },
+                 border: { display: false },
+               }
+             }
+           }
+         });
+       }
+     }">
+  <div class="card-header bg-white border-0 pt-3 pb-0 d-flex align-items-center justify-content-between">
+    <h6 class="fw-semibold mb-0"
+        style="font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b">
+      <template x-if="cfg.icon">
+        <span class="bi me-2" :class="cfg.icon" style="color:var(--cab-primary)"></span>
+      </template>
+      <span x-text="cfg.title"></span>
+    </h6>
+    <template x-if="cfg.subtitle">
+      <span class="text-muted" style="font-size:.75rem" x-text="cfg.subtitle"></span>
+    </template>
+  </div>
+  <div class="card-body d-flex flex-column">
+    <template x-if="cfg.kpi_value">
+      <div class="d-flex align-items-end gap-3 mb-3">
+        <div class="fw-bold" style="font-size:2rem;line-height:1" x-text="cfg.kpi_value"></div>
+        <template x-if="cfg.kpi_trend">
+          <div class="mb-1" style="font-size:.8rem;">
+            <span :style="{ color: cfg.kpi_trend.startsWith('+') ? '#16a34a' : '#dc2626' }"
+                  x-text="(cfg.kpi_trend.startsWith('+') ? '↑ ' : '↓ ') + cfg.kpi_trend"></span>
+            <span class="text-muted ms-1" x-text="cfg.kpi_trend_label"></span>
+          </div>
+        </template>
+      </div>
+    </template>
+    <div style="flex:1;min-height:180px;position:relative;">
+      <canvas x-ref="canvas"></canvas>
+    </div>
+  </div>
+</div>

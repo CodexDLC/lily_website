@@ -139,5 +139,6 @@ def setup_logging(settings: CommonSettings, service_name: str) -> None:
     logging.getLogger("httpx").setLevel(logging.WARNING)
     logging.getLogger("aiosqlite").setLevel(logging.INFO)
     logging.getLogger("arq").setLevel(logging.INFO)
+    logging.getLogger("asyncio").setLevel(logging.INFO)
 
     logger.info(f"LoggerSetup | service={service_name} status=success path='{base_log_dir}'")
