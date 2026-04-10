@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "impressum_page_title" %} | {{ site_settings.company_name }}{% endblock title %}
+
+{% block body_class %}legal-page{% endblock body_class %}
+
+{% block header_extra %}{% endblock header_extra %}
+
+{% block content %}
+<main class="legal-page">
+    <div class="container">
+        <div class="legal-container">
+            <h1 class="legal-title">{% trans "impressum_title" %}</h1>
+
+            <section class="legal-section">
+                <h2>{% trans "impressum_section_tmg" %}</h2>
+                <p>
+                    <strong>{{ site_settings.company_name }}</strong><br>
+                    {% trans "impressum_owner_label" %}: {{ site_settings.owner_name }}<br>
+                    {{ site_settings.address }}<br>
+                    {{ site_settings.postal_code }} {{ site_settings.city }}<br>
+                    {{ site_settings.country }}
+                </p>
+            </section>
+
+            <section class="legal-section">
+                <h3>{% trans "impressum_contact_title" %}</h3>
+                <p>
+                    {% trans "impressum_phone_label" %}: <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a><br>
+                    {% trans "impressum_email_label" %}: <a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a>
+                </p>
+            </section>
+
+            <section class="legal-section">
+                <h3>{% trans "impressum_tax_title" %}</h3>
+                <p>
+                    {% trans "impressum_tax_id_desc" %}:<br>
+                    <em>{{ site_settings.tax_number|default:_("impressum_tax_in_progress") }}</em>
+                </p>
+            </section>
+
+            <section class="legal-section">
+                <h3>{% trans "impressum_dispute_title" %}</h3>
+                <p>
+                    {% trans "impressum_dispute_desc_1" %}
+                    <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr/</a>.<br>
+                    {% trans "impressum_dispute_desc_2" %}
+                </p>
+                <p>
+                    {% trans "impressum_dispute_willingness" %}
+                </p>
+            </section>
+
+            <section class="legal-section">
+                <h3>{% trans "impressum_liability_content_title" %}</h3>
+                <p>{% trans "impressum_liability_content_desc" %}</p>
+
+                <h3>{% trans "impressum_liability_links_title" %}</h3>
+                <p>{% trans "impressum_liability_links_desc" %}</p>
+
+                <h3>{% trans "impressum_copyright_title" %}</h3>
+                <p>{% trans "impressum_copyright_desc" %}</p>
+            </section>
+        </div>
+    </div>
+</main>
+{% endblock %}

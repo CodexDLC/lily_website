@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "datenschutz_page_title" %} | {{ site_settings.company_name }}{% endblock title %}
+
+{% block header_extra %}{% endblock header_extra %}
+
+{% block body_class %}legal-page{% endblock %}
+
+{% block content %}
+<main class="legal-page">
+    <div class="container">
+        <div class="legal-container">
+            <h1 class="legal-title">{% trans "datenschutz_title" %}</h1>
+
+            <section class="legal-section">
+                <h2>{% trans "ds_section_1_title" %}</h2>
+                <h3>{% trans "ds_section_1_subtitle_1" %}</h3>
+                <p>{% trans "ds_section_1_text_1" %}</p>
+
+                <h3>{% trans "ds_section_1_subtitle_2" %}</h3>
+                <p><strong>{% trans "ds_section_1_q1" %}</strong><br>
+                {% trans "ds_section_1_a1" %}</p>
+
+                <p><strong>{% trans "ds_section_1_q2" %}</strong><br>
+                {% trans "ds_section_1_a2" %}</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>{% trans "ds_section_2_title" %}</h2>
+                <p>{% trans "ds_section_2_text_1" %}</p>
+                <ul>
+                    <li>{% trans "ds_section_2_li_1" %}</li>
+                    <li>{% trans "ds_section_2_li_2" %}</li>
+                    <li>{% trans "ds_section_2_li_3" %}</li>
+                    <li>{% trans "ds_section_2_li_4" %}</li>
+                    <li>{% trans "ds_section_2_li_5" %}</li>
+                    <li>{% trans "ds_section_2_li_6" %}</li>
+                </ul>
+                <p>{% trans "ds_section_2_text_2" %}</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>{% trans "ds_section_3_title" %}</h2>
+                <h3>{% trans "ds_section_3_subtitle_1" %}</h3>
+                <p>{% trans "ds_section_3_text_1" %}</p>
+
+                <h3>{% trans "ds_section_3_subtitle_2" %}</h3>
+                <p>{% trans "ds_section_3_text_2" %}</p>
+                <ul>
+                    <li><strong>{% trans "ds_section_3_li_1_title" %}:</strong> {% trans "ds_section_3_li_1_text" %}</li>
+                    <li><strong>{% trans "ds_section_3_li_2_title" %}:</strong> {% trans "ds_section_3_li_2_text" %}</li>
+                    <li><strong>{% trans "ds_section_3_li_3_title" %}:</strong> {% trans "ds_section_3_li_3_text" %}</li>
+                    <li><strong>{% trans "ds_section_3_li_4_title" %}:</strong> {% trans "ds_section_3_li_4_text" %}</li>
+                    <li><strong>{% trans "ds_section_3_li_5_title" %}:</strong> {% trans "ds_section_3_li_5_text" %}</li>
+                </ul>
+
+                <p>{% trans "ds_section_3_text_3" %}</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>{% trans "ds_section_4_title" %}</h2>
+                <h3>{% trans "ds_section_4_subtitle_1" %}</h3>
+                <p>{% trans "ds_section_4_text_1" %}</p>
+
+                <h3>{% trans "ds_section_4_subtitle_2" %}</h3>
+                <p>{% trans "ds_section_4_text_2" %}</p>
+                <p>{% trans "ds_section_4_text_3" %}</p>
+                <p>{% trans "ds_section_4_text_4" %}</p>
+                <p>{% trans "ds_section_4_text_5" %}</p>
+
+                <h3>{% trans "ds_section_4_subtitle_3" %}</h3>
+                <p>{% trans "ds_section_4_text_6" %}</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>{% trans "ds_section_5_title" %}</h2>
+                <h3>{% trans "ds_section_5_subtitle_1" %}</h3>
+                <p>{% trans "ds_section_5_text_1" %}</p>
+
+                <h3>{% trans "ds_section_5_subtitle_2" %}</h3>
+                <p>{% trans "ds_section_5_text_2" %}</p>
+                <p>{% trans "ds_section_5_text_3" %}</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>{% trans "ds_section_6_title" %}</h2>
+                <h3>{% trans "ds_section_6_subtitle_1" %}</h3>
+                <p>{% trans "ds_section_6_text_1" %}</p>
+            </section>
+        </div>
+    </div>
+</main>
+{% endblock %}

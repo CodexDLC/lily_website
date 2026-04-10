@@ -1,0 +1,56 @@
+{% load i18n %}
+{% if not cart.is_empty %}
+  <div class="bk-cart-panel" id="bk-cart-panel">
+
+    <div class="bk-panel-header">
+    <h2 class="bk-panel-title">{% trans "Ihre Buchung" %}</h2>
+    <p class="bk-panel-subtitle">{% trans "Gewünschte Leistungen auswählen" %}</p>
+    </div>
+    {% if error %}
+      <div class="bk-error-alert">
+{{ error }}
+      </div>
+    {% endif %}
+
+
+    <!-- Selected Services List -->
+    <ul class="bk-cart-list">
+      {% for item in cart.items %}
+        <li class="bk-cart-item">
+          <div class="bk-cart-item__info">
+            <span class="bk-cart-item__name">{{ item.service_title }}</span>
+            <span class="bk-cart-item__meta">{{ item.duration }} Min. · {{ item.price }} €</span>
+          </div>
+          <button class="bk-cart-item__remove"
+                  hx-post="{% url 'booking:cart_remove' %}"
+                  hx-vals='{"service_id": "{{ item.service_id }}"}'
+                  hx-target="#bk-cart-panel"
+                  hx-swap="outerHTML"
+                  title="{% trans 'Aus der Buchung entfernen' %}">
+            <svg width="18"
+                 height="18"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+<line x1="18" y1="6" x2="6" y2="18"></line>
+<line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <div class="bk-panel-nav bk-flex-end">
+      <button class="bk-btn-next"
+              hx-post="{% url 'booking:cart_set_stage' %}"
+              hx-target="#booking-wizard-content"
+              hx-vals='{"stage": 2}'>
+        {% trans "Weiter" %} →
+      </button>
+    </div>
+
+  </div>
+{% endif %}

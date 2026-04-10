@@ -1,0 +1,42 @@
+{% load static %}
+{% load i18n %}
+
+<script type="application/ld+json">
+[
+  {% if owner %}
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "{{ owner.name }}",
+    "jobTitle": "{{ owner.title }}",
+    "image": "{{ request.build_absolute_uri }}{% if owner.photo %}{{ owner.photo.url }}{% else %}{% static 'img/lily.webp' %}{% endif %}",
+    "url": "{{ request.build_absolute_uri }}",
+    {% if owner.instagram %}
+    "sameAs": "https://instagram.com/{{ owner.instagram }}",
+    {% endif %}
+    "memberOf": {
+      "@type": "Organization",
+      "@id": "https://lily-salon.de/#organization"
+    }
+  }{% if team %},{% endif %}
+  {% endif %}
+
+  {% for master in team %}
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "{{ master.name }}",
+    "jobTitle": "{{ master.title }}",
+    "image": "{{ request.build_absolute_uri }}{% if master.photo %}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}",
+    "url": "{{ request.build_absolute_uri }}",
+    {% if master.instagram %}
+    "sameAs": "https://instagram.com/{{ master.instagram }}",
+    {% endif %}
+    "memberOf": {
+      "@type": "Organization",
+      "@id": "https://lily-salon.de/#organization"
+    }
+  }{% if not forloop.last %},{% endif %}
+  {% endfor %}
+]
+</script>

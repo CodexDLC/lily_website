@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}{{ static_content.buchungsregeln_title }} | LILY Beauty Salon{% endblock %}
+
+{% block body_class %}legal-page{% endblock %}
+
+{% block content %}
+<main class="legal-page">
+    <div class="container">
+        <div class="legal-container">
+            <h1 class="legal-title">{{ static_content.buchungsregeln_title }}</h1>
+
+            <section class="legal-section">
+                <h2>{{ static_content.buchungsregeln_s1_title }}</h2>
+                <p>{{ static_content.buchungsregeln_s1_p1 }}</p>
+                <p>
+                    {{ static_content.buchungsregeln_s1_p2 }}
+                    <a href="tel:+4917659423704">+49 176 59423704</a> /
+                    <a href="mailto:info@lily-salon.de">info@lily-salon.de</a>
+                </p>
+            </section>
+
+            <section class="legal-section">
+                <h2>{{ static_content.buchungsregeln_s2_title }}</h2>
+                <p>{{ static_content.buchungsregeln_s2_p1 }}</p>
+                <p>{{ static_content.buchungsregeln_s2_p2 }}</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>{{ static_content.buchungsregeln_s3_title }}</h2>
+                <p>{{ static_content.buchungsregeln_s3_p1 }}</p>
+            </section>
+
+            <section class="legal-section">
+                <h2>{{ static_content.buchungsregeln_s4_title }}</h2>
+                <p>
+                    {{ static_content.buchungsregeln_s4_p1 }}<br>
+                    {% trans "Telefonnummer" %}: <a href="tel:+4917659423704">+49 176 59423704</a><br>
+                    E-Mail: <a href="mailto:info@lily-salon.de">info@lily-salon.de</a>
+                </p>
+            </section>
+
+        </div>
+    </div>
+</main>
+{% endblock %}

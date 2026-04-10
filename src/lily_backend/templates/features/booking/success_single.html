@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<section class="bk-success-wrapper">
+  <div class="bk-success">
+    <div class="bk-success__icon">✓</div>
+    <h1 class="bk-success__title">{% trans "Buchung bestätigt!" %}</h1>
+
+    <p class="bk-success__subtitle">{% trans "Vielen Dank für Ihre Buchung. Wir freuen uns auf Ihren Besuch!" %}</p>
+
+    <div class="bk-success__details">
+      <p><strong>{% trans "Leistung" %}:</strong> <span>{{ appointment.service.name }}</span></p>
+      <p><strong>{% trans "Datum und Uhrzeit" %}:</strong> <span>{{ appointment.datetime_start|date:"d.m.Y H:i" }}</span></p>
+      <p><strong>{% trans "Dauer" %}:</strong> <span>{{ appointment.service.duration }} {% trans "min" %}</span></p>
+    </div>
+
+    <p class="bk-success__note">
+      {% trans "Eine Bestätigung wurde an Ihre E-Mail / Telefonnummer gesendet." %}<br>
+      {% trans "Zur Stornierung или Umbuchung nutzen Sie bitte den Link in der E-Mail." %}
+    </p>
+
+    <a href="{% url 'main:index' %}" class="bk-success__back">{% trans "Zur Startseite" %}</a>
+  </div>
+</section>
+{% endblock content %}

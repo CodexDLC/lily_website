@@ -1,0 +1,21 @@
+{% load i18n %}
+<div class="bk-slots-container fade-in">
+  {% if not slots %}
+    <div class="bk-slots-placeholder">
+      <span class="bk-slots-placeholder__icon">⌛</span>
+      <p>{% trans "Keine freien Termine für dieses Datum gefunden." %}</p>
+    </div>
+  {% else %}
+    <div class="bk-slots-grid">
+      {% for slot in slots %}
+        <button class="bk-slot-btn {% if selected_time == slot %}active{% endif %}"
+                hx-post="{% url 'booking:scheduler_confirm_time' %}"
+                hx-vals='{"time": "{{ slot }}", "date": "{{ date|date:"Y-m-d" }}"{% if service_id %}, "service_id": "{{ service_id }}"{% endif %}}'
+                hx-target="#booking-wizard-content"
+                hx-swap="innerHTML">
+          {{ slot }}
+        </button>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

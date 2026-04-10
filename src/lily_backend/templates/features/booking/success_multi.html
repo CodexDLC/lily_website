@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block content %}
+<section class="bk-success-wrapper">
+  <div class="bk-success">
+    <div class="bk-success__icon">✓</div>
+    <h1 class="bk-success__title">{% trans "Buchung erfolgreich!" %}</h1>
+    <p class="bk-success__subtitle">{% trans "Vielen Dank für Ihre Buchung. Wir freuen uns на Ihren Besuch!" %}</p>
+
+    <div class="bk-success__groups">
+      {% for item in group.items.all %}
+        <div class="bk-success__group-item">
+          <p><strong>{% trans "Leistung" %}:</strong> <span>{{ item.appointment.service.name }}</span></p>
+          <p><strong>{% trans "Datum & Uhrzeit" %}:</strong> <span>{{ item.appointment.datetime_start|date:"d.m.Y H:i" }}</span></p>
+          <p><strong>{% trans "Master" %}:</strong> <span>{{ item.appointment.master.name }}</span></p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="bk-success__actions">
+      <a href="{% url 'main:index' %}" class="bk-success__btn">{% trans "Zur Startseite" %}</a>
+    </div>
+  </div>
+</section>
+{% endblock content %}

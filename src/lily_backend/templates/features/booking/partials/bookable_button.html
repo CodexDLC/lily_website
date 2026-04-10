@@ -1,0 +1,11 @@
+{% load i18n %}
+<button class="bk-btn-bookable {% if is_selected %}bk-btn-bookable--selected{% endif %}"
+        hx-post="{% if is_selected %}{% url 'booking:cart_remove' %}{% else %}{% url 'booking:cart_add' %}{% endif %}"
+        hx-vals='{"service_id": "{{ service_id }}"}'
+        hx-target="this"
+        hx-swap="outerHTML"
+        title="{% if is_selected %}{% trans 'В корзине' %}{% else %}{% trans 'Записаться' %}{% endif %}">
+    <svg class="bk-icon-morph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path class="bk-icon-path" d="M12 5v14M5 12h14" />
+    </svg>
+</button>

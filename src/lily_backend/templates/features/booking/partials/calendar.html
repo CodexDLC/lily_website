@@ -1,0 +1,57 @@
+{% load i18n %}
+<div class="bk-calendar" id="{{ calendar_target_id|default:'bk-calendar' }}">
+<div class="bk-calendar__header">
+  <button class="bk-calendar__nav-btn"
+          {% if not can_go_prev %}disabled{% endif %}
+          hx-get="{% url 'booking:scheduler_calendar' %}?month={{ prev_month }}&year={{ prev_year }}{% if service_id %}&service_id={{ service_id }}{% endif %}"
+          hx-target="#{{ calendar_target_id|default:'bk-calendar' }}"
+          hx-swap="outerHTML">
+    ←
+  </button>
+  <div class="bk-calendar__month">
+    {{ month_label }}
+  </div>
+  <button class="bk-calendar__nav-btn"
+          {% if not can_go_next %}disabled{% endif %}
+          hx-get="{% url 'booking:scheduler_calendar' %}?month={{ next_month }}&year={{ next_year }}{% if service_id %}&service_id={{ service_id }}{% endif %}"
+          hx-target="#{{ calendar_target_id|default:'bk-calendar' }}"
+          hx-swap="outerHTML">
+    →
+  </button>
+</div>
+
+<div class="bk-calendar__grid">
+  <div class="bk-calendar__weekday">{% trans "Mo" %}</div>
+  <div class="bk-calendar__weekday">{% trans "Di" %}</div>
+  <div class="bk-calendar__weekday">{% trans "Mi" %}</div>
+  <div class="bk-calendar__weekday">{% trans "Do" %}</div>
+  <div class="bk-calendar__weekday">{% trans "Fr" %}</div>
+  <div class="bk-calendar__weekday">{% trans "Sa" %}</div>
+  <div class="bk-calendar__weekday">{% trans "So" %}</div>
+
+  {% for day in calendar_data %}
+    {% if day.num != "0" %}
+    <button class="bk-calendar__day
+                   {% if day.is_today %}today{% endif %}
+                   {% if day.is_past %}disabled{% endif %}
+                   {% if day.is_available %}available{% endif %}
+                   {% if day.is_active %}active{% endif %}
+                   {% if not day.is_available %}disabled{% endif %}"
+            {% if day.is_available %}
+            hx-get="{% url 'booking:scheduler_slots' %}?date={{ day.date }}{% if service_id %}&service_id={{ service_id }}{% endif %}"
+            hx-target="#bk-slots-panel"
+            hx-swap="innerHTML"
+            hx-on:click="document.querySelectorAll('.bk-calendar__day').forEach(b => b.classList.remove('active')); this.classList.add('active')"
+            {% else %}
+            disabled
+            {% endif %}
+            aria-label="{{ day.date }}">
+
+      {{ day.num }}
+    </button>
+    {% else %}
+    <div class="bk-calendar__day bk-calendar__day--empty"></div>
+    {% endif %}
+  {% endfor %}
+</div>
+</div>
