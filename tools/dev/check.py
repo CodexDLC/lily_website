@@ -19,14 +19,6 @@ class LilyCheckRunner(BaseCheckRunner):
 
     def __init__(self, project_root: Path):
         super().__init__(project_root)
-        # Skip hadolint locally as it requires specific binaries or Docker Hub access
-        # which can be unstable on Windows environments.
-        os.environ["SKIP"] = os.environ.get("SKIP", "")
-        if "hadolint-docker" not in os.environ["SKIP"]:
-            if os.environ["SKIP"]:
-                os.environ["SKIP"] += ",hadolint-docker"
-            else:
-                os.environ["SKIP"] = "hadolint-docker"
 
     def docker_compose(self, args: str) -> tuple[bool, str]:
         env = os.environ.copy()
@@ -165,6 +157,32 @@ class LilyCheckRunner(BaseCheckRunner):
 
         self.print_skip("Skipping Docker validation.")
         return True
+
+    def run_ci(self) -> None:
+        """Override CI gate to ensure tests run BEFORE heavy Docker validation."""
+        # Clear screen for fresh output
+        os.system("cls" if os.name == "nt" else "clear")
+
+        print(f"{Colors.HEADER}{Colors.BOLD}=== {self.config.project_name} CI gate ==={Colors.ENDC}")
+
+        # 1. Static analysis
+        if not self.check_quality():
+            sys.exit(1)
+        if not self.check_types():
+            sys.exit(1)
+        if not self.check_security():
+            sys.exit(1)
+
+        # 2. Fast tests (Unit, Integration)
+        for stage in self.config.test_stages:
+            if not self.run_tests(stage):
+                sys.exit(1)
+
+        # 3. Heavy validation (Docker)
+        if not self.extra_checks():
+            sys.exit(1)
+
+        print(f"\n{Colors.GREEN}{Colors.BOLD}ALL CI CHECKS PASSED!{Colors.ENDC}")
 
     def run_all(self) -> None:
         """Override to run unit tests BEFORE heavy Docker validation."""
