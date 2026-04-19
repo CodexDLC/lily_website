@@ -69,6 +69,12 @@ dev = [
     "pytest-asyncio",
     "pytest-django",
     "pytest-cov>=5.0.0,<7.0.0",
+    "pytest-mock>=3.14.0",
+    "pytest-httpx>=0.35.0",
+    "fakeredis>=2.26.0",
+    "freezegun>=1.5.1",
+    "factory-boy>=3.3.1",
+    "responses>=0.25.3",
     "pre-commit",
     "qrcode>=7.0,<8.0",
     "djlint>=1.36.4,<2.0.0",
@@ -127,14 +133,15 @@ python_functions = ["test_*"]
 DJANGO_SETTINGS_MODULE = "core.settings.test"
 pythonpath = ["src/lily_backend", "src", "."]
 markers = [
-    "unit: Unit tests",
-    "integration: Integration tests",
+    "unit: Unit tests (fast, isolated, sqlite in-memory + fakeredis + mocks)",
+    "integration: Integration tests (sqlite + fakeredis + Django TestClient, no external services)",
+    "e2e: End-to-end tests requiring live docker-compose stack (Postgres, Redis, Mailpit, workers)",
 ]
 addopts = "--tb=short --cov --cov-report=term-missing --cov-report=html:htmlcov"
 
 # === Coverage ===
 [tool.coverage.run]
-source = ["src/lily_backend"]
+source = ["src"]
 omit = [
     "*/migrations/*",
     "*/tests/*",
@@ -151,6 +158,37 @@ omit = [
     # Infrastructure & SEO
     "*/core/sitemaps.py",
     "*/signals.py",
+    # --- GREEN-tier glue (entry points, declarative config, UI-only) ---
+    # lily_backend glue
+    "*/lily_backend/core/logger.py",
+    "*/lily_backend/*/urls.py",
+    # workers entry points / config
+    "*/workers/notification_worker/worker.py",
+    "*/workers/system_worker/worker.py",
+    "*/workers/notification_worker/config.py",
+    "*/workers/system_worker/config.py",
+    "*/workers/core/config.py",
+    "*/workers/core/tasks.py",
+    "*/workers/core/base.py",
+    "*/workers/*/tasks/task_aggregator.py",
+    # telegram_bot bootstrap & declarative layers
+    "*/telegram_bot/app_telegram.py",
+    "*/telegram_bot/core/config.py",
+    "*/telegram_bot/core/factory.py",
+    "*/telegram_bot/core/routers.py",
+    "*/telegram_bot/core/container.py",
+    "*/telegram_bot/core/logger.py",
+    "*/telegram_bot/core/settings.py",
+    "*/telegram_bot/core/garbage_collector.py",
+    "*/telegram_bot/core/api_client.py",
+    "*/telegram_bot/features/*/feature_setting.py",
+    "*/telegram_bot/features/*/resources/keyboards.py",
+    "*/telegram_bot/features/*/resources/texts.py",
+    "*/telegram_bot/features/*/resources/callbacks.py",
+    "*/telegram_bot/features/*/ui/*",
+    "*/telegram_bot/infrastructure/redis/container.py",
+    "*/telegram_bot/infrastructure/models/base.py",
+    "*/telegram_bot/resources/*",
 ]
 
 [tool.coverage.report]
@@ -177,7 +215,7 @@ custom_html = "true"
 # === Bandit ===
 [tool.bandit]
 exclude_dirs = ["tests", "tools"]
-targets = ["src/lily_backend"]
+targets = ["src"]
 skips = ["B101", "B308", "B703"]
 
 # === pip-audit: known pre-existing CVEs in transitive deps (not our code) ===
@@ -196,6 +234,6 @@ integration-requires = "Mailpit"
 test-stages = ["unit", "integration"]
 prompt-test-stages = ["unit", "integration"]
 live-output-test-stages = ["unit", "integration"]
-test-paths = ["tests/lily_backend"]
+test-paths = ["tests"]
 test-markers = { unit = "not integration" }
-types-paths = ["src/lily_backend", "tools"]
+types-paths = ["src", "tools"]
