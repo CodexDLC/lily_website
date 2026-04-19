@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from codex_django.booking.adapters.availability import DjangoAvailabilityAdapter
@@ -208,24 +208,51 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
         target_date: date,
         audience: str = "public",
     ) -> list[str]:
+        from django.utils import timezone
+
         from ..booking_settings import BookingSettings
+        from ..models import Appointment, MasterDayOff, MasterWorkingDay
 
         settings = BookingSettings.load()
         if audience == "public" and settings.book_only_from_next_day and target_date <= date.today():
             return []
-        step = timedelta(minutes=settings.step_minutes or 30)
-        adapter = self._build_adapter(target_date=target_date)
-        availability = adapter.build_resources_availability(resource_ids=[resource_id], target_date=target_date)
-        day_availability = availability.get(str(resource_id))
-        if not day_availability or not day_availability.free_windows:
+
+        if MasterDayOff.objects.filter(master_id=resource_id, date=target_date).exists():
             return []
 
+        working_day = MasterWorkingDay.objects.filter(master_id=resource_id, weekday=target_date.weekday()).first()
+        if working_day:
+            start_time = working_day.start_time
+            end_time = working_day.end_time
+        else:
+            day_name = target_date.strftime("%A").lower()
+            if getattr(settings, f"{day_name}_is_closed", False):
+                return []
+            start_time = getattr(settings, f"work_start_{day_name}", None)
+            end_time = getattr(settings, f"work_end_{day_name}", None)
+
+        if not start_time or not end_time:
+            return []
+
+        step = timedelta(minutes=settings.step_minutes or 30)
+        window_start = timezone.make_aware(datetime.combine(target_date, start_time))
+        window_end = timezone.make_aware(datetime.combine(target_date, end_time))
+        busy_ranges = [
+            (appt.datetime_start, appt.datetime_start + timedelta(minutes=appt.duration_minutes))
+            for appt in Appointment.objects.filter(
+                master_id=resource_id,
+                datetime_start__date=target_date,
+                status__in=[Appointment.STATUS_PENDING, Appointment.STATUS_CONFIRMED],
+            )
+        ]
+
         slots: list[str] = []
-        for window_start, window_end in day_availability.free_windows:
-            current = window_start.replace(second=0, microsecond=0)
-            while current + step <= window_end:
+        current = window_start.replace(second=0, microsecond=0)
+        while current + step <= window_end:
+            candidate_end = current + step
+            if all(candidate_end <= busy_start or current >= busy_end for busy_start, busy_end in busy_ranges):
                 slots.append(current.strftime("%H:%M"))
-                current += step
+            current += step
         return slots
 
     def create_booking(

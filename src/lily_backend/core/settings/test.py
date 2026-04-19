@@ -29,6 +29,11 @@ CACHES = {
     }
 }
 
+# Keep Django test clients fully local. The production Redis-backed session
+# engine keeps async Redis connections and can trip over closed event loops in
+# sync pytest/Django client flows on Windows.
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
 # Disable Redis password for tests
 REDIS_PASSWORD = None
 

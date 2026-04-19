@@ -15,11 +15,16 @@ class TestCabinetBookingAvailability:
         return CabinetBookingAvailabilityService(gateway=mock_gateway)
 
     def test_get_available_dates_logic(self, service):
-        # Mock MasterWorkingDay.objects.filter(...).values_list(...).distinct()
-        mock_qs = MagicMock()
-        mock_qs.values_list.return_value.distinct.return_value = [0, 2, 4]  # Mon, Wed, Fri
+        # Mock MasterWorkingDay rows as (master_id, weekday), then no day-off blocks.
+        mock_working_days = MagicMock()
+        mock_working_days.values_list.return_value.distinct.return_value = [(1, 0), (1, 2), (1, 4)]
+        mock_days_off = MagicMock()
+        mock_days_off.values_list.return_value = []
 
-        with patch("features.booking.models.MasterWorkingDay.objects.filter", return_value=mock_qs):
+        with (
+            patch("features.booking.models.MasterWorkingDay.objects.filter", return_value=mock_working_days),
+            patch("features.booking.models.MasterDayOff.objects.filter", return_value=mock_days_off),
+        ):
             start_date = date(2026, 4, 13)  # Monday
             horizon = 7
 

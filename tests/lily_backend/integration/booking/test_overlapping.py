@@ -51,7 +51,7 @@ class BackToBackBookingTest(TestCase):
         self.patcher3.stop()
 
     def test_back_to_back_availability(self):
-        booking_date = date.today()
+        booking_date = date(2026, 4, 20)  # Monday
         booking_date_str = booking_date.isoformat()
 
         start_time = timezone.make_aware(datetime.combine(booking_date, time(16, 0)))
@@ -70,7 +70,7 @@ class BackToBackBookingTest(TestCase):
         )
 
     def test_appointment_creation_overlap(self):
-        booking_date = date.today()
+        booking_date = date(2026, 4, 20)  # Monday
 
         Appointment.objects.create(
             master=self.master,
@@ -101,7 +101,7 @@ class BackToBackBookingTest(TestCase):
             name="Service 120", slug="service-120", category=self.category, duration=120, price=200
         )
 
-        booking_date = date.today()
+        booking_date = date(2026, 4, 20)  # Monday
         from features.booking.selector.engine import get_booking_engine_gateway
 
         gateway = get_booking_engine_gateway()

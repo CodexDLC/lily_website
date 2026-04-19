@@ -65,28 +65,40 @@ class CabinetBookingAvailabilityService:
         locked_resource_id: int | None = None,
         resource_selections: dict[str, str] | None = None,
     ) -> set[str]:
-        del locked_resource_id, resource_selections
+        del resource_selections
         if not service_ids:
             logger.debug("Booking available dates skipped because no service_ids were provided.")
             return set()
 
-        # Optimization: instead of full scheduling for each day (slow),
-        # just check which weekdays have active masters for these services (fast).
-        from ..models import MasterWorkingDay
+        # Fast day-level availability check. It intentionally avoids the full
+        # slot search, but still respects resource assignment, working weekdays,
+        # explicit day-off records, and an optional locked master.
+        from ..models import MasterDayOff, MasterWorkingDay
 
-        active_weekdays = set(
-            MasterWorkingDay.objects.filter(
-                master__status="active",
-                master__services__id__in=service_ids,
-            )
-            .values_list("weekday", flat=True)
-            .distinct()
+        working_days = MasterWorkingDay.objects.filter(
+            master__status="active",
+            master__services__id__in=service_ids,
         )
+        if locked_resource_id:
+            working_days = working_days.filter(master_id=locked_resource_id)
+
+        master_ids_by_weekday: dict[int, set[int]] = {}
+        for master_id, weekday in working_days.values_list("master_id", "weekday").distinct():
+            master_ids_by_weekday.setdefault(weekday, set()).add(master_id)
 
         available_dates: set[str] = set()
         for offset in range(max(horizon, 0)):
             target_date = start_date + timedelta(days=offset)
-            if target_date.weekday() in active_weekdays:
+            candidate_master_ids = master_ids_by_weekday.get(target_date.weekday(), set())
+            if not candidate_master_ids:
+                continue
+
+            blocked_master_ids = set(
+                MasterDayOff.objects.filter(master_id__in=candidate_master_ids, date=target_date).values_list(
+                    "master_id", flat=True
+                )
+            )
+            if candidate_master_ids - blocked_master_ids:
                 available_dates.add(target_date.isoformat())
 
         logger.debug(
