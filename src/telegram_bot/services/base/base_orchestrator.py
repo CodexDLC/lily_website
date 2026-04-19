@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, cast
 
-from src.shared.schemas.response import CoreResponseDTO
+from src.telegram_bot.services.base.schemas import CoreResponseDTO
 from src.telegram_bot.services.base.view_dto import UnifiedViewDTO
 
 if TYPE_CHECKING:

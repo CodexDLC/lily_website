@@ -23,6 +23,8 @@ class BookingNotificationPayload(BaseModel):
     category_slug: str | None = None
     active_promo_id: int | None = None
     active_promo_title: str | None = None
+    email_notification_label: str | None = ""
+    twilio_notification_label: str | None = ""
 
     @field_validator("request_call", mode="before")
     @classmethod

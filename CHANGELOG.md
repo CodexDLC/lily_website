@@ -4,6 +4,17 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
 
+## [2.2.0] - 2026-04-19
+
+### Added
+
+- **Bot:** Major overhaul of the Telegram bot's redis-backed notification handling and UI orchestration.
+- **Bot:** Introduced centralized container-based dependency injection for better testing and modularity.
+
+### Changed / Refactored
+
+- **Bot:** Refactored command logic and stream processors to simplify bot interactions.
+
 ## [2.1.0] - 2026-04-19
 
 ### Added

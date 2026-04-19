@@ -3,7 +3,11 @@ from .texts import NotificationsTexts
 
 
 def format_new_booking(
-    payload: BookingNotificationPayload, email_status: str = "none", twilio_status: str = "none"
+    payload: BookingNotificationPayload,
+    email_status: str = "none",
+    twilio_status: str = "none",
+    email_label: str = "",
+    twilio_label: str = "",
 ) -> str:
     """
     Формирует текст уведомления о новой брони с учетом статусов отправки.
@@ -40,7 +44,14 @@ def format_new_booking(
     if email_status != "none" or twilio_status != "none":
         e_icon = NotificationsTexts.STATUS_ICONS.get(email_status, "❓")
         t_icon = NotificationsTexts.STATUS_ICONS.get(twilio_status, "❓")
-        status_block = "\n" + NotificationsTexts.NOTIFICATION_STATUSES.format(email_status=e_icon, twilio_status=t_icon)
+        effective_email_label = email_label or payload.email_notification_label or ""
+        effective_twilio_label = twilio_label or payload.twilio_notification_label or ""
+        status_block = "\n" + NotificationsTexts.NOTIFICATION_STATUSES.format(
+            email_status=e_icon,
+            email_label=effective_email_label,
+            twilio_status=t_icon,
+            twilio_label=effective_twilio_label,
+        )
 
     return f"{title}\n\n{details}{status_block}"
 

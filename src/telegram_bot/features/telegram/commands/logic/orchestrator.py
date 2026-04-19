@@ -6,11 +6,11 @@ from typing import Any
 
 from aiogram.types import User
 
-from src.shared.schemas.user import UserUpsertDTO
 from src.telegram_bot.core.config import BotSettings
 from src.telegram_bot.features.telegram.commands.contracts.commands_contract import AuthDataProvider
 from src.telegram_bot.features.telegram.commands.ui.commands_ui import CommandsUI
 from src.telegram_bot.services.base.base_orchestrator import BaseBotOrchestrator
+from src.telegram_bot.services.base.schemas import UserUpsertDTO
 from src.telegram_bot.services.base.view_dto import UnifiedViewDTO
 
 

@@ -18,7 +18,11 @@ class NotificationsTexts:
     )
 
     # Статусы уведомлений клиенту
-    NOTIFICATION_STATUSES = "────────────────────\n📧 <b>Email:</b> {email_status}\n📱 <b>WhatsApp:</b> {twilio_status}"
+    NOTIFICATION_STATUSES = (
+        "────────────────────\n"
+        "📧 <b>Email:</b> {email_status} {email_label}\n"
+        "📱 <b>WhatsApp:</b> {twilio_status} {twilio_label}"
+    )
 
     STATUS_ICONS = {"waiting": "⏳", "sent": "✅", "success": "✅", "failed": "❌", "none": "—"}
 

@@ -40,7 +40,7 @@ class ContactProcessor:
         message_thread_id = self.settings.telegram_topics.get("contact") if self.settings.telegram_topics else None
 
         # Fetch bot user name dynamically
-        bot_username = await self.container.site_settings.get_field("telegram_bot_username")
+        bot_username = await self.container.site_settings.aget_field("telegram_bot_username")
         if not bot_username or not str(bot_username).strip():
             log.warning("Bot: ContactProcessor | Action: GetBotUsername | status=NotFound | using_fallback")
             bot_username = ""  # fallback
