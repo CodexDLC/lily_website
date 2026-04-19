@@ -100,6 +100,11 @@ class BotSettings(BaseCommonSettings):
     def log_dir(self) -> str:
         return str(ROOT_DIR / self.log_dir_name)
 
+    @log_dir.setter
+    def log_dir(self, value: str) -> None:
+        """Protocol requires settable variable."""
+        pass
+
     @property
     def log_file_debug(self) -> str:
         service_name = f"{os.environ.get('PROJECT_NAME', 'service')}{self.service_name_suffix}"

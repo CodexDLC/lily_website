@@ -1,5 +1,5 @@
 from collections.abc import Awaitable, Callable
-from typing import Any
+from typing import Any, cast
 
 from aiogram import BaseMiddleware
 from aiogram.types import CallbackQuery, Message, TelegramObject
@@ -61,4 +61,5 @@ class ThrottlingMiddleware(BaseMiddleware):
 
 def setup(container: BotContainer) -> BaseMiddleware:
     """Фабрика для создания middleware."""
-    return ThrottlingMiddleware(redis=container.redis_client, rate_limit=1.0)
+    redis = cast("Any", container.redis_client)
+    return ThrottlingMiddleware(redis=redis, rate_limit=1.0)

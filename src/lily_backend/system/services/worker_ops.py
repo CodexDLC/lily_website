@@ -15,7 +15,7 @@ TASK_FUNCTIONS = {
     "booking.worker": "booking_maintenance_task",
 }
 
-TASK_METADATA = {
+TASK_METADATA: dict[str, dict[str, Any]] = {
     "conversations.import": {"domain": "Conversations", "queue_name": "system", "interval": 60},
     "tracking.flush": {"domain": "Tracking", "queue_name": "system", "interval": 10},
     "booking.worker": {"domain": "Booking", "queue_name": "system", "interval": 300},
@@ -53,21 +53,17 @@ class WorkerOpsService:
                 "Redis host 'redis' is only resolvable inside Docker. "
                 "For local Cabinet set REDIS_URL/ARQ_REDIS_URL to localhost:6380 or open Ops from the backend container."
             )
-        found_keys = {
+        found_keys = sorted(
             cast_key(key)
             for key in self.redis.scan_iter(f"{self.prefix}:*")
             if not str(key).endswith((":events", ":lock"))
-        }
-
-        # Ensure all tasks from TASK_FUNCTIONS are represented
-        all_task_ids = set(TASK_FUNCTIONS.keys())
-        for key in found_keys:
-            all_task_ids.add(key.removeprefix(f"{self.prefix}:"))
+        )
 
         tasks = []
-        for task_id in sorted(all_task_ids):
+        for key in found_keys:
+            task_id = key.removeprefix(f"{self.prefix}:")
             key = f"{self.prefix}:{task_id}"
-            data = cast("dict[str, Any]", self.redis.hgetall(key)) if key in found_keys else {"task_id": task_id}
+            data = cast("dict[str, Any]", self.redis.hgetall(key))
             tasks.append(self._task_from_hash(key, data))
 
         return tasks
@@ -172,7 +168,7 @@ def _health(data: dict[str, Any], *, stale_after: int) -> str:
     if stale_after and last_started and (datetime.now(UTC) - last_started).total_seconds() > stale_after:
         return "critical"
     if not last_started:
-        return "not_started"
+        return "degraded"
     return "healthy"
 
 

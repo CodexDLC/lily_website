@@ -1,6 +1,7 @@
 import asyncio
 from collections.abc import Awaitable, Callable
 from enum import Enum
+from typing import Any, cast
 
 from src.telegram_bot.services.base.view_dto import UnifiedViewDTO
 from src.telegram_bot.services.sender.view_sender import ViewSender
@@ -187,7 +188,7 @@ class UIAnimationService:
 
     async def _send(self, view_dto: UnifiedViewDTO) -> None:
         """Отправляет View."""
-        await self.sender.send(view_dto)
+        await self.sender.send(cast("Any", view_dto))
 
     def _create_temp_content(self, text: str):
         """Создаёт временный ViewResultDTO для анимации."""

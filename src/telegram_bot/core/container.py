@@ -1,5 +1,5 @@
 import socket
-from typing import Any
+from typing import Any, cast
 
 from aiogram import Bot
 from arq import ArqRedis, create_pool
@@ -36,7 +36,7 @@ class BotContainer(BaseBotContainer):
         from src.telegram_bot.services.url_signer.service import UrlSignerService
 
         self.site_settings = SiteSettingsManager(redis_client)
-        self.url_signer = UrlSignerService(self.settings)
+        self.url_signer = UrlSignerService(cast("BotSettings", self.settings))
 
         # --- Redis Stream Processor (Worker) ---
         consumer_name = f"{RedisStreams.BotEvents.CONSUMER_PREFIX}{socket.gethostname()}"
@@ -62,18 +62,19 @@ class BotContainer(BaseBotContainer):
         # --- Core Features ---
         self.bot_menu = BotMenuOrchestrator(
             discovery_provider=self.discovery_service,
-            settings=self.settings,
+            settings=cast("BotSettings", self.settings),
         )
         self.features["bot_menu"] = self.bot_menu
 
         log.info(f"BotContainer | initialized features={list(self.features.keys())}")
 
     async def init_arq(self) -> None:
+        settings = cast("BotSettings", self.settings)
         self.arq_pool = await create_pool(
             RedisSettings(
-                host=self.settings.effective_redis_host,
-                port=self.settings.redis_port,
-                password=self.settings.redis_password,
+                host=settings.effective_redis_host,
+                port=settings.redis_port,
+                password=settings.redis_password,
                 database=0,
             )
         )

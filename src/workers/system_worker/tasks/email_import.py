@@ -99,7 +99,7 @@ def _fetch_emails(settings: WorkerSettings) -> list[NormalizedEmail]:
     try:
         mailbox.login(settings.imap_user, settings.imap_password)
         mailbox.select(settings.imap_folder)
-        status, data = mailbox.uid("search", None, "UNSEEN")
+        status, data = mailbox.uid("search", "UNSEEN")
         if status != "OK" or not data:
             return []
         uids = data[0].split()[: settings.email_import_batch_size]
@@ -145,17 +145,18 @@ def _normalize(
     raw_size: int | None,
     oversized: bool,
 ) -> NormalizedEmail:
+    msg_any = cast("Any", msg)
     sender_name, sender_email = parseaddr(str(msg.get("From", "")))
     subject = str(msg.get("Subject", ""))
     message_id = str(msg.get("Message-ID", "")).strip()
     in_reply_to = str(msg.get("In-Reply-To", "")).strip()
     references = [addr for _name, addr in getaddresses([str(msg.get("References", ""))]) if addr]
-    body = "" if oversized else _extract_text(msg)
+    body = "" if oversized else _extract_text(msg_any)
     text_truncated = len(body) > settings.email_import_max_body_chars
     if text_truncated:
         body = body[: settings.email_import_max_body_chars]
-    attachments = [] if oversized else _attachments(msg)
-    thread_key = _find_thread_key(msg, body, in_reply_to, references)
+    attachments = [] if oversized else _attachments(msg_any)
+    thread_key = _find_thread_key(msg_any, body, in_reply_to, references)
     spam = _looks_like_spam(sender_email=sender_email, subject=subject, body=body)
     return NormalizedEmail(
         uid=uid,
@@ -175,10 +176,10 @@ def _normalize(
     )
 
 
-def _extract_text(msg: Message) -> str:
+def _extract_text(msg: Any) -> str:
     try:
         body_part = msg.get_body(preferencelist=("plain", "html"))
-    except AttributeError:
+    except (AttributeError, TypeError):
         body_part = None
     if body_part is None:
         return ""
@@ -190,7 +191,7 @@ def _extract_text(msg: Message) -> str:
     return " ".join(str(content).split())
 
 
-def _attachments(msg: Message) -> list[dict[str, Any]]:
+def _attachments(msg: Any) -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
     for part in msg.walk():
         if part.is_multipart():
@@ -211,7 +212,7 @@ def _attachments(msg: Message) -> list[dict[str, Any]]:
     return results
 
 
-def _find_thread_key(msg: Message, body: str, in_reply_to: str, references: list[str]) -> str | None:
+def _find_thread_key(msg: Any, body: str, in_reply_to: str, references: list[str]) -> str | None:
     headers = " ".join(
         str(msg.get(name, ""))
         for name in ("X-Lily-Thread-Key", "X-Thread-Key", "Thread-Index", "In-Reply-To", "References")
