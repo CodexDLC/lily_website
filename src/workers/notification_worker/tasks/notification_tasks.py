@@ -4,13 +4,14 @@ from typing import TYPE_CHECKING, Any, cast
 from arq import Retry
 from loguru import logger as log
 
-from src.shared.core.constants import RedisStreams
+from src.workers.core.streams import RedisStreams
 from src.workers.notification_worker.schemas import NotificationPayload
 from src.workers.notification_worker.tasks.utils import send_status_update
 
 if TYPE_CHECKING:
-    from src.shared.core.manager_redis.manager import StreamManager
-    from src.shared.core.redis_service import RedisService
+    from codex_platform.redis_service import RedisService
+
+    from src.workers.core.streams import StreamManager
     from src.workers.notification_worker.services.notification_service import NotificationService
 
 
@@ -72,6 +73,51 @@ class BotPayloadEnricher:
         return {k: str(v) if v is not None else "" for k, v in bot.items() if k != "items"}
 
 
+def _mailbox_headers(context: dict[str, Any]) -> dict[str, str] | None:
+    thread_key = context.get("thread_key") or context.get("reply_match_token")
+    if not thread_key:
+        return None
+    clean_key = str(thread_key).strip()
+    return {
+        "X-Lily-Thread-Key": clean_key,
+        "Message-ID": f"<{clean_key}>",
+        "References": f"<{clean_key}>",
+        "In-Reply-To": f"<{clean_key}>",
+    }
+
+
+def _stream_event_type(event_type: str | None) -> str:
+    """Map notification-domain events to bot Redis router event names."""
+    if event_type == "booking.received":
+        return "new_appointment"
+    return str(event_type or "")
+
+
+def _notification_label(event_type: str | None, template_name: str | None) -> str:
+    """Human-readable label for the client notification shown in Telegram."""
+    labels = {
+        "booking.received": "Заявка получена",
+        "booking.confirmed": "Подтверждение записи",
+        "booking.cancelled": "Отмена записи",
+        "booking.rescheduled": "Предложение переноса",
+        "booking.reminder": "Напоминание",
+        "booking.no_show": "Неявка",
+    }
+    if event_type in labels:
+        return labels[event_type]
+
+    template_labels = {
+        "bk_receipt": "Заявка получена",
+        "bk_group_booking": "Заявка получена",
+        "bk_confirmation": "Подтверждение записи",
+        "bk_cancellation": "Отмена записи",
+        "bk_reschedule": "Предложение переноса",
+        "bk_reminder": "Напоминание",
+        "bk_no_show": "Неявка",
+    }
+    return template_labels.get(str(template_name or ""), "Письмо клиенту")
+
+
 # ---------------------------------------------------------------------------
 # Private channel helpers
 # ---------------------------------------------------------------------------
@@ -88,6 +134,7 @@ async def _send_email(
         subject=payload.subject or "Notification from LILY Salon",
         template_name=payload.template_name,  # type: ignore[arg-type]
         data=payload.context_data,
+        headers=_mailbox_headers(payload.context_data),
     )
 
 
@@ -106,7 +153,7 @@ async def _send_to_stream(
         bot_payload = BotPayloadEnricher.enrich(payload)
         await stream_manager.add_event(
             RedisStreams.BotEvents.NAME,
-            {"type": str(payload.event_type), **bot_payload},
+            {"type": _stream_event_type(payload.event_type), **bot_payload},
         )
         log.info(f"Task: universal_notification | Action: StreamSent | event={payload.event_type}")
     except Exception as exc:
@@ -119,36 +166,61 @@ async def _send_to_stream(
 # ---------------------------------------------------------------------------
 
 
-async def send_universal_notification_task(ctx: dict[str, Any], payload_dict: dict[str, Any]) -> None:
+async def send_universal_notification_task(
+    ctx: dict[str, Any],
+    payload: dict[str, Any] | None = None,
+    payload_dict: dict[str, Any] | None = None,
+) -> None:
     """
     Universal task to route notifications across email and Telegram channels.
     """
+    raw_payload = payload if payload is not None else payload_dict
+    if raw_payload is None:
+        log.error("Task: universal_notification | Action: MissingPayload")
+        return
+
     try:
-        payload = NotificationPayload(**payload_dict)
+        payload_model = NotificationPayload(**raw_payload)
     except Exception as exc:
         log.error(f"Task: universal_notification | Action: ValidationFailed | error={exc}")
         return
 
-    log.info(f"Task: universal_notification | ID: {payload.notification_id} | Channels: {payload.channels}")
+    log.info(f"Task: universal_notification | ID: {payload_model.notification_id} | Channels: {payload_model.channels}")
 
     notification_service = cast("NotificationService", ctx.get("notification_service"))
     stream_manager = cast("StreamManager", ctx.get("stream_manager"))
 
     # 1. Telegram FIRST — бот должен закешировать данные до прихода notification_status
-    if "telegram" in payload.channels and payload.event_type and stream_manager:
-        await _send_to_stream(ctx, payload, stream_manager)
+    if "telegram" in payload_model.channels and payload_model.event_type and stream_manager:
+        await _send_to_stream(ctx, payload_model, stream_manager)
 
     # 2. Email SECOND + status update чтобы бот обновил карточку (✅ письмо отправлено + 🗑)
-    if "email" in payload.channels and payload.recipient.email and payload.template_name:
-        appointment_id = payload.context_data.get("id") or payload.context_data.get("group_id")
+    if "email" in payload_model.channels and payload_model.recipient.email and payload_model.template_name:
+        appointment_id = payload_model.context_data.get("id") or payload_model.context_data.get("group_id")
         try:
-            await _send_email(ctx, payload, notification_service)
+            await _send_email(ctx, payload_model, notification_service)
             if appointment_id and stream_manager:
-                await send_status_update(ctx, int(appointment_id), "email", "success")
+                await send_status_update(
+                    ctx,
+                    int(appointment_id),
+                    "email",
+                    "success",
+                    event_type=payload_model.event_type,
+                    template_name=payload_model.template_name,
+                    notification_label=_notification_label(payload_model.event_type, payload_model.template_name),
+                )
         except Exception as exc:
             log.error(f"Task: universal_notification | Action: EmailFailed | error={exc}")
             if appointment_id and stream_manager:
-                await send_status_update(ctx, int(appointment_id), "email", "failed")
+                await send_status_update(
+                    ctx,
+                    int(appointment_id),
+                    "email",
+                    "failed",
+                    event_type=payload_model.event_type,
+                    template_name=payload_model.template_name,
+                    notification_label=_notification_label(payload_model.event_type, payload_model.template_name),
+                )
             raise Retry(defer=ctx["job_try"] * 30) from exc
 
 
@@ -168,7 +240,7 @@ async def send_group_booking_notification_task(ctx: dict[str, Any], group_id: in
 
     cache_key = f"notifications:group_cache:{group_id}"
     try:
-        raw_data = await redis_service.get_value(cache_key)
+        raw_data = await redis_service.string.get(cache_key)
     except Exception as exc:
         raise Retry(defer=10) from exc
 
@@ -233,7 +305,7 @@ async def send_booking_notification_task(ctx: dict[str, Any], appointment_id: in
     stream_manager = cast("StreamManager", ctx.get("stream_manager"))
 
     cache_key = f"notifications:cache:{appointment_id}"
-    raw_data = await redis_service.get_value(cache_key)
+    raw_data = await redis_service.string.get(cache_key)
     if not raw_data:
         return
 
@@ -266,7 +338,7 @@ async def send_contact_notification_task(ctx: dict[str, Any], request_id: int) -
     stream_manager = cast("StreamManager", ctx.get("stream_manager"))
 
     cache_key = f"notifications:contact_cache:{request_id}"
-    raw_data = await redis_service.get_value(cache_key)
+    raw_data = await redis_service.string.get(cache_key)
     if not raw_data:
         return
 

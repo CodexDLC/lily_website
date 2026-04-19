@@ -1,8 +1,8 @@
 from arq.connections import RedisSettings
+from codex_core.common.loguru_setup import setup_logging
+from codex_platform.workers.arq import BaseArqWorkerSettings, base_shutdown, base_startup
 from loguru import logger as log
 
-from src.shared.core.logger import setup_logging
-from src.workers.core.base import BaseArqSettings, base_shutdown, base_startup
 from src.workers.core.config import WorkerSettings as CoreWorkerSettings
 
 from .dependencies import SHUTDOWN_DEPENDENCIES, STARTUP_DEPENDENCIES
@@ -39,7 +39,7 @@ async def worker_shutdown(ctx: dict) -> None:
     await base_shutdown(ctx)
 
 
-class WorkerSettings(BaseArqSettings):
+class WorkerSettings(BaseArqWorkerSettings):
     """
     Настройки ARQ воркера для уведомлений.
     """

@@ -4,6 +4,17 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
 
+## [2.1.0] - 2026-04-19
+
+### Added
+
+- **Workers:** Introduced `system_worker` for handling background tasks like booking operations, email imports, and tracking flushes.
+- **Workers:** Expanded `notification_worker` capabilities and standardized task aggregators.
+
+### Changed / Refactored
+
+- **Workers:** Centralized worker configuration and core logic (heartbeats, internal API, streams).
+
 ## [2.0.0] - 2026-04-19
 
 ### Added

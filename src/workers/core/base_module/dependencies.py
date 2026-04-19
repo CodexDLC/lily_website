@@ -1,51 +1,53 @@
 from collections.abc import Awaitable, Callable
 from typing import Any
 
+from codex_platform.redis_service import RedisService
 from loguru import logger as log
 from redis.asyncio import from_url
 
-from src.shared.core.manager_redis.site_settings_manager import SiteSettingsManager
-from src.shared.core.redis_service import RedisService
 from src.workers.core.config import WorkerSettings
+from src.workers.core.heartbeat import WorkerHeartbeatRegistry
+from src.workers.core.internal_api import InternalApiClient
+from src.workers.core.site_settings import SiteSettingsRedisReader, merge_email_settings
+from src.workers.core.streams import StreamManager
 
-# Определение типа для функций-зависимостей
 DependencyFunction = Callable[[dict[str, Any], Any], Awaitable[None]]
 
 
 async def init_common_dependencies(ctx: dict[str, Any], settings: WorkerSettings) -> None:
-    """
-    Базовая инициализация зависимостей для всех воркеров.
-    """
+    """Initialize worker-shared Redis, SiteSettings, streams and API client."""
+
     log.info("Initializing common worker dependencies...")
-    try:
-        # Сохраняем настройки в контекст, чтобы задачи могли их достать
-        ctx["settings"] = settings
+    redis_client = from_url(settings.redis_url, encoding="utf-8", decode_responses=True)
+    ctx["settings"] = settings
+    ctx["redis_client"] = redis_client
+    ctx["redis_service"] = RedisService(redis_client)
+    ctx["stream_manager"] = StreamManager(redis_client)
+    ctx["heartbeat_registry"] = WorkerHeartbeatRegistry(redis_client)
 
-        # 1. Создаем клиент Redis
-        redis_client = from_url(settings.redis_url, encoding="utf-8", decode_responses=True)
-        ctx["redis_client"] = redis_client
+    reader = SiteSettingsRedisReader(
+        redis_client,
+        project_namespace=settings.redis_site_settings_project,
+        base_key=settings.redis_site_settings_key,
+    )
+    ctx["site_settings"] = merge_email_settings(await reader.load(), settings)
 
-        # 2. Инициализируем RedisService
-        redis_service = RedisService(redis_client)
-        ctx["redis_service"] = redis_service
-
-        # 3. Инициализируем SiteSettingsManager и загружаем настройки
-        site_settings_manager = SiteSettingsManager(redis_service, settings)
-        site_settings_obj = await site_settings_manager.get_settings_obj()
-
-        ctx["site_settings"] = site_settings_obj
-        log.info("Common worker dependencies initialized successfully.")
-
-    except Exception as e:
-        log.exception(f"Failed to initialize common worker dependencies: {e}")
-        raise
+    internal_api = InternalApiClient(
+        base_url=settings.backend_api_base_url,
+        timeout=settings.internal_api_timeout,
+    )
+    await internal_api.open()
+    ctx["internal_api"] = internal_api
+    log.info("Common worker dependencies initialized successfully.")
 
 
 async def close_common_dependencies(ctx: dict[str, Any], settings: WorkerSettings) -> None:
-    """
-    Очистка общих ресурсов.
-    """
+    """Close worker-shared resources."""
+
     log.info("Closing common worker dependencies...")
+    internal_api = ctx.get("internal_api")
+    if internal_api:
+        await internal_api.close()
     redis_client = ctx.get("redis_client")
     if redis_client:
         await redis_client.close()

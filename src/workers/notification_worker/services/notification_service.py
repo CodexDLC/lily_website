@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 from urllib.parse import quote
 
+from codex_core.common.text import transliterate
 from loguru import logger as log
 
-from src.shared.utils.text import transliterate
 from src.workers.core.base_module.email_client import AsyncEmailClient
 from src.workers.core.base_module.template_renderer import TemplateRenderer
 
@@ -136,14 +136,21 @@ class NotificationService:
 
     # --- Core Sending Methods ---
 
-    async def send_notification(self, email: str, subject: str, template_name: str, data: dict) -> None:
+    async def send_notification(
+        self,
+        email: str,
+        subject: str,
+        template_name: str,
+        data: dict,
+        headers: dict[str, str] | None = None,
+    ) -> None:
         """Base method for sending any email notification."""
         full_context = self.enrich_email_context(data)
         full_template_path = self.resolve_template_path(template_name)
 
         log.debug(f"NotificationService: Rendering {full_template_path} for {email}")
         html_content = self.renderer.render(full_template_path, full_context)
-        await self.email_client.send_email(email, subject, html_content)
+        await self.email_client.send_email(email, subject, html_content, headers=headers)
 
     # --- Specific Helpers (Legacy/Convenience) ---
 

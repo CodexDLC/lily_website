@@ -28,7 +28,7 @@ async def send_email_task(
 
     if not notification_service or not orchestrator:
         log.error("Task: send_email_task | Action: Failed | error=ServicesMissing")
-        await _send_status_update(ctx, appointment_id, "email", "failed")
+        await _send_status_update(ctx, appointment_id, "email", "failed", template_name=template_name)
         return
 
     try:
@@ -41,16 +41,30 @@ async def send_email_task(
             to_email=recipient_email,
             subject=subject,
             html_content=html_content,
+            headers=_mailbox_headers(data),
         )
 
         if success:
             log.info(f"Task: send_email_task | Action: Success | to={recipient_email}")
-            await _send_status_update(ctx, appointment_id, "email", "success")
+            await _send_status_update(ctx, appointment_id, "email", "success", template_name=template_name)
         else:
             log.error(f"Task: send_email_task | Action: Failed | to={recipient_email}")
-            await _send_status_update(ctx, appointment_id, "email", "failed")
+            await _send_status_update(ctx, appointment_id, "email", "failed", template_name=template_name)
 
     except Exception as e:
         log.exception(f"Task: send_email_task | Action: Error | to={recipient_email} | error={e}")
-        await _send_status_update(ctx, appointment_id, "email", "failed")
+        await _send_status_update(ctx, appointment_id, "email", "failed", template_name=template_name)
         raise
+
+
+def _mailbox_headers(data: dict[str, Any]) -> dict[str, str] | None:
+    thread_key = data.get("thread_key") or data.get("reply_match_token")
+    if not thread_key:
+        return None
+    clean_key = str(thread_key).strip()
+    return {
+        "X-Lily-Thread-Key": clean_key,
+        "Message-ID": f"<{clean_key}>",
+        "References": f"<{clean_key}>",
+        "In-Reply-To": f"<{clean_key}>",
+    }
