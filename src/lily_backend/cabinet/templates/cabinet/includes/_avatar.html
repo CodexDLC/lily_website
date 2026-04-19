@@ -1,0 +1,17 @@
+{% comment %}
+  _avatar.html — renders image if 'initials' looks like a URL, else renders a circle with initials.
+  Accepts:
+    initials (str): Image URL or initials
+    size (str): e.g. "36", "48", "64"
+    font_size (str): e.g. ".75rem"
+    color (str): Background color for initials
+{% endcomment %}
+
+<div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold flex-shrink-0 overflow-hidden"
+     style="width:{{ size|default:'36' }}px;height:{{ size|default:'36' }}px;font-size:{{ font_size|default:'.75rem' }};background:{{ color|default:'var(--bs-primary)' }};user-select:none;box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    {% if "/" in initials or "http" in initials %}
+        <img src="{{ initials }}" alt="" class="w-100 h-100 object-fit-cover">
+    {% else %}
+        {{ initials|default:"?"|slice:":2" }}
+    {% endif %}
+</div>

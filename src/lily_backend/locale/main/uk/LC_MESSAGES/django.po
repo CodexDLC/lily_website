@@ -1,0 +1,114 @@
+# LILY Beauty Salon — main domain translations
+# Language: uk
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: lily_backend\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Ukrainian\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\templates\includes\_footer.html:84 .\templates\legal\faq.html:28
+#: .\templates\legal\faq.html:48
+msgid "service_cat_hair"
+msgstr "Зачіски та догляд"
+
+#: .\templates\includes\_footer.html:87
+msgid "service_item_haircuts"
+msgstr "Стрижки"
+
+#: .\templates\includes\_footer.html:89
+msgid "service_item_coloring"
+msgstr "Фарбування"
+
+#: .\templates\includes\_footer.html:91
+msgid "service_item_treatment"
+msgstr "Догляд за волоссям"
+
+#: .\templates\includes\_footer.html:93
+msgid "service_item_styling"
+msgstr "Стайлінг"
+
+#: .\templates\includes\_footer.html:100 .\templates\legal\faq.html:27
+#: .\templates\legal\faq.html:47
+msgid "service_cat_nails"
+msgstr "Нігтьовий сервіс"
+
+#: .\templates\includes\_footer.html:103
+msgid "service_item_manicure"
+msgstr "Манікюр"
+
+#: .\templates\includes\_footer.html:105
+msgid "service_item_pedicure"
+msgstr "Педикюр"
+
+#: .\templates\includes\_footer.html:107
+msgid "service_item_extension"
+msgstr "Нарощування"
+
+#: .\templates\includes\_footer.html:115
+msgid "service_cat_beauty"
+msgstr "Краса та догляд"
+
+#: .\templates\includes\_footer.html:120 .\templates\legal\faq.html:32
+#: .\templates\legal\faq.html:51
+msgid "service_item_lashes"
+msgstr "Нарощування вій"
+
+#: .\templates\includes\_footer.html:121
+msgid "service_item_lamination"
+msgstr "Ламінування"
+
+#: .\templates\includes\_footer.html:123 .\templates\legal\faq.html:31
+msgid "service_item_massage"
+msgstr "Масаж"
+
+#: .\templates\legal\faq.html:29 .\templates\legal\faq.html:49
+msgid "service_item_cosmetology"
+msgstr "Косметологія обличчя"
+
+#: .\templates\legal\faq.html:30 .\templates\legal\faq.html:50
+msgid "service_item_depilation"
+msgstr "Епіляція"
+
+msgid "cookie_modal_title"
+msgstr "Печиво? Так, але корисне!"
+
+msgid "cookie_modal_description"
+msgstr "Ми використовуємо куки, щоб зробити ваш візит приємнішим. Дозвольте нам збирати анонімну аналітику — це допоможе нам розвиватися та робити сайт ще зручнішим для вас."
+
+msgid "cookie_btn_accept_all"
+msgstr "Усе включено"
+
+msgid "cookie_btn_essential"
+msgstr "Тільки база"
+
+msgid "cookie_btn_settings"
+msgstr "Налаштувати"
+
+msgid "cookie_view_settings_title"
+msgstr "Налаштування приватності"
+
+msgid "cookie_cat_necessary_name"
+msgstr "Обов'язкові"
+
+msgid "cookie_cat_necessary_desc"
+msgstr "Необхідні для роботи сайту (бронювання, сесія)."
+
+msgid "cookie_cat_analytics_name"
+msgstr "Аналітика"
+
+msgid "cookie_cat_analytics_desc"
+msgstr "Допомагають нам зрозуміти, як ви користуєтеся сайтом."
+
+msgid "cookie_cat_marketing_name"
+msgstr "Маркетинг"
+
+msgid "cookie_cat_marketing_desc"
+msgstr "Використовуються для персоналізації реклами (FB Pixel та ін.)."
+
+msgid "cookie_btn_save"
+msgstr "Зберегти вибір"

@@ -13,7 +13,10 @@ build/
 # Virtual Environment
 # ═══════════════════════════════════════════
 .venv/
+.venv-*/
 venv/
+.uv-cache/
+.uv-python/
 
 # ═══════════════════════════════════════════
 # Environment Variables
@@ -50,6 +53,8 @@ nul
 .coverage.*
 htmlcov/
 coverage.xml
+test_output.txt
+test_fail.log
 
 # ═══════════════════════════════════════════
 # Django
@@ -60,6 +65,7 @@ db.sqlite3-journal
 staticfiles/
 mediafiles/
 src/backend_django/logs/
+logs/
 
 # ═══════════════════════════════════════════
 # Poetry
@@ -69,8 +75,11 @@ src/backend_django/logs/
 # ═══════════════════════════════════════════
 # Data (keep structure, ignore contents)
 # ═══════════════════════════════════════════
+data/db/
 data/logs/
 data/uploads/
+data/prod_dump/
+!data/db/.gitkeep
 !data/logs/.gitkeep
 !data/uploads/.gitkeep
 
@@ -92,3 +101,4 @@ deploy/docker-compose.override.yml
 AGENTS.md
 project_structure.txt
 .claude/
+tmp/

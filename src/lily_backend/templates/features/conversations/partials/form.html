@@ -1,0 +1,98 @@
+{% load i18n %}
+
+<form hx-post="{% url 'main:contacts' %}" hx-swap="outerHTML" class="contact-form extended-form">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger" style="color: #ff6b6b; margin-bottom: 20px;">
+        {{ form.non_field_errors }}
+    </div>
+    {% endif %}
+
+    <!-- Name -->
+    <div class="form-group" style="margin-bottom: 20px;">
+        <label for="{{ form.sender_name.id_for_label }}"
+               style="color: var(--color-gold); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px;">
+            {% trans "Name" %} *
+        </label>
+        {{ form.sender_name }}
+        {% if form.sender_name.errors %}
+        <div style="color: #ff6b6b; font-size: 12px;">{{ form.sender_name.errors }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Contact: Email + Phone -->
+    <div class="form-group" style="margin-bottom: 20px;">
+        <span style="color: var(--color-gold); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px;">
+            {% trans "Kontakt" %}
+        </span>
+        <div class="contact-input-group" style="display: flex; gap: 20px;">
+            <div style="flex: 1;">
+                <label for="{{ form.sender_email.id_for_label }}" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0);">
+                    {{ form.sender_email.label }}
+                </label>
+                {{ form.sender_email }}
+                {% if form.sender_email.errors %}
+                <div style="color: #ff6b6b; font-size: 12px;">{{ form.sender_email.errors }}</div>
+                {% endif %}
+            </div>
+            <div style="flex: 1;">
+                <label for="{{ form.sender_phone.id_for_label }}" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0);">
+                    {{ form.sender_phone.label }}
+                </label>
+                {{ form.sender_phone }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Topic -->
+    <div class="form-group" style="margin-bottom: 20px;">
+        <label for="{{ form.topic.id_for_label }}"
+               style="color: var(--color-gold); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px;">
+            {{ form.topic.label }}
+        </label>
+        {{ form.topic }}
+        {% if form.topic.errors %}
+        <div style="color: #ff6b6b; font-size: 12px;">{{ form.topic.errors }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Message -->
+    <div class="form-group" style="margin-bottom: 20px;">
+        <label for="{{ form.body.id_for_label }}"
+               style="color: var(--color-gold); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px;">
+            {{ form.body.label }} *
+        </label>
+        {{ form.body }}
+        {% if form.body.errors %}
+        <div style="color: #ff6b6b; font-size: 12px;">{{ form.body.errors }}</div>
+        {% endif %}
+    </div>
+
+    <!-- DSGVO Consent (mandatory) -->
+    <div class="form-group" style="margin-bottom: 20px;">
+        <label class="checkbox-container">
+            {{ form.dsgvo_consent }}
+            <span class="checkmark"></span>
+            <span class="checkbox-text">
+                {{ form.dsgvo_consent.label|safe }} *
+            </span>
+        </label>
+        {% if form.dsgvo_consent.errors %}
+        <div style="color: #ff6b6b; font-size: 12px; margin-top: 5px;">{{ form.dsgvo_consent.errors }}</div>
+        {% endif %}
+    </div>
+
+    <!-- Marketing Consent (optional) -->
+    <div class="form-group" style="margin-bottom: 30px;">
+        <label class="checkbox-container">
+            {{ form.consent_marketing }}
+            <span class="checkmark"></span>
+            <span class="checkbox-text">
+                {{ form.consent_marketing.label }}
+            </span>
+        </label>
+    </div>
+
+    <button type="submit" class="btn-pill btn-submit" style="width: 100%;">{% trans "Absenden" %}</button>
+</form>

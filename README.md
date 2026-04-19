@@ -58,12 +58,25 @@ cd lily_website
 
 ### 2. Install Dependencies
 
-Using [Poetry](https://python-poetry.org/) for dependency management.
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
 
 ```bash
-pip install poetry
-poetry config virtualenvs.in-project true
-poetry install --extras "django bot dev"
+uv sync
+```
+
+`uv sync` installs the default `dev` environment, which already includes the required framework stack for this repository:
+
+- `codex-django` is a mandatory Django-layer dependency for the ongoing framework refactor.
+- `codex-django-cli` is the mandatory scaffolding and project-management CLI in development.
+
+For production-like service installs, use explicit groups:
+
+```bash
+# Backend / Django runtime
+uv sync --no-default-groups --group django --group shared --group codex_tools
+
+# Bot / Worker runtime
+uv sync --no-default-groups --group bot --group shared --group codex_tools
 ```
 
 ### 3. Environment Setup
@@ -127,7 +140,7 @@ Create `.vscode/settings.json`:
 **Running Tests:**
 ```bash
 # From project root
-pytest src/
+uv run pytest src/
 ```
 
 ---
@@ -148,7 +161,7 @@ lily_website/
 │   └── shared/               # Shared code (schemas, utils, core)
 ├── deploy/                   # Docker-compose and Nginx configs
 ├── docs/                     # Technical documentation & Roadmaps
-└── pyproject.toml            # Poetry, Ruff, Mypy configs
+└── pyproject.toml            # uv, Hatchling, Ruff, Mypy configs
 ```
 
 ---
@@ -157,14 +170,14 @@ lily_website/
 
 ```bash
 # Linting and formatting
-ruff check src/
-ruff format src/
+uv run ruff check src/
+uv run ruff format src/
 
 # Type checking
-mypy src/
+uv run mypy src/
 
 # Tests
-pytest
+uv run pytest
 ```
 
 ---

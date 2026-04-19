@@ -10,11 +10,18 @@ __pycache__
 .ruff_cache
 .pytest_cache
 *.egg-info
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+staticfiles/
+mediafiles/
 
 # IDE
 .idea
 .vscode
 .cursor*
+*~
 
 # Docs & Meta
 docs/

@@ -1,15 +1,31 @@
 import json
+import os
+from pathlib import Path
+from urllib.parse import quote_plus
 
+from codex_core.settings import BaseCommonSettings
 from loguru import logger as log
 from pydantic import Field, field_validator
+from pydantic_settings import SettingsConfigDict
 
-from src.shared.core.config import CommonSettings
+ROOT_DIR = Path(__file__).resolve().parents[3]
+ENV_FILE_PATH = ROOT_DIR / ".env"
 
 
-class BotSettings(CommonSettings):
-    """
-    Configuration settings for the Telegram Bot.
-    """
+class BotSettings(BaseCommonSettings):
+    """Configuration settings for the Telegram Bot."""
+
+    # --- Redis (bot-specific) ---
+    redis_site_settings_key: str = "site_settings_hash"
+
+    # --- Logging ---
+    log_level_console: str = "DEBUG"
+    log_level_file: str = "DEBUG"
+    log_rotation: str = "10 MB"
+    log_dir_name: str = "logs"
+
+    # --- System ---
+    system_user_id: int = 2_000_000_000
 
     # --- Bot ---
     bot_token: str
@@ -23,18 +39,6 @@ class BotSettings(CommonSettings):
     @field_validator("telegram_topics", mode="before")
     @classmethod
     def parse_telegram_topics(cls, v):
-        """
-        Parses a JSON string from an environment variable into a dictionary.
-
-        This handles multiple input formats, including a valid JSON string,
-        an existing dictionary, or an empty value (None or empty string),
-        returning a dictionary in all cases.
-
-        Examples:
-        - String: '{"hair": 2, "nails": 4}' -> dict {"hair": 2, "nails": 4}
-        - Already a dict: {"hair": 2} -> {"hair": 2}
-        - Empty value: None or "" -> {}
-        """
         if isinstance(v, str):
             if not v.strip():
                 return {}
@@ -54,40 +58,73 @@ class BotSettings(CommonSettings):
     owner_ids: str = ""
 
     # --- Data mode ---
-    # "api"    — telegram_bot talks to FastAPI/Django backend via REST
-    # "direct" — telegram_bot has its own infrastructure
     BOT_DATA_MODE: str = "api"
 
     # --- Database (only when BOT_DATA_MODE=direct) ---
     DATABASE_URL: str | None = None
     DB_SCHEMA: str = "bot_app"
 
-    # --- Backend API (Internal field for ENV) ---
-    # We use Field(alias=...) to allow setting via BACKEND_API_URL in .env
+    # --- Backend API ---
     backend_api_url_env: str = Field(default="http://localhost:8000", alias="BACKEND_API_URL")
     backend_api_key: str | None = Field(default=None, alias="BACKEND_API_KEY")
     backend_api_timeout: float = 10.0
 
+    # --- Computed properties ---
+
+    @property
+    def is_inside_docker(self) -> bool:
+        return os.environ.get("IS_DOCKER", "False").lower() in ("true", "1", "t") or os.path.exists("/.dockerenv")
+
+    @property
+    def service_name_suffix(self) -> str:
+        return "" if self.is_inside_docker else "_local"
+
+    @property
+    def effective_redis_host(self) -> str:
+        if self.redis_host != "localhost":
+            return self.redis_host
+        return "redis" if self.is_inside_docker else "localhost"
+
+    @property
+    def redis_url(self) -> str:
+        host = self.effective_redis_host
+        password = self.redis_password
+        if password:
+            password = password.strip("'\"").strip()
+        if password:
+            encoded_password = quote_plus(password)
+            return f"redis://:{encoded_password}@{host}:{self.redis_port}"
+        return f"redis://{host}:{self.redis_port}"
+
+    @property
+    def log_dir(self) -> str:
+        return str(ROOT_DIR / self.log_dir_name)
+
+    @log_dir.setter
+    def log_dir(self, value: str) -> None:
+        """Protocol requires settable variable."""
+        pass
+
+    @property
+    def log_file_debug(self) -> str:
+        service_name = f"{os.environ.get('PROJECT_NAME', 'service')}{self.service_name_suffix}"
+        return f"{self.log_dir}/{service_name}/debug.log"
+
+    @property
+    def log_file_errors(self) -> str:
+        service_name = f"{os.environ.get('PROJECT_NAME', 'service')}{self.service_name_suffix}"
+        return f"{self.log_dir}/{service_name}/errors.json"
+
     @property
     def api_url(self) -> str:
-        """
-        Smart determination of the backend URL.
-        If a custom URL is set in .env (not localhost), use it.
-        Otherwise, choose between localhost and the service name in Docker.
-        """
         url = self.backend_api_url_env
-
-        # If URL is explicitly set and it's not the default localhost, return it
         if url and "localhost" not in url and "127.0.0.1" not in url:
             return url.rstrip("/")
-
-        # Auto-detection for Docker/Local
         base = "http://localhost:8000" if self.debug else "http://backend:8000"
         return base
 
     @property
     def backend_api_url(self) -> str:
-        """Alias for api_url for backwards compatibility."""
         return self.api_url
 
     @property
@@ -116,3 +153,9 @@ class BotSettings(CommonSettings):
         except ValueError:
             log.warning(f"BotSettings | Failed to parse IDs='{ids_str}'. Check .env format.")
             return []
+
+    model_config = SettingsConfigDict(
+        env_file=ENV_FILE_PATH,
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )

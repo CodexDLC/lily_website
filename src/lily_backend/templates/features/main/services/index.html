@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ seo.seo_title|default:content.services_meta_title }}{% endblock title %}
+{% block meta_description %}{{ seo.seo_description|default:content.services_meta_description }}{% endblock meta_description %}
+
+{% block content %}
+<section class="hero-text-block">
+    <div class="container">
+        <h1 class="hero-title">{{ static_content.services_title }}</h1>
+        <p class="hero-subtitle">{{ static_content.services_subtitle }}</p>
+    </div>
+</section>
+
+<main class="section">
+    <div class="container price-menu-container">
+
+        {% for category in categories %}
+        <!-- CATEGORY BLOCK -->
+        <div class="price-block" data-bento="{{ category.bento_group }}">
+
+            <!-- Category Title -->
+            <div class="category-header">
+                <h2 class="category-title">{{ category.title }}</h2>
+                {% if category.description %}
+                <p class="category-desc">{{ category.description }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Services List -->
+            {% for service in category.services.all %}
+            <div class="service-row">
+                <div class="service-names">
+                    <span class="service-name-main">{{ service.name }}</span>
+                    {% if service.description %}
+                    <span class="service-desc-small">{{ service.description|truncatechars:60 }}</span>
+                    {% endif %}
+                </div>
+                <div class="service-meta">
+                    <span class="meta-price">
+                        {% if service.price_info %}
+                            {{ service.price_info }}
+                        {% else %}
+                            {{ static_content.price_from_prefix }} {{ service.price }} €
+                        {% endif %}
+                    </span>
+                    <span class="meta-time">
+                        ⏱
+                        {% if service.duration_info %}
+                            {{ service.duration_info }}
+                        {% else %}
+                            {{ service.duration }} min
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="service-action" id="service-action-{{ service.id }}">
+                    {% include "features/booking/partials/bookable_button.html" with service_id=service.id is_selected=service.is_selected %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Category CTAs -->
+            <div class="category-footer">
+                <div class="service-link-wrapper">
+                    <a href="{% url 'main:service_detail' slug=category.slug %}" class="more-link">
+                        {{ static_content.btn_action_more }} {{ category.name }} →
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- END CATEGORY BLOCK -->
+        {% endfor %}
+
+    </div>
+    <div id="bk-hub-placeholder">
+        {% include "features/booking/partials/booking_hub.html" %}
+    </div>
+</main>
+{% endblock content %}

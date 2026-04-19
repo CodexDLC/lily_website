@@ -1,0 +1,85 @@
+{# CODEX_DJANGO_CLI BLUEPRINT STATUS: MOVE_TO_CLI_BLUEPRINT. Reason: generated app-layer or scaffold-owned template for codex-django-cli blueprints. #}
+{% extends "cabinet/base_cabinet.html" %}
+{% load i18n %}
+
+{% block cabinet_content %}
+<style>
+  .cab-widget, .cab-summary-card, .cab-step-card, .cab-builder-card {
+    background: #fff;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 12px !important;
+  }
+  .cab-widget:hover, .cab-step-card:hover, .cab-builder-card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04) !important;
+    transform: translateY(-2px);
+    border-color: #cbd5e1 !important;
+  }
+  .cab-summary-card {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    position: sticky;
+    top: 24px;
+  }
+  .cab-step-badge, .cab-step-num {
+    background: #f8fafc;
+    color: #475569;
+    border: 1.5px solid #e2e8f0;
+    font-weight: 600;
+  }
+  body {
+    background-color: #f8fafc !important;
+  }
+  .cab-booking-tab {
+    border-radius: 999px;
+    padding: 0.55rem 0.95rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.82rem;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    background: #fff;
+  }
+  .cab-booking-tab--active {
+    background: #0f172a;
+    border-color: #0f172a;
+    color: #fff;
+  }
+</style>
+
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h4 mb-0 text-dark fw-bold">{{ title }}</h1>
+      <p class="text-muted small mb-0">
+        {% if builder_mode == "series" %}
+          {% trans "Plan a course of repeat appointments for one client across multiple dates." %}
+        {% else %}
+          {% trans "Create a new appointment by selecting services and time." %}
+        {% endif %}
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="." class="btn btn-light btn-sm fw-semibold">
+        <span class="bi bi-x-lg me-1"></span> {% trans "Cancel" %}
+      </a>
+    </div>
+  </div>
+
+  <div class="d-flex gap-2 flex-wrap mb-4">
+    {% for tab in builder_tabs %}
+      <a href="{{ tab.url }}" class="cab-booking-tab {% if tab.active %}cab-booking-tab--active{% endif %}">
+        {{ tab.label }}
+      </a>
+    {% endfor %}
+  </div>
+
+  {% if builder_mode == "series" %}
+    {% include "cabinet/booking/builders/series_plan.html" %}
+  {% elif builder_mode == "separate" %}
+    {% include "cabinet/booking/builders/separate_booking.html" %}
+  {% else %}
+    {% include "cabinet/booking/builders/single_session.html" %}
+  {% endif %}
+</div>
+{% endblock %}

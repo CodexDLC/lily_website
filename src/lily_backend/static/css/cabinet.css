@@ -1,0 +1,39 @@
+/* ===================================================
+   Cabinet — Entry point CSS
+   Compiled: python tools/static/css_compiler.py
+   Output: cabinet_app.css
+   =================================================== */
+
+/* Base (shared with app.css) */
+@import url('base/variables.css');
+@import url('base/tokens.css');
+@import url('base/reset.css');
+@import url('components/buttons.css');
+@import url('components/forms.css');
+@import url('components/utils.css');
+@import url('components/auth.css');
+
+/* Cabinet Layout */
+@import url('cabinet/layout/layout.css');
+@import url('cabinet/layout/sidebar.css');
+@import url('cabinet/layout/topbar.css');
+
+/* Cabinet Shared Components */
+@import url('cabinet/components/blocks.css');
+@import url('cabinet/components/buttons.css');
+@import url('cabinet/components/forms.css');
+@import url('cabinet/components/search.css');
+@import url('cabinet/components/tabs.css');
+@import url('cabinet/components/pagination.css');
+@import url('cabinet/components/status.css');
+@import url('cabinet/components/cards.css');
+@import url('cabinet/components/calendar.css');
+
+/* Cabinet Pages */
+@import url('cabinet/pages/dashboard.css');
+@import url('cabinet/pages/constructor.css');
+@import url('cabinet/pages/appointments.css');
+@import url('cabinet/pages/clients.css');
+@import url('cabinet/pages/masters.css');
+@import url('cabinet/pages/contacts.css');
+@import url('cabinet/pages/services.css');

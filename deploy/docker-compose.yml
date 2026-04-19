@@ -24,13 +24,13 @@ services:
     env_file:
       - ../.env
     command: >
-      sh -c "redis-server --requirepass $${REDIS_PASSWORD} --appendonly yes"
+      sh -c "redis-server --requirepass \"$${REDIS_PASSWORD}\" --appendonly yes"
     ports:
       - "6380:6379"
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "sh", "-c", "REDISCLI_AUTH=${REDIS_PASSWORD} redis-cli ping"]
+      test: ["CMD", "sh", "-c", "REDISCLI_AUTH=\"$${REDIS_PASSWORD}\" redis-cli ping"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -41,17 +41,20 @@ services:
   backend:
     build:
       context: ..
-      dockerfile: deploy/backend/Dockerfile
+      dockerfile: deploy/lily_backend/Dockerfile
     container_name: ${CONTAINER_PREFIX:-lily_website}-backend
     ports:
       - "8000:8000"
     env_file:
       - ../.env
+    environment:
+      - IS_DOCKER=True
+      - PROJECT_NAME=lily_backend
     volumes:
-      - ../src/backend_django:/app
-      - ../src/backend_django/media:/app/media
+      - ../src/lily_backend:/app
+      - ../src/lily_backend/media:/app/media
       - static_volume:/app/staticfiles
-      - logs_volume:/app/logs
+      - ../logs:/app/logs
     depends_on:
       db:
         condition: service_healthy
@@ -74,9 +77,11 @@ services:
     container_name: ${CONTAINER_PREFIX:-lily_website}-telegram_bot
     env_file:
       - ../.env
+    environment:
+      - PROJECT_NAME=telegram_bot
     volumes:
       - ../src/telegram_bot:/app/src/telegram_bot:ro
-      - ../src/shared:/app/src/shared:ro
+      - ../logs:/app/logs
     restart: unless-stopped
     depends_on:
       redis:
@@ -94,10 +99,33 @@ services:
     command: arq src.workers.notification_worker.worker.WorkerSettings
     env_file:
       - ../.env
+    environment:
+      - PROJECT_NAME=notification_worker
     volumes:
       - ../src/workers:/app/src/workers:ro
-      - ../src/shared:/app/src/shared:ro
-      - logs_volume:/app/logs
+      - ../logs:/app/logs
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    networks:
+      - lily_website-network
+
+  system_worker:
+    build:
+      context: ..
+      dockerfile: deploy/worker/Dockerfile
+    container_name: ${CONTAINER_PREFIX:-lily_website}-system_worker
+    command: arq src.workers.system_worker.worker.WorkerSettings
+    env_file:
+      - ../.env
+    environment:
+      - PROJECT_NAME=system_worker
+    volumes:
+      - ../src/workers:/app/src/workers:ro
+      - ../logs:/app/logs
     restart: unless-stopped
     depends_on:
       redis:
@@ -115,7 +143,8 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ../src/backend_django/media:/app/media:ro
+      - ../src/lily_backend/media:/app/media:ro
+      - ../logs/nginx:/var/log/nginx
       - static_volume:/app/staticfiles:ro
     depends_on:
       backend:
@@ -142,7 +171,7 @@ volumes:
   postgres_data:
   redis-data:
   static_volume:
-  logs_volume:
+  # logs_volume removed to use bind mount
 
 networks:
   lily_website-network:

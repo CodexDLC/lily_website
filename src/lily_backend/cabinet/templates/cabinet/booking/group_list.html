@@ -1,0 +1,21 @@
+{% extends "cabinet/base_cabinet.html" %}
+{% load i18n %}
+
+{% block cabinet_content %}
+<div class="cab-page-header">
+  <h1 class="cab-page-title">Групповые записи</h1>
+  <p class="cab-page-subtitle">Несколько услуг в один день от одного клиента</p>
+</div>
+
+<div class="cab-filters" style="margin-bottom: 1rem;">
+  {% for value, label in status_choices %}
+  <a href="?status={{ value }}"
+     class="cab-filter-btn {% if status_filter == value %}cab-filter-btn--active{% endif %}">
+    {{ label }}
+  </a>
+  {% endfor %}
+  <a href="?" class="cab-filter-btn {% if not status_filter %}cab-filter-btn--active{% endif %}">Все</a>
+</div>
+
+{% include "cabinet/booking/partials/_group_table.html" %}
+{% endblock %}

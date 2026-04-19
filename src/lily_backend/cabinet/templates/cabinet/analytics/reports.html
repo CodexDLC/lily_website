@@ -1,0 +1,41 @@
+{# CODEX_DJANGO_CLI BLUEPRINT STATUS: MOVE_TO_CLI_BLUEPRINT. Reason: generated app-layer or scaffold-owned template for codex-django-cli blueprints. #}
+{% extends "cabinet/base_cabinet.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Reports" %} — {{ active_tab|capfirst }}{% endblock %}
+
+{% block cabinet_content %}
+<div x-data="{ showExport: false }">
+
+    {# ── Page Header ── #}
+    {% include "cabinet/includes/_page_header.html" with title=report_title subtitle=period_label %}
+
+    {# ── Unified Filters & Export Bar ── #}
+    <div class="mb-4">
+        {% include "cabinet/includes/_report_filters.html" %}
+    </div>
+
+    {# ── Trend Widget ── #}
+    <div class="row g-3 mb-4">
+        <div class="col-12">
+            {% include "cabinet/widgets/chart.html" with data=revenue_chart_data %}
+        </div>
+    </div>
+
+    {# ── Main Data Table ── #}
+    {% if columns %}
+    <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 12px;">
+        {% include "cabinet/widgets/table.html" with columns=columns rows=rows summary=summary_row bar_key="revenue_fmt" bar_max=bar_max %}
+    </div>
+    {% else %}
+    <div class="p-5 text-center bg-white rounded-3 shadow-sm border">
+        <span class="bi bi-info-circle fs-2 text-muted mb-3 d-block"></span>
+        <p class="text-muted mb-0">{% trans "No data available for this report type." %}</p>
+    </div>
+    {% endif %}
+
+    {# ── Export Modal ── #}
+    {% include "cabinet/includes/_export_modal.html" %}
+
+</div>
+{% endblock %}

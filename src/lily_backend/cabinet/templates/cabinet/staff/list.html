@@ -1,0 +1,30 @@
+{% extends "cabinet/base_cabinet.html" %}
+{% load i18n %}
+
+{% block cabinet_content %}
+<div class="container-fluid py-4">
+
+  {# Toolbar / Header #}
+  <div class="mb-4 d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="h4 mb-0 text-dark fw-bold">{{ header_title }}</h1>
+        <p class="text-muted small mb-0">{{ header_subtitle }}</p>
+    </div>
+  </div>
+
+    {# Card Grid Section with Alpine.js Native Modal Trigger #}
+    <div x-data="{}"
+         class="staff-card-grid"
+         @click="if ($event.target.closest('.cab-card')) {
+             let card = $event.target.closest('.cab-card');
+             let url = card.getAttribute('href');
+             if (url && url.includes('/staff/') && url.includes('/modal/')) {
+                 $event.preventDefault();
+                 $event.stopPropagation();
+                 $dispatch('open-modal', { url: url, size: '600px' });
+             }
+         }">
+        {% include "cabinet/components/card_grid.html" with cards=cards %}
+    </div>
+</div>
+{% endblock cabinet_content %}

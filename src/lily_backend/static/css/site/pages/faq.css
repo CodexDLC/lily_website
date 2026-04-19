@@ -1,0 +1,107 @@
+/* =========================================
+   FAQ PAGE STYLES
+   ========================================= */
+
+.faq-page {
+    padding: 80px 0;
+    background-color: var(--color-emerald);
+    min-height: 100vh;
+}
+
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-title {
+    font-family: var(--font-serif, serif);
+    color: var(--color-gold);
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.faq-subtitle {
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+    letter-spacing: 3px;
+    margin-bottom: 60px;
+    text-transform: uppercase;
+}
+
+/* Accordion Item */
+.faq-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(237, 208, 113, 0.2);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+    border-color: var(--color-gold);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.faq-item[open] {
+    border-color: var(--color-gold);
+    background: rgba(0, 40, 34, 0.8);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Summary (Question) */
+.faq-summary {
+    padding: 20px 25px;
+    cursor: pointer;
+    list-style: none; /* Hide default marker */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-serif, serif);
+    font-size: 18px;
+    color: white;
+    transition: color 0.3s;
+}
+
+.faq-summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-summary:hover {
+    color: var(--color-gold);
+}
+
+.faq-item[open] .faq-summary {
+    color: var(--color-gold);
+    border-bottom: 1px solid rgba(237, 208, 113, 0.1);
+}
+
+/* Icon (+/-) */
+.faq-icon {
+    font-size: 24px;
+    color: var(--color-gold);
+    font-weight: 300;
+    transition: transform 0.3s ease;
+    margin-left: 15px;
+}
+
+.faq-item[open] .faq-icon {
+    transform: rotate(45deg); /* Turn + into x */
+}
+
+/* Answer */
+.faq-answer {
+    padding: 20px 25px;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    font-size: 16px;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

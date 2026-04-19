@@ -1,0 +1,46 @@
+/* =========================================
+   BASE DESIGN TOKENS (TYPOGRAPHY, SPACING, SIZES)
+   ========================================= */
+:root {
+    /* Font Sizes (Scale) */
+    --font-size-xs: 0.75rem;     /* 12px */
+    --font-size-sm: 0.85rem;     /* ~14px */
+    --font-size-md: 1rem;        /* 16px */
+    --font-size-lg: 1.25rem;     /* 20px */
+    --font-size-xl: 1.5rem;      /* 24px */
+    --font-size-2xl: 2rem;       /* 32px */
+
+    /* Font Weights */
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Spacing System */
+    --spacing-1: 4px;
+    --spacing-2: 8px;
+    --spacing-3: 12px;
+    --spacing-4: 16px;
+    --spacing-5: 24px;
+    --spacing-6: 32px;
+    --spacing-8: 48px;
+
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-pill: 50px;
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.3s ease;
+    --transition-slow: 0.5s ease;
+
+    /* Shadows / Elevation */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.4);
+    --shadow-gold: 0 2px 12px rgba(237, 208, 113, 0.2);
+    --shadow-gold-hover: 0 4px 16px rgba(237, 208, 113, 0.4);
+}

@@ -1,6 +1,5 @@
+from codex_platform.workers.arq import CORE_FUNCTIONS
 from loguru import logger
-
-from src.workers.core.tasks import CORE_FUNCTIONS
 
 from .email_tasks import send_email_task
 from .message_tasks import send_appointment_notification, send_message_task

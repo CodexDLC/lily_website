@@ -1,0 +1,225 @@
+/* =========================================
+   SERVICE DETAIL PAGE
+   ========================================= */
+
+/* Hero with Background */
+.hero-service-bg {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+}
+
+.hero-service-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,56,49,0.8);
+}
+
+.hero-service-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+/* SEO Section (The main text block you mentioned) */
+.service-seo-section {
+    padding: 60px 0;
+    line-height: 1.8;
+}
+
+.service-seo-text {
+    max-width: 800px;
+    margin: 0 auto;
+    /* Убираем прозрачность, используем чистый Шампань */
+    color: var(--color-champagne);
+    text-align: left;
+    font-size: 17px; /* Чуть увеличим для солидности */
+}
+
+.service-seo-text p {
+    margin-bottom: 1.8rem;
+}
+
+/* Стили для заголовков ВНУТРИ текста (h2, h3) */
+.service-seo-text h2,
+.service-seo-text h3 {
+    color: var(--color-gold);
+    font-family: var(--font-serif, serif);
+    margin-top: 2.5rem;
+    margin-bottom: 1.2rem;
+    line-height: 1.3;
+}
+
+.service-seo-text h2 { font-size: 32px; }
+.service-seo-text h3 { font-size: 24px; }
+
+.service-seo-text strong {
+    color: var(--color-gold);
+    font-weight: 700;
+}
+
+.service-seo-text ul {
+    margin-bottom: 1.8rem;
+    padding-left: 1.2rem;
+    list-style-type: none; /* Уберем стандартные точки */
+}
+
+.service-seo-text li {
+    margin-bottom: 0.8rem;
+    position: relative;
+    padding-left: 20px;
+}
+
+/* Красивый золотой маркер для списков */
+.service-seo-text li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--color-gold);
+}
+
+/* Service List Styles (Small descriptions in price list) */
+.service-desc-small {
+    display: block;
+    font-size: 14px;
+    color: var(--color-champagne);
+    opacity: 0.9;
+    margin-top: 4px;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+/* Masters Block */
+.service-masters-block {
+    margin-top: 50px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.01); /* Reduced opacity */
+    border-radius: 8px;
+    border: 1px solid rgba(237, 208, 113, 0.05); /* Lighter border */
+}
+
+.service-masters-title {
+    border: none;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.mini-master {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.02); /* Reduced opacity */
+    padding: 12px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(237, 208, 113, 0.08); /* Lighter border */
+    transition: 0.3s;
+}
+
+.mini-master:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(237, 208, 113, 0.3);
+}
+
+.mini-master-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 1.5px solid var(--color-gold);
+}
+
+.mini-master-name {
+    display: block;
+    color: var(--color-white);
+    font-size: 16px;
+}
+
+.mini-master-role {
+    display: block;
+    color: var(--color-gold);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+/* Service Row Expansion for Button */
+.service-action {
+    padding-left: 20px;
+}
+
+/* Service CTA */
+.service-cta-wrapper {
+    text-align: center;
+    margin-top: 60px;
+}
+
+/* Bento Cross-Linking */
+.bento-crosslinking {
+    padding-top: 0;
+    margin-top: -30px; /* Pull it closer to the CTA */
+    padding-bottom: 80px;
+}
+
+.bento-grid-mini {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-auto-rows: 180px;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.bento-card-mini {
+    aspect-ratio: 1 / 1;
+}
+
+.card-overlay-mini {
+    padding: 15px;
+    background: linear-gradient(to top, rgba(0, 40, 35, 0.9), transparent);
+}
+
+.card-overlay-mini h3 {
+    font-size: 18px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .bento-grid-mini {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-auto-rows: 150px;
+    }
+}
+
+@media (max-width: 767px) {
+    .service-seo-text {
+        font-size: 16px;
+    }
+    .service-masters-block {
+        padding: 20px;
+    }
+    .masters-list {
+        flex-direction: column;
+        align-items: center;
+    }
+    .mini-master {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .bento-grid-mini {
+        grid-template-columns: repeat(2, 1fr);
+        grid-auto-rows: 140px;
+        gap: 10px;
+    }
+
+    .card-overlay-mini h3 {
+        font-size: 16px;
+    }
+}

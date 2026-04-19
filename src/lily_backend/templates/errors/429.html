@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Zu viele Anfragen" %} | LILY{% endblock %}
+
+{% block content %}
+<section class="section text-center" style="padding: 100px 0;">
+    <div class="container">
+        <h1 class="hero-title" style="color: var(--color-gold);">429</h1>
+        <h2 class="hero-subtitle">{% trans "Zu viele Anfragen" %}</h2>
+        <p style="margin: 30px 0; opacity: 0.8;">
+            {% trans "Bitte warten Sie einen Moment, bevor Sie es erneut versuchen. Wir schützen unser System vor automatisierten Anfragen." %}
+        </p>
+        <a href="/" class="btn-pill">{% trans "Zur Startseite" %}</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<section class="bk-success-wrapper">
+  <div class="bk-success">
+    <div class="bk-success__icon">✓</div>
+    <h1 class="bk-success__title">{% trans "Terminanfrage erhalten!" %}</h1>
+
+    <p class="bk-success__subtitle">{% trans "Vielen Dank. Wir haben Ihre Anfrage erhalten und prüfen die Verfügbarkeit der Fachkräfte." %}:</p>
+
+    <ul class="bk-success__list">
+      {% for item in group.items.all %}
+      <li class="bk-success__list-item">
+        <strong>{{ item.appointment.service.name }}</strong>
+        <span>{{ item.appointment.datetime_start|date:"H:i" }} ({{ item.appointment.service.duration }} {% trans "min" %})</span>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <div class="bk-success__details">
+      <p><strong>{% trans "Datum" %}:</strong> <span>{{ group.items.first.appointment.datetime_start|date:"d.m.Y" }}</span></p>
+    </div>
+
+    <p class="bk-success__note">
+      {% trans "Wir senden Ihnen eine Bestätigung, sobald der Termin geprüft wurde." %}
+    </p>
+
+    <a href="{% url 'main:index' %}" class="bk-success__back">{% trans "Zur Startseite" %}</a>
+  </div>
+</section>
+{% endblock content %}

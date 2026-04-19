@@ -16,10 +16,18 @@ class NotificationsUI:
         topic_id: int | None = None,
         email_status: str = "none",
         twilio_status: str = "none",
+        email_label: str = "",
+        twilio_label: str = "",
         base_url: str = "https://lily-salon.de",
     ) -> ViewResultDTO:
         """Рендерит полную карточку записи со статусами."""
-        text = format_new_booking(payload, email_status=email_status, twilio_status=twilio_status)
+        text = format_new_booking(
+            payload,
+            email_status=email_status,
+            twilio_status=twilio_status,
+            email_label=email_label,
+            twilio_label=twilio_label,
+        )
 
         # Если статусы уже пошли, показываем кнопку "Удалить" вместо "Подтвердить/Отклонить"
         if email_status != "none" or twilio_status != "none":

@@ -1,0 +1,53 @@
+{% extends "unfold/layouts/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+
+<!-- ========================================
+     PWA META TAGS
+     ======================================== -->
+
+<!-- Theme Color -->
+<meta name="theme-color" content="#3b82f6">
+<meta name="msapplication-TileColor" content="#3b82f6">
+<meta name="msapplication-navbutton-color" content="#3b82f6">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- PWA Capabilities -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="LILY Admin">
+
+<!-- Viewport Optimizations -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+
+<!-- PWA Manifest -->
+{% if site_settings.app_mode_enabled and not DEBUG_MODE %}
+<link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+{% endif %}
+
+<!-- ========================================
+     ICONS
+     ======================================== -->
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="{% static 'img/favicon/favicon.svg' %}">
+<link rel="icon" type="image/png" sizes="96x96" href="{% static 'img/favicon/favicon-96x96.png' %}">
+<link rel="shortcut icon" href="{% static 'img/favicon/favicon.ico' %}">
+
+<!-- Apple Touch Icons -->
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicon/apple-touch-icon.png' %}">
+
+<!-- Android Icons -->
+<link rel="icon" type="image/png" sizes="192x192" href="{% static 'img/favicon/web-app-manifest-192x192.png' %}">
+<link rel="icon" type="image/png" sizes="512x512" href="{% static 'img/favicon/web-app-manifest-512x512.png' %}">
+
+<!-- ========================================
+     CUSTOM PWA STYLES
+     ======================================== -->
+
+<!-- Мобильные оптимизации -->
+<link rel="stylesheet" href="{% static 'css/admin/pwa-mobile.css' %}">
+
+{% endblock %}

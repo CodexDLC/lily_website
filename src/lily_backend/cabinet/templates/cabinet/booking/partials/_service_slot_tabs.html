@@ -1,0 +1,15 @@
+{# CODEX_DJANGO_CLI BLUEPRINT STATUS: MOVE_TO_CLI_BLUEPRINT. Reason: generated app-layer or scaffold-owned template for codex-django-cli blueprints. #}
+<div class="d-flex flex-wrap gap-2 mb-3">
+  <template x-if="selectedServices.length === 0">
+    <div class="text-muted small">Select services first. Each service will get its own date and time slot.</div>
+  </template>
+  <template x-for="service in selectedServices" :key="service.id">
+    <button type="button"
+            class="btn btn-sm"
+            :class="activeServiceId === service.id ? 'btn-dark' : 'btn-outline-secondary'"
+            @click="switchService(service.id)">
+      <span x-text="service.name"></span>
+      <span class="ms-2 badge rounded-pill text-bg-light" x-text="selectedDateText((serviceSlots[service.id] || {}).date)"></span>
+    </button>
+  </template>
+</div>

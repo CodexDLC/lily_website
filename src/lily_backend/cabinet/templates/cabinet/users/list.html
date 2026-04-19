@@ -1,0 +1,31 @@
+{# CODEX_DJANGO_CLI BLUEPRINT STATUS: MOVE_TO_CLI_BLUEPRINT. Reason: generated app-layer or scaffold-owned template for codex-django-cli blueprints. #}
+{% extends "cabinet/base_cabinet.html" %}
+{% load i18n %}
+
+{% block cabinet_content %}
+<div class="container-fluid py-4">
+
+  {# Toolbar / Header #}
+  <div class="mb-4">
+    <h1 class="h4 mb-0 text-dark fw-bold">{{ header_subtitle }}</h1>
+  </div>
+
+    {# Card Grid Section with Alpine.js Native Modal Trigger #}
+    <div x-data="{}"
+         @click="if ($event.target.closest('.cab-card')) {
+             let card = $event.target.closest('.cab-card');
+             let url = card.getAttribute('href');
+             if (url && (url.includes('/users/') || url.includes('/ghost/')) && url.includes('/modal/')) {
+                 $event.preventDefault();
+                 $event.stopPropagation();
+                 $dispatch('open-modal', { url: url, size: '800px' });
+             }
+         }">
+        {% include "cabinet/components/card_grid.html" with cards=cards %}
+    </div>
+
+</div>
+{% endblock cabinet_content %}
+
+{% block extra_js %}
+{% endblock extra_js %}

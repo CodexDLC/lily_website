@@ -48,7 +48,7 @@ class BookingProcessor:
             return await self.handle_failure(raw_payload, str(e))
 
         # Get base URL from site settings
-        base_url = await self.container.site_settings.get_field("site_base_url") or "https://lily-salon.de"
+        base_url = await self.container.site_settings.aget_field("site_base_url") or "https://lily-salon.de"
 
         message_thread_id = self._get_target_topic(payload)
         view_result = self.ui.render_notification(payload, topic_id=message_thread_id, base_url=base_url)
@@ -70,6 +70,9 @@ class BookingProcessor:
         appointment_id = message_data.get("appointment_id")
         channel = message_data.get("channel")
         status = message_data.get("status")
+        notification_label = message_data.get("notification_label") or ""
+        event_type = message_data.get("event_type") or ""
+        template_name = message_data.get("template_name") or ""
 
         log.debug(
             f"Bot: BookingProcessor | Action: StatusUpdate | appt_id={appointment_id} | channel={channel} | status={status}"
@@ -88,8 +91,16 @@ class BookingProcessor:
         # 2. Update specific channel status in cache data
         if channel == "email":
             appointment_cache["email_delivery_status"] = status
+            if notification_label:
+                appointment_cache["email_notification_label"] = notification_label
+            if event_type:
+                appointment_cache["last_email_event_type"] = event_type
+            if template_name:
+                appointment_cache["last_email_template_name"] = template_name
         elif channel == "twilio":
             appointment_cache["twilio_delivery_status"] = status
+            if notification_label:
+                appointment_cache["twilio_notification_label"] = notification_label
 
         # 3. Save updated data back to cache
         await self.container.redis.appointment_cache.save(appointment_id, appointment_cache)
@@ -104,9 +115,11 @@ class BookingProcessor:
         message_thread_id = self._get_target_topic(payload)
         email_status = appointment_cache.get("email_delivery_status", "waiting")
         twilio_status = appointment_cache.get("twilio_delivery_status", "waiting")
+        email_label = appointment_cache.get("email_notification_label", "")
+        twilio_label = appointment_cache.get("twilio_notification_label", "")
 
         # Get base URL from site settings
-        base_url = await self.container.site_settings.get_field("site_base_url") or "https://lily-salon.de"
+        base_url = await self.container.site_settings.aget_field("site_base_url") or "https://lily-salon.de"
 
         # 5. Re-render FULL card with actual status icons
         view_result = self.ui.render_notification(
@@ -114,6 +127,8 @@ class BookingProcessor:
             topic_id=message_thread_id,
             email_status=email_status,
             twilio_status=twilio_status,
+            email_label=email_label,
+            twilio_label=twilio_label,
             base_url=base_url,
         )
 

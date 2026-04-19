@@ -1,0 +1,15 @@
+/* =========================================
+   LAPTOP / DESKTOP (1280px - 1439px)
+   @media (min-width: 1280px) and (max-width: 1439px)
+   ========================================= */
+
+/* Standard desktop layout - minimal adjustments */
+
+.site-wrapper {
+    box-shadow: 0 0 40px rgba(0,0,0,0.4);
+}
+
+/* Optimal spacing */
+.container {
+    padding: 0 20px;
+}

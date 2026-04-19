@@ -1,0 +1,23 @@
+{% load i18n %}
+{% if not cart.is_empty %}
+<div class="bk-hub-container" id="bk-hub">
+  <a href="{% url 'booking:booking_wizard' %}" class="bk-hub-pill">
+    <div class="bk-hub-content">
+      <span class="bk-hub-label">{% trans "Termin Buchen" %}</span>
+      <div class="bk-hub-badge">{{ cart.items|length }}</div>
+    </div>
+    <div class="bk-hub-arrow">→</div>
+  </a>
+</div>
+
+<div id="bk-state-updater"
+     hx-swap-oob="true">
+  {% for service_id in cart_ids %}
+    <script>
+       document.querySelector('#service-row-{{ service_id }} .bk-btn-bookable')?.classList.add('bk-btn-bookable--selected');
+    </script>
+  {% endfor %}
+</div>
+{% else %}
+<div id="bk-hub"></div>
+{% endif %}

@@ -1,0 +1,62 @@
+{% comment %}
+  Widget: Date & Time Picker
+  Expected context: `picker` (DateTimePickerData)
+{% endcomment %}
+
+<div class="cab-step-card p-4 mb-3">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <div class="cab-step-num">3</div>
+    <span class="fw-semibold" style="font-size: .92rem;">DATE AND TIME</span>
+  </div>
+  <div class="row g-4">
+    <!-- Mini Calendar -->
+    <div class="col-auto">
+      <div style="min-width: 240px;">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <button class="btn btn-sm btn-outline-secondary"
+                  style="width: 28px; height: 28px; padding: 0;"
+                  @click="goMonth(-1)">
+            <span class="bi bi-chevron-left" style="font-size: .65rem;"></span>
+          </button>
+          <span class="fw-semibold" style="font-size: .85rem;" x-text="currentMonthLabel()">{{ picker.current_month }}</span>
+          <button class="btn btn-sm btn-outline-secondary"
+                  style="width: 28px; height: 28px; padding: 0;"
+                  @click="goMonth(1)">
+            <span class="bi bi-chevron-right" style="font-size: .65rem;"></span>
+          </button>
+        </div>
+        <div class="d-grid mb-1" style="grid-template-columns: repeat(7,1fr); display: grid; gap: 2px;">
+          <div class="text-center text-muted" style="font-size: .65rem; font-weight: 600; padding: 4px 0;">Mo</div><div class="text-center text-muted" style="font-size: .65rem; font-weight: 600; padding: 4px 0;">Tu</div><div class="text-center text-muted" style="font-size: .65rem; font-weight: 600; padding: 4px 0;">We</div><div class="text-center text-muted" style="font-size: .65rem; font-weight: 600; padding: 4px 0;">Th</div><div class="text-center text-muted" style="font-size: .65rem; font-weight: 600; padding: 4px 0;">Fr</div><div class="text-center text-muted" style="font-size: .65rem; font-weight: 600; padding: 4px 0;">Sa</div><div class="text-center text-muted" style="font-size: .65rem; font-weight: 600; padding: 4px 0;">Su</div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(7,1fr); gap: 2px;">
+          {% for day in picker.available_days %}
+          <div class="cab-cal-day justify-content-center"
+               x-show="isDayInCurrentMonth('{{ day.iso }}')"
+               :class="selectedDate === '{{ day.iso }}' ? 'cab-cal-day--today' : ''"
+               @click="selectDate('{{ day.iso }}')"
+               style="{% if day.busy %}opacity: .45; pointer-events: none;{% endif %}">
+            {{ day.day }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Time Slots -->
+    <div class="col">
+      <div class="text-muted mb-2" style="font-size: .78rem;">Available time:</div>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
+        <template x-for="slot in visibleTimeSlots()" :key="slot">
+          <div class="cab-time-slot"
+               :class="selectedTime === slot ? 'cab-time-slot--selected' : ''"
+               @click="typeof assignTime === 'function' ? assignTime(slot) : (selectedTime = slot)"
+               x-text="slot">
+          </div>
+        </template>
+        <div class="text-muted small" x-show="visibleTimeSlots().length === 0" x-cloak>
+          No available slots for the current selection.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

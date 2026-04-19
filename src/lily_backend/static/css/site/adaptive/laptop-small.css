@@ -1,0 +1,33 @@
+/* =========================================
+   SMALL LAPTOP (1024px - 1279px)
+   @media (min-width: 1024px) and (max-width: 1279px)
+   ========================================= */
+
+/* Layout adjustments */
+.site-wrapper {
+    max-width: 100%;
+    box-shadow: 0 0 30px rgba(0,0,0,0.3);
+}
+
+.container {
+    padding: 0 20px;
+}
+
+/* Hero - slightly smaller */
+.hero-heading {
+    font-size: 56px;
+}
+
+/* Bento grid - full 3 columns */
+.bento-grid {
+    gap: 18px;
+}
+
+/* Tighter spacing */
+.price-block {
+    padding: 45px 50px;
+}
+
+.owner-block {
+    padding: 35px;
+}

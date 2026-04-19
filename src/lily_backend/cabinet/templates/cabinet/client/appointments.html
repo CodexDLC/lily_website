@@ -1,0 +1,53 @@
+{# CODEX_DJANGO_CLI BLUEPRINT STATUS: MOVE_TO_CLI_BLUEPRINT. Reason: generated app-layer or scaffold-owned template for codex-django-cli blueprints. #}
+{% extends "cabinet/base_client.html" %}
+{% load i18n %}
+
+{% block title %}{{ client_page_title }}{% endblock %}
+
+{% block cabinet_content %}
+  <div class="d-flex flex-column gap-4">
+    <div class="row g-3">
+      {% for data in appointments_stats %}
+        <div class="col-lg-4">
+          {% include "cabinet/widgets/kpi.html" with data=data %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <section class="card border-0 shadow-sm">
+      <div class="card-body p-0">
+        <div class="d-flex align-items-center justify-content-between p-4 border-bottom">
+          <div class="d-flex align-items-center gap-3">
+            <h2 class="h5 mb-0">{% trans "Upcoming Appointments" %}</h2>
+          </div>
+          <a href="/#booking" class="btn btn-primary">
+            <span class="bi bi-plus-lg me-1"></span>{% trans "Book Now" %}
+          </a>
+        </div>
+
+        {% include "cabinet/components/data_table.html" with table=upcoming_table %}
+      </div>
+    </section>
+
+    <section class="card border-0 shadow-sm">
+      <div class="card-body p-0">
+        <div class="d-flex align-items-center justify-content-between p-4 border-bottom">
+          <h2 class="h5 mb-0">{% trans "History" %}</h2>
+          <div class="text-muted small">{{ history_total_count }} {% trans "records" %}</div>
+        </div>
+
+        {% include "cabinet/components/data_table.html" with table=history_table %}
+
+        <div class="d-flex align-items-center justify-content-between px-4 py-3 text-muted small border-top">
+          <div>{% trans "Showing" %} {{ history_visible_count }} {% trans "of" %} {{ history_total_count }}</div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="btn btn-sm btn-light disabled">&laquo;</span>
+            <span class="btn btn-sm btn-primary">1</span>
+            <span class="btn btn-sm btn-light">2</span>
+            <span class="btn btn-sm btn-light">&raquo;</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% load i18n %}
+
+<div class="modal-header border-0 pb-0">
+    <h5 class="modal-title fw-bold">{% trans "Quick Edit" %}: {{ object.name }}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form action="{% url 'cabinet:service_quick_edit' object.pk %}" method="post" data-hx-post="{% url 'cabinet:service_quick_edit' object.pk %}" data-hx-target="#modal-container" hx-ext="json-enc">
+    {% csrf_token %}
+    <div class="modal-body p-4">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label small text-muted text-uppercase fw-semibold">{% trans "Price (€)" %}</label>
+                {{ form.price }}
+                {% if form.price.errors %}
+                    <div class="invalid-feedback d-block">{{ form.price.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small text-muted text-uppercase fw-semibold">{% trans "Duration (min)" %}</label>
+                {{ form.duration }}
+                {% if form.duration.errors %}
+                    <div class="invalid-feedback d-block">{{ form.duration.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-12">
+                <label class="form-label small text-muted text-uppercase fw-semibold">{% trans "Price Info" %}</label>
+                {{ form.price_info }}
+                <div class="form-text small">{% trans "e.g. 'Starting from 45€'" %}</div>
+            </div>
+            <div class="col-12">
+                <label class="form-label small text-muted text-uppercase fw-semibold">{% trans "Duration Info" %}</label>
+                {{ form.duration_info }}
+                <div class="form-text small">{% trans "e.g. '60-90 Min'" %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+        <button type="submit" class="btn btn-primary px-4">
+            <i class="bi bi-check-lg me-1"></i> {% trans "Save Changes" %}
+        </button>
+    </div>
+</form>

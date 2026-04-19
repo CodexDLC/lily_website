@@ -1,0 +1,36 @@
+{% load static %}
+{% load i18n %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "{% block title %}{% firstof seo.seo_title "Kontakt | LILY Beauty Salon" %}{% endblock %}",
+  "description": "{% block meta_description %}{% firstof seo.seo_description "Kontaktieren Sie uns." %}{% endblock %}",
+  "url": "{{ request.build_absolute_uri }}",
+  "mainEntity": {
+    "@type": "LocalBusiness",
+    "@id": "{{ settings.site_base_url }}#organization",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "{{ settings.phone }}",
+      "contactType": "customer service",
+      "email": "{{ settings.email }}",
+      "areaServed": "DE",
+      "availableLanguage": ["de", "en", "uk", "ru"]
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "{{ settings.address_street }}",
+      "addressLocality": "{{ settings.address_locality }}",
+      "postalCode": "{{ settings.address_postal_code }}",
+      "addressCountry": "DE"
+    },
+    "openingHours": [
+      "Mo-Fr {{ settings.working_hours_weekdays }}",
+      "Sa {{ settings.working_hours_saturday }}",
+      "Su {{ settings.working_hours_sunday }}"
+    ]
+  }
+}
+</script>

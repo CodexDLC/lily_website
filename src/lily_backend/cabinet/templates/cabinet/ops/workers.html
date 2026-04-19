@@ -1,0 +1,85 @@
+{% extends "cabinet/base_cabinet.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Worker Ops" %}{% endblock %}
+
+{% block cabinet_content %}
+<section class="px-3 py-4" style="max-width:1400px;">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="h4 mb-1">{% trans "Worker Ops" %}</h1>
+      <div class="text-muted small">
+        {% trans "System status" %}: <span class="fw-semibold">{{ status }}</span>
+      </div>
+      {% if error %}<div class="text-danger small">{{ error }}</div>{% endif %}
+    </div>
+    <div class="d-flex gap-2">
+      <span class="badge text-bg-success">{{ healthy }} {% trans "healthy" %}</span>
+      <span class="badge text-bg-warning">{{ degraded }} {% trans "degraded" %}</span>
+      <span class="badge text-bg-danger">{{ critical }} {% trans "critical" %}</span>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>{% trans "Task" %}</th>
+            <th>{% trans "Queue" %}</th>
+            <th>{% trans "Health" %}</th>
+            <th>{% trans "Last run" %}</th>
+            <th>{% trans "Next due" %}</th>
+            <th>{% trans "Failures" %}</th>
+            <th class="text-end">{% trans "Actions" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in tasks %}
+            <tr>
+              <td>
+                <div class="fw-semibold">{{ task.task_id }}</div>
+                {% if task.last_error %}<div class="small text-danger">{{ task.last_error|truncatechars:120 }}</div>{% endif %}
+              </td>
+              <td>{{ task.queue_name|default:"-" }}</td>
+              <td>
+                <span class="badge {% if task.health == 'healthy' %}text-bg-success{% elif task.health == 'critical' %}text-bg-danger{% elif task.health == 'disabled' %}text-bg-secondary{% else %}text-bg-warning{% endif %}">
+                  {{ task.health }}
+                </span>
+              </td>
+              <td class="small text-muted">{{ task.last_finished_at|default:task.last_started_at|default:"-" }}</td>
+              <td class="small text-muted">{{ task.next_due_at|default:"-" }}</td>
+              <td>{{ task.consecutive_failures }}</td>
+              <td class="text-end">
+                <form method="post" class="d-inline-flex gap-1">
+                  {% csrf_token %}
+                  <input type="hidden" name="task_id" value="{{ task.task_id }}">
+                  <button class="btn btn-sm btn-outline-primary" name="action" value="run_now" title="{% trans "Run now" %}">
+                    <span class="bi bi-play-fill"></span>
+                  </button>
+                  <button class="btn btn-sm btn-outline-secondary" name="action" value="reschedule" title="{% trans "Reschedule" %}">
+                    <span class="bi bi-clock-history"></span>
+                  </button>
+                  {% if task.enabled %}
+                    <button class="btn btn-sm btn-outline-danger" name="action" value="disable" title="{% trans "Disable" %}">
+                      <span class="bi bi-pause-fill"></span>
+                    </button>
+                  {% else %}
+                    <button class="btn btn-sm btn-outline-success" name="action" value="enable" title="{% trans "Enable" %}">
+                      <span class="bi bi-check2"></span>
+                    </button>
+                  {% endif %}
+                </form>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7" class="text-center text-muted py-5">{% trans "No worker heartbeat data yet." %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

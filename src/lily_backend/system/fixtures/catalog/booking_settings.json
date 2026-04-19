@@ -1,0 +1,35 @@
+[
+{
+  "model": "booking.bookingsettings",
+  "pk": 1,
+  "fields": {
+    "step_minutes": 15,
+    "default_buffer_between_minutes": 0,
+    "min_advance_minutes": 180,
+    "max_advance_days": 60,
+    "monday_is_closed": false,
+    "work_start_monday": "08:00:00",
+    "work_end_monday": "18:00:00",
+    "tuesday_is_closed": false,
+    "work_start_tuesday": "08:00:00",
+    "work_end_tuesday": "18:00:00",
+    "wednesday_is_closed": false,
+    "work_start_wednesday": "08:00:00",
+    "work_end_wednesday": "18:00:00",
+    "thursday_is_closed": false,
+    "work_start_thursday": "08:00:00",
+    "work_end_thursday": "18:00:00",
+    "friday_is_closed": false,
+    "work_start_friday": "08:00:00",
+    "work_end_friday": "18:00:00",
+    "saturday_is_closed": false,
+    "work_start_saturday": "08:00:00",
+    "work_end_saturday": "18:00:00",
+    "sunday_is_closed": true,
+    "work_start_sunday": null,
+    "work_end_sunday": null,
+    "load_strategy": "even_load",
+    "book_only_from_next_day": true
+  }
+}
+]

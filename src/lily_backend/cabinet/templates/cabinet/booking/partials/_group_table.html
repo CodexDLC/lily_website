@@ -1,0 +1,69 @@
+{% load i18n %}
+<div id="bk-group-table">
+  {% if groups %}
+  <table class="cab-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Дата</th>
+        <th>Клиент</th>
+        <th>Услуги</th>
+        <th>Статус</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for group in groups %}
+      <tr class="cab-table__row">
+        <td>{{ group.pk }}</td>
+        <td>
+          {% with first=group.items.first %}
+            {% if first %}{{ first.appointment.datetime_start|date:"d.m.Y" }}{% endif %}
+          {% endwith %}
+        </td>
+        <td>{{ group.client|default:"—" }}</td>
+        <td>
+          <ul style="margin:0; padding:0; list-style:none;">
+            {% for item in group.items.all %}
+            <li style="font-size:.85rem;">
+              {{ item.appointment.datetime_start|date:"H:i" }} · {{ item.appointment.service.name }}
+            </li>
+            {% endfor %}
+          </ul>
+        </td>
+        <td>
+          <span class="cab-badge cab-badge--{{ group.status }}">
+            {{ group.get_status_display }}
+          </span>
+        </td>
+        <td>
+          {% if group.status == 'pending' %}
+          <button class="cab-btn cab-btn--sm cab-btn--success"
+                  hx-post="{% url 'cabinet:booking_group_action' pk=group.pk action='confirm_all' %}"
+                  hx-target="body"
+                  hx-swap="none"
+                  {% csrf_token %}>
+            Подтвердить все
+          </button>
+          {% endif %}
+          {% if group.status != 'cancelled' %}
+          <button class="cab-btn cab-btn--sm cab-btn--danger"
+                  hx-post="{% url 'cabinet:booking_group_action' pk=group.pk action='cancel_all' %}"
+                  hx-target="body"
+                  hx-swap="none"
+                  hx-confirm="Отменить все записи в группе?"
+                  {% csrf_token %}>
+            Отменить все
+          </button>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="cab-empty-state">
+    <p>Групповых записей нет.</p>
+  </div>
+  {% endif %}
+</div>

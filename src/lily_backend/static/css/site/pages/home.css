@@ -1,0 +1,111 @@
+/* =========================================
+   HOME PAGE
+   ========================================= */
+
+/* Hero Split Section */
+.hero-split {
+    padding: 0px 0 40px;
+    overflow: hidden;
+    background-color: var(--color-emerald);
+}
+
+.hero-grid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+}
+
+/* Left Column (Text) */
+.hero-text-col {
+    width: 50%;
+}
+
+.hero-uptitle {
+    color: var(--color-gold);
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.hero-heading {
+    font-family: var(--font-serif, serif);
+    font-size: 68px;
+    line-height: 1.1;
+    margin-bottom: 30px;
+    font-weight: 400;
+}
+
+.text-gold {
+    color: var(--color-gold);
+    font-style: italic;
+}
+
+.hero-desc {
+    font-size: 16px;
+    line-height: 1.6;
+    color: rgba(255,255,255, 0.8);
+    max-width: 450px;
+    margin-bottom: 40px;
+}
+
+/* Right Column (Model Image) */
+.hero-visual-col {
+    width: 45%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    position: relative;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+
+.hero-visual-col::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to bottom, transparent 0%, var(--color-emerald) 100%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.hero-model-png {
+    max-width: 100%;
+    height: auto;
+    max-height: 600px;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.3));
+    position: relative;
+    z-index: 1;
+    display: block;
+    margin-top: auto;
+}
+
+/* Categories Section */
+.categories-section {
+    padding: 40px 0;
+    background-color: #00302a;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-family: var(--font-serif, serif);
+    font-size: 42px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.section-desc {
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 12px;
+}

@@ -41,7 +41,7 @@ services:
   backend:
     build:
       context: ..
-      dockerfile: deploy/backend/Dockerfile
+      dockerfile: deploy/lily_backend/Dockerfile
     container_name: lily_test-backend
     ports:
       - "8001:8000"
@@ -54,8 +54,8 @@ services:
       - REDIS_PORT=6379
       - ENVIRONMENT=testing
     volumes:
-      - ../src/backend_django:/app
-      - ../src/backend_django/media:/app/media
+      - ../src/lily_backend:/app
+      - ../src/lily_backend/media:/app/media
       - static_test_volume:/app/staticfiles
       - logs_test_volume:/app/logs
     depends_on:
@@ -86,7 +86,7 @@ services:
       - BACKEND_URL=http://backend:8000
     volumes:
       - ../src/telegram_bot:/app/src/telegram_bot:ro
-      - ../src/shared:/app/src/shared:ro
+      - logs_test_volume:/app/logs
     restart: unless-stopped
     depends_on:
       redis:
@@ -110,7 +110,6 @@ services:
       - BACKEND_URL=http://backend:8000
     volumes:
       - ../src/workers:/app/src/workers:ro
-      - ../src/shared:/app/src/shared:ro
       - logs_test_volume:/app/logs
     restart: unless-stopped
     depends_on:
@@ -129,7 +128,7 @@ services:
     ports:
       - "8081:80"
     volumes:
-      - ../src/backend_django/media:/app/media:ro
+      - ../src/lily_backend/media:/app/media:ro
       - static_test_volume:/app/staticfiles:ro
     depends_on:
       backend:

@@ -1,0 +1,335 @@
+# LILY Beauty Salon — main domain translations
+# Language: ru
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: lily_backend\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\templates\includes\_footer.html:84 .\templates\legal\faq.html:28
+#: .\templates\legal\faq.html:48
+msgid "service_cat_hair"
+msgstr "Прически и уход"
+
+#: .\templates\includes\_footer.html:87
+msgid "service_item_haircuts"
+msgstr "Стрижки"
+
+#: .\templates\includes\_footer.html:89
+msgid "service_item_coloring"
+msgstr "Окрашивание"
+
+#: .\templates\includes\_footer.html:91
+msgid "service_item_treatment"
+msgstr "Уход за волосами"
+
+#: .\templates\includes\_footer.html:93
+msgid "service_item_styling"
+msgstr "Стайлинг"
+
+#: .\templates\includes\_footer.html:100 .\templates\legal\faq.html:27
+#: .\templates\legal\faq.html:47
+msgid "service_cat_nails"
+msgstr "Ногтевой сервис"
+
+#: .\templates\includes\_footer.html:103
+msgid "service_item_manicure"
+msgstr "Маникюр"
+
+#: .\templates\includes\_footer.html:105
+msgid "service_item_pedicure"
+msgstr "Педикюр"
+
+#: .\templates\includes\_footer.html:107
+msgid "service_item_extension"
+msgstr "Наращивание"
+
+#: .\templates\includes\_footer.html:115
+msgid "service_cat_beauty"
+msgstr "Красота и уход"
+
+#: .\templates\includes\_footer.html:120 .\templates\legal\faq.html:32
+#: .\templates\legal\faq.html:51
+msgid "service_item_lashes"
+msgstr "Наращивание ресниц"
+
+#: .\templates\includes\_footer.html:121
+msgid "service_item_lamination"
+msgstr "Ламинирование"
+
+#: .\templates\includes\_footer.html:123 .\templates\legal\faq.html:31
+msgid "service_item_massage"
+msgstr "Массаж"
+
+#: .\templates\legal\faq.html:29 .\templates\legal\faq.html:49
+msgid "service_item_cosmetology"
+msgstr "Косметология лица"
+
+#: .\templates\legal\faq.html:30 .\templates\legal\faq.html:50
+msgid "service_item_depilation"
+msgstr "Эпиляция"
+
+msgid "cookie_modal_title"
+msgstr "Plätzchen? Да, но полезные!"
+
+msgid "cookie_modal_description"
+msgstr "Мы используем куки, чтобы сделать ваш визит приятнее. Разрешите нам собирать анонимную аналитику — это поможет нам развиваться и делать сайт еще удобнее для вас."
+
+msgid "cookie_btn_accept_all"
+msgstr "Все включено"
+
+msgid "cookie_btn_essential"
+msgstr "Только база"
+
+msgid "cookie_btn_settings"
+msgstr "Настроить"
+
+msgid "cookie_view_settings_title"
+msgstr "Настройки приватности"
+
+msgid "cookie_cat_necessary_name"
+msgstr "Обязательные"
+
+msgid "cookie_cat_necessary_desc"
+msgstr "Необходимы для работы сайта (бронирование, сессия)."
+
+msgid "cookie_cat_analytics_name"
+msgstr "Аналитика"
+
+msgid "cookie_cat_analytics_desc"
+msgstr "Помогают нам понять, как вы пользуетесь сайтом."
+
+msgid "cookie_cat_marketing_name"
+msgstr "Маркетинг"
+
+msgid "cookie_cat_marketing_desc"
+msgstr "Используются для персонализации рекламы (FB Pixel и др.)."
+
+msgid "cookie_btn_save"
+msgstr "Сохранить выбор"
+msgid "impressum_page_title"
+msgstr "Выходные данные"
+
+msgid "impressum_title"
+msgstr "Impressum (Выходные данные)"
+
+msgid "impressum_section_tmg"
+msgstr "Информация в соответствии с § 5 TMG"
+
+msgid "impressum_owner_label"
+msgstr "Владелица"
+
+msgid "impressum_contact_title"
+msgstr "Контактная информация"
+
+msgid "impressum_phone_label"
+msgstr "Телефон"
+
+msgid "impressum_email_label"
+msgstr "E-Mail"
+
+msgid "impressum_tax_title"
+msgstr "Налоговый номер"
+
+msgid "impressum_tax_id_desc"
+msgstr "Идентификационный номер плательщика НДС в соответствии с § 27 a Закона о налоге на добавленную стоимость"
+
+msgid "impressum_tax_in_progress"
+msgstr "В процессе оформления"
+
+msgid "impressum_dispute_title"
+msgstr "Разрешение споров"
+
+msgid "impressum_dispute_desc_1"
+msgstr "Европейская комиссия предоставляет платформу для онлайн-разрешения споров (OS):"
+
+msgid "impressum_dispute_desc_2"
+msgstr "Наш адрес электронной почты указан выше в выходных данных."
+
+msgid "impressum_dispute_willingness"
+msgstr "Мы не готовы и не обязаны участвовать в процедурах по разрешению споров в органах по защите прав потребителей."
+
+msgid "impressum_liability_content_title"
+msgstr "Ответственность за содержание"
+
+msgid "impressum_liability_content_desc"
+msgstr "Как поставщик услуг, мы несем ответственность за собственное содержание на этих страницах в соответствии с общими законами согласно § 7 абз. 1 TMG. Однако согласно §§ 8–10 TMG мы не обязаны контролировать переданную или сохраненную стороннюю информацию или расследовать обстоятельства, указывающие на незаконную деятельность."
+
+msgid "impressum_liability_links_title"
+msgstr "Ответственность за ссылки"
+
+msgid "impressum_liability_links_desc"
+msgstr "Наш сайт содержит ссылки на внешние сторонние веб-сайты, на содержание которых мы не имеем влияния. Поэтому мы не можем нести ответственность за это стороннее содержание. Ответственность за содержание связанных страниц всегда несет соответствующий поставщик или оператор страниц."
+
+msgid "impressum_copyright_title"
+msgstr "Авторское право"
+
+msgid "impressum_copyright_desc"
+msgstr "Содержание и работы на этих страницах, созданные операторами сайта, подпадают под действие закона об авторском праве Германии. Тиражирование, редактирование, распространение и любой вид использования вне рамок авторского права требуют письменного согласия соответствующего автора или создателя."
+
+msgid "datenschutz_page_title"
+msgstr "Конфиденциальность"
+
+msgid "datenschutz_title"
+msgstr "Политика конфиденциальности"
+
+msgid "ds_section_1_title"
+msgstr "1. Краткий обзор защиты данных"
+
+msgid "ds_section_1_subtitle_1"
+msgstr "Общие указания"
+
+msgid "ds_section_1_text_1"
+msgstr "Следующие примечания содержат простой обзор того, что происходит с вашими персональными данными при посещении этого сайта. Персональные данные — это любые данные, с помощью которых вас можно идентифицировать лично."
+
+msgid "ds_section_1_subtitle_2"
+msgstr "Сбор данных на этом сайте"
+
+msgid "ds_section_1_q1"
+msgstr "Кто отвечает за сбор данных на этом сайте?"
+
+msgid "ds_section_1_a1"
+msgstr "Обработка данных на этом сайте осуществляется оператором сайта. Его контактные данные вы можете найти в разделе «Выходные данные» (Impressum) этого сайта."
+
+msgid "ds_section_1_q2"
+msgstr "Как мы собираем ваши данные?"
+
+msgid "ds_section_1_a2"
+msgstr "Ваши данные собираются, во-первых, путем их предоставления нам (например, данные, которые вы вводите в контактную форму). Другие данные собираются автоматически или с вашего согласия нашими ИТ-системами при посещении сайта. Это прежде всего технические данные (например, интернет-браузер, операционная система или время вызова страницы)."
+
+msgid "ds_section_2_title"
+msgstr "2. Хостинг и лог-файлы сервера"
+
+msgid "ds_section_2_text_1"
+msgstr "Мы размещаем контент нашего сайта у внешнего поставщика услуг. Провайдер страниц автоматически собирает и сохраняет информацию в так называемых лог-файлах сервера, которые ваш браузер автоматически передает нам. Это:"
+
+msgid "ds_section_2_li_1"
+msgstr "Тип и версия браузера"
+
+msgid "ds_section_2_li_2"
+msgstr "Используемая операционная система"
+
+msgid "ds_section_2_li_3"
+msgstr "Referrer URL (адрес предыдущей страницы)"
+
+msgid "ds_section_2_li_4"
+msgstr "Имя хоста обращающегося компьютера"
+
+msgid "ds_section_2_li_5"
+msgstr "Время запроса сервера"
+
+msgid "ds_section_2_li_6"
+msgstr "IP-адрес"
+
+msgid "ds_section_2_text_2"
+msgstr "Объединение этих данных с другими источниками данных не производится. Основанием для обработки данных является ст. 6 абз. 1 лит. f DSGVO."
+
+msgid "ds_section_3_title"
+msgstr "3. Общие указания и обязательная информация"
+
+msgid "ds_section_3_subtitle_1"
+msgstr "SSL- или TLS-шифрование"
+
+msgid "ds_section_3_text_1"
+msgstr "В целях безопасности и защиты передачи конфиденциального контента этот сайт использует SSL- или TLS-шифрование. Зашифрованное соединение можно узнать по тому, что адресная строка браузера меняется с «http://» на «https://»."
+
+msgid "ds_section_3_subtitle_2"
+msgstr "Ваши права (права субъектов данных)"
+
+msgid "ds_section_3_text_2"
+msgstr "В рамках действующих законодательных положений вы имеете право в любое время на:"
+
+msgid "ds_section_3_li_1_title"
+msgstr "Информацию (ст. 15 DSGVO)"
+
+msgid "ds_section_3_li_1_text"
+msgstr "Вы имеете право бесплатно получать информацию о ваших сохраненных персональных данных, их происхождении, получателях и цели обработки данных."
+
+msgid "ds_section_3_li_2_title"
+msgstr "Исправление (ст. 16 DSGVO)"
+
+msgid "ds_section_3_li_2_text"
+msgstr "Вы имеете право на исправление неточных данных."
+
+msgid "ds_section_3_li_3_title"
+msgstr "Удаление (ст. 17 DSGVO)"
+
+msgid "ds_section_3_li_3_text"
+msgstr "Вы можете потребовать удаления ваших данных, если нет законных обязательств по их хранению."
+
+msgid "ds_section_3_li_4_title"
+msgstr "Обозв (ст. 7 абз. 3 DSGVO)"
+
+msgid "ds_section_3_li_4_text"
+msgstr "Многие процессы обработки данных возможны только с вашего явного согласия. Вы можете отозвать уже данное согласие в любое время."
+
+msgid "ds_section_3_li_5_title"
+msgstr "Право на жалобу (ст. 77 DSGVO)"
+
+msgid "ds_section_3_li_5_text"
+msgstr "В случае нарушений законодательства о защите данных вы имеете право подать жалобу в компетентный надзорный орган."
+
+msgid "ds_section_3_text_3"
+msgstr "По этим и другим вопросам защиты данных вы можете в любое время обратиться к нам по адресу, указанному в выходных данных."
+
+msgid "ds_section_4_title"
+msgstr "4. Сбор данных на этом сайте"
+
+msgid "ds_section_4_subtitle_1"
+msgstr "Cookies (файлы куки)"
+
+msgid "ds_section_4_text_1"
+msgstr "Наши интернет-страницы используют так называемые куки. Куки — это небольшие текстовые файлы, которые не наносят вреда вашему устройству. Мы используем технически необходимые куки для обеспечения функциональности сайта, а также аналитические куки (после согласия) для улучшения нашего предложения."
+
+msgid "ds_section_4_subtitle_2"
+msgstr "Управление согласием на использование куки"
+
+msgid "ds_section_4_text_2"
+msgstr "Для получения и управления вашим согласием на использование куки мы используем собственный инструмент управления согласием. Этот инструмент работает на наших собственных серверах; данные не передаются сторонним поставщикам."
+
+msgid "ds_section_4_text_3"
+msgstr "Инструмент сохраняет ваше решение (согласие или отказ) в куки или в локальном хранилище (localStorage) вашего браузера. Сохраняется исключительно ваше предпочтение — персональные данные не собираются."
+
+msgid "ds_section_4_text_4"
+msgstr "Сохраненное согласие автоматически сбрасывается через 365 дней. Вы можете изменить свое решение в любое время через соответствующую ссылку в футере."
+
+msgid "ds_section_4_text_5"
+msgstr "Юридическим основанием является ст. 6 абз. 1 лит. c DSGVO (юридическая обязанность) и ст. 6 абз. 1 лит. f DSGVO (законный интерес в работе сайта согласно правилам)."
+
+msgid "ds_section_4_subtitle_3"
+msgstr "Контактная форма"
+
+msgid "ds_section_4_text_6"
+msgstr "Если вы отправляете нам запросы через контактную форму, ваши данные из формы запроса, включая контактные данные, будут сохранены нами для обработки запроса. Обработка этих данных осуществляется на основании ст. 6 абз. 1 лит. b DSGVO."
+
+msgid "ds_section_5_title"
+msgstr "5. Инструменты анализа и реклама"
+
+msgid "ds_section_5_subtitle_1"
+msgstr "Google Tag Manager"
+
+msgid "ds_section_5_text_1"
+msgstr "Мы используем Google Tag Manager. Поставщиком является Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland. Этот инструмент позволяет нам централизованно управлять различными скриптами отслеживания. Сам Tag Manager не собирает персональные данные."
+
+msgid "ds_section_5_subtitle_2"
+msgstr "Google Analytics 4"
+
+msgid "ds_section_5_text_2"
+msgstr "Этот сайт использует функции службы веб-аналитики Google Analytics 4. Поставщиком является Google Ireland Limited. IP-адрес в GA4 анонимизируется по умолчанию."
+
+msgid "ds_section_5_text_3"
+msgstr "Хранение и анализ данных осуществляются только в том случае, если вы дали нам свое явное согласие через куки-баннер (ст. 6 абз. 1 лит. a DSGVO)."
+
+msgid "ds_section_6_title"
+msgstr "6. Плагины и инструменты"
+
+msgid "ds_section_6_subtitle_1"
+msgstr "Google Maps"
+
+msgid "ds_section_6_text_1"
+msgstr "Эта страница использует картографический сервис Google Maps. Для использования функций Google Maps необходимо сохранить ваш IP-адрес. Эта информация обычно передается на сервер Google в США."

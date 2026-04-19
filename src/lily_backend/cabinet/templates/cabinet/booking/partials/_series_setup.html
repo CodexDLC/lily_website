@@ -1,0 +1,42 @@
+{# CODEX_DJANGO_CLI BLUEPRINT STATUS: MOVE_TO_CLI_BLUEPRINT. Reason: generated app-layer or scaffold-owned template for codex-django-cli blueprints. #}
+<div class="cab-builder-card p-4 mb-3">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <div class="cab-step-num">1</div>
+    <span class="fw-semibold" style="font-size: .92rem;">Series setup</span>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label small fw-semibold text-secondary">Sessions</label>
+      <input type="number"
+             min="1"
+             max="20"
+             class="form-control"
+             x-model.number="sessionCount"
+             @input.debounce.150ms="rebuildSessions()">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label small fw-semibold text-secondary">Cadence</label>
+      <select class="form-select" x-model="cadence" @change="applyCadence(); rebuildSessions();">
+        <option value="daily">Daily</option>
+        <option value="every_2_days">Every 2 days</option>
+        <option value="every_3_days">Every 3 days</option>
+        <option value="weekly">Weekly</option>
+        <option value="custom">Custom gap</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label small fw-semibold text-secondary">Minimum gap (days)</label>
+      <input type="number"
+             min="0"
+             max="30"
+             class="form-control"
+             x-model.number="minGapDays"
+             @input.debounce.150ms="rebuildSessions()">
+    </div>
+  </div>
+
+  <div class="text-muted small mt-3">
+    Set the repeat logic first. The number of sessions here controls how many session tabs appear above the calendar.
+  </div>
+</div>

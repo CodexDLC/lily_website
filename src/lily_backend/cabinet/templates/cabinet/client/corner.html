@@ -1,0 +1,145 @@
+{# CODEX_DJANGO_CLI BLUEPRINT STATUS: MOVE_TO_CLI_BLUEPRINT. Reason: generated app-layer or scaffold-owned template for codex-django-cli blueprints. #}
+{% extends "cabinet/base_client.html" %}
+{% load i18n %}
+
+{% block title %}{{ client_page_title }}{% endblock %}
+
+{% block cabinet_content %}
+  <div class="d-flex flex-column gap-4">
+    {% if messages %}
+      <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+        {% for message in messages %}
+          <div class="toast align-items-center text-white bg-{{ message.tags|default:'info' }} border-0 shadow-sm mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex">
+              <div class="toast-body">
+                {{ message }}
+              </div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const toastEls = document.querySelectorAll('.toast');
+          toastEls.forEach(el => {
+            // Using a simple timeout to hide toasts if Bootstrap JS is not initializing them automatically
+            setTimeout(() => {
+                el.classList.add('hide');
+                setTimeout(() => el.remove(), 500);
+            }, 5000);
+
+            // Manual close button
+            el.querySelector('.btn-close').onclick = () => el.remove();
+          });
+        });
+      </script>
+      <style>
+        .toast { transition: opacity 0.5s ease-out; opacity: 1; display: block; }
+        .toast.hide { opacity: 0; }
+        .bg-success { background-color: #10b981 !important; }
+        .bg-info { background-color: #3b82f6 !important; }
+        .bg-warning { background-color: #f59e0b !important; }
+        .bg-danger { background-color: #ef4444 !important; }
+      </style>
+    {% endif %}
+
+    <div class="row g-4 align-items-start">
+      <div class="col-xl-4">
+        <div class="card border-0 shadow-sm overflow-hidden">
+          <div class="card-body p-4 text-center">
+            <div class="mx-auto mb-3 rounded-circle d-flex align-items-center justify-content-center fw-bold text-white"
+                 style="width:96px;height:96px;background:var(--cab-primary);font-size:2rem;">
+              {{ corner_summary.initials }}
+            </div>
+            <h1 class="h4 mb-1">{{ corner_summary.display_name }}</h1>
+            <div class="text-muted mb-4">{{ corner_summary.subtitle }}</div>
+
+            {% if loyalty %}
+              <div class="text-start border rounded-3 p-3 mb-4 bg-light">
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                  <div>
+                    <div class="text-muted small">{% trans "Loyalty" %}</div>
+                    <div class="fw-semibold">{{ loyalty.label }} · {{ loyalty.level }}/4</div>
+                  </div>
+                  <div class="text-{{ loyalty.tone }} d-flex align-items-center gap-1" aria-label="{{ loyalty.level }}/4">
+                    {% for _star in loyalty.filled_stars %}
+                      <span class="bi bi-star-fill"></span>
+                    {% endfor %}
+                    {% for _star in loyalty.empty_stars %}
+                      <span class="bi bi-star"></span>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-{{ loyalty.tone }}"
+                       role="progressbar"
+                       style="width: {{ loyalty.progress_percent }}%;"
+                       aria-valuenow="{{ loyalty.progress_percent }}"
+                       aria-valuemin="0"
+                       aria-valuemax="100"></div>
+                </div>
+              </div>
+            {% endif %}
+
+            <div class="row g-3 pt-3 border-top">
+              {% for stat in corner_summary.stats %}
+                <div class="col-4">
+                  <div class="fw-semibold fs-4 d-flex align-items-center justify-content-center gap-1">
+                    {% if stat.icon %}<span class="bi {{ stat.icon }}" style="color:#f59e0b;font-size:1rem;"></span>{% endif %}
+                    {{ stat.value }}
+                  </div>
+                  <div class="text-muted small">{{ stat.label }}</div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-xl-8">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+              <h2 class="h5 mb-0">{% trans "Personal Data" %}</h2>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted small">{% trans "First Name" %}</label>
+                <div class="form-control bg-light opacity-75">{{ profile_form.first_name|default:"-" }}</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small">{% trans "Last Name" %}</label>
+                <div class="form-control bg-light opacity-75">{{ profile_form.last_name|default:"-" }}</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small">{% trans "Phone" %}</label>
+                <div class="form-control bg-light opacity-75">{{ profile_form.phone|default:"-" }}</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small">{% trans "Email" %}</label>
+                <div class="form-control bg-light opacity-75">{{ profile_form.email|default:"-" }}</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small">{% trans "Date of Birth" %}</label>
+                <div class="form-control bg-light opacity-75">{{ profile_form.birth_date|default:"-" }}</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small">{% trans "Patronymic / Middle Name" %}</label>
+                <div class="form-control bg-light opacity-75">{{ profile_form.patronymic|default:"-" }}</div>
+              </div>
+              <div class="col-12 d-flex justify-content-end pt-2">
+                <a href="{% url 'cabinet:settings' %}" class="btn btn-outline-primary px-4">
+                  <span class="bi bi-pencil-square me-2"></span>{% trans "Manage Account" %}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

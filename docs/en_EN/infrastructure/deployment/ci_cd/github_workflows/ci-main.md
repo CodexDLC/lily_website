@@ -46,7 +46,7 @@ This job verifies that all Docker images required for the project can be built s
 
 ### 3. `integration-test`
 
-This job performs a full integration test by spinning up the entire stack using Docker Compose.
+This job performs a full integration test by spinning up the entire stack using `docker compose`.
 
 *   **Runs on:** `ubuntu-latest`
 *   **Needs:** `build-check`

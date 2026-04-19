@@ -58,12 +58,25 @@ cd lily_website
 
 ### 2. Установка зависимостей
 
-Используется [Poetry](https://python-poetry.org/) для управления зависимостями.
+Проект использует [uv](https://docs.astral.sh/uv/) для управления зависимостями.
 
 ```bash
-pip install poetry
-poetry config virtualenvs.in-project true
-poetry install --extras "django bot dev"
+uv sync
+```
+
+`uv sync` поднимает стандартное `dev`-окружение, в которое уже включены обязательные framework-зависимости проекта:
+
+- `codex-django` закреплен как обязательная библиотека Django-слоя для дальнейшего рефакторинга.
+- `codex-django-cli` закреплен как обязательный dev/CLI слой для scaffold и управления проектом.
+
+Для production-подобной установки по сервисам используйте явные группы:
+
+```bash
+# Backend / Django runtime
+uv sync --no-default-groups --group django --group shared --group codex_tools
+
+# Bot / Worker runtime
+uv sync --no-default-groups --group bot --group shared --group codex_tools
 ```
 
 ### 3. Настройка окружения
@@ -109,7 +122,7 @@ lily_website/
 │   └── shared/               # Общий код (схемы, утилиты, ядро)
 ├── deploy/                   # Docker-compose и Nginx конфиги
 ├── docs/                     # Техническая документация и роадмапы
-└── pyproject.toml            # Конфигурация Poetry, Ruff, Mypy
+└── pyproject.toml            # Конфигурация uv, Hatchling, Ruff, Mypy
 ```
 
 ---
@@ -118,14 +131,14 @@ lily_website/
 
 ```bash
 # Линтинг и форматирование
-ruff check src/
-ruff format src/
+uv run ruff check src/
+uv run ruff format src/
 
 # Проверка типов
-mypy src/
+uv run mypy src/
 
 # Тесты
-pytest
+uv run pytest
 ```
 
 ---

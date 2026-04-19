@@ -1,0 +1,73 @@
+/* =========================================
+   WIZARD SHARED COMPONENTS
+   Common reusable components for wizard-style interfaces
+   ========================================= */
+
+/* --- Wizard Buttons --- */
+.btn-wizard-primary {
+    background: transparent;
+    border: 1px solid var(--color-gold);
+    color: var(--color-gold);
+    padding: 6px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: var(--font-sans, sans-serif);
+    font-size: 13px;
+}
+
+.btn-wizard-primary:hover {
+    background: var(--color-gold);
+    color: #000;
+}
+
+.btn-wizard-secondary {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--color-text-muted);
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: var(--font-sans, sans-serif);
+    font-size: 13px;
+}
+
+.btn-wizard-secondary:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+}
+
+/* --- Wizard Card Pattern --- */
+.wizard-card {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.wizard-card-hover {
+    transition: 0.3s;
+}
+
+.wizard-card-hover:hover {
+    border-color: rgba(237, 208, 113, 0.3);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* --- Wizard Form Inputs --- */
+.wizard-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 12px 15px;
+    color: white;
+    font-family: var(--font-sans, sans-serif);
+    transition: 0.3s;
+}
+
+.wizard-input:focus {
+    border-color: var(--color-gold);
+    outline: none;
+    background: rgba(255,255,255,0.1);
+}

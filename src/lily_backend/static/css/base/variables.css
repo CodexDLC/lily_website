@@ -1,0 +1,46 @@
+/* =========================================
+   CSS VARIABLES (DARK LUXURY THEME)
+   ========================================= */
+:root {
+    /* Base Colors (Hex) */
+    --color-emerald: #003831;     /* Site Background */
+    --color-gold: #EDD071;        /* Accents, Prices, Headers */
+    --color-champagne: #D1C7B7;   /* Secondary text, Luxury Beige */
+    --color-white: #F5F5F5;       /* UI Elements Soft White */
+
+    /* RGB Base (For alphatransparency utility) */
+    --color-emerald-rgb: 0, 56, 49;
+    --color-gold-rgb: 237, 208, 113;
+    --color-white-rgb: 245, 245, 245;
+
+    /* Alpha (Transparency) Tokens for UI Components */
+    --color-gold-10: rgba(var(--color-gold-rgb), 0.1);
+    --color-gold-20: rgba(var(--color-gold-rgb), 0.2);
+    --color-gold-50: rgba(var(--color-gold-rgb), 0.5);
+
+    --color-white-05: rgba(var(--color-white-rgb), 0.05);
+    --color-white-10: rgba(var(--color-white-rgb), 0.1);
+    --color-white-20: rgba(var(--color-white-rgb), 0.2);
+    --color-white-50: rgba(var(--color-white-rgb), 0.5);
+
+    /* Typography Colors */
+    --color-text-main: #F5F5F5;
+    --color-text-muted: rgba(var(--color-white-rgb), 0.7);
+
+    /* Status Colors */
+    --color-danger: #f87171;
+    /* Warning/Logout */
+    --color-danger-hover: #ef4444;
+    --color-danger-rgb: 248, 113, 113;
+    --color-error-bg: #fde8e8;
+    /* Error messages */
+    --color-error-text: #c53030;
+
+    /* Typography */
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Lato', sans-serif;
+
+    /* Layout */
+    --container-width: 1200px;
+    --site-max-width: 1440px;
+}

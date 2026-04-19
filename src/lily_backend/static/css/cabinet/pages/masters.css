@@ -1,0 +1,175 @@
+/* ===================================================
+   Cabinet — Masters CRM Page
+   =================================================== */
+
+.masters-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+@media (min-width: 768px) {
+    .masters-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+}
+
+/* Master Card Specifics */
+.master-card {
+    position: relative;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+.master-avatar-container {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 15px;
+    position: relative;
+}
+
+.master-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-gold);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.master-card-edit-btn-inline {
+    background: rgba(237, 208, 113, 0.1);
+    border: 1px solid rgba(237, 208, 113, 0.2);
+    color: var(--color-gold);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.master-card-edit-btn-inline:hover {
+    background: var(--color-gold);
+    color: var(--color-emerald);
+    transform: scale(1.1);
+}
+
+.master-name-title {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.master-card-name {
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text-main);
+}
+
+.master-card-title {
+    display: block;
+    font-size: 13px;
+    color: var(--color-gold);
+    opacity: 0.8;
+    margin-top: 2px;
+}
+
+/* Workdays Chips */
+.workdays-display {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin: 10px 0;
+}
+
+.day-chip {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.day-chip.active {
+    background: rgba(237, 208, 113, 0.15);
+    color: var(--color-gold);
+    border-color: var(--color-gold);
+}
+
+/* Filter Bar */
+.crm-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filter-tag {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.filter-tag.active {
+    background: var(--color-gold);
+    color: var(--color-emerald);
+    font-weight: 700;
+}
+
+/* Edit Form Specifics */
+.workdays-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin: 10px 0;
+}
+
+.workday-checkbox-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.workday-checkbox-label input {
+    display: none;
+}
+
+.workday-checkbox-label .box {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    border: 1px solid rgba(237, 208, 113, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--color-gold);
+    transition: all 0.2s;
+}
+
+.workday-checkbox-label input:checked + .box {
+    background: var(--color-gold);
+    color: var(--color-emerald);
+}

@@ -9,10 +9,10 @@ import importlib
 from loguru import logger as log
 from redis.asyncio import Redis
 
-from src.shared.core.logger import setup_logging
 from src.telegram_bot.core.config import BotSettings
 from src.telegram_bot.core.container import BotContainer
 from src.telegram_bot.core.factory import build_bot
+from src.telegram_bot.core.logger import setup_bot_logging as setup_logging
 from src.telegram_bot.core.routers import build_main_router
 from src.telegram_bot.core.settings import MIDDLEWARE_CLASSES
 
