@@ -14,6 +14,9 @@ python /app/manage.py collectstatic --noinput
 echo "Running migrations..."
 python /app/manage.py migrate --noinput
 
+echo "Loading catalog fixtures..."
+python /app/manage.py load_catalog
+
 # Добавляем запуск скрипта обновления контента
 echo "Running update_all_content..."
 python /app/manage.py update_all_content

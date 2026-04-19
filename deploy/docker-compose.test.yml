@@ -86,7 +86,7 @@ services:
       - BACKEND_URL=http://backend:8000
     volumes:
       - ../src/telegram_bot:/app/src/telegram_bot:ro
-      - ../src/shared:/app/src/shared:ro
+      - logs_test_volume:/app/logs
     restart: unless-stopped
     depends_on:
       redis:
@@ -110,7 +110,6 @@ services:
       - BACKEND_URL=http://backend:8000
     volumes:
       - ../src/workers:/app/src/workers:ro
-      - ../src/shared:/app/src/shared:ro
       - logs_test_volume:/app/logs
     restart: unless-stopped
     depends_on:

@@ -1,19 +1,19 @@
 # === STAGE 1: Builder ===
-FROM python:3.13-slim AS builder
+FROM python:3.12-slim AS builder
 WORKDIR /app
 RUN apt-get update && apt-get install -y gcc g++ libpq-dev && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir uv==0.10.7
 
 COPY pyproject.toml uv.lock ./
-# Экспортируем основные зависимости + django + shared + codex_tools
-RUN uv export --frozen --format requirements.txt --no-hashes --no-dev --no-default-groups --no-emit-project --group django --group shared --group codex_tools --output-file requirements.txt
+# Экспортируем основные зависимости + django + codex_tools
+RUN uv export --frozen --format requirements.txt --no-hashes --no-dev --no-default-groups --no-emit-project --group django --group codex_tools --output-file requirements.txt
 
 RUN python -m venv /venv
 RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
 
 # === STAGE 2: Runtime ===
-FROM python:3.13-slim
+FROM python:3.12-slim
 WORKDIR /app
 RUN apt-get update && apt-get install -y libpq5 curl procps && rm -rf /var/lib/apt/lists/* && \
     useradd -m -u 1000 appuser

@@ -13,7 +13,10 @@ build/
 # Virtual Environment
 # ═══════════════════════════════════════════
 .venv/
+.venv-*/
 venv/
+.uv-cache/
+.uv-python/
 
 # ═══════════════════════════════════════════
 # Environment Variables

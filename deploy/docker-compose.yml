@@ -30,7 +30,7 @@ services:
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "sh", "-c", "REDISCLI_AUTH=${REDIS_PASSWORD} redis-cli ping"]
+      test: ["CMD", "sh", "-c", "REDISCLI_AUTH=\"$${REDIS_PASSWORD}\" redis-cli ping"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -42,7 +42,7 @@ services:
     build:
       context: ..
       dockerfile: deploy/lily_backend/Dockerfile
-    container_name: ${CONTAINER_PREFIX:-lily_backend}-backend
+    container_name: ${CONTAINER_PREFIX:-lily_website}-backend
     ports:
       - "8000:8000"
     env_file:
@@ -81,7 +81,7 @@ services:
       - PROJECT_NAME=telegram_bot
     volumes:
       - ../src/telegram_bot:/app/src/telegram_bot:ro
-      - ../src/shared:/app/src/shared:ro
+      - ../logs:/app/logs
     restart: unless-stopped
     depends_on:
       redis:
@@ -103,7 +103,28 @@ services:
       - PROJECT_NAME=notification_worker
     volumes:
       - ../src/workers:/app/src/workers:ro
-      - ../src/shared:/app/src/shared:ro
+      - ../logs:/app/logs
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    networks:
+      - lily_website-network
+
+  system_worker:
+    build:
+      context: ..
+      dockerfile: deploy/worker/Dockerfile
+    container_name: ${CONTAINER_PREFIX:-lily_website}-system_worker
+    command: arq src.workers.system_worker.worker.WorkerSettings
+    env_file:
+      - ../.env
+    environment:
+      - PROJECT_NAME=system_worker
+    volumes:
+      - ../src/workers:/app/src/workers:ro
       - ../logs:/app/logs
     restart: unless-stopped
     depends_on:
