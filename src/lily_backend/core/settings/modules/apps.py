@@ -37,6 +37,7 @@ CODEX_APPS = [
     "codex_django.core",
     "codex_django.cabinet",
     "codex_django.showcase",
+    "codex_django.tracking",
 ]
 
 # ═══════════════════════════════════════════
@@ -49,7 +50,6 @@ CODEX_STATIC_PAGE_SEO_MODEL = "system.StaticPageSeo"
 LOCAL_APPS = [
     "core",
     "system",
-    "tracking",
     "features.main",
     "cabinet",
     "features.conversations",

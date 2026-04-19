@@ -18,8 +18,9 @@ from ..selector.engine import get_booking_engine_gateway
 class CabinetBookingAvailabilityService:
     """Feature-level helper for cabinet booking date and slot availability."""
 
-    def __init__(self, gateway: Any = None) -> None:
+    def __init__(self, gateway: Any = None, *, audience: str = "cabinet") -> None:
         self.gateway = gateway or get_booking_engine_gateway()
+        self.audience = audience
 
     def build_picker_days(
         self,
@@ -125,6 +126,7 @@ class CabinetBookingAvailabilityService:
                 target_date=target_date,
                 locked_resource_id=locked_resource_id,
                 resource_selections=resource_selections,
+                audience=self.audience,
             )
         except Exception as e:
             logger.error(

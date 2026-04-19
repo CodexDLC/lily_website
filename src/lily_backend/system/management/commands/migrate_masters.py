@@ -11,6 +11,8 @@ from features.booking.models import Master, MasterWorkingDay
 from features.main.models import ServiceCategory
 from psycopg2.extras import RealDictCursor
 
+from system.models import Client
+
 
 class Command(BaseCommand):
     help = "Migrate masters from legacy sqlite or postgres database"
@@ -127,6 +129,12 @@ class Command(BaseCommand):
             if self._row_get(row, "qr_token"):
                 master.qr_token = self._row_get(row, "qr_token")
 
+            # Try to link User if not set
+            if not master.user_id and master.phone:
+                client_with_user = Client.objects.filter(phone=master.phone, user__isnull=False).first()
+                if client_with_user:
+                    master.user = client_with_user.user
+
             if not options["dry_run"]:
                 try:
                     with transaction.atomic():
@@ -210,13 +218,11 @@ class Command(BaseCommand):
 
         booking_settings = BookingSettings.load()
         for weekday in parsed_days:
-            is_saturday = weekday == 5
-            start_time = master.work_start or (
-                booking_settings.work_start_saturday if is_saturday else booking_settings.work_start_weekdays
-            )
-            end_time = master.work_end or (
-                booking_settings.work_end_saturday if is_saturday else booking_settings.work_end_weekdays
-            )
+            booking_day_schedule = booking_settings.get_day_schedule(weekday)
+            fallback_start = booking_day_schedule[0] if booking_day_schedule is not None else None
+            fallback_end = booking_day_schedule[1] if booking_day_schedule is not None else None
+            start_time = master.work_start or fallback_start
+            end_time = master.work_end or fallback_end
             if not start_time or not end_time:
                 continue
             MasterWorkingDay.objects.update_or_create(

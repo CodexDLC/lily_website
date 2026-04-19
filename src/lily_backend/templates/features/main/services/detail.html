@@ -2,7 +2,7 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{{ category.name }} | LILY Beauty Salon{% endblock %}
+{% block title %}{{ category.name }} | LILY Beauty Salon{% endblock title %}
 
 {% block content %}
 {% include "features/main/services/_schema_service_detail.html" %}
@@ -38,7 +38,7 @@
                 {% for service in category.services.all %}
                 <div class="service-row">
                     <div class="service-names">
-                        <span class="name-de">{{ service.title }}</span>
+                        <span class="service-name-main">{{ service.name }}</span>
                         {% if service.description %}
                         <span class="service-desc-small">{{ service.description }}</span>
                         {% endif %}
@@ -60,6 +60,10 @@
                             {% endif %}
                         </span>
                     </div>
+
+                    <div class="service-action" id="service-action-{{ service.id }}">
+                        {% include "features/booking/partials/bookable_button.html" with service_id=service.id is_selected=service.is_selected %}
+                    </div>
                 </div>
                 {% empty %}
                 <div class="text-center">
@@ -67,6 +71,10 @@
                 </div>
                 {% endfor %}
             </div>
+        </div>
+
+        <div id="bk-hub-placeholder">
+            {% include "features/booking/partials/booking_hub.html" %}
         </div>
 
         <!-- MASTERS BLOCK -->
@@ -97,4 +105,4 @@
 </section>
 
 {% include "features/main/services/includes/_bento_crosslinking.html" %}
-{% endblock %}
+{% endblock content %}

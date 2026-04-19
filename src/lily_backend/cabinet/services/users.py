@@ -3,7 +3,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, ClassVar
 
 from django.utils.translation import gettext_lazy as _
+from system.selectors.client_profile import ClientProfileSelector
 from system.selectors.users import UserSelector
+from system.services.loyalty import LoyaltyService
 
 if TYPE_CHECKING:
     from django.http import HttpRequest
@@ -77,9 +79,9 @@ class UserService:
                             client.user = user
                             client.is_ghost = False
                             client.save()
-                    # 3. If still no client, create a virtual one for the modal view
+                    # 3. If still no client, create and SAVE a new one for the modal view
                     if not client:
-                        client = Client(
+                        client = Client.objects.create(
                             first_name=user.first_name,
                             last_name=user.last_name,
                             email=user.email,
@@ -89,4 +91,11 @@ class UserService:
             except (ValueError, user_model.DoesNotExist):
                 pass
 
-        return {"client": client}
+        user = getattr(client, "user", None)
+        profile = getattr(user, "profile", None)
+        if profile is None and user is not None:
+            profile = ClientProfileSelector.get_or_create_profile(user)
+        return {
+            "client": client,
+            "loyalty": LoyaltyService.get_display_for_profile(profile),
+        }

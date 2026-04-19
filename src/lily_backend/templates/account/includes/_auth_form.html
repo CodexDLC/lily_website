@@ -1,0 +1,57 @@
+{% load i18n %}
+
+<form class="auth-form" method="post" action="{{ action_url }}"
+      {% if htmx_enabled %}
+      hx-post="{{ action_url }}"
+      hx-target="#authFormContainer"
+      hx-swap="outerHTML"
+      {% endif %}>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="auth-form__alert auth-form__error">
+        {{ form.non_field_errors }}
+    </div>
+    {% endif %}
+
+    <div id="authFormFields">
+        {% for field in form %}
+        {% if field.field.widget.input_type == "checkbox" %}
+        <div class="auth-form__field auth-form__field--checkbox">
+            <input
+                type="checkbox"
+                name="{{ field.html_name }}"
+                id="{{ field.id_for_label }}"
+                {% if field.value %}checked{% endif %}
+                class="auth-form__checkbox"
+            >
+            <label class="auth-form__label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        </div>
+        {% else %}
+        <div class="auth-form__field">
+            <label class="auth-form__label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <input
+                class="auth-form__input{% if field.errors %} auth-form__input--error{% endif %}"
+                type="{{ field.field.widget.input_type|default:'text' }}"
+                name="{{ field.html_name }}"
+                id="{{ field.id_for_label }}"
+                {% if field.value %}value="{{ field.value }}"{% endif %}
+                placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}"
+                {% if field.field.required %}required{% endif %}
+            >
+            {% if field.errors %}
+            <span class="auth-form__error">{{ field.errors.0 }}</span>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+
+    <button type="submit" class="auth-form__submit">
+        {{ submit_text }}
+    </button>
+</form>

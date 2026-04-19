@@ -35,6 +35,9 @@ REDIS_PASSWORD = None
 # Email backend for tests
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
+# Disable project loguru bootstrapping in sandboxed test runs.
+DISABLE_PROJECT_LOGGING = True
+
 # Disable migrations for speed (optional)
 # MIGRATION_MODULES = {app: None for app in INSTALLED_APPS}
 

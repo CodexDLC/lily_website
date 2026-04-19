@@ -97,3 +97,38 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+// 4. Auth Modal
+function openAuthModal() {
+    const modal = document.getElementById('authModal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.classList.add('no-scroll');
+    }
+}
+
+function closeAuthModal() {
+    const modal = document.getElementById('authModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+    }
+}
+
+// Close modal when clicking outside the card
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('authModal');
+    if (modal && e.target === modal) {
+        closeAuthModal();
+    }
+});
+
+// ESC key to close
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('authModal');
+        if (modal && modal.classList.contains('active')) {
+            closeAuthModal();
+        }
+    }
+});

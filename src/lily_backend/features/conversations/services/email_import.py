@@ -52,7 +52,12 @@ def trigger_email_import() -> dict:
     if _HAS_ARQ:
         from core.arq.client import arq_client
 
-        job_id = arq_client.enqueue("import_emails_task", {})
+        job_id = arq_client.enqueue(
+            "import_emails_task",
+            {},
+            queue_name="system",
+            job_id="conversations.import:manual",
+        )
         return {"mode": "queued", "job_id": str(job_id) if job_id else None}
 
     thread = threading.Thread(target=_run_import_sync, daemon=True)

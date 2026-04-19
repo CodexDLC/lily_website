@@ -23,6 +23,7 @@ from .views.client import (
 from .views.conversations import (
     AllMessagesView,
     ComposeView,
+    ImportedMailView,
     InboxBulkActionView,
     InboxView,
     ProcessedView,
@@ -31,6 +32,7 @@ from .views.conversations import (
     ThreadView,
     manual_check_view,
 )
+from .views.ops import WorkerOpsView
 from .views.services import CategoryStatusToggleView, ServiceQuickEditView, ServicesListView
 from .views.site_settings import site_settings_tab_view, site_settings_view
 from .views.staff import StaffListView, StaffQuickEditView
@@ -50,6 +52,8 @@ urlpatterns = [
     # Analytics
     path("analytics/", analytics_dashboard_view, name="analytics_dashboard"),
     path("analytics/reports/", AnalyticsReportsView.as_view(), name="analytics_reports"),
+    # Ops
+    path("ops/workers/", WorkerOpsView.as_view(), name="ops_workers"),
     # Booking
     path("booking/schedule/", BookingScheduleView.as_view(), name="booking_schedule"),
     path("booking/settings/", BookingSettingsView.as_view(), name="booking_settings"),
@@ -65,6 +69,7 @@ urlpatterns = [
     path("booking/fetch-slots/", BookingSlotFetchView.as_view(), name="booking_fetch_slots"),
     # Conversations
     path("conversations/", InboxView.as_view(), name="conversations_inbox"),
+    path("conversations/imported/", ImportedMailView.as_view(), name="conversations_imported"),
     path("conversations/processed/", ProcessedView.as_view(), name="conversations_processed"),
     path("conversations/all/", AllMessagesView.as_view(), name="conversations_all"),
     path("conversations/compose/", ComposeView.as_view(), name="conversations_compose"),

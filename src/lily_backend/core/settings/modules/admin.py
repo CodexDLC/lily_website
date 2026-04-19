@@ -99,7 +99,7 @@ UNFOLD = {
                     {
                         "title": _("Page Views"),
                         "icon": "bar_chart",
-                        "link": "/admin/tracking/pageview/",
+                        "link": "/admin/codex_tracking/pageview/",
                     },
                 ],
             },
@@ -124,10 +124,40 @@ UNFOLD = {
                         "link": "/admin/system/staticpageseo/",
                         "permission": lambda request: request.user.is_superuser,
                     },
+                ],
+            },
+            {
+                "title": _("Authentication"),
+                "separator": True,
+                "items": [
                     {
                         "title": _("Users"),
                         "icon": "person",
                         "link": "/admin/auth/user/",
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Groups"),
+                        "icon": "group",
+                        "link": "/admin/auth/group/",
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Email Addresses"),
+                        "icon": "mail",
+                        "link": "/admin/account/emailaddress/",
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Social Accounts"),
+                        "icon": "public",
+                        "link": "/admin/socialaccount/socialaccount/",
+                        "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Social Apps"),
+                        "icon": "apps",
+                        "link": "/admin/socialaccount/socialapp/",
                         "permission": lambda request: request.user.is_superuser,
                     },
                 ],

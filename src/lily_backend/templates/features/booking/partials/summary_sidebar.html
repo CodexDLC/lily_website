@@ -1,12 +1,12 @@
 {% load i18n %}
-<div class="bk-summary-sidebar" id="bk-summary-sidebar" hx-swap-oob="true">
+<div class="bk-summary-sidebar" id="bk-summary-sidebar">
   <h3 class="bk-summary-card__title">{% trans "Ihr Termin" %}</h3>
 
   <div class="bk-summary-card__content">
     {% for item in cart.items %}
       <div class="bk-summary-item">
         <div class="bk-summary-item__info">
-          <span class="bk-summary-item__name">{{ item.service_name }}</span>
+          <span class="bk-summary-item__name">{{ item.service_title }}</span>
           <span class="bk-summary-item__meta">
             {{ item.duration }} {% trans "min" %}
           </span>

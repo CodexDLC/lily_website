@@ -64,12 +64,12 @@ class MasterQuickEditForm(forms.ModelForm):
                 item.delete()
 
         for weekday in selected_days:
-            is_saturday = weekday == 5
+            booking_day_schedule = settings.get_day_schedule(weekday)
+            fallback_start = booking_day_schedule[0] if booking_day_schedule is not None else None
+            fallback_end = booking_day_schedule[1] if booking_day_schedule is not None else None
             defaults = {
-                "start_time": master.work_start
-                or (settings.work_start_saturday if is_saturday else settings.work_start_weekdays),
-                "end_time": master.work_end
-                or (settings.work_end_saturday if is_saturday else settings.work_end_weekdays),
+                "start_time": master.work_start or fallback_start,
+                "end_time": master.work_end or fallback_end,
                 "break_start": master.break_start,
                 "break_end": master.break_end,
             }

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime
 
+from django.contrib import messages
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
@@ -12,7 +13,7 @@ from django.utils.translation import gettext as _
 from django.views import View
 from system.models import Client
 
-from features.booking.dto.public_cart import clear_cart, get_cart
+from features.booking.dto.public_cart import clear_cart, get_cart, save_cart
 from features.booking.models import AppointmentGroup, AppointmentGroupItem
 from features.booking.selector.engine import get_booking_engine_gateway
 
@@ -59,11 +60,36 @@ class BookingCommitView(View):
         last_name = request.POST.get("last_name", "").strip()
         phone = request.POST.get("phone", "").strip()
         email = request.POST.get("email", "").strip()
+        notes = request.POST.get("client_notes", "").strip()
+
+        request_call = request.POST.get("request_call") == "on"
+        cancellation_policy = request.POST.get("cancellation_policy") == "on"
+        consent = request.POST.get("consent") == "on"
+
+        # Persist contact and choices in session early (to preserve data on validation errors)
+        cart.contact = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "phone": phone,
+            "email": email,
+            "notes": notes,
+            "request_call": request_call,
+            "cancellation_policy": cancellation_policy,
+            "consent": consent,
+        }
+        save_cart(request, cart)
 
         if not first_name or not last_name:
             return self._error(request, cart, _("Bitte geben Sie Ihren Vornamen und Nachnamen ein."))
         if not phone and not email:
             return self._error(request, cart, _("Bitte geben Sie eine Telefonnummer oder E-Mail-Adresse an."))
+
+        if not cancellation_policy:
+            messages.error(request, _("Bitte akzeptieren Sie die Stornierungsbedingungen."))
+            return self._error(request, cart, "")
+        if not consent:
+            messages.error(request, _("Bitte akzeptieren Sie die Einwilligung zur Datenverarbeitung."))
+            return self._error(request, cart, "")
 
         # Validate slot selection
         if cart.mode == "same_day":
@@ -72,9 +98,6 @@ class BookingCommitView(View):
         else:
             if not cart.is_ready_multi_day():
                 return self._error(request, cart, _("Bitte wählen Sie Datum und Uhrzeit für jede Dienstleistung."))
-
-        # Persist contact in session (in case of error loop)
-        cart.contact = {"first_name": first_name, "last_name": last_name, "phone": phone, "email": email}
 
         try:
             with transaction.atomic():
@@ -106,13 +129,18 @@ class BookingCommitView(View):
             selected_time=cart.time,
             resource_id=None,
             client=client,
+            notify_received=False,
         )
 
         appointments = result if isinstance(result, list) else [result]
+        from features.conversations.services.notifications import _get_engine
+
+        engine = _get_engine()
 
         if len(appointments) == 1:
             # Single appointment — no group
             appt = appointments[0]
+            engine.dispatch_event("booking.received", appt)
             return reverse("booking:success_single", kwargs={"token": appt.finalize_token})
 
         # 2+ appointments → create group
@@ -127,6 +155,7 @@ class BookingCommitView(View):
                 appointment=appt,
                 order=order,
             )
+        engine.dispatch_event("booking.group_received", group)
         return reverse("booking:success_group", kwargs={"token": group.group_token})
 
     def _commit_multi_day(self, request: HttpRequest, cart, client: Client) -> str:

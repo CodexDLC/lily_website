@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Methode nicht erlaubt" %} | LILY Beauty Salon{% endblock %}
+
+{% block content %}
+<main class="section error-page-container">
+    <div class="container text-center">
+        <h1 class="hero-title error-code-large">405</h1>
+        <h2 class="error-subtitle">{% trans "Anfrage nicht erlaubt" %}</h2>
+        <p class="error-message">
+            {% trans "Die von Ihnen gewählte Methode ist für diese Seite nicht zulässig." %}
+        </p>
+        <div class="mt-8">
+            <a href="{% url 'main:index' %}" class="btn-pill">{% trans "Zur Startseite" %}</a>
+        </div>
+    </div>
+</main>
+{% endblock %}

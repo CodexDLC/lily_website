@@ -11,12 +11,18 @@ def get_message_queryset() -> QuerySet[Message]:
     return Message.objects.filter(is_archived=False)
 
 
-def get_messages(status: str | None = None, topic: str | None = None) -> QuerySet[Message]:
+def get_messages(
+    status: str | None = None,
+    topic: str | None = None,
+    source: str | None = None,
+) -> QuerySet[Message]:
     qs = get_message_queryset()
     if status and status != "all":
         qs = qs.filter(status=status)
     if topic:
         qs = qs.filter(topic=topic)
+    if source:
+        qs = qs.filter(source=source)
     return qs.order_by("-created_at")
 
 
@@ -61,8 +67,9 @@ def get_paginated_messages(
     *,
     status: str | None = None,
     topic: str | None = None,
+    source: str | None = None,
     page: str | int | None = None,
     per_page: int = 50,
 ) -> Page[Message]:
-    qs = get_messages(status=status, topic=topic)
+    qs = get_messages(status=status, topic=topic, source=source)
     return Paginator(qs, per_page).get_page(page)

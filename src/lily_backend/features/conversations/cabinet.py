@@ -66,16 +66,22 @@ declare(
             order=2,
         ),
         SidebarItem(
+            label=str(_("Imported Mail")),
+            url=reverse_lazy("cabinet:conversations_imported"),
+            icon="bi-envelope-arrow-down",
+            order=3,
+        ),
+        SidebarItem(
             label=str(_("Processed")),
             url=reverse_lazy("cabinet:conversations_processed"),
             icon="bi-check2-circle",
-            order=3,
+            order=4,
         ),
         SidebarItem(
             label=str(_("All")),
             url=reverse_lazy("cabinet:conversations_all"),
             icon="bi-collection",
-            order=4,
+            order=5,
         ),
     ],
 )

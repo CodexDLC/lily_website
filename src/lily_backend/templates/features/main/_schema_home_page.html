@@ -32,25 +32,10 @@
       "longitude": "{% localize off %}{{ site_settings.longitude }}{% endlocalize %}"
     },
     "url": "{{ site_settings.site_base_url }}",
-    "openingHoursSpecification": [
-      {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday"
-        ],
-        "opens": "{{ site_settings.work_start_weekdays|date:'H:i' }}",
-        "closes": "{{ site_settings.work_end_weekdays|date:'H:i' }}"
-      },
-      {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": "Saturday",
-        "opens": "{{ site_settings.work_start_saturday|date:'H:i' }}",
-        "closes": "{{ site_settings.work_end_saturday|date:'H:i' }}"
-      }
+    "openingHours": [
+      "Mo-Fr {{ site_settings.working_hours_weekdays }}",
+      "Sa {{ site_settings.working_hours_saturday }}",
+      "Su {{ site_settings.working_hours_sunday }}"
     ],
     "sameAs": [
       "{{ site_settings.facebook_url|default:'https://www.facebook.com/lilybeautysalonkoethen/' }}",

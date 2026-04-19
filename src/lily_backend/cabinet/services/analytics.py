@@ -8,6 +8,7 @@ from codex_django.cabinet.selector.dashboard import DashboardSelector
 from codex_django.cabinet.types.widgets import ListItem, ListWidgetData, MetricWidgetData
 from django.db.models import Count, DecimalField, Sum
 from django.db.models.functions import Coalesce, TruncDate
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -96,6 +97,7 @@ class AnalyticsService:
                 trend_label=str(_("vs last month")),
                 trend_direction="up" if rev_trend.startswith("+") else "down",
                 icon="bi-currency-euro",
+                url=reverse_lazy("cabinet:analytics_reports") + "?tab=revenue",
             ),
             "bookings": MetricWidgetData(
                 label=str(_("Monthly bookings")),
@@ -104,6 +106,7 @@ class AnalyticsService:
                 trend_label=str(_("vs last month")),
                 trend_direction="up" if bk_trend.startswith("+") else "down",
                 icon="bi-calendar-check",
+                url=reverse_lazy("cabinet:analytics_reports") + "?tab=revenue",
             ),
             "clients": MetricWidgetData(
                 label=str(_("Total clients")),
@@ -112,6 +115,7 @@ class AnalyticsService:
                 trend_label=str(_("this week")),
                 trend_direction="up",
                 icon="bi-people",
+                url=reverse_lazy("cabinet:analytics_reports") + "?tab=clients",
             ),
             "avg_check": MetricWidgetData(
                 label=str(_("Average check")),
@@ -121,17 +125,20 @@ class AnalyticsService:
                 trend_label=str(_("vs last month")),
                 trend_direction="up" if avg_trend.startswith("+") else "down",
                 icon="bi-receipt",
+                url=reverse_lazy("cabinet:analytics_reports") + "?tab=revenue",
             ),
             "total_appointments": MetricWidgetData(
                 label=str(_("Total appointments")),
                 value=str(total_appointments_alltime),
                 icon="bi-calendar2-check",
+                url=reverse_lazy("cabinet:analytics_reports") + "?tab=revenue",
             ),
             "total_revenue": MetricWidgetData(
                 label=str(_("Total revenue")),
                 value=f"{total_revenue_alltime:,.0f}".replace(",", " "),
                 unit="€",
                 icon="bi-piggy-bank",
+                url=reverse_lazy("cabinet:analytics_reports") + "?tab=revenue",
             ),
         }
 
@@ -198,6 +205,16 @@ class AnalyticsService:
         donut_labels = [row["service__name"] for row in top_services]
         donut_data = [row["cnt"] for row in top_services]
 
+        # Categories donut: top 5 by appointment count (ALL TIME)
+        top_categories = (
+            Appointment.objects.filter(status__in=[Appointment.STATUS_CONFIRMED, Appointment.STATUS_COMPLETED])
+            .values("service__category__name")
+            .annotate(cnt=Count("id"))
+            .order_by("-cnt")[:5]
+        )
+        cat_labels = [row["service__category__name"] or str(_("Other")) for row in top_categories]
+        cat_data = [row["cnt"] for row in top_categories]
+
         return {
             "revenue_chart": {
                 "chart_id": "revenueChart",
@@ -231,6 +248,15 @@ class AnalyticsService:
                 "chart_labels": donut_labels,
                 "chart_data": donut_data,
                 "colors": ["#4f46e5", "#818cf8", "#c7d2fe", "#f1f5f9"],
+            },
+            "categories_donut": {
+                "chart_id": "categoriesDonut",
+                "title": str(_("Popular categories")),
+                "subtitle": str(_("all time")),
+                "icon": "bi-pie-chart-fill",
+                "chart_labels": cat_labels,
+                "chart_data": cat_data,
+                "colors": ["#10b981", "#34d399", "#6ee7b7", "#a7f3d0", "#d1fae5"],
             },
         }
 
@@ -364,6 +390,7 @@ class AnalyticsService:
             "bookings": total_bookings,
             "conversion": "—",
         }
+        chart_data = AnalyticsService.get_chart_data()
         return {
             "active_tab": tab,
             "active_period": active_period,
@@ -379,6 +406,7 @@ class AnalyticsService:
             "summary_row": summary_row,
             "bar_max": max((r["revenue"] or 0 for r in rows_qs), default=1),
             "table_summary": {"total_revenue": summary_row["revenue_fmt"]},
+            "revenue_chart_data": chart_data["revenue_chart"],
         }
 
 

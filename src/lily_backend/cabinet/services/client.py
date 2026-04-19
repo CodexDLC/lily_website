@@ -9,6 +9,8 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from features.booking.models import Appointment
+from system.selectors.client_profile import ClientProfileSelector
+from system.services.loyalty import LoyaltyService
 
 if TYPE_CHECKING:
     from django.http import HttpRequest
@@ -137,6 +139,8 @@ class ClientService:
         user = request.user
         profile: UserProfile | None = getattr(user, "profile", None)
         client: Client | None = getattr(user, "client_profile", None)
+        if profile is None and getattr(user, "is_authenticated", False):
+            profile = ClientProfileSelector.get_or_create_profile(user)
 
         if client:
             first_name = client.first_name or user.username
@@ -163,8 +167,8 @@ class ClientService:
                 "first_name": profile.first_name,
                 "last_name": profile.last_name,
                 "patronymic": "",
-                "phone": profile.phone or "",
-                "email": profile.email or user.email or "",
+                "phone": "",
+                "email": user.email or "",
                 "birth_date": profile.birth_date.isoformat() if profile.birth_date else "",
                 "instagram": profile.instagram,
                 "telegram": profile.telegram,
@@ -187,9 +191,12 @@ class ClientService:
             total_visits = 0
             total_spent = 0
 
+        loyalty = LoyaltyService.get_display_for_profile(profile)
+
         return {
             "client_page_title": _("My Corner"),
             "profile_form": profile_form,
+            "loyalty": loyalty,
             "corner_summary": {
                 "display_name": f"{first_name} {last_name}".strip(),
                 "subtitle": _("Client since %(month)s %(year)s")

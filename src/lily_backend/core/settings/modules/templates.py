@@ -19,6 +19,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.i18n",
+                "core.context_processors.debug_mode",
                 "codex_django.system.context_processors.site_settings",
                 "codex_django.system.context_processors.static_content",
                 "codex_django.core.context_processors.seo_settings",

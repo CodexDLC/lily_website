@@ -75,10 +75,6 @@ class SiteSettingsAdmin(ModelAdmin):
                     "working_hours_weekdays",
                     "working_hours_saturday",
                     "working_hours_sunday",
-                    "work_start_weekdays",
-                    "work_end_weekdays",
-                    "work_start_saturday",
-                    "work_end_saturday",
                 ),
             },
         ),
@@ -101,19 +97,14 @@ class SiteSettingsAdmin(ModelAdmin):
             },
         ),
         (
-            _("Email (SMTP)"),
+            _("Email Identity"),
             {
-                "fields": (
-                    "smtp_host",
-                    "smtp_port",
-                    "smtp_user",
-                    "smtp_password",
-                    "smtp_from_email",
-                    "smtp_use_tls",
-                    "smtp_use_ssl",
-                    "sendgrid_api_key",
-                ),
+                "fields": ("email_from", "email_sender_name", "email_reply_to"),
                 "classes": ("collapse",),
+                "description": _(
+                    "SMTP transport (host, port, credentials, TLS) is configured via EMAIL_* "
+                    "environment variables in settings.py, not through this form."
+                ),
             },
         ),
         (

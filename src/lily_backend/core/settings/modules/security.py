@@ -7,6 +7,11 @@ from urllib.parse import urlparse
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-CHANGE-ME")
 FIELD_ENCRYPTION_KEY = os.environ.get("FIELD_ENCRYPTION_KEY", "")
+BACKEND_API_KEY = os.environ.get("BACKEND_API_KEY", "")
+TRACKING_WORKER_API_KEY = os.environ.get("TRACKING_WORKER_API_KEY", "")
+CONVERSATIONS_IMPORT_API_KEY = os.environ.get("CONVERSATIONS_IMPORT_API_KEY", "")
+BOOKING_WORKER_API_KEY = os.environ.get("BOOKING_WORKER_API_KEY", "")
+OPS_WORKER_API_KEY = os.environ.get("OPS_WORKER_API_KEY", "")
 
 # Main switch for the whole system
 DEBUG = os.environ.get("DEBUG", "True").lower() in ("true", "1", "yes")
@@ -22,6 +27,12 @@ SITE_BASE_URL = os.environ.get("SITE_BASE_URL", "http://127.0.0.1:8000/")
 if not SITE_BASE_URL.endswith("/"):
     SITE_BASE_URL += "/"
 
+# --- Proxy / Docker Settings ---
+# Trust the X-Forwarded-* headers from Nginx
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # CSRF: include the configured site URL + common local dev ports
 CSRF_TRUSTED_ORIGINS = [SITE_BASE_URL.rstrip("/")]
 if DEBUG:
@@ -34,6 +45,9 @@ if DEBUG:
 
 # Canonical domain for SEO (no trailing slash)
 CANONICAL_DOMAIN = os.environ.get("CANONICAL_DOMAIN", "")
+if not CANONICAL_DOMAIN:
+    CANONICAL_DOMAIN = urlparse(SITE_BASE_URL).netloc or "localhost"
+
 if CANONICAL_DOMAIN.endswith("/"):
     CANONICAL_DOMAIN = CANONICAL_DOMAIN[:-1]
 

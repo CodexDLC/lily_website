@@ -109,6 +109,62 @@ def _should_notify(email: str, field: str) -> bool:
     return True
 
 
+def _account_verification_fallbacks(lang: str, signup: bool) -> tuple[str, str, str]:
+    locale = (lang or "en")[:2]
+    fallbacks: dict[str, dict[str, tuple[str, str, str]]] = {
+        "de": {
+            "signup": (
+                "Bitte bestätigen Sie Ihre E-Mail-Adresse",
+                "Vielen Dank für Ihre Registrierung. Bitte klicken Sie auf den Link unten, um Ihr Konto zu bestätigen.",
+                "Hallo",
+            ),
+            "change": (
+                "Bitte bestätigen Sie Ihre neue E-Mail-Adresse",
+                "Bitte klicken Sie auf den Link unten, um Ihre E-Mail-Adresse zu bestätigen.",
+                "Hallo",
+            ),
+        },
+        "en": {
+            "signup": (
+                "Please verify your email address",
+                "Thank you for signing up. Please click the link below to verify your account.",
+                "Hello",
+            ),
+            "change": (
+                "Please verify your new email address",
+                "Please click the link below to verify your email address.",
+                "Hello",
+            ),
+        },
+        "ru": {
+            "signup": (
+                "Подтвердите ваш адрес электронной почты",
+                "Спасибо за регистрацию. Пожалуйста, перейдите по ссылке ниже, чтобы подтвердить ваш аккаунт.",
+                "Здравствуйте",
+            ),
+            "change": (
+                "Подтвердите ваш новый адрес электронной почты",
+                "Пожалуйста, перейдите по ссылке ниже, чтобы подтвердить ваш адрес электронной почты.",
+                "Здравствуйте",
+            ),
+        },
+        "uk": {
+            "signup": (
+                "Підтвердьте вашу електронну адресу",
+                "Дякуємо за реєстрацію. Будь ласка, перейдіть за посиланням нижче, щоб підтвердити ваш обліковий запис.",
+                "Вітаємо",
+            ),
+            "change": (
+                "Підтвердьте вашу нову електронну адресу",
+                "Будь ласка, перейдіть за посиланням нижче, щоб підтвердити вашу електронну адресу.",
+                "Вітаємо",
+            ),
+        },
+    }
+    variant = "signup" if signup else "change"
+    return fallbacks.get(locale, fallbacks["en"])[variant]
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # NotificationService  (high-level project API)
 # ─────────────────────────────────────────────────────────────────────────────
@@ -370,25 +426,27 @@ class NotificationService:
     ) -> str | None:
         """Send email verification/confirmation link (signup or change)."""
         subject_key = "acc_verify_signup_subject" if signup else "acc_verify_email_subject"
+        header_key = "acc_verify_signup_header" if signup else "acc_verify_email_header"
         body_key = "acc_verify_signup_body" if signup else "acc_verify_email_body"
+        btn_key = "acc_verify_signup_btn" if signup else "acc_verify_email_btn"
 
-        fallback_subject = "Bitte bestätigen Sie Ihre E-Mail-Adresse"
-        fallback_body = (
-            "Vielen Dank für Ihre Registrierung. Bitte klicken Sie на ссылку ниже, чтобы подтвердить свой аккаунт."
-        )
+        fallback_subject, fallback_body, fallback_greeting = _account_verification_fallbacks(lang, signup)
+        greeting = _t("bk_greeting", lang, fallback_greeting)
 
-        greeting = _t("bk_greeting", lang, "Hallo")
         return _get_engine().dispatch(
             recipient_email=recipient_email,
             client_name=user_name,
-            template_name="acc_verification",
+            template_name="account/acc_verification",
             event_type="account.verification",
             channels=["email"],
             language=lang,
             subject_key=subject_key,
             subject=_t(subject_key, lang, fallback_subject),
             activate_url=activate_url,
+            email_header=_t(header_key, lang, "Willkommen!"),
             email_body=_t(body_key, lang, fallback_body),
+            button_text=_t(btn_key, lang, "E-Mail bestätigen"),
+            first_name=user_name,
             greeting=f"{greeting} {user_name},",
             signature=_t("email_signature_common", lang, "Ihr LILY Beauty Team"),
         )
@@ -407,19 +465,61 @@ class NotificationService:
         return _get_engine().dispatch(
             recipient_email=recipient_email,
             client_name=user_name,
-            template_name="acc_password_reset",
+            template_name="account/acc_password_reset",
             event_type="account.password_reset",
             channels=["email"],
             language=lang,
             subject_key="pwd_reset_subject",
             subject=_t("pwd_reset_subject", lang, "Passwort zurücksetzen"),
-            reset_url=reset_url,
+            password_reset_url=reset_url,
             email_body=_t(
                 "pwd_reset_body",
                 lang,
-                "Sie haben das Zurücksetzen Ihres Passworts angefordert. Klicken Sie auf den Link unten.",
+                "Sie haben das Zurücksetzen Ihres Passworts angefordert. Klicken Sie auf den untenstehenden Link.",
             ),
+            button_text=_t("pwd_reset_btn", lang, "Passwort zurücksetzen"),
+            first_name=user_name,
             greeting=f"{greeting} {user_name},",
+            signature=_t("email_signature_common", lang, "Ihr LILY Beauty Team"),
+        )
+
+    @classmethod
+    def send_account_already_exists(
+        cls,
+        *,
+        recipient_email: str,
+        password_reset_url: str,
+        lang: str = "de",
+    ) -> str | None:
+        """Send notification that account already exists."""
+        return _get_engine().dispatch(
+            recipient_email=recipient_email,
+            client_name="",
+            template_name="account/acc_already_exists",
+            event_type="account.already_exists",
+            channels=["email"],
+            language=lang,
+            subject_key="acc_exists_subject",
+            subject=_t("acc_exists_subject", lang, "Benutzerkonto existiert bereits"),
+            email_header=_t("acc_exists_header", lang, "Konto bereits vorhanden"),
+            email_body=_t(
+                "acc_exists_body",
+                lang,
+                f"Sie haben versucht, sich mit der E-Mail-Adresse {recipient_email} zu registrieren. Es existiert jedoch bereits ein Benutzerkonto mit dieser Adresse.",
+            ),
+            info_text=_t(
+                "acc_exists_info",
+                lang,
+                "Falls Sie Ihr Passwort vergessen haben, können Sie es hier zurücksetzen:",
+            ),
+            button_text=_t("acc_exists_btn", lang, "Passwort vergessen"),
+            footer_text=_t(
+                "acc_exists_footer",
+                lang,
+                "Falls Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.",
+            ),
+            email=recipient_email,
+            password_reset_url=password_reset_url,
             signature=_t("email_signature_common", lang, "Ihr LILY Beauty Team"),
         )
 

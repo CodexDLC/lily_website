@@ -81,7 +81,7 @@ class SchedulerCalendarView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         cart = get_cart(request)
         settings = BookingSettings.load()
-        availability = CabinetBookingAvailabilityService()
+        availability = CabinetBookingAvailabilityService(audience="public")
         today = timezone.localdate()
         service_ids, scoped_service_id = _resolve_service_scope(request)
         selected_date = _get_selected_date(request, scoped_service_id=scoped_service_id)
@@ -173,7 +173,7 @@ class SchedulerSlotsView(View):
         if not service_ids:
             return HttpResponse(status=400)
 
-        availability = CabinetBookingAvailabilityService()
+        availability = CabinetBookingAvailabilityService(audience="public")
         slots = availability.get_slots(
             booking_date=target_date.isoformat(),
             service_ids=service_ids,

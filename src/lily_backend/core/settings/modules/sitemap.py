@@ -4,11 +4,12 @@
 
 # List of named URLs to include in the static sitemap
 SITEMAP_STATIC_PAGES = [
-    "home",
+    "index",
     "services",
     "team",
     "contacts",
     "faq",
+    "booking_wizard",
     "buchungsregeln",
     "impressum",
     "datenschutz",
@@ -18,4 +19,4 @@ SITEMAP_STATIC_PAGES = [
 SITEMAP_DEFAULT_LANGUAGE = "de"
 
 # Namespace fallbacks for URL reverse in sitemaps
-SITEMAP_LOOKUP_NAMESPACES = ["booking"]
+SITEMAP_LOOKUP_NAMESPACES = ["main", "booking"]

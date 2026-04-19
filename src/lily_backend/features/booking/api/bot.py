@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from features.booking.models import Appointment
 from ninja import Router, Schema
+from system.api.auth import require_internal_scope
 
 router = Router(tags=["Telegram Bot"])
 
@@ -14,6 +15,7 @@ class ReschedulePayload(Schema):
 
 @router.post("/appointments/{appointment_id}/propose-reschedule")
 def propose_reschedule(request, appointment_id: int, payload: ReschedulePayload):
+    require_internal_scope(request, "booking.worker")
     appt = get_object_or_404(Appointment, id=appointment_id)
 
     try:
@@ -29,6 +31,7 @@ def propose_reschedule(request, appointment_id: int, payload: ReschedulePayload)
 
 @router.post("/appointments/{appointment_id}/no-show")
 def mark_no_show(request, appointment_id: int):
+    require_internal_scope(request, "booking.worker")
     appt = get_object_or_404(Appointment, id=appointment_id)
     appt.mark_no_show()
     return {"success": True}
@@ -36,6 +39,7 @@ def mark_no_show(request, appointment_id: int):
 
 @router.get("/appointments/upcoming")
 def get_upcoming(request):
+    require_internal_scope(request, "booking.worker")
     appts = Appointment.objects.filter(
         datetime_start__gte=timezone.now(), status__in=[Appointment.STATUS_PENDING, Appointment.STATUS_CONFIRMED]
     ).select_related("client", "service")[:10]

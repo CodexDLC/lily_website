@@ -2,6 +2,7 @@ import os
 import sqlite3
 
 import psycopg2
+from allauth.account.models import EmailAddress
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -57,8 +58,8 @@ class Command(BaseCommand):
         skipped_count = 0
 
         for row in legacy_clients:
-            phone = row["phone"]
-            email = row["email"]
+            phone = row["phone"] or None
+            email = row["email"] or None
 
             # Robust lookup: try to find by phone OR email
             client = None
@@ -80,8 +81,10 @@ class Command(BaseCommand):
             client.last_name = row["last_name"] or ""
             client.note = row.get("notes") or row.get("note") or ""
             client.status = row.get("status") or "guest"
-            client.instagram = row.get("instagram") or ""
-            client.telegram = row.get("telegram") or ""
+            if hasattr(client, "instagram"):
+                client.instagram = row.get("instagram") or ""
+            if hasattr(client, "telegram"):
+                client.telegram = row.get("telegram") or ""
             client.consent_marketing = bool(row.get("consent_marketing", False))
             consent_date_val = row.get("consent_date")
             if consent_date_val and hasattr(consent_date_val, "tzinfo"):
@@ -95,7 +98,32 @@ class Command(BaseCommand):
             if not options["dry_run"]:
                 try:
                     with transaction.atomic():
+                        # Try to link User if not set
+                        if not client.user_id:
+                            user = None
+                            if email:
+                                user = User.objects.filter(email__iexact=email).first()
+                            if not user and phone:
+                                from system.models import UserProfile
+
+                                profile = UserProfile.objects.filter(phone=phone).first()
+                                if profile:
+                                    user = profile.user
+
+                            if user:
+                                self.stdout.write(f"    Link user found: {user.username}")
+                                client.user = user
+
                         client.save()
+
+                        # Ensure verified EmailAddress for Allauth if user exists
+                        if client.user and client.email:
+                            EmailAddress.objects.get_or_create(
+                                user=client.user,
+                                email=client.email,
+                                defaults={"verified": True, "primary": True},
+                            )
+
                     if action == "Creating":
                         created_count += 1
                     else:

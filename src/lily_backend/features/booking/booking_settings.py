@@ -5,6 +5,8 @@ extend or replace this model if they need a different administrative settings
 surface while keeping the runtime adapter expectations intact.
 """
 
+from datetime import time
+
 from codex_django.booking.mixins import AbstractBookingSettings
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -30,33 +32,42 @@ class BookingSettings(AbstractBookingSettings):
     )
 
     book_only_from_next_day = models.BooleanField(
-        _("Book only from next day"),
+        _("Public booking starts from next day"),
         default=False,
-        help_text=_("If enabled, users can only book slots starting from tomorrow."),
-    )
-    sync_with_site_settings = models.BooleanField(
-        _("Sync with Site Settings"),
-        default=True,
-        help_text=_("If enabled, work hours will be synchronized from global Site Settings."),
+        help_text=_(
+            "If enabled, clients can only book slots starting from tomorrow. Cabinet staff can still book today."
+        ),
     )
 
-    def save(self, *args, **kwargs):
-        if self.sync_with_site_settings:
-            try:
-                from system.models import SiteSettings
-
-                site = SiteSettings.load()
-                self.work_start_weekdays = site.work_start_weekdays
-                self.work_end_weekdays = site.work_end_weekdays
-                self.work_start_saturday = site.work_start_saturday
-                self.work_end_saturday = site.work_end_saturday
-            except ImportError:
-                pass
-        super().save(*args, **kwargs)
+    DEFAULT_DAY_HOURS = {
+        "monday": (False, time(9, 0), time(18, 0)),
+        "tuesday": (False, time(9, 0), time(18, 0)),
+        "wednesday": (False, time(9, 0), time(18, 0)),
+        "thursday": (False, time(9, 0), time(18, 0)),
+        "friday": (False, time(9, 0), time(18, 0)),
+        "saturday": (False, time(10, 0), time(14, 0)),
+        "sunday": (True, None, None),
+    }
 
     @classmethod
     def load(cls):
-        obj, created = cls.objects.get_or_create(pk=1)
+        obj, _created = cls.objects.get_or_create(pk=1)
+        update_fields: list[str] = []
+        for day, (is_closed, start, end) in cls.DEFAULT_DAY_HOURS.items():
+            closed_field = f"{day}_is_closed"
+            start_field = f"work_start_{day}"
+            end_field = f"work_end_{day}"
+            if getattr(obj, closed_field) != is_closed:
+                setattr(obj, closed_field, is_closed)
+                update_fields.append(closed_field)
+            if getattr(obj, start_field) is None and start is not None:
+                setattr(obj, start_field, start)
+                update_fields.append(start_field)
+            if getattr(obj, end_field) is None and end is not None:
+                setattr(obj, end_field, end)
+                update_fields.append(end_field)
+        if update_fields:
+            obj.save(update_fields=update_fields)
         return obj
 
     class Meta:

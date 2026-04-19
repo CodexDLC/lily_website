@@ -23,6 +23,9 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.MIGRATE_HEADING("--- Starting Full Legacy Migration ---"))
 
+        self.stdout.write(self.style.MIGRATE_LABEL("\n0. Migrating Users (Superusers/Staff)..."))
+        call_command("migrate_users", url=url, dry_run=dry_run)
+
         self.stdout.write(self.style.MIGRATE_LABEL("\n1. Migrating Categories..."))
         call_command(
             "migrate_categories",

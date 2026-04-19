@@ -1,0 +1,106 @@
+{% load i18n %}
+<div class="row g-4">
+  <div class="col-12">
+
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white border-0 pt-3 pb-0">
+        <h6 class="fw-semibold mb-0">{% trans "Company Information" %}</h6>
+      </div>
+      <div class="card-body d-flex flex-column gap-3">
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Company Name" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" name="company_name" value="{{ settings_data.company_name|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light">
+          </div>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Owner Name" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" name="owner_name" value="{{ settings_data.owner_name|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light">
+          </div>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Tax Number" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" name="tax_number" value="{{ settings_data.tax_number|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white border-0 pt-3 pb-0">
+        <h6 class="fw-semibold mb-0">{% trans "Site & Identity" %}</h6>
+      </div>
+      <div class="card-body d-flex flex-column gap-3">
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Site Base URL" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="url" name="site_base_url" value="{{ settings_data.site_base_url|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light" placeholder="https://example.com">
+          </div>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Logo URL" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" name="logo_url" value="{{ settings_data.logo_url|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light">
+          </div>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Price Range" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" name="price_range" value="{{ settings_data.price_range|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light" placeholder="$$">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 pt-3 pb-0">
+        <h6 class="fw-semibold mb-0">{% trans "Integrations" %}</h6>
+      </div>
+      <div class="card-body d-flex flex-column gap-3">
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Telegram Bot Username" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text border-0 bg-light text-muted">@</span>
+              <input type="text" name="telegram_bot_username" value="{{ settings_data.telegram_bot_username|default:'' }}"
+                     class="form-control border-0 bg-light" placeholder="lily_beauty_bot">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -10,41 +10,26 @@
   "url": "{{ request.build_absolute_uri }}",
   "mainEntity": {
     "@type": "LocalBusiness",
-    "@id": "{{ settings.site_base_url }}#organization", {# Используем динамический URL из SiteSettings #}
+    "@id": "{{ settings.site_base_url }}#organization",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "{{ settings.phone }}",
       "contactType": "customer service",
       "email": "{{ settings.email }}",
-      "areaServed": "DE", {# Оставлено жестко закодированным, предполагая константу #}
-      "availableLanguage": ["de", "en", "uk", "ru"] {# Оставлено жестко закодированным, можно сделать динамическим при необходимости #}
+      "areaServed": "DE",
+      "availableLanguage": ["de", "en", "uk", "ru"]
     },
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "{{ settings.address_street }}",
-      "addressLocality": "{{ settings.address_locality }}", {# Изменено на address_locality #}
-      "postalCode": "{{ settings.address_postal_code }}", {# Используем динамический почтовый индекс #}
-      "addressCountry": "DE" {# Оставлено жестко закодированным, предполагая константу #}
+      "addressLocality": "{{ settings.address_locality }}",
+      "postalCode": "{{ settings.address_postal_code }}",
+      "addressCountry": "DE"
     },
-    "openingHoursSpecification": [
-      {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday"
-        ],
-        "opens": "{{ settings.work_start_weekdays|date:"H:i" }}", {# Используем поля TimeField из SiteSettings #}
-        "closes": "{{ settings.work_end_weekdays|date:"H:i" }}" {# Используем поля TimeField из SiteSettings #}
-      },
-      {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": "Saturday",
-        "opens": "{{ settings.work_start_saturday|date:"H:i" }}", {# Используем поля TimeField из SiteSettings #}
-        "closes": "{{ settings.work_end_saturday|date:"H:i" }}" {# Используем поля TimeField из SiteSettings #}
-      }
+    "openingHours": [
+      "Mo-Fr {{ settings.working_hours_weekdays }}",
+      "Sa {{ settings.working_hours_saturday }}",
+      "Su {{ settings.working_hours_sunday }}"
     ]
   }
 }

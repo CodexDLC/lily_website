@@ -58,5 +58,6 @@ repos:
       - id: hadolint-docker
         name: Lint Dockerfiles (Docker)
         language: docker_image
-        entry: hadolint/hadolint:latest
-        types: [dockerfile]
+        entry: hadolint/hadolint:latest hadolint
+        args: ["--failure-threshold", "error"]
+        files: ^deploy/.*/Dockerfile(\.local)?$

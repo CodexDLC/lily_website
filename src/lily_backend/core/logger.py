@@ -27,11 +27,13 @@ class DjangoLoggingSettingsAdapter:
     """Adapts Django settings to codex-core LoggingSettingsProtocol."""
 
     def __init__(self) -> None:
-        self.log_level_console = getattr(settings, "LOG_LEVEL_CONSOLE", "INFO")
-        self.log_level_file = getattr(settings, "LOG_LEVEL_FILE", "DEBUG")
-        self.log_rotation = getattr(settings, "LOG_ROTATION", "10 MB")
-        self.log_dir = getattr(settings, "LOG_DIR", "logs")
         self.debug = getattr(settings, "DEBUG", False)
+        # Default to DEBUG in development, INFO in production
+        default_console_level = "DEBUG" if self.debug else "INFO"
+        self.log_level_console = str(getattr(settings, "LOG_LEVEL_CONSOLE", default_console_level)).upper()
+        self.log_level_file = str(getattr(settings, "LOG_LEVEL_FILE", "DEBUG")).upper()
+        self.log_rotation = str(getattr(settings, "LOG_ROTATION", "10 MB"))
+        self.log_dir = str(getattr(settings, "LOG_DIR", "logs"))
 
 
 class InterceptHandler(logging.Handler):
@@ -100,12 +102,15 @@ def _setup_windows_logging(adapter: DjangoLoggingSettingsAdapter, service_name: 
     )
 
     logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
-    for name in ("django", "django.server", "django.db.backends"):
-        logging.getLogger(name).handlers = [InterceptHandler()]
 
-    logging.getLogger("django.db.backends").setLevel(logging.WARNING)
+    # Set levels only — no individual handlers. All loggers propagate to root InterceptHandler.
+    # Setting handlers on child loggers in the same chain causes each record to hit
+    # InterceptHandler multiple times; the depth calculation overshoots and Loguru fails silently.
+    logging.getLogger("django.server").setLevel(logging.INFO if adapter.debug else logging.WARNING)
+    logging.getLogger("django.db.backends").setLevel(logging.INFO if adapter.debug else logging.WARNING)
     logging.getLogger("django.utils.autoreload").setLevel(logging.WARNING)
-    logging.getLogger("django_lifecycle").setLevel(logging.WARNING)
+    logging.getLogger("django_lifecycle").setLevel(logging.INFO if adapter.debug else logging.WARNING)
+    logging.getLogger("asyncio").setLevel(logging.INFO)
 
     logger.info(
         "Loguru initialized in Windows-safe mode for {}. Logs: {}",
@@ -114,8 +119,34 @@ def _setup_windows_logging(adapter: DjangoLoggingSettingsAdapter, service_name: 
     )
 
 
+def _get_debug_levels() -> dict[str, int]:
+    """Verbose levels for development."""
+    return {
+        "django.server": logging.INFO,  # See requested URLs
+        "django.db.backends": logging.INFO,  # See queries (INFO is usually enough for codex-core interceptor)
+        "django.utils.autoreload": logging.WARNING,
+        "django_lifecycle": logging.INFO,
+        "asyncio": logging.INFO,
+        "arq": logging.INFO,
+    }
+
+
+def _get_production_levels() -> dict[str, int]:
+    """Quiet levels for production."""
+    return {
+        "django.server": logging.WARNING,
+        "django.db.backends": logging.WARNING,
+        "django.utils.autoreload": logging.ERROR,
+        "django_lifecycle": logging.WARNING,
+        "asyncio": logging.WARNING,
+    }
+
+
 def init_logging() -> None:
     """Initialize logging based on project settings and available libraries."""
+    if getattr(settings, "DISABLE_PROJECT_LOGGING", False):
+        return
+
     if not LOGURU_AVAILABLE:
         # Fallback to standard Django LOGGING already configured in settings
         if isinstance(logger, logging.Logger):
@@ -130,16 +161,16 @@ def init_logging() -> None:
         _setup_windows_logging(adapter, service_name)
         return
 
+    # Choose levels based on environment
+    log_levels = _get_debug_levels() if adapter.debug else _get_production_levels()
+
     setup_logging(
         settings=adapter,
         service_name=service_name,
-        intercept_loggers=["django", "django.server", "django.db.backends"],
-        log_levels={
-            "django.db.backends": logging.WARNING,
-            "django.utils.autoreload": logging.WARNING,
-            "django_lifecycle": logging.WARNING,
-        },
+        intercept_loggers=["django", "django.server", "django.db.backends", "asyncio", "arq"],
+        log_levels=log_levels,
     )
 
     if not isinstance(logger, logging.Logger):
-        logger.info(f"Loguru initialized via codex-core for {service_name}")
+        mode = "DEBUG" if adapter.debug else "PRODUCTION"
+        logger.info(f"Loguru initialized ({mode} mode) via codex-core for {service_name}")

@@ -55,22 +55,42 @@ class ServiceDetailView(TemplateView):
     template_name = "features/main/services/detail.html"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        from features.booking.dto.public_cart import get_cart
+
         ctx = super().get_context_data(**kwargs)
         slug = self.kwargs.get("slug", "")
         provider = RuntimeBookingProvider()
+        cart = get_cart(self.request)
+        cart_ids = set(cart.service_ids())
+
         try:
             category = (
                 ServiceCategory.objects.filter(is_active=True)
                 .prefetch_related(
                     Prefetch("services", queryset=provider.get_bookable_services_queryset()),
-                    "masters",
+                    Prefetch(
+                        "masters",
+                        queryset=Master.objects.filter(status=Master.STATUS_ACTIVE, is_public=True).order_by(
+                            "order", "name"
+                        ),
+                    ),
                 )
                 .get(slug=slug)
             )
         except ServiceCategory.DoesNotExist:
             raise Http404 from None
+
+        # Pre-calculate selection for templates
+        for svc in category.services.all():
+            svc.is_selected = svc.id in cart_ids
+
         ctx["category"] = category
         ctx["slug"] = slug
+        ctx["cart"] = cart
+        ctx["cart_ids"] = cart_ids
+        ctx["other_categories"] = (
+            ServiceCategory.objects.filter(is_active=True).exclude(id=category.id).order_by("?")[:6]
+        )
         return ctx
 
 

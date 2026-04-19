@@ -16,14 +16,20 @@ from dotenv import load_dotenv
 # Root of Django project (where manage.py is)
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+# Root of the whole project (lily_website)
+ROOT_DIR = BASE_DIR.parent.parent
+
+# Detect Docker environment
+IS_DOCKER = os.environ.get("IS_DOCKER", "False").lower() in ("true", "1", "t") or os.path.exists("/.dockerenv")
+
 # 1. Try to load Common .env (Infrastructure level)
 # Path can be overridden via ENV_COMMON_PATH for Swarm/K8s
 common_env = os.environ.get("ENV_COMMON_PATH")
 if common_env and os.path.exists(common_env):
     load_dotenv(common_env)
 else:
-    # Fallback for local dev: look 2 levels up
-    load_dotenv(BASE_DIR.parent.parent / ".env")
+    # Fallback for local dev: look in project root
+    load_dotenv(ROOT_DIR / ".env")
 
 # 2. Try to load Project-specific .env
 # override=True ensures project settings take precedence
@@ -31,12 +37,16 @@ project_env = os.environ.get("ENV_PROJECT_PATH")
 if project_env and os.path.exists(project_env):
     load_dotenv(project_env, override=True)
 else:
-    # Fallback for local dev: look in current folder
+    # Fallback for local dev: look in Django root
     load_dotenv(BASE_DIR / ".env", override=True)
 
 # 3. Project Identity
 # Must be set in .env or by Orchestrator. Fallback to folder name.
 PROJECT_NAME = os.environ.get("PROJECT_NAME", BASE_DIR.name)
+
+# If running locally (not in Docker), append _local to create a separate log folder
+if not IS_DOCKER:
+    PROJECT_NAME = f"{PROJECT_NAME}_local"
 
 # ═══════════════════════════════════════════
 # Core Django Settings (MUST be defined early)
@@ -61,6 +71,7 @@ from .modules.logging import *  # noqa
 from .modules.admin import *  # noqa
 from .modules.sitemap import *  # noqa
 from .modules.codex import *  # noqa
+from .modules.email import *  # noqa
 
 # ═══════════════════════════════════════════
 # General Settings

@@ -18,10 +18,10 @@
 
     <script src="{% static 'js/vendor/htmx.min.js' %}" defer></script>
 
-    {% block extra_css %}{% endblock %}
+    {% block extra_css %}{% endblock extra_css %}
 </head>
 
-<body class="{% block body_class %}{% endblock %}">
+<body class="{% block body_class %}{% endblock body_class %}">
     {% include "includes/_analytics_body.html" %}
 
     <div class="site-wrapper">
@@ -29,7 +29,7 @@
 
         <main>
             {% block content %}
-            {% endblock %}
+            {% endblock content %}
         </main>
 
         {% include "includes/_footer.html" %}
@@ -41,10 +41,16 @@
     <script src="{% static 'js/app/base.js' %}" defer></script>
 
     <!-- PWA Script -->
+    {% if site_settings.app_mode_enabled and not DEBUG_MODE %}
     <script src="{% static 'js/app/pwa-enhance.js' %}" defer></script>
+    {% endif %}
 
     {% block scripts %}
-    {% endblock %}
+    {% endblock scripts %}
+
+    <div id="authModal">
+        <div id="authModalContent"></div>
+    </div>
 </body>
 
 </html>

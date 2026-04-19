@@ -7,13 +7,41 @@
 {% block cabinet_content %}
   <div class="d-flex flex-column gap-4">
     {% if messages %}
-      <div>
+      <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
         {% for message in messages %}
-          <div class="alert alert-{{ message.tags|default:'info' }} border-0 shadow-sm mb-2" role="alert">
-            {{ message }}
+          <div class="toast align-items-center text-white bg-{{ message.tags|default:'info' }} border-0 shadow-sm mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex">
+              <div class="toast-body">
+                {{ message }}
+              </div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
           </div>
         {% endfor %}
       </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const toastEls = document.querySelectorAll('.toast');
+          toastEls.forEach(el => {
+            // Using a simple timeout to hide toasts if Bootstrap JS is not initializing them automatically
+            setTimeout(() => {
+                el.classList.add('hide');
+                setTimeout(() => el.remove(), 500);
+            }, 5000);
+
+            // Manual close button
+            el.querySelector('.btn-close').onclick = () => el.remove();
+          });
+        });
+      </script>
+      <style>
+        .toast { transition: opacity 0.5s ease-out; opacity: 1; display: block; }
+        .toast.hide { opacity: 0; }
+        .bg-success { background-color: #10b981 !important; }
+        .bg-info { background-color: #3b82f6 !important; }
+        .bg-warning { background-color: #f59e0b !important; }
+        .bg-danger { background-color: #ef4444 !important; }
+      </style>
     {% endif %}
 
     <div class="row g-4 align-items-start">
@@ -26,6 +54,33 @@
             </div>
             <h1 class="h4 mb-1">{{ corner_summary.display_name }}</h1>
             <div class="text-muted mb-4">{{ corner_summary.subtitle }}</div>
+
+            {% if loyalty %}
+              <div class="text-start border rounded-3 p-3 mb-4 bg-light">
+                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                  <div>
+                    <div class="text-muted small">{% trans "Loyalty" %}</div>
+                    <div class="fw-semibold">{{ loyalty.label }} · {{ loyalty.level }}/4</div>
+                  </div>
+                  <div class="text-{{ loyalty.tone }} d-flex align-items-center gap-1" aria-label="{{ loyalty.level }}/4">
+                    {% for _star in loyalty.filled_stars %}
+                      <span class="bi bi-star-fill"></span>
+                    {% endfor %}
+                    {% for _star in loyalty.empty_stars %}
+                      <span class="bi bi-star"></span>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                  <div class="progress-bar bg-{{ loyalty.tone }}"
+                       role="progressbar"
+                       style="width: {{ loyalty.progress_percent }}%;"
+                       aria-valuenow="{{ loyalty.progress_percent }}"
+                       aria-valuemin="0"
+                       aria-valuemax="100"></div>
+                </div>
+              </div>
+            {% endif %}
 
             <div class="row g-3 pt-3 border-top">
               {% for stat in corner_summary.stats %}

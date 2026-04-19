@@ -1,7 +1,4 @@
-from typing import ClassVar
-
 from codex_django.system.management.base_commands import BaseUpdateAllContentCommand
-from django.core.management import call_command
 
 
 class Command(BaseUpdateAllContentCommand):
@@ -12,28 +9,22 @@ class Command(BaseUpdateAllContentCommand):
 
     help = "Run all content update commands and clear cache"
 
-    commands_to_run: ClassVar[list[str]] = [
+    commands_to_run = [
         "update_site_settings",
         "update_static_translations",
         "update_email_content",
         "update_seo",
     ]
 
-    def handle(self, *args, **options):
-        # Site Settings
-        self.stdout.write("\n--- Updating Site Settings ---")
-        call_command("update_site_settings")
+    _labels = {
+        "update_site_settings": "Updating Site Settings",
+        "update_static_translations": "Updating Static Translations",
+        "update_email_content": "Updating Email Content",
+        "update_seo": "Updating Static Page SEO",
+    }
 
-        # Static Translations
-        self.stdout.write("\n--- Updating Static Translations ---")
-        call_command("update_static_translations")
+    def get_command_label(self, command_name: str) -> str:
+        return self._labels.get(command_name, command_name)
 
-        # Email Content
-        self.stdout.write("\n--- Updating Email Content ---")
-        call_command("update_email_content")
-
-        # SEO
-        self.stdout.write("\n--- Updating Static Page SEO ---")
-        call_command("update_seo")
-
-        self.stdout.write(self.style.SUCCESS("\nAll content updates completed."))
+    def before_subcommand(self, command_name: str) -> None:
+        self.stdout.write(f"\n--- {self.get_command_label(command_name)} ---")

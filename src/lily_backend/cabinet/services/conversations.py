@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from features.conversations.models import Message
 
 if TYPE_CHECKING:
     from django.http import HttpRequest
@@ -34,6 +35,7 @@ from features.conversations.services.workflow import (
 
 _FOLDERS = [
     (reverse_lazy("cabinet:conversations_inbox"), "open", _("Inbox"), "bi-inbox"),
+    (reverse_lazy("cabinet:conversations_imported"), "email_import", _("Imported Mail"), "bi-envelope-arrow-down"),
     (reverse_lazy("cabinet:conversations_processed"), "processed", _("Processed"), "bi-check2-circle"),
     (reverse_lazy("cabinet:conversations_all"), "all", _("All"), "bi-collection"),
 ]
@@ -54,9 +56,12 @@ class ConversationsService:
         """Return a fully assembled inbox page contract."""
         folder = request.GET.get("folder", default_folder)
         topic = request.GET.get("topic", "")
+        source = Message.Source.EMAIL_IMPORT if folder == "email_import" else None
+        status = "all" if source else folder
         page_obj = get_paginated_messages(
-            status=folder,
+            status=status,
             topic=topic or None,
+            source=source,
             page=request.GET.get("page"),
             per_page=50,
         )

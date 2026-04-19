@@ -1,3 +1,5 @@
+import sys
+
 from codex_django.cabinet import (
     SidebarItem,
     TopbarEntry,
@@ -57,5 +59,8 @@ def register_cabinet_catalog() -> None:
     )
 
 
-# Initial registration
-register_cabinet_catalog()
+# Perform initial registration only if not in migration/setup stage
+if not any(
+    arg in sys.argv for arg in ["migrate", "collectstatic", "makemigrations", "migrate_all_legacy", "migrate_users"]
+):
+    register_cabinet_catalog()

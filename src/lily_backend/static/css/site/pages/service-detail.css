@@ -99,9 +99,9 @@
 .service-masters-block {
     margin-top: 50px;
     padding: 40px;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.01); /* Reduced opacity */
     border-radius: 8px;
-    border: 1px solid rgba(237, 208, 113, 0.1);
+    border: 1px solid rgba(237, 208, 113, 0.05); /* Lighter border */
 }
 
 .service-masters-title {
@@ -115,19 +115,25 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.02); /* Reduced opacity */
+    padding: 12px 20px;
     border-radius: 50px;
-    border: 1px solid rgba(237, 208, 113, 0.1);
+    border: 1px solid rgba(237, 208, 113, 0.08); /* Lighter border */
+    transition: 0.3s;
+}
+
+.mini-master:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(237, 208, 113, 0.3);
 }
 
 .mini-master-avatar {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     background-size: cover;
     background-position: center;
-    border: 1px solid var(--color-gold);
+    border: 1.5px solid var(--color-gold);
 }
 
 .mini-master-name {
@@ -139,9 +145,15 @@
 .mini-master-role {
     display: block;
     color: var(--color-gold);
-    font-size: 12px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+/* Service Row Expansion for Button */
+.service-action {
+    padding-left: 20px;
 }
 
 /* Service CTA */

@@ -10,6 +10,7 @@ from django.contrib.auth.views import (
     PasswordResetDoneView,
     PasswordResetView,
 )
+from django.http import HttpRequest, HttpResponse
 from django.urls import reverse_lazy
 
 
@@ -32,9 +33,26 @@ class BrandedLoginView(AuthModeContextMixin, LoginView):
     authentication_form = AuthenticationForm
     redirect_authenticated_user = True
 
+    def get_success_url(self) -> str:
+        url = super().get_success_url()
+        if bool(getattr(settings, "CODEX_ALLAUTH_ENABLED", False)):
+            from allauth.account.adapter import get_adapter
+
+            return str(get_adapter(self.request).get_login_redirect_url(self.request))
+        return url
+
 
 class BrandedLogoutView(AuthModeContextMixin, LogoutView):
     template_name = "account/logout.html"
+
+    def get_success_url(self) -> str:
+        return str(reverse_lazy("cabinet:account_login"))
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        response = super().post(request, *args, **kwargs)
+        if request.headers.get("HX-Request"):
+            response["HX-Redirect"] = self.get_success_url()
+        return response
 
 
 class BrandedPasswordResetView(AuthModeContextMixin, PasswordResetView):

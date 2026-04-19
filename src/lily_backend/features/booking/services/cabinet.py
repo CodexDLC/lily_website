@@ -79,8 +79,20 @@ class BookingCabinetWorkflowService:
         current_date = request.GET.get("date", today)
         if current_date == "today":
             current_date = today
-        day_start = self.settings.work_start_weekdays.hour
-        day_end = self.settings.work_end_weekdays.hour
+        current_dt = datetime.strptime(current_date, "%Y-%m-%d")
+        day_schedule = self.settings.get_day_schedule(current_dt.weekday())
+        if day_schedule is None:
+            first_open = next(
+                (
+                    self.settings.get_day_schedule(idx)
+                    for idx in range(7)
+                    if self.settings.get_day_schedule(idx) is not None
+                ),
+                None,
+            )
+            day_schedule = first_open or (time(9, 0), time(18, 0))
+        day_start = day_schedule[0].hour
+        day_end = day_schedule[1].hour
         step = self.settings.step_minutes or 30
         rows_data = []
         for hour in range(day_start, day_end):

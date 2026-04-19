@@ -53,13 +53,36 @@ class MasterAdmin(TranslationAdmin, ModelAdmin):
         (
             _("Status & Visibility"),
             {
-                "fields": ("status", "is_public", "is_owner", "is_featured", "order"),
+                "fields": ("status", "is_public", "is_owner", "is_featured", "order", "booking_priority"),
+            },
+        ),
+        (
+            _("Working Hours"),
+            {
+                "fields": (
+                    "work_start",
+                    "work_end",
+                    "break_start",
+                    "break_end",
+                ),
+            },
+        ),
+        (
+            _("Booking Constraints"),
+            {
+                "fields": (
+                    "buffer_between_minutes",
+                    "min_advance_minutes",
+                    "max_advance_days",
+                    "max_clients_parallel",
+                ),
+                "classes": ("collapse",),
             },
         ),
         (
             _("Professional"),
             {
-                "fields": ("categories", "years_experience"),
+                "fields": ("categories", "years_experience", "timezone"),
             },
         ),
         (
@@ -128,14 +151,19 @@ class BookingSettingsAdmin(ModelAdmin):
                 ]
             },
         ),
+        (_("Monday"), {"fields": ["monday_is_closed", "work_start_monday", "work_end_monday"]}),
+        (_("Tuesday"), {"fields": ["tuesday_is_closed", "work_start_tuesday", "work_end_tuesday"]}),
+        (_("Wednesday"), {"fields": ["wednesday_is_closed", "work_start_wednesday", "work_end_wednesday"]}),
+        (_("Thursday"), {"fields": ["thursday_is_closed", "work_start_thursday", "work_end_thursday"]}),
+        (_("Friday"), {"fields": ["friday_is_closed", "work_start_friday", "work_end_friday"]}),
+        (_("Saturday"), {"fields": ["saturday_is_closed", "work_start_saturday", "work_end_saturday"]}),
+        (_("Sunday"), {"fields": ["sunday_is_closed", "work_start_sunday", "work_end_sunday"]}),
         (
-            _("Default Resource Working Hours"),
+            _("Behavior"),
             {
                 "fields": [
-                    "work_start_weekdays",
-                    "work_end_weekdays",
-                    "work_start_saturday",
-                    "work_end_saturday",
+                    "load_strategy",
+                    "book_only_from_next_day",
                 ]
             },
         ),
@@ -148,9 +176,6 @@ class BookingSettingsAdmin(ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
-
-
-# ── AppointmentGroup ──────────────────────────────────────────────────────────
 
 
 class AppointmentGroupItemInline(TabularInline):

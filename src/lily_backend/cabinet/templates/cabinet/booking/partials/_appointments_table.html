@@ -16,9 +16,7 @@
     </thead>
     <tbody>
       {% for appt in appointments %}
-      <tr class="appt-row align-middle"
-          @click="$dispatch('open-modal', { url: '{% url 'cabinet:booking_modal' appt.id %}' })">
-
+      <tr class="align-middle">
         <td class="px-4 py-3" style="border: none;">
           <div class="d-flex align-items-center gap-2">
             <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold flex-shrink-0"

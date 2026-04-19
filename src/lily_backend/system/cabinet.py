@@ -43,24 +43,33 @@ def provide_user_summary_kpi(request: HttpRequest) -> dict[str, MetricWidgetData
     }
 
 
+# ── Business Statistics Sidebar ──────────────────────────────────────────────
+business_sidebar = [
+    SidebarItem(
+        label=_("Dashboard"),
+        url=reverse_lazy("cabinet:analytics_dashboard"),
+        icon="bi-speedometer2",
+        order=1,
+    ),
+    SidebarItem(
+        label=_("Reports"),
+        url=reverse_lazy("cabinet:analytics_reports"),
+        icon="bi-bar-chart-line",
+        order=2,
+    ),
+]
+
 declare(
-    module="analytics",
+    module="business_stats",
     space="staff",
     topbar=TopbarEntry(
         group="admin",
-        label=_("Analytics"),
+        label=_("Insights"),
         icon="bi-graph-up",
         url=reverse_lazy("cabinet:analytics_dashboard"),
         order=10,
     ),
-    sidebar=[
-        SidebarItem(
-            label=_("Dashboard"),
-            url=reverse_lazy("cabinet:analytics_dashboard"),
-            icon="bi-speedometer2",
-            order=1,
-        ),
-    ],
+    sidebar=business_sidebar,
     dashboard_widgets=[
         # ── Row 1: KPI карточки ──────────────────────────────
         DashboardWidget(template="cabinet/widgets/kpi.html", context_key="revenue", col="col-lg-3 col-md-6", order=10),
@@ -85,8 +94,11 @@ declare(
         # ── Row 3: Чарт + Топ мастеров ──────────────────────
         DashboardWidget(template="cabinet/widgets/chart.html", context_key="revenue_chart", col="col-lg-8", order=20),
         DashboardWidget(template="cabinet/widgets/list.html", context_key="top_masters", col="col-lg-4", order=21),
-        # ── Row 4: Топ услуг ─────────────────────────────────
+        # ── Row 4: Топ услуг + Категории ──────────────────────
         DashboardWidget(template="cabinet/widgets/list.html", context_key="top_services", col="col-lg-6", order=30),
+        DashboardWidget(
+            template="cabinet/widgets/donut.html", context_key="categories_donut", col="col-lg-6", order=31
+        ),
     ],
 )
 
@@ -125,6 +137,26 @@ declare(
             url=_with_query(reverse_lazy("cabinet:users_list"), segment="staff"),
             icon="bi-shield-lock",
             order=4,
+        ),
+    ],
+)
+
+declare(
+    module="ops",
+    space="staff",
+    topbar=TopbarEntry(
+        group="admin",
+        label=_("Ops"),
+        icon="bi-activity",
+        url=reverse_lazy("cabinet:ops_workers"),
+        order=30,
+    ),
+    sidebar=[
+        SidebarItem(
+            label=_("Workers"),
+            url=reverse_lazy("cabinet:ops_workers"),
+            icon="bi-cpu",
+            order=1,
         ),
     ],
 )

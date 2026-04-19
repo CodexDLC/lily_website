@@ -25,8 +25,10 @@ from codex_django.cabinet.types.modal import (
     ProfileSection,
     SummarySection,
 )
+from django.db import OperationalError, ProgrammingError
 from django.http import HttpRequest
 from django.urls import reverse
+from features.booking.booking_settings import BookingSettings
 from features.booking.services.cabinet import get_booking_cabinet_workflow
 
 from cabinet.booking_bridge import BookingActionResult, BookingModalActionState, BookingModalState, get_booking_bridge
@@ -34,6 +36,15 @@ from cabinet.booking_bridge import BookingActionResult, BookingModalActionState,
 
 class BookingService:
     """Page-service contract for cabinet booking pages."""
+
+    @staticmethod
+    def get_or_create_settings() -> tuple[BookingSettings, str | None]:
+        """Load or initialise the singleton BookingSettings row."""
+        try:
+            instance, _ = BookingSettings.objects.get_or_create(pk=1)
+            return instance, None
+        except (OperationalError, ProgrammingError):
+            return BookingSettings(), "Booking settings storage is not available yet."
 
     @staticmethod
     def modal_url(booking_id: int, *, mode: str | None = None) -> str:

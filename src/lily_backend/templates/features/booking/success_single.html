@@ -5,9 +5,9 @@
 <section class="bk-success-wrapper">
   <div class="bk-success">
     <div class="bk-success__icon">✓</div>
-    <h1 class="bk-success__title">{% trans "Buchung bestätigt!" %}</h1>
+    <h1 class="bk-success__title">{% trans "Terminanfrage erhalten!" %}</h1>
 
-    <p class="bk-success__subtitle">{% trans "Vielen Dank für Ihre Buchung. Wir freuen uns auf Ihren Besuch!" %}</p>
+    <p class="bk-success__subtitle">{% trans "Vielen Dank für Ihre Anfrage. Wir prüfen Ihren Termin und melden uns so schnell wie möglich." %}</p>
 
     <div class="bk-success__details">
       <p><strong>{% trans "Leistung" %}:</strong> <span>{{ appointment.service.name }}</span></p>
@@ -16,8 +16,8 @@
     </div>
 
     <p class="bk-success__note">
-      {% trans "Eine Bestätigung wurde an Ihre E-Mail / Telefonnummer gesendet." %}<br>
-      {% trans "Zur Stornierung или Umbuchung nutzen Sie bitte den Link in der E-Mail." %}
+      {% trans "Wir senden Ihnen eine Bestätigung, sobald der Termin geprüft wurde." %}<br>
+      {% trans "Zur Stornierung oder Umbuchung nutzen Sie bitte den Link in der E-Mail (nach Bestätigung)." %}
     </p>
 
     <a href="{% url 'main:index' %}" class="bk-success__back">{% trans "Zur Startseite" %}</a>

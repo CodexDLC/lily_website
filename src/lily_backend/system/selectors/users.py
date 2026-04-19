@@ -6,6 +6,8 @@ from codex_django.cabinet.types import CardGridData, CardItem
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
+from system.services.loyalty import LoyaltyService
+
 if TYPE_CHECKING:
     from django.db.models import QuerySet
 
@@ -39,9 +41,11 @@ class UserSelector:
                 if profile:
                     full_name = profile.get_full_name() or user.get_full_name() or user.username
                     avatar = profile.get_initials()
+                    loyalty = LoyaltyService.get_display_for_profile(profile)
                 else:
                     full_name = user.get_full_name() or user.username
                     avatar = user.username[0].upper() if user.username else "?"
+                    loyalty = None
 
                 items.append(
                     CardItem(
@@ -52,6 +56,7 @@ class UserSelector:
                         badge=profile.source.capitalize() if profile and profile.source else "",
                         badge_style="primary" if profile and profile.source == "booking" else "secondary",
                         url=str(reverse_lazy("cabinet:user_modal", kwargs={"id_token": f"user_{user.pk}"})),
+                        meta=[("bi-stars", loyalty.staff_label)] if loyalty else [],
                     )
                 )
 

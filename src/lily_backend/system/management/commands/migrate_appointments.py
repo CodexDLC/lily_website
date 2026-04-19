@@ -145,6 +145,13 @@ class Command(BaseCommand):
 
                 duration = row.get("duration_minutes", 60)
 
+                # Check if this appointment already exists to avoid duplicates
+                existing = Appointment.objects.filter(client=client, master=master, datetime_start=dt_start).first()
+
+                if existing:
+                    skipped_count += 1
+                    continue
+
                 app = Appointment(
                     client=client,
                     master=master,

@@ -1,4 +1,3 @@
-from codex_django.core.redis.managers.base import BaseDjangoRedisManager
+from codex_django.core.redis.managers import get_default_redis_manager
 
-# Initialize the base manager which wraps the platform's RedisService
-redis_manager = BaseDjangoRedisManager()
+redis_manager = get_default_redis_manager()

@@ -61,8 +61,15 @@
 
             <!-- Desktop User Icon -->
             <a href="{% if user.is_authenticated %}{% url 'cabinet:dashboard' %}{% else %}{% url 'cabinet:account_login' %}{% endif %}"
-               class="nav-icon-user"
-               aria-label="{% if user.is_authenticated %}{% trans 'Cabinet' %}{% else %}{% trans 'Sign In' %}{% endif %}">
+               class="nav-icon-user {% if user.is_authenticated %}is-authenticated{% endif %}"
+               {% if not user.is_authenticated %}
+               hx-get="{% url 'cabinet:account_login' %}"
+               hx-target="#authModalContent"
+               hx-trigger="click"
+               hx-on:htmx:before-request="openAuthModal()"
+               onclick="event.preventDefault();"
+               {% endif %}
+               aria-label="{% if user.is_authenticated %}{% trans "Cabinet" %}{% else %}{% trans "Sign In" %}{% endif %}">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                 </svg>
@@ -70,9 +77,16 @@
         </nav>
 
         <!-- Mobile User Icon (Visible on Mobile) -->
-        <a href="{% if user.is_authenticated %}{% url 'cabinet:dashboard' %}{% else %}{% url 'cabinet:account_login' %}{% endif %}"
-           class="mobile-user-btn"
-           aria-label="{% if user.is_authenticated %}{% trans 'Cabinet' %}{% else %}{% trans 'Sign In' %}{% endif %}">
+        <a href="{% if user.is_authenticated %}{% url "cabinet:dashboard" %}{% else %}{% url "cabinet:account_login" %}{% endif %}"
+           class="mobile-user-btn {% if user.is_authenticated %}is-authenticated{% endif %}"
+           {% if not user.is_authenticated %}
+           hx-get="{% url "cabinet:account_login" %}"
+           hx-target="#authModalContent"
+           hx-trigger="click"
+           hx-on:htmx:before-request="openAuthModal()"
+           onclick="event.preventDefault();"
+           {% endif %}
+           aria-label="{% if user.is_authenticated %}{% trans "Cabinet" %}{% else %}{% trans "Sign In" %}{% endif %}">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
             </svg>
@@ -98,9 +112,17 @@
         <a href="{% url 'main:contacts' %}" onclick="toggleMenu()">{% trans "nav_main_contacts" %}</a>
 
         <!-- Mobile Menu Link (Text version inside menu) -->
-        <a href="{% if user.is_authenticated %}{% url 'cabinet:dashboard' %}{% else %}{% url 'cabinet:account_login' %}{% endif %}"
+        <a href="{% if user.is_authenticated %}{% url "cabinet:dashboard" %}{% else %}{% url "cabinet:account_login" %}{% endif %}"
+           {% if not user.is_authenticated %}
+           hx-get="{% url "cabinet:account_login" %}"
+           hx-target="#authModalContent"
+           hx-trigger="click"
+           hx-on:htmx:before-request="toggleMenu(); openAuthModal();"
+           onclick="event.preventDefault();"
+           {% else %}
            onclick="toggleMenu()"
-           style="color: var(--color-gold); margin-top: 20px; font-size: 24px;">
+           {% endif %}
+           class="mobile-auth-link">
             {% if user.is_authenticated %}
                 {% trans "My Cabinet" %}
             {% else %}

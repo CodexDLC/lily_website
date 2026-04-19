@@ -26,6 +26,12 @@
                         {% if client.status == 'blocked' %}
                             <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2">{% trans "Blocked" %}</span>
                         {% endif %}
+
+                        {% if loyalty %}
+                            <span class="badge bg-{{ loyalty.tone }}-subtle text-{{ loyalty.tone }} border border-{{ loyalty.tone }}-subtle px-2">
+                                {{ loyalty.label }} · {{ loyalty.level }}/4
+                            </span>
+                        {% endif %}
                     </div>
                 </div>
             </div>

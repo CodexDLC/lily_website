@@ -17,7 +17,7 @@ from core.logger import logger
 from django.db.models import Count, Prefetch, Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from system.models import Client, SiteSettings
+from system.models import Client
 
 from features.main.models import Service, ServiceCategory
 
@@ -63,7 +63,6 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
             working_day_model=MasterWorkingDay,
             day_off_model=MasterDayOff,
             booking_settings_model=BookingSettings,
-            site_settings_model=SiteSettings,
         )
 
     # ── Category / Service lists ──────────────────────────────────────────────
@@ -258,6 +257,7 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
                     service_ids=service_ids,
                     target_date=target_date,
                     locked_resource_id=resource_id,
+                    audience="cabinet",
                 )
                 return result.get_unique_start_times()
             except Exception:
@@ -265,7 +265,7 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
                 logger.debug("Smart search failed, falling back to grid calculation")
 
         try:
-            return gateway.get_resource_day_slots(resource_id=resource_id, target_date=target_date)
+            return gateway.get_resource_day_slots(resource_id=resource_id, target_date=target_date, audience="cabinet")
         except Exception:
             return []
 

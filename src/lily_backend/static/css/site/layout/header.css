@@ -293,3 +293,16 @@
     position: absolute;
     bottom: 30px;
 }
+
+/* Authentication feedback */
+.nav-icon-user.is-authenticated {
+    color: var(--color-gold);
+}
+
+.nav-icon-user.is-authenticated:hover {
+    color: var(--color-white);
+}
+
+.mobile-user-btn.is-authenticated {
+    color: var(--color-white);
+}

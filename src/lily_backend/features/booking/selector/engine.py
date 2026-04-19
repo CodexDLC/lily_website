@@ -93,8 +93,9 @@ class LoadAwareDjangoAvailabilityAdapter(DjangoAvailabilityAdapter):
 class LilyBookingPersistenceHook:
     """Project persistence policy for chain bookings."""
 
-    def __init__(self, appointment_model: type[Any]) -> None:
+    def __init__(self, appointment_model: type[Any], *, notify_received: bool = True) -> None:
         self.appointment_model = appointment_model
+        self.notify_received = notify_received
 
     def persist_chain(
         self,
@@ -116,6 +117,9 @@ class LilyBookingPersistenceHook:
                 }
             )
             appointments.append(self.appointment_model.objects.create(**fields))
+
+        if not self.notify_received:
+            return appointments
 
         # Notify about received bookings
         from features.conversations.services.notifications import _get_engine
@@ -145,7 +149,7 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
             working_day_model=feature_models.working_day_model,
             day_off_model=feature_models.day_off_model,
             booking_settings_model=feature_models.booking_settings_model,
-            site_settings_model=feature_models.site_settings_model,
+            timezone="UTC",
             load_strategy=strategy,
             target_date=target_date or date.today(),
         )
@@ -165,8 +169,9 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
 
         from ..booking_settings import BookingSettings
 
+        audience = str(kwargs.pop("audience", "public"))
         settings = BookingSettings.load()
-        if settings.book_only_from_next_day and target_date <= dt_date.today():
+        if audience == "public" and settings.book_only_from_next_day and target_date <= dt_date.today():
             return []
 
         effective_kwargs = {key: value for key, value in kwargs.items() if value is not None}
@@ -186,9 +191,10 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
 
         from ..booking_settings import BookingSettings
 
+        audience = str(kwargs.pop("audience", "public"))
         settings = BookingSettings.load()
         effective_search_from = search_from
-        if settings.book_only_from_next_day and search_from <= dt_date.today():
+        if audience == "public" and settings.book_only_from_next_day and search_from <= dt_date.today():
             effective_search_from = dt_date.today() + timedelta(days=1)
 
         effective_kwargs = {key: value for key, value in kwargs.items() if value is not None}
@@ -200,10 +206,13 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
         *,
         resource_id: int,
         target_date: date,
+        audience: str = "public",
     ) -> list[str]:
         from ..booking_settings import BookingSettings
 
         settings = BookingSettings.load()
+        if audience == "public" and settings.book_only_from_next_day and target_date <= date.today():
+            return []
         step = timedelta(minutes=settings.step_minutes or 30)
         adapter = self._build_adapter(target_date=target_date)
         availability = adapter.build_resources_availability(resource_ids=[resource_id], target_date=target_date)
@@ -227,11 +236,15 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
         selected_time: str,
         resource_id: int | None,
         client: Any,
+        notify_received: bool = True,
         **kwargs: Any,
     ) -> Any:
         feature_models = self.provider.get_feature_models()
         adapter = self._build_adapter(target_date=target_date)
-        persistence_hook = LilyBookingPersistenceHook(feature_models.appointment_model)
+        persistence_hook = LilyBookingPersistenceHook(
+            feature_models.appointment_model,
+            notify_received=notify_received,
+        )
         return runtime_create_booking(
             adapter=adapter,
             cache_adapter=BookingCacheAdapter(),

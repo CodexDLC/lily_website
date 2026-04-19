@@ -14,16 +14,31 @@ class MainConfig(AppConfig):
         import features.main.translation  # noqa
         import modeltranslation  # noqa
 
-        import features.main.cabinet  # noqa
+        import sys
 
-        # Connect signals to update cabinet sidebar whenever categories change
-        from django.db.models.signals import post_delete, post_save
+        # Avoid database access during management commands to prevent RuntimeWarnings
+        if not any(
+            arg in sys.argv
+            for arg in [
+                "migrate",
+                "collectstatic",
+                "makemigrations",
+                "check",
+                "migrate_all_legacy",
+                "migrate_users",
+                "test",
+            ]
+        ):
+            import features.main.cabinet  # noqa
 
-        from features.main.cabinet import register_cabinet_catalog
-        from features.main.models import ServiceCategory
+            # Connect signals to update cabinet sidebar whenever categories change
+            from django.db.models.signals import post_delete, post_save
 
-        def update_sidebar(sender: Any, **kwargs: Any) -> None:
-            register_cabinet_catalog()
+            from features.main.cabinet import register_cabinet_catalog
+            from features.main.models import ServiceCategory
 
-        post_save.connect(update_sidebar, sender=ServiceCategory)
-        post_delete.connect(update_sidebar, sender=ServiceCategory)
+            def update_sidebar(sender: Any, **kwargs: Any) -> None:
+                register_cabinet_catalog()
+
+            post_save.connect(update_sidebar, sender=ServiceCategory)
+            post_delete.connect(update_sidebar, sender=ServiceCategory)

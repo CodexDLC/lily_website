@@ -31,17 +31,14 @@ else:
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
+        "BACKEND": "codex_django.cache.backends.redis.RedisCache",
         "LOCATION": REDIS_URL,
         "KEY_PREFIX": PROJECT_NAME,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
+        "TIMEOUT": 300,
     }
 }
 
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
+SESSION_ENGINE = "codex_django.sessions.backends.redis"
 SESSION_COOKIE_NAME = f"sessionid_{PROJECT_NAME}"
 
 # --- Ratelimit ---

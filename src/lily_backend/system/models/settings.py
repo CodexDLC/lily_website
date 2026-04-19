@@ -1,9 +1,7 @@
-from datetime import time
-
 from codex_django.system.mixins.settings import (
     AbstractSiteSettings,
     SiteContactSettingsMixin,
-    SiteEmailSettingsMixin,
+    SiteEmailIdentityMixin,
     SiteGeoSettingsMixin,
     SiteMarketingSettingsMixin,
     SiteSocialSettingsMixin,
@@ -20,7 +18,7 @@ class SiteSettings(
     SiteSocialSettingsMixin,
     SiteMarketingSettingsMixin,
     SiteTechnicalSettingsMixin,
-    SiteEmailSettingsMixin,
+    SiteEmailIdentityMixin,
 ):
     """
     Global site settings.
@@ -53,12 +51,6 @@ class SiteSettings(
         _("Saturday (Display)"), max_length=100, blank=True, default="10:00 - 14:00"
     )
     working_hours_sunday = models.CharField(_("Sunday (Display)"), max_length=100, blank=True, default="Geschlossen")
-
-    # --- Working Hours (Logic) ---
-    work_start_weekdays = models.TimeField(_("Mo-Fr Start"), default=time(9, 0))
-    work_end_weekdays = models.TimeField(_("Mo-Fr End"), default=time(18, 0))
-    work_start_saturday = models.TimeField(_("Saturday Start"), default=time(10, 0))
-    work_end_saturday = models.TimeField(_("Saturday End"), default=time(14, 0))
 
     # --- Price ---
     price_range = models.CharField(_("Price Range"), max_length=10, blank=True, default="$$")

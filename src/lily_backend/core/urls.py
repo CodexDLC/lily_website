@@ -20,6 +20,7 @@ handler404 = "system.views.errors.handler404"
 handler500 = "system.views.errors.handler500"
 handler403 = "system.views.errors.handler403"
 handler400 = "system.views.errors.handler400"
+handler405 = "system.views.errors.handler405"
 
 # Patterns
 urlpatterns: list[Any] = [
@@ -28,6 +29,16 @@ urlpatterns: list[Any] = [
     path(
         "robots.txt",
         TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
+    path(
+        "sw.js",
+        TemplateView.as_view(template_name="sw.js", content_type="application/javascript"),
+        name="sw_js",
+    ),
+    path(
+        "manifest.json",
+        TemplateView.as_view(template_name="manifest.json", content_type="application/json"),
+        name="manifest_json",
     ),
     path("llms_de.txt", TemplateView.as_view(template_name="llms_de.txt", content_type="text/plain")),
     path("llms_en.txt", TemplateView.as_view(template_name="llms_en.txt", content_type="text/plain")),
@@ -43,6 +54,7 @@ urlpatterns += i18n_patterns(
     path("conversations/", include("features.conversations.urls")),
     path("", include("features.booking.urls")),
     path("", include("features.main.urls", namespace="main")),
+    path("cabinet/tracking/", include("codex_django.tracking.urls")),
     prefix_default_language=True,
 )
 

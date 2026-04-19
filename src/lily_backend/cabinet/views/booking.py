@@ -7,9 +7,9 @@ from typing import Any
 from core.logger import logger
 from django import forms
 from django.contrib import messages
-from django.db import OperationalError, ProgrammingError
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import TemplateView
 from features.booking.booking_settings import BookingSettings
@@ -21,26 +21,92 @@ from features.booking.services.cabinet_availability import (
 from ..mixins import StaffRequiredMixin
 from ..services.booking import BookingService
 
+BOOKING_DAY_FIELDS = {
+    "monday": ("monday_is_closed", "work_start_monday", "work_end_monday"),
+    "tuesday": ("tuesday_is_closed", "work_start_tuesday", "work_end_tuesday"),
+    "wednesday": ("wednesday_is_closed", "work_start_wednesday", "work_end_wednesday"),
+    "thursday": ("thursday_is_closed", "work_start_thursday", "work_end_thursday"),
+    "friday": ("friday_is_closed", "work_start_friday", "work_end_friday"),
+    "saturday": ("saturday_is_closed", "work_start_saturday", "work_end_saturday"),
+    "sunday": ("sunday_is_closed", "work_start_sunday", "work_end_sunday"),
+}
+BOOKING_RULE_FIELDS = (
+    "step_minutes",
+    "default_buffer_between_minutes",
+    "min_advance_minutes",
+    "max_advance_days",
+)
+BOOKING_HOUR_FIELDS = tuple(field for fields in BOOKING_DAY_FIELDS.values() for field in fields)
+BOOKING_BEHAVIOR_FIELDS = (
+    "load_strategy",
+    "book_only_from_next_day",
+)
+
 
 class BookingSettingsForm(forms.ModelForm):
+    DAY_FIELDS = BOOKING_DAY_FIELDS
+    SECTION_FIELDS = {
+        "rules": BOOKING_RULE_FIELDS,
+        "hours": BOOKING_HOUR_FIELDS,
+        "behavior": BOOKING_BEHAVIOR_FIELDS,
+    }
+
     class Meta:
         model = BookingSettings
         fields = [
-            "step_minutes",
-            "default_buffer_between_minutes",
-            "min_advance_minutes",
-            "max_advance_days",
-            "work_start_weekdays",
-            "work_end_weekdays",
-            "work_start_saturday",
-            "work_end_saturday",
+            *BOOKING_RULE_FIELDS,
+            *BOOKING_HOUR_FIELDS,
+            *BOOKING_BEHAVIOR_FIELDS,
         ]
         widgets = {
-            "work_start_weekdays": forms.TimeInput(attrs={"type": "time"}),
-            "work_end_weekdays": forms.TimeInput(attrs={"type": "time"}),
-            "work_start_saturday": forms.TimeInput(attrs={"type": "time"}),
-            "work_end_saturday": forms.TimeInput(attrs={"type": "time"}),
+            **{
+                field: forms.TimeInput(attrs={"type": "time"})
+                for fields in BOOKING_DAY_FIELDS.values()
+                for field in fields[1:]
+            },
+            "load_strategy": forms.Select(),
+            "book_only_from_next_day": forms.CheckboxInput(),
         }
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        for _name, field in self.fields.items():
+            widget = field.widget
+            if isinstance(widget, forms.CheckboxInput):
+                widget.attrs["class"] = "form-check-input"
+            elif isinstance(widget, forms.Select):
+                widget.attrs["class"] = "form-select"
+            else:
+                base_class = "form-control"
+                if isinstance(widget, forms.TimeInput):
+                    base_class += " form-control-sm"
+                widget.attrs["class"] = base_class
+
+    @property
+    def grouped_fields(self) -> dict[str, list[forms.BoundField]]:
+        return {section: [self[name] for name in field_names] for section, field_names in self.SECTION_FIELDS.items()}
+
+    @property
+    def day_rows(self) -> list[dict[str, forms.BoundField | str]]:
+        labels = {
+            "monday": _("Monday"),
+            "tuesday": _("Tuesday"),
+            "wednesday": _("Wednesday"),
+            "thursday": _("Thursday"),
+            "friday": _("Friday"),
+            "saturday": _("Saturday"),
+            "sunday": _("Sunday"),
+        }
+        return [
+            {
+                "key": day,
+                "label": labels[day],
+                "closed": self[fields[0]],
+                "start": self[fields[1]],
+                "end": self[fields[2]],
+            }
+            for day, fields in self.DAY_FIELDS.items()
+        ]
 
 
 class BaseBookingView(StaffRequiredMixin, TemplateView):
@@ -131,21 +197,16 @@ class BookingSettingsView(BaseBookingView):
     template_name = "cabinet/booking/settings.html"
 
     def _load_settings(self) -> tuple[BookingSettings, str | None]:
-        # TODO(architecture): This view still owns persistence for booking settings.
-        # Per the cabinet regulation, ORM access and save flows should move into a
-        # dedicated service-layer contract before this pattern is used in blueprints.
-        try:
-            instance, _ = BookingSettings.objects.get_or_create(pk=1)
-            return instance, None
-        except (OperationalError, ProgrammingError):
-            return BookingSettings(), "Booking settings storage is not available yet."  # type: ignore[no-untyped-call]
+        instance, warning = BookingService.get_or_create_settings()
+        return instance, _(warning) if warning else None  # type: ignore[arg-type]
 
     def _get_context(self, *, form: BookingSettingsForm, storage_warning: str | None) -> dict[str, Any]:
         context = self.get_context_data()
         context.update(
             {
-                "title": "Booking settings",
+                "title": _("Booking settings"),
                 "form": form,
+                "form_sections": form.grouped_fields,
                 "storage_warning": storage_warning,
             }
         )
@@ -166,7 +227,7 @@ class BookingSettingsView(BaseBookingView):
         form = BookingSettingsForm(request.POST, instance=instance)
         if form.is_valid():
             form.save()
-            messages.success(request, "Booking settings saved.")
+            messages.success(request, _("Booking settings saved."))
             return redirect("cabinet:booking_settings")
 
         return self.render_to_response(self._get_context(form=form, storage_warning=storage_warning))

@@ -9,23 +9,25 @@ from codex_django.cabinet.registry import cabinet_registry
 
 
 def _get_default_staff_module() -> str | None:
-    candidates: list[tuple[int, str]] = []
-    for (space, module), items in cabinet_registry._sidebar.items():
-        if space != "staff" or not items:
-            continue
-        topbar = cabinet_registry.get_module_topbar(module)
-        order = topbar.order if topbar else 999
-        candidates.append((order, module))
-
-    if not candidates:
-        return None
-    candidates.sort(key=lambda item: (item[0], item[1]))
-    return candidates[0][1]
+    return cast("str | None", cast("Any", cabinet_registry).get_default_module("staff"))
 
 
 def _is_client_cabinet_path(request: Any) -> bool:
     normalized_path = request.path.rstrip("/")
     return "/my/" in request.path or normalized_path.endswith("/my")
+
+
+def _hide_tracking_widgets_on_business_stats(context: dict[str, Any]) -> None:
+    if context.get("cabinet_active_module") != "business_stats":
+        return
+
+    widgets = context.get("cabinet_dashboard_widgets")
+    if not widgets:
+        return
+
+    context["cabinet_dashboard_widgets"] = [
+        widget for widget in widgets if not str(getattr(widget, "context_key", "")).startswith("tracking_")
+    ]
 
 
 def cabinet(request: Any) -> dict[str, Any]:
@@ -66,6 +68,7 @@ def cabinet(request: Any) -> dict[str, Any]:
         if request.user.is_authenticated and context.get("cabinet_space") == "staff"
         else []
     )
+    _hide_tracking_widgets_on_business_stats(context)
     return context
 
 

@@ -5,10 +5,10 @@
 {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "@id": "{{ site_settings.site_base_url }}#organization", {# Dynamic ID from SiteSettings #}
+  "@id": "{{ site_settings.site_base_url }}#organization",
   "name": "{{ site_settings.company_name }}",
-  "image": "{% static 'img/logo_lily.webp' %}", {# Keeping static for now, assuming no dynamic logo field #}
-  "url": "{{ site_settings.site_base_url }}", {# Dynamic URL from SiteSettings #}
+  "image": "{% static 'img/logo_lily.webp' %}",
+  "url": "{{ site_settings.site_base_url }}",
   "telephone": "{{ site_settings.phone }}",
   "email": "{{ site_settings.email }}",
   "address": {
@@ -16,43 +16,28 @@
     "streetAddress": "{{ site_settings.address_street }}",
     "addressLocality": "{{ site_settings.address_locality }}",
     "postalCode": "{{ site_settings.address_postal_code }}",
-    "addressCountry": "DE" {# Keeping hardcoded, assuming constant #}
+    "addressCountry": "DE"
   },
   "geo": {
     "@type": "GeoCoordinates",
     "latitude": "{{ site_settings.latitude }}",
     "longitude": "{{ site_settings.longitude }}"
   },
-  "openingHoursSpecification": [
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday"
-      ],
-      "opens": "{{ site_settings.work_start_weekdays }}",
-      "closes": "{{ site_settings.work_end_weekdays }}"
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": "Saturday",
-      "opens": "{{ site_settings.work_start_saturday }}",
-      "closes": "{{ site_settings.work_end_saturday }}"
-    }
+  "openingHours": [
+    "Mo-Fr {{ site_settings.working_hours_weekdays }}",
+    "Sa {{ site_settings.working_hours_saturday }}",
+    "Su {{ site_settings.working_hours_sunday }}"
   ],
   "priceRange": "{{ site_settings.price_range }}",
   "sameAs": [
     "{{ site_settings.instagram_url }}",
-    "https://www.facebook.com/lilybeautysalonkoethen/" {# Keeping hardcoded Facebook as no field in SiteSettings #}
+    "https://www.facebook.com/lilybeautysalonkoethen/"
   ],
   "potentialAction": {
     "@type": "ReserveAction",
     "target": {
       "@type": "EntryPoint",
-      "urlTemplate": "{% url 'booking:booking_wizard' %}", {# Fixed: added booking: namespace #}
+      "urlTemplate": "{% url 'booking:booking_wizard' %}",
       "inLanguage": "{{ request.LANGUAGE_CODE }}",
       "actionPlatform": [
         "https://schema.org/DesktopWebPlatform",
