@@ -32,7 +32,7 @@ from .views.conversations import (
     ThreadView,
     manual_check_view,
 )
-from .views.ops import WorkerOpsView
+from .views.ops import DataMaintenanceView, WorkerOpsView
 from .views.services import CategoryStatusToggleView, ServiceQuickEditView, ServicesListView
 from .views.site_settings import site_settings_tab_view, site_settings_view
 from .views.staff import StaffListView, StaffQuickEditView
@@ -54,6 +54,7 @@ urlpatterns = [
     path("analytics/reports/", AnalyticsReportsView.as_view(), name="analytics_reports"),
     # Ops
     path("ops/workers/", WorkerOpsView.as_view(), name="ops_workers"),
+    path("ops/maintenance/", DataMaintenanceView.as_view(), name="ops_maintenance"),
     # Booking
     path("booking/schedule/", BookingScheduleView.as_view(), name="booking_schedule"),
     path("booking/settings/", BookingSettingsView.as_view(), name="booking_settings"),

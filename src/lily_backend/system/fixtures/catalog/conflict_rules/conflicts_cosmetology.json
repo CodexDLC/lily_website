@@ -1,204 +1,6 @@
 [
   {
     "model": "main.serviceconflictrule",
-    "pk": 31,
-    "fields": {
-      "source": 1,
-      "target": 2,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 32,
-    "fields": {
-      "source": 2,
-      "target": 1,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 33,
-    "fields": {
-      "source": 3,
-      "target": 4,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 34,
-    "fields": {
-      "source": 4,
-      "target": 3,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 35,
-    "fields": {
-      "source": 14,
-      "target": 13,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 36,
-    "fields": {
-      "source": 13,
-      "target": 14,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 37,
-    "fields": {
-      "source": 15,
-      "target": 16,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 38,
-    "fields": {
-      "source": 15,
-      "target": 17,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 39,
-    "fields": {
-      "source": 15,
-      "target": 18,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 40,
-    "fields": {
-      "source": 16,
-      "target": 15,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 41,
-    "fields": {
-      "source": 17,
-      "target": 15,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 42,
-    "fields": {
-      "source": 18,
-      "target": 15,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 43,
-    "fields": {
-      "source": 16,
-      "target": 17,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 44,
-    "fields": {
-      "source": 16,
-      "target": 18,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 45,
-    "fields": {
-      "source": 17,
-      "target": 16,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 46,
-    "fields": {
-      "source": 17,
-      "target": 18,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 47,
-    "fields": {
-      "source": 18,
-      "target": 16,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 48,
-    "fields": {
-      "source": 18,
-      "target": 17,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
     "pk": 49,
     "fields": {
       "source": 22,
@@ -525,490 +327,6 @@
       "rule_type": "replaces",
       "is_active": true,
       "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 81,
-    "fields": {
-      "source": 37,
-      "target": 38,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 82,
-    "fields": {
-      "source": 38,
-      "target": 37,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": ""
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 100,
-    "fields": {
-      "source": 5,
-      "target": 6,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 101,
-    "fields": {
-      "source": 6,
-      "target": 5,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 102,
-    "fields": {
-      "source": 5,
-      "target": 7,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 103,
-    "fields": {
-      "source": 7,
-      "target": 5,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 104,
-    "fields": {
-      "source": 5,
-      "target": 8,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 105,
-    "fields": {
-      "source": 8,
-      "target": 5,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 106,
-    "fields": {
-      "source": 6,
-      "target": 7,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 107,
-    "fields": {
-      "source": 7,
-      "target": 6,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 108,
-    "fields": {
-      "source": 6,
-      "target": 8,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 109,
-    "fields": {
-      "source": 8,
-      "target": 6,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 110,
-    "fields": {
-      "source": 7,
-      "target": 8,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 111,
-    "fields": {
-      "source": 8,
-      "target": 7,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 112,
-    "fields": {
-      "source": 9,
-      "target": 10,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 113,
-    "fields": {
-      "source": 10,
-      "target": 9,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 114,
-    "fields": {
-      "source": 9,
-      "target": 41,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 115,
-    "fields": {
-      "source": 41,
-      "target": 9,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 116,
-    "fields": {
-      "source": 10,
-      "target": 41,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 117,
-    "fields": {
-      "source": 41,
-      "target": 10,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 118,
-    "fields": {
-      "source": 9,
-      "target": 5,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 119,
-    "fields": {
-      "source": 9,
-      "target": 6,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 120,
-    "fields": {
-      "source": 9,
-      "target": 7,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 121,
-    "fields": {
-      "source": 9,
-      "target": 8,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 122,
-    "fields": {
-      "source": 10,
-      "target": 5,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 123,
-    "fields": {
-      "source": 10,
-      "target": 6,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 124,
-    "fields": {
-      "source": 10,
-      "target": 7,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 125,
-    "fields": {
-      "source": 10,
-      "target": 8,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 126,
-    "fields": {
-      "source": 41,
-      "target": 5,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 127,
-    "fields": {
-      "source": 41,
-      "target": 6,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 128,
-    "fields": {
-      "source": 41,
-      "target": 7,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 129,
-    "fields": {
-      "source": 41,
-      "target": 8,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 130,
-    "fields": {
-      "source": 11,
-      "target": 42,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 131,
-    "fields": {
-      "source": 42,
-      "target": 11,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 132,
-    "fields": {
-      "source": 11,
-      "target": 43,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 133,
-    "fields": {
-      "source": 43,
-      "target": 11,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 134,
-    "fields": {
-      "source": 11,
-      "target": 44,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 135,
-    "fields": {
-      "source": 44,
-      "target": 11,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 136,
-    "fields": {
-      "source": 42,
-      "target": 43,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 137,
-    "fields": {
-      "source": 43,
-      "target": 42,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 138,
-    "fields": {
-      "source": 42,
-      "target": 44,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 139,
-    "fields": {
-      "source": 44,
-      "target": 42,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 140,
-    "fields": {
-      "source": 43,
-      "target": 44,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
-    }
-  },
-  {
-    "model": "main.serviceconflictrule",
-    "pk": 141,
-    "fields": {
-      "source": 44,
-      "target": 43,
-      "rule_type": "replaces",
-      "is_active": true,
-      "note": "Restored"
     }
   },
   {
@@ -4863,156 +4181,904 @@
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 492,
+    "pk": 506,
     "fields": {
-      "source": 5,
-      "target": 45,
+      "source": 27,
+      "target": 22,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 493,
+    "pk": 507,
     "fields": {
-      "source": 6,
-      "target": 45,
+      "source": 22,
+      "target": 27,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 494,
+    "pk": 508,
     "fields": {
-      "source": 7,
-      "target": 45,
+      "source": 27,
+      "target": 23,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 495,
+    "pk": 509,
     "fields": {
-      "source": 8,
-      "target": 45,
+      "source": 23,
+      "target": 27,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 496,
+    "pk": 510,
     "fields": {
-      "source": 9,
-      "target": 45,
+      "source": 27,
+      "target": 24,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 497,
+    "pk": 511,
     "fields": {
-      "source": 10,
-      "target": 45,
+      "source": 24,
+      "target": 27,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 498,
+    "pk": 512,
     "fields": {
-      "source": 41,
-      "target": 45,
+      "source": 27,
+      "target": 25,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 499,
+    "pk": 513,
     "fields": {
-      "source": 45,
-      "target": 5,
+      "source": 25,
+      "target": 27,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 500,
+    "pk": 514,
     "fields": {
-      "source": 45,
-      "target": 6,
+      "source": 27,
+      "target": 26,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 501,
+    "pk": 515,
     "fields": {
-      "source": 45,
-      "target": 7,
+      "source": 26,
+      "target": 27,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 502,
+    "pk": 516,
     "fields": {
-      "source": 45,
-      "target": 8,
+      "source": 27,
+      "target": 28,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 503,
+    "pk": 517,
     "fields": {
-      "source": 45,
-      "target": 9,
+      "source": 28,
+      "target": 27,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 504,
+    "pk": 518,
     "fields": {
-      "source": 45,
-      "target": 10,
+      "source": 27,
+      "target": 50,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
     }
   },
   {
     "model": "main.serviceconflictrule",
-    "pk": 505,
+    "pk": 519,
     "fields": {
-      "source": 45,
-      "target": 41,
+      "source": 50,
+      "target": 27,
       "rule_type": "replaces",
       "is_active": true,
-      "note": "nails-46-auto"
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 520,
+    "fields": {
+      "source": 27,
+      "target": 51,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 521,
+    "fields": {
+      "source": 51,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 522,
+    "fields": {
+      "source": 27,
+      "target": 52,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 523,
+    "fields": {
+      "source": 52,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 524,
+    "fields": {
+      "source": 27,
+      "target": 53,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 525,
+    "fields": {
+      "source": 53,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 526,
+    "fields": {
+      "source": 27,
+      "target": 54,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 527,
+    "fields": {
+      "source": 54,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 528,
+    "fields": {
+      "source": 27,
+      "target": 55,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 529,
+    "fields": {
+      "source": 55,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 530,
+    "fields": {
+      "source": 27,
+      "target": 56,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 531,
+    "fields": {
+      "source": 56,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 532,
+    "fields": {
+      "source": 27,
+      "target": 57,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 533,
+    "fields": {
+      "source": 57,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 534,
+    "fields": {
+      "source": 27,
+      "target": 58,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 535,
+    "fields": {
+      "source": 58,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 536,
+    "fields": {
+      "source": 27,
+      "target": 59,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 537,
+    "fields": {
+      "source": 59,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 538,
+    "fields": {
+      "source": 27,
+      "target": 60,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 539,
+    "fields": {
+      "source": 60,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 540,
+    "fields": {
+      "source": 27,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 541,
+    "fields": {
+      "source": 61,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 542,
+    "fields": {
+      "source": 27,
+      "target": 62,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 543,
+    "fields": {
+      "source": 62,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 544,
+    "fields": {
+      "source": 27,
+      "target": 63,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 545,
+    "fields": {
+      "source": 63,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 546,
+    "fields": {
+      "source": 27,
+      "target": 64,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 547,
+    "fields": {
+      "source": 64,
+      "target": 27,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 548,
+    "fields": {
+      "source": 61,
+      "target": 22,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 549,
+    "fields": {
+      "source": 22,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 550,
+    "fields": {
+      "source": 61,
+      "target": 23,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 551,
+    "fields": {
+      "source": 23,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 552,
+    "fields": {
+      "source": 61,
+      "target": 24,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 553,
+    "fields": {
+      "source": 24,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 554,
+    "fields": {
+      "source": 61,
+      "target": 25,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 555,
+    "fields": {
+      "source": 25,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 556,
+    "fields": {
+      "source": 61,
+      "target": 26,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 557,
+    "fields": {
+      "source": 26,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 558,
+    "fields": {
+      "source": 61,
+      "target": 28,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 559,
+    "fields": {
+      "source": 28,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 560,
+    "fields": {
+      "source": 61,
+      "target": 50,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 561,
+    "fields": {
+      "source": 50,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 562,
+    "fields": {
+      "source": 61,
+      "target": 51,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 563,
+    "fields": {
+      "source": 51,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 564,
+    "fields": {
+      "source": 61,
+      "target": 52,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 565,
+    "fields": {
+      "source": 52,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 566,
+    "fields": {
+      "source": 61,
+      "target": 53,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 567,
+    "fields": {
+      "source": 53,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 568,
+    "fields": {
+      "source": 61,
+      "target": 54,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 569,
+    "fields": {
+      "source": 54,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 570,
+    "fields": {
+      "source": 61,
+      "target": 55,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 571,
+    "fields": {
+      "source": 55,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 572,
+    "fields": {
+      "source": 61,
+      "target": 56,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 573,
+    "fields": {
+      "source": 56,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 574,
+    "fields": {
+      "source": 61,
+      "target": 57,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 575,
+    "fields": {
+      "source": 57,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 576,
+    "fields": {
+      "source": 61,
+      "target": 58,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 577,
+    "fields": {
+      "source": 58,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 578,
+    "fields": {
+      "source": 61,
+      "target": 59,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 579,
+    "fields": {
+      "source": 59,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 580,
+    "fields": {
+      "source": 61,
+      "target": 60,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 581,
+    "fields": {
+      "source": 60,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 582,
+    "fields": {
+      "source": 61,
+      "target": 62,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 583,
+    "fields": {
+      "source": 62,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 584,
+    "fields": {
+      "source": 61,
+      "target": 63,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 585,
+    "fields": {
+      "source": 63,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 586,
+    "fields": {
+      "source": 61,
+      "target": 64,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 587,
+    "fields": {
+      "source": 64,
+      "target": 61,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
     }
   }
 ]

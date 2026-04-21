@@ -1,0 +1,254 @@
+[
+{
+  "model": "booking.masterworkingday",
+  "pk": 1,
+  "fields": {
+    "weekday": 0,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 1
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 2,
+  "fields": {
+    "weekday": 1,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 1
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 3,
+  "fields": {
+    "weekday": 2,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 1
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 4,
+  "fields": {
+    "weekday": 3,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 1
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 5,
+  "fields": {
+    "weekday": 4,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 1
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 6,
+  "fields": {
+    "weekday": 5,
+    "start_time": "10:00:00",
+    "end_time": "14:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 1
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 7,
+  "fields": {
+    "weekday": 5,
+    "start_time": "10:00:00",
+    "end_time": "14:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 2
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 8,
+  "fields": {
+    "weekday": 3,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 3
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 9,
+  "fields": {
+    "weekday": 4,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 3
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 10,
+  "fields": {
+    "weekday": 0,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 4
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 11,
+  "fields": {
+    "weekday": 1,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 4
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 12,
+  "fields": {
+    "weekday": 2,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 4
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 13,
+  "fields": {
+    "weekday": 3,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 4
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 14,
+  "fields": {
+    "weekday": 4,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 4
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 15,
+  "fields": {
+    "weekday": 5,
+    "start_time": "10:00:00",
+    "end_time": "14:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 4
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 16,
+  "fields": {
+    "weekday": 0,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 5
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 17,
+  "fields": {
+    "weekday": 1,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 5
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 18,
+  "fields": {
+    "weekday": 2,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 5
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 19,
+  "fields": {
+    "weekday": 3,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 5
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 20,
+  "fields": {
+    "weekday": 4,
+    "start_time": "09:00:00",
+    "end_time": "18:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 5
+  }
+},
+{
+  "model": "booking.masterworkingday",
+  "pk": 21,
+  "fields": {
+    "weekday": 5,
+    "start_time": "10:00:00",
+    "end_time": "14:00:00",
+    "break_start": null,
+    "break_end": null,
+    "master": 5
+  }
+}
+]

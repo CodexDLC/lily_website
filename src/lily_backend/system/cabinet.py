@@ -158,6 +158,12 @@ declare(
             icon="bi-cpu",
             order=1,
         ),
+        SidebarItem(
+            label=_("Maintenance"),
+            url=reverse_lazy("cabinet:ops_maintenance"),
+            icon="bi-tools",
+            order=2,
+        ),
     ],
 )
 

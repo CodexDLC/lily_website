@@ -1,0 +1,46 @@
+[
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 31,
+    "fields": {
+      "source": 1,
+      "target": 2,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 32,
+    "fields": {
+      "source": 2,
+      "target": 1,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 33,
+    "fields": {
+      "source": 3,
+      "target": 4,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 34,
+    "fields": {
+      "source": 4,
+      "target": 3,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  }
+]
