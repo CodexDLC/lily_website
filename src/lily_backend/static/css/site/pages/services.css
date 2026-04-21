@@ -29,6 +29,65 @@
     font-weight: 700;
 }
 
+.services-search {
+    width: min(100%, 520px);
+    min-width: 0;
+    height: 54px;
+    margin: 30px auto 0;
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 0 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(237, 208, 113, 0.35);
+    border-radius: 6px;
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.16);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.services-search:focus-within {
+    background: rgba(255, 255, 255, 0.11);
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px rgba(237, 208, 113, 0.18), 0 18px 42px rgba(0, 0, 0, 0.18);
+}
+
+.services-search__icon {
+    color: var(--color-gold);
+    font-size: 18px;
+}
+
+.services-search__input {
+    width: 100%;
+    min-width: 0;
+    height: 52px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-white);
+    font: inherit;
+    font-size: 16px;
+    outline: 0;
+}
+
+.services-search__input::placeholder {
+    color: rgba(245, 245, 245, 0.72);
+}
+
+.services-search__input::-webkit-search-cancel-button {
+    filter: invert(1);
+    opacity: 0.7;
+}
+
+.services-search-empty {
+    margin: 0;
+    padding: 22px;
+    border: 1px solid rgba(237, 208, 113, 0.25);
+    border-radius: 6px;
+    color: var(--color-champagne);
+    text-align: center;
+}
+
 /* Price Menu Container */
 .price-menu-container {
     max-width: 1000px;
@@ -175,4 +234,145 @@
 .more-link:hover {
     color: var(--color-white);
     letter-spacing: 2px;
+}
+
+/* =========================================
+   MOBILE ADAPTATION (iPhone 380–414px)
+   ========================================= */
+
+@media (max-width: 768px) {
+    .hero-text-block {
+        padding: 48px 0 36px;
+    }
+
+    .hero-title {
+        font-size: 34px;
+        line-height: 1.15;
+    }
+
+    .hero-subtitle {
+        font-size: 12px;
+        letter-spacing: 2px;
+    }
+
+    .services-search {
+        height: 48px;
+        margin-top: 22px;
+        padding: 0 14px;
+        gap: 10px;
+        grid-template-columns: 18px minmax(0, 1fr);
+    }
+
+    .services-search__icon {
+        font-size: 16px;
+    }
+
+    .services-search__input {
+        height: 46px;
+        font-size: 15px;
+    }
+
+    .price-menu-container {
+        gap: 28px;
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .category-header {
+        margin-bottom: 24px;
+        padding-bottom: 14px;
+    }
+
+    .category-title {
+        font-size: 26px;
+    }
+
+    .category-desc {
+        font-size: 14px;
+        margin-bottom: 18px;
+    }
+
+    /* Service row: stack content/meta/action vertically to breathe on 390px */
+    .service-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 14px 0;
+    }
+
+    .service-row:hover {
+        padding-left: 0;
+        padding-right: 0;
+        background: transparent;
+    }
+
+    .service-names {
+        padding-right: 0;
+    }
+
+    .service-name-main {
+        font-size: 16px;
+    }
+
+    .service-desc-small {
+        font-size: 12.5px;
+    }
+
+    .service-meta {
+        text-align: left;
+        min-width: 0;
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .meta-price {
+        font-size: 20px;
+    }
+
+    .meta-time {
+        margin-top: 0;
+        opacity: 0.75;
+    }
+
+    .service-action {
+        width: 100%;
+    }
+
+    .service-action .btn,
+    .service-action button,
+    .service-action a {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .more-link {
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    .more-link:hover {
+        letter-spacing: 1px;
+    }
+}
+
+@media (max-width: 420px) {
+    .hero-title {
+        font-size: 30px;
+    }
+
+    .category-title {
+        font-size: 23px;
+    }
+
+    .services-search {
+        height: 46px;
+        padding: 0 12px;
+    }
+
+    .services-search__input {
+        height: 44px;
+        font-size: 14.5px;
+    }
 }

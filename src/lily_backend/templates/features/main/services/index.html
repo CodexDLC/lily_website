@@ -10,11 +10,29 @@
     <div class="container">
         <h1 class="hero-title">{{ static_content.services_title }}</h1>
         <p class="hero-subtitle">{{ static_content.services_subtitle }}</p>
+        {% trans "Search service" as service_search_fallback %}
+        {% with search_label=static_content.services_search_placeholder|default:service_search_fallback %}
+        <div class="services-search" role="search">
+            <i class="bi bi-search services-search__icon" aria-hidden="true"></i>
+            <input
+                id="service-search-input"
+                class="services-search__input"
+                type="search"
+                placeholder="{{ search_label }}"
+                aria-label="{{ search_label }}"
+                autocomplete="off"
+            >
+        </div>
+        {% endwith %}
     </div>
 </section>
 
 <main class="section">
     <div class="container price-menu-container">
+        {% trans "No services found." as services_search_empty_fallback %}
+        <p class="services-search-empty" hidden>
+            {{ static_content.services_search_empty|default:services_search_empty_fallback }}
+        </p>
 
         {% for category in categories %}
         <!-- CATEGORY BLOCK -->
@@ -80,4 +98,43 @@
         {% include "features/booking/partials/booking_hub.html" %}
     </div>
 </main>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('service-search-input');
+        const emptyState = document.querySelector('.services-search-empty');
+        const blocks = Array.from(document.querySelectorAll('.price-block'));
+
+        if (!input || !blocks.length) {
+            return;
+        }
+
+        function applySearch() {
+            const query = input.value.trim().toLocaleLowerCase();
+            let visibleServices = 0;
+
+            blocks.forEach(block => {
+                let blockHasMatch = false;
+                const rows = Array.from(block.querySelectorAll('.service-row'));
+
+                rows.forEach(row => {
+                    const text = row.textContent.toLocaleLowerCase();
+                    const isMatch = !query || text.includes(query);
+                    row.hidden = !isMatch;
+                    blockHasMatch = blockHasMatch || isMatch;
+                    if (isMatch) {
+                        visibleServices += 1;
+                    }
+                });
+
+                block.hidden = !blockHasMatch;
+            });
+
+            if (emptyState) {
+                emptyState.hidden = visibleServices > 0;
+            }
+        }
+
+        input.addEventListener('input', applySearch);
+    });
+</script>
 {% endblock content %}
