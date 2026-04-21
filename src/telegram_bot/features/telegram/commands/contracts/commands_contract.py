@@ -5,7 +5,7 @@
 
 from typing import Protocol
 
-from src.telegram_bot.services.base.schemas import UserUpsertDTO
+from src.telegram_bot.features.telegram.commands.resources.dto import UserUpsertDTO
 
 
 class AuthDataProvider(Protocol):

@@ -6,7 +6,7 @@ The `Context Helper` is a utility service designed to extract and normalize basi
 
 ## 🛠️ Class: ContextHelper
 
-Located in: `src/telegram_bot/services/helper/context_helper.py`
+Provided by: `codex_bot.helper.ContextHelper`
 
 This class provides static methods for processing `Message` and `CallbackQuery` objects from the `aiogram` library.
 
@@ -25,7 +25,7 @@ This method is the primary tool for creating a `BaseBotContext` DTO from any inc
 ## 📝 Usage Example
 
 ```python
-from src.telegram_bot.services.helper.context_helper import ContextHelper
+from codex_bot.helper import ContextHelper
 
 @router.callback_query()
 async def my_handler(callback: CallbackQuery):

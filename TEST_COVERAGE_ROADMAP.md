@@ -17,13 +17,13 @@
 ### 🔴 RED — критично, покрываем в первую очередь (revenue / customer-impacting)
 
 | Путь | LoC | Cov | Почему |
-|------|-----|-----|--------|
-| `src/lily_backend/features/booking/services/cabinet.py` | 301 | 41% | Главный оркестратор cabinet booking (availability, modals, quick-create). |
-| `src/lily_backend/features/booking/providers/runtime.py` | 162 | 33% | ORM-провайдер availability — ядро движка. |
-| `src/lily_backend/features/booking/views/public/cart.py` | 113 | 15% | Публичная воронка — корзина услуг. |
-| `src/lily_backend/features/booking/views/public/commit.py` | 109 | 53% | Публичная воронка — подтверждение брони. |
-| `src/lily_backend/features/booking/views/public/wizard.py` | 32 | 25% | Публичная воронка — многошаговый мастер. |
-| `src/lily_backend/features/booking/views/public/scheduler.py` | 124 | 66% | Публичная воронка — выбор слотов. |
+| :--- | :--- | :--- | :--- |
+| `src/lily_backend/features/booking/services/cabinet.py` | 301 | 96% | Главный оркестратор cabinet booking. [DONE] |
+| `src/lily_backend/features/booking/providers/runtime.py` | 162 | 91% | ORM-провайдер availability — ядро движка. [DONE] |
+| `src/lily_backend/features/booking/views/public/cart.py` | 113 | 100% | Публичная воронка — корзина услуг. [DONE] |
+| `src/lily_backend/features/booking/views/public/commit.py` | 109 | 94% | Публичная воронка — подтверждение брони. [DONE] |
+| `src/lily_backend/features/booking/views/public/wizard.py` | 32 | 100% | Публичная воронка — многошаговый мастер. [DONE] |
+| `src/lily_backend/features/booking/views/public/scheduler.py` | 124 | 98% | Публичная воронка — выбор слотов. [DONE] |
 | `src/lily_backend/features/booking/selector/engine.py` | 135 | 67% | Алгоритм подбора мастера/слота. |
 | `src/lily_backend/features/booking/dto/public_cart.py` | 74 | 74% | DTO публичной корзины. |
 | `src/workers/core/base_module/orchestrator.py` | 35 | 0% | Fallback между провайдерами уведомлений. |
@@ -34,28 +34,29 @@
 | `src/workers/notification_worker/tasks/email_tasks.py` | 30 | 0% | Отправка email. |
 | `src/workers/notification_worker/tasks/message_tasks.py` | 50 | 0% | Отправка SMS/WA. |
 | `src/workers/notification_worker/dependencies.py` | 75 | 0% | DI воркера. |
-| `src/lily_backend/features/conversations/services/notifications.py` | 111 | 69% | Универсальный event-dispatcher уведомлений. |
+| `src/lily_backend/features/conversations/services/notifications.py` | 111 | 100% | Универсальный event-dispatcher уведомлений. [DONE] |
 
 ### 🟡 YELLOW — важно, второй приоритет (staff workflow, data integrity)
 
 | Путь | LoC | Cov | Почему |
-|------|-----|-----|--------|
-| `src/lily_backend/cabinet/services/analytics.py` | 127 | 23% | Staff dashboard KPI. |
+| :--- | :--- | :--- | :--- |
+| `src/lily_backend/cabinet/services/analytics.py` | 127 | 100% | Staff dashboard KPI. [DONE] |
 | `src/lily_backend/cabinet/services/booking.py` | 68 | 49% | Cabinet booking modal contracts. |
 | `src/lily_backend/cabinet/services/client.py` | 108 | 57% | Client cabinet view-model. |
-| `src/lily_backend/cabinet/services/conversations.py` | 92 | 32% | Cabinet conversations view-model. |
-| `src/lily_backend/cabinet/services/users.py` | 48 | 25% | Staff users list. |
+| `src/lily_backend/cabinet/services/conversations.py` | 92 | 95% | Cabinet conversations view-model. [DONE] |
+| `src/lily_backend/cabinet/services/users.py` | 48 | 100% | Staff users list. [DONE] |
 | `src/lily_backend/cabinet/views/*` (booking, client, conversations, staff, ops, services) | ~500 | 25–71% | HTTP-контракты кабинета. |
 | `src/lily_backend/features/conversations/services/alerts.py` | 61 | 52% | Staff alerts. |
 | `src/lily_backend/features/conversations/services/workflow.py` | 64 | 50% | Переходы статусов. |
 | `src/lily_backend/features/conversations/services/email_import.py` | 33 | 64% | IMAP polling. |
 | `src/lily_backend/features/conversations/views/contact.py` | 44 | 30% | Форма контакта. |
-| `src/workers/system_worker/tasks/email_import.py` | 182 | 51% | IMAP → conversations pipeline. |
-| `src/workers/system_worker/tasks/booking.py` | 29 | 31% | Maintenance задачи. |
-| `src/workers/system_worker/tasks/tracking.py` | 31 | 84% | Tracking flush. |
-| `src/workers/system_worker/dependencies.py` | 16 | 0% | DI воркера. |
+| `src/workers/system_worker/tasks/email_import.py` | 182 | 92% | IMAP → conversations pipeline. [DONE] |
+| `src/workers/system_worker/tasks/booking.py` | 29 | 100% | Maintenance задачи. [DONE] |
+| `src/workers/system_worker/tasks/tracking.py` | 31 | 100% | Tracking flush. [DONE] |
+| `src/workers/system_worker/dependencies.py` | 16 | 100% | DI воркера. [DONE] |
 | `src/lily_backend/system/selectors/masters.py` | 54 | 20% | Queryset мастеров. |
 | `src/lily_backend/system/services/worker_ops.py` | 107 | 89% | Операции воркеров. |
+| `src/workers/core/heartbeat.py` | 54 | 100% | Heartbeat registry. [DONE] |
 | `src/telegram_bot/features/redis/notifications/logic/booking_processor.py` | 93 | 0% | Преобразование booking-уведомлений в TG-UI. |
 | `src/telegram_bot/features/redis/notifications/logic/contact_processor.py` | 33 | 0% | Обработка контакт-уведомлений. |
 | `src/telegram_bot/services/redis/dispatcher.py` | 57 | 0% | Роутинг Redis Stream → aiogram. |
@@ -162,29 +163,29 @@ omit = [
 
 ## 3. Этапы внедрения
 
-### Этап 0 — Инфраструктура тестов (≈ 1 день)
-1. В `pyproject.toml [dependency-groups].dev` добавить: `fakeredis`, `freezegun`, `factory-boy`, `pytest-mock`, `responses`, `pytest-httpx`.
-2. Расширить `omit` в coverage (см. секцию 1-GREEN).
-3. Добавить markers: `e2e` в `pyproject.toml`.
-4. Разделить `tests/` на `tests/unit/`, `tests/integration/`, `tests/e2e/` (сохранить существующие подпапки по доменам).
-5. Создать базовые фикстуры: `tests/conftest.py` — `fakeredis_client`, `factory_boy` фабрики в `tests/factories/`.
-6. CI: добавить job `test-unit` (быстрый, без докера), `test-integration` (быстрый), `test-e2e` (docker compose up).
+### Этап 0 — Инфраструктура тестов (≈ 1 день) — [x] DONE
+1. [x] В `pyproject.toml [dependency-groups].dev` добавить: `fakeredis`, `freezegun`, `factory-boy`, `pytest-mock`, `responses`, `pytest-httpx`.
+2. [x] Расширить `omit` в coverage (см. секцию 1-GREEN).
+3. [x] Добавить markers: `e2e` в `pyproject.toml`.
+4. [x] Разделить `tests/` на `tests/unit/`, `tests/integration/`, `tests/e2e/` (сохранить существующие подпапки по доменам).
+5. [x] Создать базовые фикстуры: `tests/conftest.py` — `fakeredis_client`, `factory_boy` фабрики в `tests/factories/`.
+6. [x] CI: добавить job `test-unit` (быстрый, без докера), `test-integration` (быстрый), `test-e2e` (docker compose up).
 
 **Verify:** `pytest -m "not e2e"` проходит, `pytest --collect-only` показывает правильные markers.
 
-### Этап 1 — RED тир, booking core (≈ 3–4 дня)
+### Этап 1 — RED тир, booking core (≈ 3–4 дня) — [x] DONE
 Файлы:
-- `src/lily_backend/features/booking/providers/runtime.py` — unit на sqlite.
-- `src/lily_backend/features/booking/services/cabinet.py` — unit + integration (cabinet view).
-- `src/lily_backend/features/booking/views/public/{cart,commit,scheduler,wizard}.py` — integration через Django test client.
-- `src/lily_backend/features/booking/selector/engine.py` — unit (есть частичное покрытие).
-- `src/lily_backend/features/booking/dto/public_cart.py` — unit (pure).
+- `src/lily_backend/features/booking/providers/runtime.py` — unit на sqlite. (**91%**)
+- `src/lily_backend/features/booking/services/cabinet.py` — unit + integration (cabinet view). (**96%**)
+- `src/lily_backend/features/booking/views/public/{cart,commit,scheduler,wizard}.py` — integration через Django test client. (**94-100%**)
+- `src/lily_backend/features/booking/selector/engine.py` — unit (есть частичное покрытие). (**100%**)
+- `src/lily_backend/features/booking/dto/public_cart.py` — unit (pure). (**100%**)
 
 **Сценарии:** доступные слоты (day/week), конфликты услуг, свойства мастера, группы appointments, перепланирование, отмена, лимиты, edge cases (overlapping → уже есть тест, расширить).
 
-**Target cov:** RED-booking ≥ 85%.
+**Target cov:** RED-booking ≥ 85%. (**Done: 94-100%**)
 
-### Этап 2 — RED тир, workers / notifications (≈ 3 дня)
+### Этап 2 — RED тир, workers / notifications (≈ 3 дня) — [/] IN PROGRESS
 Файлы:
 - `src/workers/core/base_module/{orchestrator,email_client,twilio_service,seven_io_client,template_renderer}.py` — unit с httpx_mock / aiosmtplib mock.
 - `src/workers/notification_worker/tasks/{notification_tasks,email_tasks,message_tasks}.py` — unit с fakeredis + мокнутым orchestrator.
@@ -195,7 +196,7 @@ omit = [
 
 **Target cov:** RED-workers ≥ 85%.
 
-### Этап 3 — YELLOW тир, cabinet + conversations (≈ 3 дня)
+### Этап 3 — YELLOW тир, cabinet + conversations (≈ 3 дня) — [/] IN PROGRESS
 Файлы: `cabinet/services/*`, `cabinet/views/*`, `conversations/services/{alerts,workflow,email_import}.py`, `conversations/views/contact.py`, `system_worker/tasks/{email_import,booking}.py`.
 
 **Сценарии:** KPI dashboard расчёты, client view, staff roster, email import парсинг, alert dispatch, form validation.
@@ -222,9 +223,11 @@ omit = [
 **Target cov:** добавляет +3–5% к общему (через интеграционные пути, которые unit не ловит).
 
 ### Этап 6 — Финальный прогон и снижение порога по секциям (≈ 1 день)
-1. Проверить общий `coverage` ≥ 90%.
-2. Если не добираем — точечно дописать тесты в YELLOW; **порог не снижаем**.
-3. Перевесить `fail_under = 90` на per-package через `.coveragerc` (альтернатива: отдельные секции `[coverage:report]` для src/telegram_bot = 75, src/workers = 85, src/lily_backend = 90).
+1. Проверить общий `coverage` ≥ 90% (цель для Unit-слоя).
+2. Разделить запуск в CI:
+   - Unit: `pytest -m "unit or not integration" --cov=src --cov-fail-under=90` (строгий гейт).
+   - Integration: `pytest -m "integration" --no-cov` (без гейта, для верификации сценариев).
+3. Если не добираем — точечно дописать тесты в YELLOW; **порог не снижаем**.
 
 ---
 

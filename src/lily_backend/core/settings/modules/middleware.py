@@ -15,5 +15,6 @@ MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusAfterMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     # Page view tracking → Redis counters, zero DB load
+    "features.main.middleware.CabinetRefreshMiddleware",
     "codex_django.tracking.middleware.PageTrackingMiddleware",
 ]

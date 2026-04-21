@@ -4,8 +4,13 @@ Entry point для Telegram Bot.
 """
 
 import asyncio
-import importlib
 
+from codex_bot.engine.middlewares import (
+    ContainerMiddleware,
+    DirectorMiddleware,
+    ThrottlingMiddleware,
+    UserValidationMiddleware,
+)
 from loguru import logger as log
 from redis.asyncio import Redis
 
@@ -14,7 +19,7 @@ from src.telegram_bot.core.container import BotContainer
 from src.telegram_bot.core.factory import build_bot
 from src.telegram_bot.core.logger import setup_bot_logging as setup_logging
 from src.telegram_bot.core.routers import build_main_router
-from src.telegram_bot.core.settings import MIDDLEWARE_CLASSES
+from src.telegram_bot.core.security import SecurityMiddleware
 
 
 async def startup(settings: BotSettings) -> None:
@@ -29,6 +34,20 @@ async def shutdown(container: BotContainer) -> None:
     log.info("Shutting down Telegram Bot...")
     await container.shutdown()
     log.info("Bot stopped")
+
+
+def attach_middlewares(dp, container: BotContainer, redis_client: Redis) -> None:
+    """Attach framework middlewares from codex-bot and project session security."""
+    middlewares = [
+        UserValidationMiddleware(container=container),
+        ThrottlingMiddleware(redis=redis_client, rate_limit=1.0),
+        SecurityMiddleware(),
+        ContainerMiddleware(container=container),
+        DirectorMiddleware(),
+    ]
+    for middleware in middlewares:
+        dp.update.middleware(middleware)
+        log.info(f"Middleware attached: {middleware.__class__.__name__}")
 
 
 async def main() -> None:
@@ -59,26 +78,9 @@ async def main() -> None:
     # 6. Инициализация ARQ
     await container.init_arq()
 
-    # 7. Middleware (динамическая загрузка из settings.py)
+    # 7. Middleware
     log.info("Attaching middleware...")
-    for mw_module_name in MIDDLEWARE_CLASSES:
-        try:
-            # Импортируем модуль
-            module_path = f"src.telegram_bot.{mw_module_name}"
-            module = importlib.import_module(module_path)
-
-            # Ищем функцию setup
-            if hasattr(module, "setup"):
-                mw_instance = module.setup(container)
-                dp.update.middleware(mw_instance)
-                log.info(f"Middleware attached: {mw_module_name}")
-            else:
-                log.warning(f"Middleware module {mw_module_name} has no 'setup' function")
-
-        except ImportError as e:
-            log.error(f"Failed to import middleware {mw_module_name}: {e}")
-        except Exception as e:
-            log.error(f"Failed to setup middleware {mw_module_name}: {e}")
+    attach_middlewares(dp, container, redis_client)
 
     # 8. Роутеры
     main_router = build_main_router()

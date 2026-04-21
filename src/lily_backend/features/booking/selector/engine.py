@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from typing import Any
 
 from codex_django.booking.adapters.availability import DjangoAvailabilityAdapter
@@ -28,6 +28,13 @@ logger = logging.getLogger(__name__)
 
 MULTI_SERVICE_MAX_UNIQUE_STARTS = 100
 MULTI_SERVICE_MAX_SOLUTIONS = 1000
+
+
+def _day_bounds(target_date: date) -> tuple[datetime, datetime]:
+    from django.utils import timezone
+
+    start = timezone.make_aware(datetime.combine(target_date, time.min))
+    return start, start + timedelta(days=1)
 
 
 class EmptyAvailableSlots:
@@ -77,10 +84,12 @@ class LoadAwareDjangoAvailabilityAdapter(DjangoAvailabilityAdapter):
     def _sort_by_load(self, resource_ids: list[str], target_date: date) -> list[str]:
         from django.db.models import Count
 
+        day_start, day_end = _day_bounds(target_date)
         counts: dict[int, int] = dict(
             self.appointment_model.objects.filter(
                 master_id__in=[int(i) for i in resource_ids],
-                datetime_start__date=target_date,
+                datetime_start__gte=day_start,
+                datetime_start__lt=day_end,
                 status__in=["pending", "confirmed"],
             )
             .values("master_id")
@@ -237,11 +246,13 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
         step = timedelta(minutes=settings.step_minutes or 30)
         window_start = timezone.make_aware(datetime.combine(target_date, start_time))
         window_end = timezone.make_aware(datetime.combine(target_date, end_time))
+        day_start, day_end = _day_bounds(target_date)
         busy_ranges = [
             (appt.datetime_start, appt.datetime_start + timedelta(minutes=appt.duration_minutes))
             for appt in Appointment.objects.filter(
                 master_id=resource_id,
-                datetime_start__date=target_date,
+                datetime_start__gte=day_start,
+                datetime_start__lt=day_end,
                 status__in=[Appointment.STATUS_PENDING, Appointment.STATUS_CONFIRMED],
             )
         ]

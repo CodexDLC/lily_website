@@ -1,8 +1,7 @@
 from typing import Any, cast
 
 from aiogram.fsm.context import FSMContext
-
-from src.telegram_bot.services.fsm.base_manager import BaseStateManager
+from codex_bot.fsm import BaseStateManager
 
 
 class DjangoListenerStateManager(BaseStateManager):

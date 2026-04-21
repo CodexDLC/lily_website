@@ -58,13 +58,21 @@ jobs:
       - name: Security SAST (Bandit)
         run: uv run bandit -r src/ -ll
 
-      - name: Run Pytest
+      - name: Run Unit Tests (with coverage gate)
         env:
           SECRET_KEY: "test_secret_key_for_ci"  # pragma: allowlist secret
           ENVIRONMENT: "testing"
           REDIS_HOST: "localhost"
           REDIS_PORT: "6379"
-        run: uv run pytest
+        run: uv run pytest -m "unit or not integration" --cov=src --cov-report=xml --cov-fail-under=90
+
+      - name: Run Integration Tests (no coverage gate)
+        env:
+          SECRET_KEY: "test_secret_key_for_ci"  # pragma: allowlist secret
+          ENVIRONMENT: "testing"
+          REDIS_HOST: "localhost"
+          REDIS_PORT: "6379"
+        run: uv run pytest -m "integration" --no-cov
 
   build-check:
     name: Docker Build Check (Cached)

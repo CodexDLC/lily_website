@@ -5,19 +5,19 @@
 import importlib
 
 from aiogram import Router
+from codex_bot.fsm.common_fsm_handlers import common_fsm_router
 from loguru import logger as log
 
-from src.telegram_bot.core.settings import INSTALLED_FEATURES
-from src.telegram_bot.services.fsm.common_fsm_handlers import router as common_fsm_router
+from src.telegram_bot.core.settings import INSTALLED_FEATURES, INSTALLED_REDIS_FEATURES
 
 
 def collect_feature_routers() -> list[Router]:
     """
-    Сканирует только интерфейсные фичи (INSTALLED_FEATURES) на наличие Aiogram роутеров.
+    Сканирует фичи на наличие Aiogram роутеров.
     """
     routers: list[Router] = []
 
-    for feature_path in INSTALLED_FEATURES:
+    for feature_path in [*INSTALLED_FEATURES, *INSTALLED_REDIS_FEATURES]:
         module_path = f"src.telegram_bot.{feature_path}.handlers"
         try:
             module = importlib.import_module(module_path)

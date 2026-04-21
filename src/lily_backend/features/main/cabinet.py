@@ -1,5 +1,3 @@
-import sys
-
 from codex_django.cabinet import (
     SidebarItem,
     TopbarEntry,
@@ -12,9 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from features.main.models import ServiceCategory
 
 
-def get_catalog_sidebar() -> list[SidebarItem]:
-    """Dynamically generate sidebar items for each service category."""
-    items = [
+def _static_sidebar() -> list[SidebarItem]:
+    return [
         SidebarItem(
             label=str(_("All Services")),
             url=reverse_lazy("cabinet:services_list"),
@@ -23,28 +20,49 @@ def get_catalog_sidebar() -> list[SidebarItem]:
         )
     ]
 
+
+def get_catalog_sidebar() -> list[SidebarItem]:
+    """Return static items plus dynamic categories fetched from DB."""
+    items = _static_sidebar()
+
     try:
         categories = ServiceCategory.objects.all().order_by("order", "name")
         for i, category in enumerate(categories, start=2):
             items.append(
                 SidebarItem(
                     label=category.name,
-                    url=reverse_lazy("cabinet:services_category", kwargs={"category_slug": category.slug}),
+                    url=reverse_lazy(
+                        "cabinet:services_category",
+                        kwargs={"category_slug": category.slug},
+                    ),
                     icon="bi-chevron-right",
                     order=i,
                 )
             )
     except OperationalError:
-        # Tables might not exist yet during migrations or early initialization
-        logger.warning("Database table for 'ServiceCategory' not found. Skipping dynamic sidebar items.")
+        logger.warning("Database not ready for ServiceCategory. Returning default sidebar.")
+        return _static_sidebar()
     except Exception:
-        logger.exception("Failed to generate dynamic sidebar items for service categories")
+        logger.exception("Failed to build dynamic sidebar items")
+        return _static_sidebar()
 
     return items
 
 
-def register_cabinet_catalog() -> None:
-    """Register or re-register the catalog module in the cabinet with latest categories."""
+def refresh_catalog_categories() -> None:
+    """Re-declare the catalog shell with the current set of categories."""
+    _register_shell(sidebar=get_catalog_sidebar())
+
+
+def register_catalog_shell() -> None:
+    """Register the catalog module shell with only the static sidebar.
+
+    Safe for AppConfig.ready() — does not access the database.
+    """
+    _register_shell(sidebar=_static_sidebar())
+
+
+def _register_shell(sidebar: list[SidebarItem]) -> None:
     declare(
         module="catalog",
         space="staff",
@@ -55,12 +73,5 @@ def register_cabinet_catalog() -> None:
             url=reverse_lazy("cabinet:services_list"),
             order=15,
         ),
-        sidebar=get_catalog_sidebar(),
+        sidebar=sidebar,
     )
-
-
-# Perform initial registration only if not in migration/setup stage
-if not any(
-    arg in sys.argv for arg in ["migrate", "collectstatic", "makemigrations", "migrate_all_legacy", "migrate_users"]
-):
-    register_cabinet_catalog()
