@@ -1,7 +1,9 @@
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
+
 from src.workers.core.base_module.email_client import AsyncEmailClient
-import httpx
+
 
 @pytest.fixture
 def email_client():
@@ -9,10 +11,11 @@ def email_client():
         smtp_host="smtp.test.com",
         smtp_port=587,
         smtp_user="user",
-        smtp_password="password",
+        smtp_password="password",  # pragma: allowlist secret
         smtp_from_email="lily@test.com",
-        sendgrid_api_key="SG.xxx"
+        sendgrid_api_key="SG.xxx",  # pragma: allowlist secret
     )
+
 
 @pytest.mark.asyncio
 async def test_send_email_smtp_success(email_client):
@@ -25,28 +28,35 @@ async def test_send_email_smtp_success(email_client):
         assert msg["To"] == "to@test.com"
         assert msg["Subject"] == "Subject"
 
+
 @pytest.mark.asyncio
 async def test_send_email_smtp_fail_sendgrid_success(email_client):
-    with patch("aiosmtplib.send", side_effect=Exception("SMTP Down")):
-        with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
-            mock_post.return_value = MagicMock(status_code=202)
-            await email_client.send_email("to@test.com", "Subject", "<h1>Content</h1>")
-            mock_post.assert_called_once()
+    with (
+        patch("aiosmtplib.send", side_effect=Exception("SMTP Down")),
+        patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post,
+    ):
+        mock_post.return_value = MagicMock(status_code=202)
+        await email_client.send_email("to@test.com", "Subject", "<h1>Content</h1>")
+        mock_post.assert_called_once()
+
 
 @pytest.mark.asyncio
 async def test_send_email_all_fail(email_client):
-    with patch("aiosmtplib.send", side_effect=Exception("SMTP Down")):
-        with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
-            mock_post.return_value = MagicMock(status_code=500, text="Internal Error")
-            with pytest.raises(RuntimeError, match="SendGrid API error"):
-                await email_client.send_email("to@test.com", "Subject", "<h1>Content</h1>")
+    with (
+        patch("aiosmtplib.send", side_effect=Exception("SMTP Down")),
+        patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post,
+    ):
+        mock_post.return_value = MagicMock(status_code=500, text="Internal Error")
+        with pytest.raises(RuntimeError, match="SendGrid API error"):
+            await email_client.send_email("to@test.com", "Subject", "<h1>Content</h1>")
+
 
 @pytest.mark.asyncio
 async def test_send_email_no_sendgrid_key_fail():
     client = AsyncEmailClient("host", 587, sendgrid_api_key=None)
-    with patch("aiosmtplib.send", side_effect=Exception("SMTP Down")):
-        with pytest.raises(Exception, match="SMTP Down"):
-            await client.send_email("to@test.com", "Subject", "<h1>Content</h1>")
+    with patch("aiosmtplib.send", side_effect=Exception("SMTP Down")), pytest.raises(Exception, match="SMTP Down"):
+        await client.send_email("to@test.com", "Subject", "<h1>Content</h1>")
+
 
 @pytest.mark.asyncio
 async def test_smtp_ssl_port(email_client):

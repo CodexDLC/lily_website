@@ -1,7 +1,23 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from features.main.cabinet import get_catalog_sidebar
+from codex_django.cabinet.registry import cabinet_registry
+from features.main.cabinet import get_catalog_sidebar, refresh_catalog_categories, register_catalog_shell
+
+
+@pytest.fixture
+def isolated_cabinet_registry():
+    topbar_entries = {group: list(entries) for group, entries in cabinet_registry._topbar_entries.items()}
+    sidebar = dict(cabinet_registry._sidebar)
+    module_topbar = dict(cabinet_registry._module_topbar)
+    module_spaces = {module: set(spaces) for module, spaces in cabinet_registry._module_spaces.items()}
+
+    yield
+
+    cabinet_registry._topbar_entries = topbar_entries
+    cabinet_registry._sidebar = sidebar
+    cabinet_registry._module_topbar = module_topbar
+    cabinet_registry._module_spaces = module_spaces
 
 
 class TestMainCabinet:
@@ -49,3 +65,17 @@ class TestMainCabinet:
         items = get_catalog_sidebar()
         assert len(items) == 1
         assert items[0].label == "All Services"
+
+    def test_catalog_shell_registration_is_idempotent(self, mock_service_category, isolated_cabinet_registry):
+        mock_service_category.objects.all().order_by.return_value = []
+
+        register_catalog_shell()
+        register_catalog_shell()
+        refresh_catalog_categories()
+        refresh_catalog_categories()
+
+        admin_entries = cabinet_registry._topbar_entries["admin"]
+        catalog_entries = [entry for entry in admin_entries if str(entry.label) == "Catalog"]
+
+        assert len(catalog_entries) == 1
+        assert len(cabinet_registry.get_sidebar("staff", "catalog")) == 1

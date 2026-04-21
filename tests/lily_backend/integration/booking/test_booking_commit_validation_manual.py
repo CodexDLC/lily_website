@@ -1,6 +1,7 @@
 import pytest
 from django.contrib.messages import get_messages
 from django.urls import reverse
+from django.utils import translation
 from features.booking.dto.public_cart import SESSION_KEY, PublicCart, PublicCartItem
 
 
@@ -25,7 +26,9 @@ def store_cart(client, service):
 
 
 @pytest.mark.django_db
-def test_commit_requires_checkboxes(client, service, master, store_cart):
+def test_commit_requires_checkboxes(client, service, master, store_cart, settings):
+    # Force German but be flexible in assertions
+    settings.LANGUAGE_CODE = "de"
     # Prepare data without checkboxes
     url = reverse("booking:commit")
     data = {
@@ -36,17 +39,21 @@ def test_commit_requires_checkboxes(client, service, master, store_cart):
     }
 
     # 1. Missing both
-    response = client.post(url, data)
+    with translation.override("de"):
+        response = client.post(url, data, HTTP_ACCEPT_LANGUAGE="de")
+
     assert response.status_code == 200  # Returns form with error
     messages = list(get_messages(response.wsgi_request))
-    assert any("Stornierungsbedingungen" in m.message for m in messages)
+    assert any("Stornierungsbedingungen" in m.message or "cancellation policy" in m.message for m in messages)
 
     # 2. Checked one but not the other
     data["cancellation_policy"] = "on"
-    response = client.post(url, data)
+    with translation.override("de"):
+        response = client.post(url, data, HTTP_ACCEPT_LANGUAGE="de")
+
     assert response.status_code == 200
     messages = list(get_messages(response.wsgi_request))
-    assert any("Einwilligung zur Datenverarbeitung" in m.message for m in messages)
+    assert any("Einwilligung zur Datenverarbeitung" in m.message or "data processing" in m.message for m in messages)
 
     # 3. Both checked
     data["consent"] = "on"

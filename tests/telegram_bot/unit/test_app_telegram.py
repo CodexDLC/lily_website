@@ -52,10 +52,14 @@ async def test_main_flow_mocked():
         mock_container.shutdown = AsyncMock()
 
         # We need to break the loop or mock start_polling to raise an exception
-        # Dispatcher.start_polling must be AsyncMock
-        _, mock_dp = await mock_build_bot()
-        mock_dp.start_polling = AsyncMock(side_effect=KeyboardInterrupt)
+        # Use a custom exception instead of KeyboardInterrupt to avoid killing the whole test runner
+        class StopPollingError(Exception):
+            pass
 
-        await main()
+        _, mock_dp = await mock_build_bot()
+        mock_dp.start_polling = AsyncMock(side_effect=StopPollingError)
+
+        with pytest.raises(StopPollingError):
+            await main()
 
         mock_attach_middlewares.assert_called_once()

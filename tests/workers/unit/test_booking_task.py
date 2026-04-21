@@ -1,22 +1,21 @@
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock, ANY
+
 from src.workers.system_worker.tasks.booking import booking_maintenance_task
+
 
 @pytest.fixture
 def ctx():
     settings = MagicMock()
     settings.booking_worker_interval_sec = 60
     settings.booking_worker_stale_after_sec = 120
-    
+
     registry = AsyncMock()
     registry.should_run.return_value = True
-    
-    return {
-        "settings": settings,
-        "heartbeat_registry": registry,
-        "arq_service": AsyncMock(),
-        "job_id": "test_job"
-    }
+
+    return {"settings": settings, "heartbeat_registry": registry, "arq_service": AsyncMock(), "job_id": "test_job"}
+
 
 @pytest.mark.asyncio
 async def test_booking_maintenance_task_success(ctx):
@@ -28,6 +27,7 @@ async def test_booking_maintenance_task_success(ctx):
     args, kwargs = ctx["heartbeat_registry"].mark_finished.call_args
     assert kwargs["status"] == "success"
 
+
 @pytest.mark.asyncio
 async def test_booking_maintenance_task_skipped(ctx):
     ctx["heartbeat_registry"].should_run.return_value = False
@@ -36,6 +36,7 @@ async def test_booking_maintenance_task_skipped(ctx):
     ctx["heartbeat_registry"].mark_finished.assert_called_once()
     args, kwargs = ctx["heartbeat_registry"].mark_finished.call_args
     assert kwargs["status"] == "skipped"
+
 
 @pytest.mark.asyncio
 async def test_booking_maintenance_task_failure(ctx):

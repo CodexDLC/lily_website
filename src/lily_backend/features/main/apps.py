@@ -26,8 +26,14 @@ class MainConfig(AppConfig):
         def update_sidebar(sender: Any, **kwargs: Any) -> None:
             refresh_catalog_categories()
 
-        post_save.connect(update_sidebar, sender=ServiceCategory)
-        post_delete.connect(update_sidebar, sender=ServiceCategory)
+        post_save.connect(update_sidebar, sender=ServiceCategory, dispatch_uid="features.main.refresh_catalog_on_save")
+        post_delete.connect(
+            update_sidebar, sender=ServiceCategory, dispatch_uid="features.main.refresh_catalog_on_delete"
+        )
 
         # 3. Refresh categories after migrations are complete
-        post_migrate.connect(lambda **kwargs: refresh_catalog_categories(), sender=self)
+        post_migrate.connect(
+            lambda **kwargs: refresh_catalog_categories(),
+            sender=self,
+            dispatch_uid="features.main.refresh_catalog_after_migrate",
+        )

@@ -54,9 +54,11 @@ def test_staff_quick_edit_post_valid(rf, staff_user):
     mock_form.save.return_value = master
 
     view_func = StaffQuickEditView.as_view()
-    with patch.object(StaffQuickEditView, "get_object", return_value=master), \
-         patch.object(StaffQuickEditView, "get_form", return_value=mock_form):
-            response = view_func(request, pk=1)
+    with (
+        patch.object(StaffQuickEditView, "get_object", return_value=master),
+        patch.object(StaffQuickEditView, "get_form", return_value=mock_form),
+    ):
+        response = view_func(request, pk=1)
 
     assert response.status_code == 200
     assert json.loads(response.content)["status"] == "ok"
@@ -73,9 +75,11 @@ def test_staff_quick_edit_post_invalid(rf, staff_user):
     mock_form.errors = {"name": ["required"]}
 
     view_func = StaffQuickEditView.as_view()
-    with patch.object(StaffQuickEditView, "get_object", return_value=master), \
-         patch.object(StaffQuickEditView, "get_form", return_value=mock_form):
-            response = view_func(request, pk=1)
+    with (
+        patch.object(StaffQuickEditView, "get_object", return_value=master),
+        patch.object(StaffQuickEditView, "get_form", return_value=mock_form),
+    ):
+        response = view_func(request, pk=1)
 
     assert response.status_code == 400
     assert json.loads(response.content)["status"] == "error"

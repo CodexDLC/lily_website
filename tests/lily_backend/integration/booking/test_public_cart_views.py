@@ -51,6 +51,19 @@ class TestCartAddView:
         cart = _read_cart(client)
         assert cart.has(service.pk)
 
+    def test_add_service_returns_booking_hub_summary(self, client, master, service, booking_settings):
+        service.masters.add(master)
+
+        resp = client.post(reverse("booking:cart_add"), {"service_id": str(service.pk)})
+
+        assert resp.status_code == 200
+        content = resp.content.decode()
+        assert "bk-hub-panel" in content
+        assert "Selected" in content
+        assert "(1)" in content
+        assert "60 min" in content
+        assert "50.00 €" in content
+
     def test_add_duplicate_service_is_idempotent(self, client, master, service, booking_settings):
         service.masters.add(master)
         cart = PublicCart()
@@ -191,6 +204,71 @@ class TestCartRemoveView:
         assert resp.status_code == 200
         cart = _read_cart(client)
         assert not cart.has(service.pk)
+
+    def test_remove_from_hub_updates_hub_and_service_button(self, client, service, category):
+        from features.main.models import Service
+
+        keep_service = Service.objects.create(
+            category=category,
+            name="Keep Service",
+            slug="keep-svc",
+            price="20.00",
+            duration=30,
+            is_active=True,
+        )
+        cart = PublicCart()
+        cart.add(
+            PublicCartItem(
+                service_id=service.pk,
+                service_title=service.name,
+                duration=service.duration,
+                price=service.price,
+            )
+        )
+        cart.add(
+            PublicCartItem(
+                service_id=keep_service.pk,
+                service_title=keep_service.name,
+                duration=keep_service.duration,
+                price=keep_service.price,
+            )
+        )
+        _store_cart(client, cart)
+
+        resp = client.post(reverse("booking:cart_remove"), {"service_id": str(service.pk), "source": "hub"})
+
+        assert resp.status_code == 200
+        content = resp.content.decode()
+        assert "bk-hub-panel" in content
+        assert "Keep Service" in content
+        assert "Test Service" not in content
+        assert f'id="service-action-{service.pk}"' in content
+        assert "hx-swap-oob" in content
+        cart = _read_cart(client)
+        assert not cart.has(service.pk)
+        assert cart.has(keep_service.pk)
+
+    def test_remove_last_item_from_hub_returns_empty_hub(self, client, service):
+        cart = PublicCart()
+        cart.add(
+            PublicCartItem(
+                service_id=service.pk,
+                service_title=service.name,
+                duration=service.duration,
+                price=service.price,
+            )
+        )
+        _store_cart(client, cart)
+
+        resp = client.post(reverse("booking:cart_remove"), {"service_id": str(service.pk), "source": "hub"})
+
+        assert resp.status_code == 200
+        content = resp.content.decode()
+        assert '<div id="bk-hub"></div>' in content
+        assert "bk-hub-panel" not in content
+        assert f'id="service-action-{service.pk}"' in content
+        cart = _read_cart(client)
+        assert cart.is_empty()
 
     def test_remove_resets_slot(self, client, service):
         cart = PublicCart(date="2026-05-10", time="10:00")

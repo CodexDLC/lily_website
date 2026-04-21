@@ -1062,5 +1062,33 @@
       "content_uk": "З усіх питань звертайтесь:",
       "content_en": "If you have any questions about your booking, you can reach us:"
     }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 77,
+    "fields": {
+      "key": "services_search_placeholder",
+      "content": "Leistung suchen",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Leistung suchen",
+      "content_ru": "Найти услугу",
+      "content_uk": "Знайти послугу",
+      "content_en": "Search service"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 78,
+    "fields": {
+      "key": "services_search_empty",
+      "content": "Keine Leistungen gefunden.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Keine Leistungen gefunden.",
+      "content_ru": "Услуги не найдены.",
+      "content_uk": "Послуги не знайдено.",
+      "content_en": "No services found."
+    }
   }
 ]

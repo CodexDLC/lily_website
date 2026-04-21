@@ -3,11 +3,15 @@ from codex_django.cabinet import (
     TopbarEntry,
     declare,
 )
+from codex_django.cabinet.registry import cabinet_registry
 from core.logger import logger
 from django.db import OperationalError
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from features.main.models import ServiceCategory
+
+CATALOG_MODULE = "catalog"
+CATALOG_SPACE = "staff"
 
 
 def _static_sidebar() -> list[SidebarItem]:
@@ -50,8 +54,13 @@ def get_catalog_sidebar() -> list[SidebarItem]:
 
 
 def refresh_catalog_categories() -> None:
-    """Re-declare the catalog shell with the current set of categories."""
-    _register_shell(sidebar=get_catalog_sidebar())
+    """Refresh the catalog sidebar with the current set of categories."""
+    sidebar = get_catalog_sidebar()
+    if _is_catalog_shell_registered():
+        _update_catalog_sidebar(sidebar)
+        return
+
+    _register_shell(sidebar=sidebar)
 
 
 def register_catalog_shell() -> None:
@@ -59,13 +68,26 @@ def register_catalog_shell() -> None:
 
     Safe for AppConfig.ready() — does not access the database.
     """
-    _register_shell(sidebar=_static_sidebar())
+    sidebar = _static_sidebar()
+    if _is_catalog_shell_registered():
+        _update_catalog_sidebar(sidebar)
+        return
+
+    _register_shell(sidebar=sidebar)
+
+
+def _is_catalog_shell_registered() -> bool:
+    return CATALOG_MODULE in getattr(cabinet_registry, "_module_topbar", {})
+
+
+def _update_catalog_sidebar(sidebar: list[SidebarItem]) -> None:
+    cabinet_registry._sidebar[(CATALOG_SPACE, CATALOG_MODULE)] = sidebar
 
 
 def _register_shell(sidebar: list[SidebarItem]) -> None:
     declare(
-        module="catalog",
-        space="staff",
+        module=CATALOG_MODULE,
+        space=CATALOG_SPACE,
         topbar=TopbarEntry(
             group="admin",
             label=str(_("Catalog")),

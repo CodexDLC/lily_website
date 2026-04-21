@@ -1,33 +1,38 @@
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+
 from src.workers.notification_worker.dependencies import (
+    close_arq_service,
+    init_arq_service,
     init_notification_service,
+    init_orchestrator,
     init_seven_io_service,
     init_twilio_service,
-    init_orchestrator,
-    init_arq_service,
-    close_arq_service
 )
+
 
 @pytest.mark.asyncio
 @patch("src.workers.notification_worker.dependencies.BaseArqService")
 async def test_init_arq_service(mock_arq_cls):
-    ctx = {}
+    ctx: dict = {}
     settings = MagicMock()
     mock_instance = mock_arq_cls.return_value
     mock_instance.init = AsyncMock()
-    
+
     await init_arq_service(ctx, settings)
-    
+
     assert "arq_service" in ctx
     mock_instance.init.assert_called_once()
+
 
 @pytest.mark.asyncio
 async def test_init_arq_service_error():
     with patch("src.workers.notification_worker.dependencies.BaseArqService", side_effect=Exception("Redis fail")):
-        ctx = {}
+        ctx: dict = {}
         with pytest.raises(Exception, match="Redis fail"):
             await init_arq_service(ctx, MagicMock())
+
 
 @pytest.mark.asyncio
 async def test_close_arq_service():
@@ -35,6 +40,7 @@ async def test_close_arq_service():
     ctx = {"arq_service": mock_arq}
     await close_arq_service(ctx, MagicMock())
     mock_arq.close.assert_called_once()
+
 
 @pytest.mark.asyncio
 async def test_init_notification_service():
@@ -45,35 +51,38 @@ async def test_init_notification_service():
             smtp_host="smtp",
             smtp_port=587,
             smtp_user="user",
-            smtp_password="pass",
+            smtp_password="pass",  # pragma: allowlist secret
             smtp_from_email="f@f.com",
             smtp_use_tls=True,
-            sendgrid_api_key="SG",
+            sendgrid_api_key="SG",  # pragma: allowlist secret
             url_path_confirm="/",
             url_path_cancel="/",
             url_path_reschedule="/",
-            url_path_contact_form="/"
+            url_path_contact_form="/",
         )
     }
     settings = MagicMock()
     settings.TEMPLATES_DIR = "/tmp"
-    
+
     await init_notification_service(ctx, settings)
     assert "notification_service" in ctx
+
 
 @pytest.mark.asyncio
 async def test_init_seven_io_service():
     settings = MagicMock(SEVEN_IO_API_KEY="KEY")
-    ctx = {}
+    ctx: dict = {}
     await init_seven_io_service(ctx, settings)
     assert ctx["seven_io_client"] is not None
+
 
 @pytest.mark.asyncio
 async def test_init_seven_io_service_missing():
     settings = MagicMock(SEVEN_IO_API_KEY=None)
-    ctx = {}
+    ctx: dict = {}
     await init_seven_io_service(ctx, settings)
     assert ctx["seven_io_client"] is None
+
 
 @pytest.mark.asyncio
 async def test_init_twilio_service():
@@ -81,18 +90,20 @@ async def test_init_twilio_service():
         TWILIO_ACCOUNT_SID="AC123",
         TWILIO_AUTH_TOKEN="TOKEN",
         TWILIO_PHONE_NUMBER="+123",
-        SENDGRID_API_KEY="SG"
+        SENDGRID_API_KEY="SG",  # pragma: allowlist secret
     )
-    ctx = {}
+    ctx: dict = {}
     await init_twilio_service(ctx, settings)
     assert ctx["twilio_service"] is not None
+
 
 @pytest.mark.asyncio
 async def test_init_twilio_service_missing():
     settings = MagicMock(TWILIO_ACCOUNT_SID=None)
-    ctx = {}
+    ctx: dict = {}
     await init_twilio_service(ctx, settings)
     assert ctx["twilio_service"] is None
+
 
 @pytest.mark.asyncio
 async def test_init_orchestrator():

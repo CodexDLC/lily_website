@@ -1,5 +1,5 @@
-const CACHE_NAME = 'lily-site-v6';
-const STATIC_CACHE = 'lily-static-v6';
+const CACHE_NAME = 'lily-site-v7';
+const STATIC_CACHE = 'lily-static-v7';
 
 // Файлы для кэширования при установке
 const STATIC_ASSETS = [

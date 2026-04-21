@@ -35,7 +35,9 @@ class TestMainViews:
         assert "bento" in context
         assert "team" in context
 
-    def test_services_index_view(self, rf, service):
+    def test_services_index_view(self, rf, service, master):
+        service.masters.add(master)
+
         request = rf.get("/services/")
         add_session_to_request(request)
         view = ServicesIndexView()
@@ -44,6 +46,24 @@ class TestMainViews:
         assert "categories" in context
         assert "cart" in context
         assert service.category in context["categories"]
+
+    def test_services_index_hides_categories_without_bookable_services(self, rf, category, service):
+        request = rf.get("/services/")
+        add_session_to_request(request)
+        view = ServicesIndexView()
+        view.request = request
+
+        context = view.get_context_data()
+
+        assert category not in context["categories"]
+
+    def test_services_index_template_renders_search(self, client, service, master):
+        service.masters.add(master)
+
+        response = client.get("/de/services/")
+
+        assert response.status_code == 200
+        assert b"service-search-input" in response.content
 
     def test_service_detail_view_success(self, rf, service):
         request = rf.get(f"/services/{service.category.slug}/")

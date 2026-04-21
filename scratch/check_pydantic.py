@@ -1,7 +1,7 @@
-
-import json
 from pydantic import ValidationError
+
 from workers.notification_worker.schemas import NotificationPayload
+
 
 def test_pydantic():
     data = {
@@ -9,7 +9,7 @@ def test_pydantic():
         "recipient": {"email": "group@test.com", "first_name": "Group"},
         "group_id": 1,
         "template_name": "bk_group_confirmation",
-        "items": [{"master_name": "M1"}]
+        "items": [{"master_name": "M1"}],
     }
     try:
         payload = NotificationPayload(**data)
@@ -18,6 +18,7 @@ def test_pydantic():
     except ValidationError as e:
         print("VALIDATION ERROR")
         print(e.json())
+
 
 if __name__ == "__main__":
     test_pydantic()
