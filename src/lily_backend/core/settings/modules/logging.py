@@ -13,8 +13,9 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent.parent.parent
 # ═══════════════════════════════════════════
 
 # Loguru / codex-core compatible fields (used in core/logger.py)
-LOG_LEVEL_CONSOLE = os.environ.get("LOG_LEVEL_CONSOLE", "DEBUG" if DEBUG else "INFO")
-LOG_LEVEL_FILE = os.environ.get("LOG_LEVEL_FILE", "DEBUG")
+DEFAULT_LOG_LEVEL = "DEBUG" if DEBUG else "INFO"
+LOG_LEVEL_CONSOLE = os.environ.get("LOG_LEVEL_CONSOLE", os.environ.get("LOG_LEVEL", DEFAULT_LOG_LEVEL))
+LOG_LEVEL_FILE = os.environ.get("LOG_LEVEL_FILE", os.environ.get("LOG_LEVEL", "DEBUG"))
 LOG_ROTATION = os.environ.get("LOG_ROTATION", "10 MB")
 LOG_DIR = os.environ.get("LOG_DIR", str(ROOT_DIR / "logs" if not IS_DOCKER else "/app/logs"))
 

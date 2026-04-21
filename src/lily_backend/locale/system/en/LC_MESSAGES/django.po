@@ -2333,10 +2333,32 @@ msgid "msg_no_services_found"
 msgstr ""
 
 #: .\src\backend_django\templates\services\detail.html:75
-#, fuzzy
-#| msgid "Founder & Master"
 msgid "label_your_experts"
-msgstr "Founder & Master"
+msgstr "Our experts"
+
+#: .\templates\features\booking\partials\booking_hub.html:5
+msgid "booking_hub_cta"
+msgstr "Book appointment"
+
+#: .\templates\features\booking\partials\booking_hub.html:6
+msgid "booking_hub_selected"
+msgstr "Selected"
+
+#: .\templates\features\booking\partials\booking_hub.html:15
+msgid "booking_hub_details"
+msgstr "Details"
+
+#: .\templates\features\booking\partials\booking_hub.html:16
+msgid "booking_hub_hide"
+msgstr "Hide"
+
+#: .\templates\features\booking\partials\booking_hub.html:36
+msgid "booking_hub_remove"
+msgstr "Remove"
+
+#: .\templates\features\booking\partials\booking_hub.html:46
+msgid "booking_hub_continue"
+msgstr "Continue"
 
 #: .\src\backend_django\templates\services\includes\_bento_crosslinking.html:20
 msgid "No other services available."

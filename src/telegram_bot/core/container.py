@@ -1,3 +1,4 @@
+import importlib
 import socket
 from typing import Any, cast
 
@@ -5,17 +6,24 @@ from aiogram import Bot
 from arq import ArqRedis, create_pool
 from arq.connections import RedisSettings
 from codex_bot.engine.container import BaseBotContainer
+from codex_bot.engine.discovery import FeatureDiscoveryService
+from codex_bot.redis import BotRedisDispatcher, RedisRouter, RedisStreamProcessor
+from codex_bot.url_signer import UrlSignerService
 from codex_platform.redis_service import SiteSettingsManager
 from loguru import logger as log
 from redis.asyncio import Redis
 
 from src.telegram_bot.core.config import BotSettings
+from src.telegram_bot.core.settings import INSTALLED_FEATURES, INSTALLED_REDIS_FEATURES
 from src.telegram_bot.features.telegram.bot_menu.logic.orchestrator import BotMenuOrchestrator
 from src.telegram_bot.infrastructure.redis.container import RedisContainer
+from src.telegram_bot.infrastructure.redis.stream_storage import CodexPlatformStreamStorage
 from src.telegram_bot.resources.constants import RedisStreams
-from src.telegram_bot.services.feature_discovery.service import FeatureDiscoveryService
-from src.telegram_bot.services.redis.dispatcher import bot_redis_dispatcher
-from src.telegram_bot.services.redis.stream_processor import RedisStreamProcessor
+
+
+def _feature_names(feature_paths: list[str], feature_type: str) -> list[str]:
+    prefix = f"features.{feature_type}."
+    return [path.removeprefix(prefix) for path in feature_paths]
 
 
 class BotContainer(BaseBotContainer):
@@ -33,23 +41,33 @@ class BotContainer(BaseBotContainer):
         self.redis = RedisContainer(redis_client)
 
         # --- Base Services (Shared) ---
-        from src.telegram_bot.services.url_signer.service import UrlSignerService
-
         self.site_settings = SiteSettingsManager(redis_client)
-        self.url_signer = UrlSignerService(cast("BotSettings", self.settings))
+        self.url_signer = UrlSignerService(cast("BotSettings", self.settings).secret_key)
+        self.redis_dispatcher = BotRedisDispatcher()
 
         # --- Redis Stream Processor (Worker) ---
         consumer_name = f"{RedisStreams.BotEvents.CONSUMER_PREFIX}{socket.gethostname()}"
-        self.stream_processor = RedisStreamProcessor(
+        stream_storage = CodexPlatformStreamStorage(
             redis_client=redis_client,
+            stream_name=RedisStreams.BotEvents.NAME,
+            consumer_group_name=RedisStreams.BotEvents.GROUP,
+            consumer_name=consumer_name,
+        )
+        self.stream_processor = RedisStreamProcessor(
+            storage=stream_storage,
             stream_name=RedisStreams.BotEvents.NAME,
             consumer_group_name=RedisStreams.BotEvents.GROUP,
             consumer_name=consumer_name,
         )
 
         # --- Services ---
-        self.discovery_service = FeatureDiscoveryService()
+        self.discovery_service = FeatureDiscoveryService(
+            module_prefix="src.telegram_bot.features",
+            installed_features=_feature_names(INSTALLED_FEATURES, "telegram"),
+            installed_redis_features=_feature_names(INSTALLED_REDIS_FEATURES, "redis"),
+        )
         self.discovery_service.discover_all()
+        self._include_redis_routers()
 
         # --- Feature Orchestrators ---
         self.features: dict[str, Any] = {}
@@ -83,11 +101,24 @@ class BotContainer(BaseBotContainer):
     def set_bot(self, bot: Bot) -> None:
         super().set_bot(bot)
 
-        bot_redis_dispatcher.set_bot(bot)
-        bot_redis_dispatcher.set_container(self)
-        self.stream_processor.set_message_callback(bot_redis_dispatcher.process_message)
+        self.redis_dispatcher.setup(self)
+        self.stream_processor.set_message_callback(self.redis_dispatcher.process_message)
 
         log.debug("Bot object set and BotRedisDispatcher initialized in BotContainer.")
+
+    def _include_redis_routers(self) -> None:
+        for feature_path in INSTALLED_REDIS_FEATURES:
+            module_path = f"src.telegram_bot.{feature_path}.handlers"
+            try:
+                module = importlib.import_module(module_path)
+            except ImportError:
+                log.debug(f"BotContainer | redis feature='{feature_path}' status=no_handlers")
+                continue
+
+            redis_router = getattr(module, "redis_router", None)
+            if isinstance(redis_router, RedisRouter):
+                self.redis_dispatcher.include_router(redis_router)
+                log.info(f"BotContainer | redis feature='{feature_path}' status=loaded")
 
     async def shutdown(self) -> None:
         await super().shutdown()

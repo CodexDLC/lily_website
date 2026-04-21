@@ -32,13 +32,17 @@ class ServicesIndexView(TemplateView):
         cart_ids = set(cart.service_ids())
         provider = RuntimeBookingProvider()
 
+        bookable_services = provider.get_bookable_services_queryset()
+
         # Pre-calculate selection for templates
         categories = (
             ServiceCategory.objects.filter(is_active=True)
+            .filter(id__in=bookable_services.values("category_id"))
             .prefetch_related(
-                Prefetch("services", queryset=provider.get_bookable_services_queryset()),
+                Prefetch("services", queryset=bookable_services),
                 "masters",
             )
+            .distinct()
             .order_by("order")
         )
         for cat in categories:

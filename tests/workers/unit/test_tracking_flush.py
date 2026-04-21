@@ -20,6 +20,7 @@ def mock_ctx():
         "settings": settings,
         "internal_api": internal_api,
         "heartbeat_registry": heartbeat_registry,
+        "arq_service": AsyncMock(),
         "job_id": "job-123",
     }
 
@@ -49,3 +50,21 @@ class TestTrackingFlushTask:
         assert result is None
         mock_ctx["internal_api"].post.assert_not_called()
         mock_ctx["heartbeat_registry"].mark_finished.assert_called_once_with(ANY, status="skipped")
+
+    @pytest.mark.asyncio
+    async def test_flush_tracking_task_error(self, mock_ctx):
+        mock_ctx["internal_api"].post.side_effect = Exception("API Down")
+
+        with pytest.raises(Exception, match="API Down"):
+            await flush_tracking_task(mock_ctx)
+
+        mock_ctx["heartbeat_registry"].mark_finished.assert_called_with(ANY, status="failed", error="API Down")
+
+    @pytest.mark.asyncio
+    async def test_flush_tracking_task_no_arq(self, mock_ctx):
+        mock_ctx["arq_service"] = None
+        mock_ctx["internal_api"].post.return_value = {"ok": True}
+
+        # Should finish successfully but skip _schedule_next
+        await flush_tracking_task(mock_ctx)
+        mock_ctx["heartbeat_registry"].mark_finished.assert_called_with(ANY, status="success")

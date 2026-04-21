@@ -1,6 +1,5 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-
-from src.telegram_bot.services.base.view_dto import ViewResultDTO
+from codex_bot.base import ViewResultDTO
 
 
 class ErrorUI:

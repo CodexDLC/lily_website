@@ -2,6 +2,7 @@ from aiogram import Router
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
+from codex_bot.director import Director
 from loguru import logger
 
 from src.telegram_bot.core.container import BotContainer
@@ -24,13 +25,15 @@ async def cmd_start(message: Message, state: FSMContext, container: BotContainer
         return
 
     try:
-        # 1. Call entry logic
-        view_dto = await orchestrator.handle_entry(user_id, payload=message.from_user)
+        director = Director(
+            container=container,
+            state=state,
+            session_key=user_id,
+            context_id=message.chat.id,
+            trigger_id=message.message_id,
+        )
+        view_dto = await orchestrator.handle_entry(director=director, payload=message.from_user)
 
-        # 2. Set trigger message ID for deletion
-        view_dto.trigger_message_id = message.message_id
-
-        # 3. Send via centralized sender
         if container.view_sender:
             await container.view_sender.send(view_dto)
             logger.debug(f"Bot: Commands | Action: StartCommandSuccess | user_id={user_id}")
@@ -53,11 +56,14 @@ async def cmd_menu(message: Message, state: FSMContext, container: BotContainer)
         return
 
     try:
-        # 1. Call entry logic
-        view_dto = await orchestrator.handle_entry(user_id)
-
-        # 2. Set trigger message ID for deletion
-        view_dto.trigger_message_id = message.message_id
+        director = Director(
+            container=container,
+            state=state,
+            session_key=user_id,
+            context_id=message.chat.id,
+            trigger_id=message.message_id,
+        )
+        view_dto = await orchestrator.handle_entry(director=director)
 
         if container.view_sender:
             await container.view_sender.send(view_dto)

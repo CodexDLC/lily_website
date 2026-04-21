@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING, Any
 
+from codex_bot.base import UnifiedViewDTO, ViewResultDTO
 from loguru import logger as log
 
 from src.telegram_bot.core.config import BotSettings
-from src.telegram_bot.services.base import UnifiedViewDTO, ViewResultDTO
 
 from ..resources.formatters import format_contact_preview
 from ..resources.keyboards import build_contact_preview_kb

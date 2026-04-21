@@ -5,16 +5,16 @@
 from typing import Any
 
 from aiogram.types import User
+from codex_bot.base import BaseBotOrchestrator, UnifiedViewDTO
+from codex_bot.director import Director
 
 from src.telegram_bot.core.config import BotSettings
 from src.telegram_bot.features.telegram.commands.contracts.commands_contract import AuthDataProvider
+from src.telegram_bot.features.telegram.commands.resources.dto import UserUpsertDTO
 from src.telegram_bot.features.telegram.commands.ui.commands_ui import CommandsUI
-from src.telegram_bot.services.base.base_orchestrator import BaseBotOrchestrator
-from src.telegram_bot.services.base.schemas import UserUpsertDTO
-from src.telegram_bot.services.base.view_dto import UnifiedViewDTO
 
 
-class StartOrchestrator(BaseBotOrchestrator):
+class StartOrchestrator(BaseBotOrchestrator[Any]):
     """
     Оркестратор стартового экрана (Welcome Screen).
     """
@@ -25,22 +25,21 @@ class StartOrchestrator(BaseBotOrchestrator):
         self.ui = ui
         self.settings = settings
 
-    async def render(self, payload: Any = None) -> UnifiedViewDTO:
+    async def render_content(
+        self,
+        director: Director | None = None,
+        payload: Any = None,
+    ):
         """
         Стандартный метод рендеринга.
         """
-        # Если в payload передано имя пользователя, используем его, иначе дефолт
         user_name = payload if isinstance(payload, str) else "User"
+        user_id = int(director.session_key) if director and director.session_key is not None else 0
+        is_admin = user_id in self.settings.owner_ids_list or user_id in self.settings.superuser_ids_list
 
-        # В реальном приложении здесь можно было бы получить user_id из контекста
-        # Но для простоты мы предполагаем, что render вызывается после handle_entry
-        # где мы уже знаем, кто это.
+        return self.ui.render_welcome_screen(user_name, is_admin=is_admin)
 
-        # ВАЖНО: Для соответствия сигнатуре BaseBotOrchestrator мы не можем
-        # принимать здесь user_id. Поэтому используем заглушку или контекст.
-        return await self.render_welcome(user_id=0, user_name=user_name)
-
-    async def render_welcome(self, user_id: int, user_name: str = "User") -> UnifiedViewDTO:
+    async def render_welcome(self, user_id: int, chat_id: int | str | None, user_name: str = "User") -> UnifiedViewDTO:
         """Внутренний метод для отрисовки приветствия."""
         is_admin = user_id in self.settings.owner_ids_list or user_id in self.settings.superuser_ids_list
 
@@ -50,15 +49,16 @@ class StartOrchestrator(BaseBotOrchestrator):
             menu=menu_view,
             content=None,
             clean_history=True,
-            chat_id=user_id,
+            chat_id=chat_id or user_id,
             session_key=user_id,
         )
 
-    async def handle_entry(self, user_id: int, chat_id: int | None = None, payload: Any = None) -> UnifiedViewDTO:
+    async def handle_entry(self, director: Director, payload: Any = None) -> UnifiedViewDTO:
         """
         Точка входа.
         """
         user: User | None = payload if isinstance(payload, User) else None
+        user_id = int(director.session_key) if director.session_key is not None else 0
 
         if user:
             user_dto = UserUpsertDTO(
@@ -74,4 +74,4 @@ class StartOrchestrator(BaseBotOrchestrator):
         else:
             user_name = "User"
 
-        return await self.render_welcome(user_id=user_id, user_name=user_name)
+        return await self.render_welcome(user_id=user_id, chat_id=director.context_id, user_name=user_name)

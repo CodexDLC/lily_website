@@ -1,15 +1,15 @@
 {% extends "base_email.html" %}
 
-{% block title %}{{ email_subject | default('Buchungsbestätigung') }} - LILY Salon{% endblock title %}
+{% block title %}{{ email_subject | default('Eingangsbestätigung: Ihre Terminanfrage') }} - LILY Salon{% endblock title %}
 
 {% block content %}
     <tr>
         <td align="center" style="padding-bottom: 30px;">
             <table border="0" cellpadding="0" cellspacing="0">
                 <tr>
-                    <td align="center" style="border-bottom: 2px solid #003831; padding-bottom: 5px;">
-                        <span style="font-family: Arial, sans-serif; color: #003831; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold;">
-                            TERMINBESTÄTIGUNG
+                    <td align="center" style="border: 2px solid #ffcc80; padding: 10px 20px; border-radius: 4px; background-color: #fffaf0;">
+                        <span style="font-family: Arial, sans-serif; color: #e67e22; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;">
+                            {{ email_tag | default('STATUS: IN PRÜFUNG') }}
                         </span>
                     </td>
                 </tr>
@@ -18,52 +18,59 @@
     </tr>
 
     <tr>
-        <td align="center" style="padding-bottom: 20px; color: #333333; font-family: 'Georgia', serif; font-size: 26px; line-height: 1.3;">
-            Vielen Dank für Ihre Buchung!
+        <td align="center" style="padding-bottom: 20px; color: #003831; font-family: 'Georgia', serif; font-size: 24px; line-height: 1.3;">
+            Ihre Anfrage ist eingegangen
         </td>
     </tr>
 
     <tr>
         <td align="center" style="padding-bottom: 35px; color: #555555; font-family: Arial, sans-serif; font-size: 17px; line-height: 1.6;">
-            {{ greeting }}<br>
-            Hier sind die Details zu Ihrem Besuch am <strong>{{ date }}</strong>. Wir freuen uns sehr, Sie bald bei uns begrüßen zu dürfen.
+            {{ greeting | default('Hallo,') }}<br>
+            {{ email_body | default('wir haben Ihre Terminanfrage erhalten und prüfen jetzt, ob die gewünschten Zeiten verfügbar sind. Bitte warten Sie auf eine separate Bestätigungs-E-Mail.') }}
         </td>
     </tr>
 
     <tr>
-        <td style="padding-bottom: 40px;">
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#f9f9f9" style="border: 1px solid #eeeeee; border-radius: 8px;">
+        <td bgcolor="#f9f9f9" style="padding: 30px 40px; border: 2px dashed #ffcc80; border-radius: 8px;">
+            <p style="margin: 0 0 20px 0; color: #888888; font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; font-weight: bold;">Ihre Anfrage (unverbindlich)</p>
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
                 <tr>
-                    <td style="padding: 25px;">
+                    <td style="padding-bottom: 12px; border-bottom: 1px solid #e0e0e0;">
                         <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                            {% for item in items %}
                             <tr>
-                                <td style="padding-bottom: 15px; {% if not loop.last %}border-bottom: 1px solid #e0e0e0; margin-bottom: 15px;{% endif %}">
-                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                        <tr>
-                                            <td width="20%" style="color: #003831; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; vertical-align: top;">{{ item.time | default('14:30') }}</td>
-                                            <td style="color: #333333; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.4;">
-                                                <div style="font-weight: bold; color: #003831;">{{ item.service_name | default(item.name) }}</div>
-                                                <div style="font-size: 13px; color: #888888;">Master: {{ item.master_name | default('Profi') }}</div>
-                                            </td>
-                                            <td width="25%" align="right" style="color: #333333; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; vertical-align: top;">{{ item.price }}</td>
-                                        </tr>
-                                    </table>
-                                </td>
+                                <td width="40%" style="color: #888888; font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Datum (angefragt)</td>
+                                <td style="color: #333333; font-family: Arial, sans-serif; font-size: 16px;">{{ date | default(booking_date) }}</td>
                             </tr>
-                            {% if not loop.last %}<tr><td height="15" style="font-size: 0; line-height: 0;">&nbsp;</td></tr>{% endif %}
-                            {% endfor %}
-
-                            <!-- Total Row -->
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 16px 0 8px 0;">
+                        <p style="margin: 0; color: #888888; font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Angefragte Termine</p>
+                    </td>
+                </tr>
+                {% for item in items %}
+                    <tr>
+                        <td style="padding: 12px 0; {% if not loop.last %}border-bottom: 1px solid #e0e0e0;{% endif %}">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td width="22%" style="color: #003831; font-family: Arial, sans-serif; font-size: 17px; font-weight: bold; vertical-align: top;">{{ item.time | default('') }}</td>
+                                    <td style="color: #333333; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.4; vertical-align: top;">
+                                        <div style="font-weight: bold; color: #003831;">{{ item.service_name | default(item.name) }}</div>
+                                        <div style="font-size: 13px; color: #888888;">Master: {{ item.master_name | default('Profi') }}</div>
+                                    </td>
+                                    <td width="22%" align="right" style="color: #333333; font-family: Arial, sans-serif; font-size: 15px; font-weight: bold; vertical-align: top;">{{ item.price }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td style="padding-top: 18px; border-top: 2px solid #ffcc80;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
-                                <td style="padding-top: 20px; border-top: 2px solid #003831;">
-                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                        <tr>
-                                            <td style="color: #888888; font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Gesamtbetrag</td>
-                                            <td align="right" style="color: #003831; font-family: Arial, sans-serif; font-size: 20px; font-weight: bold;">{{ total_price }}</td>
-                                        </tr>
-                                    </table>
-                                </td>
+                                <td style="color: #888888; font-family: Arial, sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Voraussichtlicher Betrag</td>
+                                <td align="right" style="color: #003831; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold;">{{ total_price }}</td>
                             </tr>
                         </table>
                     </td>
@@ -73,15 +80,16 @@
     </tr>
 
     <tr>
-        <td align="center" style="padding-bottom: 30px; color: #555555; font-family: Arial, sans-serif; font-size: 15px; line-height: 1.6;">
-            Sollten Sie Ihren Termin nicht wahrnehmen können, bitten wir Sie, uns rechtzeitig zu informieren.
+        <td align="left" style="padding-top: 30px; padding-bottom: 10px; color: #777777; font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6;">
+            <strong>Wichtiger Hinweis:</strong> Diese E-Mail dient nur zur Information über den Eingang Ihrer Anfrage und stellt noch keine feste Buchung dar. Ein Termin kommt erst mit der separaten Bestätigungs-E-Mail zustande.
         </td>
     </tr>
 
+    <tr><td height="30" style="font-size: 0; line-height: 0;">&nbsp;</td></tr>
+
     <tr>
-        <td align="center" style="color: #888888; font-family: Arial, sans-serif; font-size: 14px;">
-            Wir freuen uns auf Ihren Besuch!<br>
-            <strong style="color: #003831;">Ihr LILY Beauty Team</strong>
+        <td align="center" style="color: #888888; font-family: Arial, sans-serif; font-size: 15px; white-space: pre-wrap;">
+            {{ signature | default('Mit freundlichen Grüßen\nIhr LILY Beauty Team') }}
         </td>
     </tr>
 {% endblock content %}

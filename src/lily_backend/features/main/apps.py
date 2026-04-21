@@ -14,31 +14,26 @@ class MainConfig(AppConfig):
         import features.main.translation  # noqa
         import modeltranslation  # noqa
 
-        import sys
+        from django.db.models.signals import post_delete, post_migrate, post_save
 
-        # Avoid database access during management commands to prevent RuntimeWarnings
-        if not any(
-            arg in sys.argv
-            for arg in [
-                "migrate",
-                "collectstatic",
-                "makemigrations",
-                "check",
-                "migrate_all_legacy",
-                "migrate_users",
-                "test",
-            ]
-        ):
-            import features.main.cabinet  # noqa
+        from features.main.cabinet import refresh_catalog_categories, register_catalog_shell
+        from features.main.models import ServiceCategory
 
-            # Connect signals to update cabinet sidebar whenever categories change
-            from django.db.models.signals import post_delete, post_save
+        # 1. Register static shell items (safe, no DB)
+        register_catalog_shell()
 
-            from features.main.cabinet import register_cabinet_catalog
-            from features.main.models import ServiceCategory
+        # 2. Connect signals for runtime dynamic updates
+        def update_sidebar(sender: Any, **kwargs: Any) -> None:
+            refresh_catalog_categories()
 
-            def update_sidebar(sender: Any, **kwargs: Any) -> None:
-                register_cabinet_catalog()
+        post_save.connect(update_sidebar, sender=ServiceCategory, dispatch_uid="features.main.refresh_catalog_on_save")
+        post_delete.connect(
+            update_sidebar, sender=ServiceCategory, dispatch_uid="features.main.refresh_catalog_on_delete"
+        )
 
-            post_save.connect(update_sidebar, sender=ServiceCategory)
-            post_delete.connect(update_sidebar, sender=ServiceCategory)
+        # 3. Refresh categories after migrations are complete
+        post_migrate.connect(
+            lambda **kwargs: refresh_catalog_categories(),
+            sender=self,
+            dispatch_uid="features.main.refresh_catalog_after_migrate",
+        )

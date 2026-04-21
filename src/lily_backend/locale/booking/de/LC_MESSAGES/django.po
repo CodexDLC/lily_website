@@ -84,3 +84,47 @@ msgstr "Zurück"
 #: .\templates\features\booking\partials\summary_panel.html:84
 msgid "Termin verbindlich buchen"
 msgstr "Termin verbindlich buchen"
+
+#: .\templates\features\booking\partials\bookable_button.html:7
+#: .\templates\features\booking\partials\bookable_button.html:8
+#: .\templates\features\booking\partials\bookable_button.html:13
+msgid "booking_button_selected"
+msgstr "Ausgewählt"
+
+#: .\templates\features\booking\partials\bookable_button.html:7
+#: .\templates\features\booking\partials\bookable_button.html:8
+#: .\templates\features\booking\partials\bookable_button.html:13
+msgid "booking_button_add"
+msgstr "Hinzufügen"
+
+#: .\templates\features\booking\partials\booking_hub.html:5
+msgid "booking_hub_cta"
+msgstr "Termin buchen"
+
+#: .\templates\features\booking\partials\booking_hub.html:6
+msgid "booking_hub_selected"
+msgstr "Ausgewählt"
+
+#: .\templates\features\booking\partials\booking_hub.html:15
+msgid "booking_hub_details"
+msgstr "Details"
+
+#: .\templates\features\booking\partials\booking_hub.html:16
+msgid "booking_hub_hide"
+msgstr "Verbergen"
+
+#: .\templates\features\booking\partials\booking_hub.html:36
+msgid "booking_hub_remove"
+msgstr "Entfernen"
+
+#: .\templates\features\booking\partials\booking_hub.html:46
+msgid "booking_hub_continue"
+msgstr "Fortfahren"
+
+#: features/booking/views/public/commit.py:88
+msgid "Bitte akzeptieren Sie die Stornierungsbedingungen."
+msgstr ""
+
+#: features/booking/views/public/commit.py:91
+msgid "Bitte akzeptieren Sie die Einwilligung zur Datenverarbeitung."
+msgstr ""

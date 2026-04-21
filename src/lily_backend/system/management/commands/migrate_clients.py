@@ -1,17 +1,39 @@
 import os
 import sqlite3
+from datetime import datetime
+from typing import Any
 
 import psycopg2
 from allauth.account.models import EmailAddress
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.utils.timezone import make_aware
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from psycopg2.extras import RealDictCursor
 
 from system.models import Client
 
 User = get_user_model()
+
+
+def _row_get(row: Any, key: str, default: Any = None) -> Any:
+    if hasattr(row, "get"):
+        return row.get(key, default)
+    try:
+        return row[key]
+    except (IndexError, KeyError):
+        return default
+
+
+def _coerce_datetime(value: Any) -> datetime | None:
+    if not value:
+        return None
+    if isinstance(value, str):
+        value = parse_datetime(value)
+    if not isinstance(value, datetime):
+        return None
+    return timezone.make_aware(value) if timezone.is_naive(value) else value
 
 
 class Command(BaseCommand):
@@ -58,8 +80,8 @@ class Command(BaseCommand):
         skipped_count = 0
 
         for row in legacy_clients:
-            phone = row["phone"] or None
-            email = row["email"] or None
+            phone = _row_get(row, "phone") or None
+            email = _row_get(row, "email") or None
 
             # Robust lookup: try to find by phone OR email
             client = None
@@ -77,23 +99,25 @@ class Command(BaseCommand):
             # Mapping fields
             client.phone = phone
             client.email = email
-            client.first_name = row["first_name"] or ""
-            client.last_name = row["last_name"] or ""
-            client.note = row.get("notes") or row.get("note") or ""
-            client.status = row.get("status") or "guest"
+            client.first_name = _row_get(row, "first_name") or ""
+            client.last_name = _row_get(row, "last_name") or ""
+            client.note = _row_get(row, "notes") or _row_get(row, "note") or ""
+            client.status = _row_get(row, "status") or "guest"
             if hasattr(client, "instagram"):
-                client.instagram = row.get("instagram") or ""
+                client.instagram = _row_get(row, "instagram") or ""
             if hasattr(client, "telegram"):
-                client.telegram = row.get("telegram") or ""
-            client.consent_marketing = bool(row.get("consent_marketing", False))
-            consent_date_val = row.get("consent_date")
-            if consent_date_val and hasattr(consent_date_val, "tzinfo"):
-                client.consent_date = consent_date_val if consent_date_val.tzinfo else make_aware(consent_date_val)
+                client.telegram = _row_get(row, "telegram") or ""
+            client.consent_marketing = bool(_row_get(row, "consent_marketing", False))
+            consent_date_val = _coerce_datetime(_row_get(row, "consent_date"))
+            if consent_date_val:
+                client.consent_date = consent_date_val
 
-            if row.get("access_token"):
-                client.access_token = row["access_token"]
+            if _row_get(row, "access_token"):
+                client.access_token = _row_get(row, "access_token")
 
-            client.is_ghost = row.get("user_id") is None and client.status == "guest"
+            client.is_ghost = _row_get(row, "user_id") is None and client.status == "guest"
+            legacy_created_at = _coerce_datetime(_row_get(row, "created_at"))
+            legacy_updated_at = _coerce_datetime(_row_get(row, "updated_at")) or legacy_created_at
 
             if not options["dry_run"]:
                 try:
@@ -115,6 +139,13 @@ class Command(BaseCommand):
                                 client.user = user
 
                         client.save()
+                        timestamp_updates = {}
+                        if legacy_created_at:
+                            timestamp_updates["created_at"] = legacy_created_at
+                        if legacy_updated_at:
+                            timestamp_updates["updated_at"] = legacy_updated_at
+                        if timestamp_updates:
+                            Client.objects.filter(pk=client.pk).update(**timestamp_updates)
 
                         # Ensure verified EmailAddress for Allauth if user exists
                         if client.user and client.email:

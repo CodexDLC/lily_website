@@ -1,4 +1,4 @@
-from src.telegram_bot.services.base import ViewResultDTO
+from codex_bot.base import ViewResultDTO
 
 from ..resources.dto import BookingNotificationPayload
 from ..resources.formatters import format_new_booking

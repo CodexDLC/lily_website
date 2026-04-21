@@ -1,11 +1,12 @@
 from typing import Any
 
+from codex_bot.base import BaseBotOrchestrator, UnifiedViewDTO
+from codex_bot.director import Director
+
 from src.telegram_bot.features.redis.errors.ui.error_ui import ErrorUI
-from src.telegram_bot.services.base.base_orchestrator import BaseBotOrchestrator
-from src.telegram_bot.services.base.view_dto import UnifiedViewDTO
 
 
-class ErrorOrchestrator(BaseBotOrchestrator):
+class ErrorOrchestrator(BaseBotOrchestrator[Any]):
     """
     Оркестратор для отображения системных ошибок.
     """
@@ -14,15 +15,19 @@ class ErrorOrchestrator(BaseBotOrchestrator):
         super().__init__(expected_state=None)
         self.ui = ErrorUI()
 
-    async def handle_entry(self, user_id: int, chat_id: int | None = None, payload: Any = None) -> UnifiedViewDTO:
+    def handle_error(self, message_data: dict[str, Any]) -> UnifiedViewDTO:
+        error_text = str(message_data.get("error") or message_data.get("message") or message_data)
+        return UnifiedViewDTO(content=self.ui.render_error({"error": error_text}))
+
+    async def handle_entry(self, director: Director, payload: Any = None) -> UnifiedViewDTO:
         """
         Точка входа.
         """
         # Если payload содержит текст ошибки, используем его
         error_text = str(payload) if payload else "Unknown system error occurred."
-        return await self.render(error_text)
+        return await self.render(director=director, payload=error_text)
 
-    async def render_content(self, payload: Any) -> Any:
+    async def render_content(self, director: Director | None = None, payload: Any = None) -> Any:
         """
         Рендерит сообщение об ошибке.
         Ожидает словарь для ErrorUI.

@@ -1,9 +1,8 @@
-"""Quality gate for Lily Project."""
-
 import json
 import os
 import sys
 import time
+from collections.abc import Sequence
 from pathlib import Path
 
 from codex_core.dev.check_runner import BaseCheckRunner, Colors
@@ -19,18 +18,139 @@ class LilyCheckRunner(BaseCheckRunner):
 
     def __init__(self, project_root: Path):
         super().__init__(project_root)
+        # We enforce venv via run_command override to be more precise
 
-    def docker_compose(self, args: str) -> tuple[bool, str]:
+    def run_command(
+        self,
+        command: str | Sequence[str],
+        *,
+        capture_output: bool = True,
+        env: dict[str, str] | None = None,
+    ) -> tuple[bool, str]:
+        """Wrap commands to use .venv binaries if available."""
+        venv_python = self.project_root / ".venv" / "Scripts" / "python.exe"
+        venv_scripts = self.project_root / ".venv" / "Scripts"
+
+        # Create a copy/ref to avoid mutating the original Sequence if it's a list
+        cmd = list(command) if isinstance(command, (list, tuple)) else command
+
+        if venv_python.exists():
+            # Handle both string and list commands
+            if isinstance(cmd, str):
+                parts = cmd.split()
+                if parts:
+                    main_tool = parts[0].replace(".exe", "").lower()
+                    # If calling python directly, swap to venv python
+                    if "python" in main_tool:
+                        cmd = cmd.replace(parts[0], f'"{venv_python}"', 1)
+                    # If calling a tool, use the venv binary if it exists
+                    elif main_tool in ["pytest", "ruff", "mypy", "pip-audit", "pre-commit"]:
+                        binary = venv_scripts / f"{main_tool}.exe"
+                        if binary.exists():
+                            cmd = cmd.replace(parts[0], f'"{binary}"', 1)
+
+            elif isinstance(cmd, list) and cmd:
+                main_tool = str(cmd[0]).replace(".exe", "").lower()
+                # If calling python directly, swap to venv python
+                if "python" in main_tool:
+                    cmd[0] = str(venv_python)
+                # If calling a tool, use the venv binary if it exists
+                elif main_tool in ["pytest", "ruff", "mypy", "pip-audit", "pre-commit"]:
+                    binary = venv_scripts / f"{main_tool}.exe"
+                    if binary.exists():
+                        cmd[0] = str(binary)
+
+        return super().run_command(cmd, capture_output=capture_output, env=env)
+
+    def docker_compose(self, args: str, capture_output: bool = True) -> tuple[bool, str]:
         env = os.environ.copy()
         env["CONTAINER_PREFIX"] = TEST_PROJECT_NAME
         cmd = f"docker compose -p {TEST_PROJECT_NAME} -f {COMPOSE_FILE} {args}"
-        return self.run_command(cmd, env=env)
+        return self.run_command(cmd, env=env, capture_output=capture_output)
+
+    def print_docker_logs(self) -> None:
+        print(f"\n{Colors.BLUE}📋 Fetching container logs for debugging...{Colors.ENDC}")
+        self.docker_compose("logs --tail=100", capture_output=False)
+
+    def wait_for_services_healthy(self, timeout: int = 120) -> bool:
+        self.print_step(f"Waiting for services to be ready (timeout: {timeout}s)")
+        start_time = time.time()
+
+        while time.time() - start_time < timeout:
+            elapsed = int(time.time() - start_time)
+            # Simple progress bar
+            bar_width = 30
+            filled = min(bar_width, int(bar_width * elapsed / timeout))
+            bar = "#" * filled + "." * (bar_width - filled)
+            sys.stdout.write(f"\r[{bar}] {elapsed}/{timeout}s Checking status... ")
+            sys.stdout.flush()
+
+            success, output = self.docker_compose("ps --format json")
+            if not success or not output:
+                time.sleep(3)
+                continue
+
+            try:
+                # Docker Compose can return multiple JSON objects or a list
+                lines = [L for L in output.strip().split("\n") if L.strip()]
+                containers = []
+                for line in lines:
+                    try:
+                        data = json.loads(line)
+                        if isinstance(data, list):
+                            containers.extend(data)
+                        else:
+                            containers.append(data)
+                    except json.JSONDecodeError:
+                        continue
+
+                if not containers:
+                    time.sleep(3)
+                    continue
+
+                all_ready = True
+                for container in containers:
+                    name = container.get("Name", "Unknown")
+                    status = str(container.get("Status", container.get("State", ""))).lower()
+                    health = str(container.get("Health", "")).lower()
+
+                    if "unhealthy" in health:
+                        print(f"\n{Colors.BLUE}❌ Container {name} is unhealthy!{Colors.ENDC}")
+                        return False
+
+                    if "exited" in status or "dead" in status:
+                        print(f"\n{Colors.BLUE}❌ Container {name} has stopped unexpectedly!{Colors.ENDC}")
+                        return False
+
+                    # If has health state reported, wait for healthy. If not, wait for running/up/started.
+                    if health and health not in ["none", "null", "undefined"]:
+                        if "healthy" not in health:
+                            all_ready = False
+                            break
+                    else:
+                        # Fallback to status check
+                        if not any(s in status for s in ["running", "up", "started"]):
+                            all_ready = False
+                            break
+
+                if all_ready:
+                    print(f"\n{Colors.GREEN}✅ All services are ready!{Colors.ENDC}")
+                    return True
+            except Exception:
+                pass
+
+            time.sleep(3)
+
+        print(f"\n{Colors.BLUE}❌ Timeout waiting for services to be healthy.{Colors.ENDC}")
+        return False
 
     def cleanup_docker(self) -> None:
         print(f"\n{Colors.BLUE}🧹 Cleaning up Docker resources (Project: {TEST_PROJECT_NAME})...{Colors.ENDC}")
-        self.docker_compose("down -v")
-        print(f"{Colors.BLUE}🧹 Pruning dangling volumes...{Colors.ENDC}")
+        # --rmi all removes all images built by this project
+        self.docker_compose("down -v --rmi all")
+        print(f"{Colors.BLUE}🧹 Pruning dangling volumes and images...{Colors.ENDC}")
         self.run_command("docker volume prune -f")
+        self.run_command("docker image prune -f")
 
     def run_docker_validation(self, ci_mode: bool = False) -> bool:
         self.print_step(f"Starting Docker Validation (Isolated Project: {TEST_PROJECT_NAME})")
@@ -49,26 +169,28 @@ class LilyCheckRunner(BaseCheckRunner):
 
         try:
             self.print_step("Building Docker images (no-cache)")
-            if not self.docker_compose("build --no-cache")[0]:
+            # Set capture_output=False to show build progress to the user
+            if not self.docker_compose("build --no-cache", capture_output=False)[0]:
+                self.print_docker_logs()
                 return False
 
             self.print_step("Starting containers")
-            if not self.docker_compose("up -d")[0]:
+            if not self.docker_compose("up -d", capture_output=False)[0]:
+                self.print_docker_logs()
                 return False
 
-            self.print_step("Waiting for services to be ready (15s)")
-            time.sleep(15)
+            # Dynamic wait for health
+            if not self.wait_for_services_healthy(timeout=120):
+                self.print_docker_logs()
+                return False
 
             self.print_step("Verifying all containers are running")
             success, ps_out = self.docker_compose("ps --format json")
             if success and ps_out:
                 try:
                     containers = []
-                    lines = ps_out.strip().split("\n")
+                    lines = [L for L in ps_out.strip().split("\n") if L.strip()]
                     for line in lines:
-                        line = line.strip()
-                        if not line:
-                            continue
                         try:
                             data = json.loads(line)
                             if isinstance(data, list):
@@ -97,7 +219,7 @@ class LilyCheckRunner(BaseCheckRunner):
                     if containers:
                         self.print_success("All containers are running/healthy")
                 except Exception as e:
-                    print(f"{Colors.YELLOW}Warning: Could not parse docker-compose ps output: {e}{Colors.ENDC}")
+                    print(f"{Colors.BLUE}Warning: Could not parse docker-compose ps output: {e}{Colors.ENDC}")
 
             # Backend specific checks
             env = os.environ.copy()
@@ -146,7 +268,7 @@ class LilyCheckRunner(BaseCheckRunner):
         if ci_mode:
             return self.run_docker_validation(ci_mode=True)
 
-        prompt = f"\n{Colors.YELLOW}🚀 Run Full Docker Validation? [y/N]: {Colors.ENDC}"
+        prompt = f"\n{Colors.BLUE}🚀 Run Full Docker Validation? [y/N]: {Colors.ENDC}"
         try:
             answer = input(prompt).strip().lower()
         except EOFError:
@@ -160,8 +282,7 @@ class LilyCheckRunner(BaseCheckRunner):
 
     def run_ci(self) -> None:
         """Override CI gate to ensure tests run BEFORE heavy Docker validation."""
-        # Clear screen for fresh output
-        os.system("cls" if os.name == "nt" else "clear")
+        # No screen clearing - per user request to avoid losing output
 
         print(f"{Colors.HEADER}{Colors.BOLD}=== {self.config.project_name} CI gate ==={Colors.ENDC}")
 
@@ -186,8 +307,7 @@ class LilyCheckRunner(BaseCheckRunner):
 
     def run_all(self) -> None:
         """Override to run unit tests BEFORE heavy Docker validation."""
-        # Clear screen for fresh output
-        os.system("cls" if os.name == "nt" else "clear")
+        # No screen clearing
 
         if not self.check_quality():
             sys.exit(1)

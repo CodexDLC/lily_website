@@ -111,6 +111,13 @@
     margin-bottom: 30px;
 }
 
+.masters-list-centered {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px 18px;
+}
+
 .mini-master {
     display: flex;
     align-items: center;
@@ -165,7 +172,7 @@
 /* Bento Cross-Linking */
 .bento-crosslinking {
     padding-top: 0;
-    margin-top: -30px; /* Pull it closer to the CTA */
+    margin-top: 20px;
     padding-bottom: 80px;
 }
 
@@ -207,6 +214,7 @@
     .masters-list {
         flex-direction: column;
         align-items: center;
+        gap: 12px;
     }
     .mini-master {
         width: 100%;

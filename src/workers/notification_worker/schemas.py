@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class RecipientSchema(BaseModel):
@@ -37,8 +37,7 @@ class NotificationPayload(BaseModel):
     channels: list[str] = Field(default_factory=lambda: ["email"])
     context_data: dict[str, Any] = Field(default_factory=dict)
 
-    class Config:
-        extra = "ignore"
+    model_config = ConfigDict(extra="ignore")
 
     @model_validator(mode="before")
     @classmethod

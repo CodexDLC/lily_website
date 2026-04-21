@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from typing import TYPE_CHECKING, Any, cast
 
@@ -18,6 +18,7 @@ from codex_django.cabinet import (
 )
 from django.db.models import Count, DecimalField, Q, Sum
 from django.db.models.functions import Coalesce, TruncDate
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 if TYPE_CHECKING:
@@ -35,6 +36,12 @@ CLIENT_AXIS_COLOR = "#f97316"
 def _date_keys(period_from: date, period_to: date) -> list[date]:
     days = (period_to - period_from).days + 1
     return [period_from + timedelta(days=offset) for offset in range(max(days, 0))]
+
+
+def _date_range_bounds(period_from: date, period_to: date) -> tuple[datetime, datetime]:
+    start = timezone.make_aware(datetime.combine(period_from, time.min))
+    end = timezone.make_aware(datetime.combine(period_to + timedelta(days=1), time.min))
+    return start, end
 
 
 def _day_label(day: date) -> str:
@@ -135,7 +142,8 @@ class LilyReportsService:
     def _base_appointments(period_from: date, period_to: date, statuses: Iterable[str] | None = None) -> Any:
         from features.booking.models import Appointment
 
-        qs = Appointment.objects.filter(datetime_start__date__gte=period_from, datetime_start__date__lte=period_to)
+        start, end = _date_range_bounds(period_from, period_to)
+        qs = Appointment.objects.filter(datetime_start__gte=start, datetime_start__lt=end)
         if statuses is not None:
             qs = qs.filter(status__in=list(statuses))
         return qs
@@ -410,12 +418,10 @@ class LilyReportsService:
             .values_list("client_id", flat=True)
         )
 
+        client_start, client_end = _date_range_bounds(period.date_from, period.date_to)
         new_clients_by_day = {
             row["day"]: row["new_clients"]
-            for row in Client.objects.filter(
-                created_at__date__gte=period.date_from,
-                created_at__date__lte=period.date_to,
-            )
+            for row in Client.objects.filter(created_at__gte=client_start, created_at__lt=client_end)
             .exclude(status=Client.STATUS_BLOCKED)
             .annotate(day=TruncDate("created_at"))
             .values("day")
@@ -443,10 +449,7 @@ class LilyReportsService:
         }
         messages_by_day = {
             row["day"]: row["messages"]
-            for row in Message.objects.filter(
-                created_at__date__gte=period.date_from,
-                created_at__date__lte=period.date_to,
-            )
+            for row in Message.objects.filter(created_at__gte=client_start, created_at__lt=client_end)
             .annotate(day=TruncDate("created_at"))
             .values("day")
             .annotate(messages=Count("id"))

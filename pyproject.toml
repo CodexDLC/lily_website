@@ -137,7 +137,7 @@ markers = [
     "integration: Integration tests (sqlite + fakeredis + Django TestClient, no external services)",
     "e2e: End-to-end tests requiring live docker-compose stack (Postgres, Redis, Mailpit, workers)",
 ]
-addopts = "--tb=short --cov --cov-report=term-missing --cov-report=html:htmlcov"
+addopts = "--tb=short --cov=src --cov-report=term-missing"
 
 # === Coverage ===
 [tool.coverage.run]
@@ -218,13 +218,6 @@ exclude_dirs = ["tests", "tools"]
 targets = ["src"]
 skips = ["B101", "B308", "B703"]
 
-# === pip-audit: known pre-existing CVEs in transitive deps (not our code) ===
-[tool.pip-audit]
-ignore-vulns = [
-    "CVE-2026-4539",   # pygments — transitive dep, no fix yet
-    "CVE-2026-25645",  # requests — transitive dep, fix available via bump
-]
-
 # === Quality Gate ===
 [tool.codex-check]
 project-name = "Lily"
@@ -234,6 +227,7 @@ integration-requires = "Mailpit"
 test-stages = ["unit", "integration"]
 prompt-test-stages = ["unit", "integration"]
 live-output-test-stages = ["unit", "integration"]
+no-cov-test-stages = ["integration"]
 test-paths = ["tests"]
 test-markers = { unit = "not integration" }
 types-paths = ["src", "tools"]

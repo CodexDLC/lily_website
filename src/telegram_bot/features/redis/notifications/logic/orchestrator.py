@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING, Any
 
+from codex_bot.base import UnifiedViewDTO
 from loguru import logger
 
 from src.telegram_bot.core.config import BotSettings
-from src.telegram_bot.services.base import UnifiedViewDTO
 
 from ..contracts.contract import AppointmentsDataProvider
 from .booking_processor import BookingProcessor

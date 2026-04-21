@@ -165,6 +165,11 @@ class CartRemoveView(View):
             request, "features/booking/partials/booking_hub.html", {"cart": cart, "cart_ids": set(cart.service_ids())}
         ).content.decode("utf-8")
 
+        if request.POST.get("source") == "hub":
+            return HttpResponse(
+                f'{hub_html}<div id="service-action-{service_id}" hx-swap-oob="innerHTML">{button_html}</div>'
+            )
+
         response_html = f'{button_html}<div id="bk-hub-placeholder" hx-swap-oob="innerHTML">{hub_html}</div>'
         return HttpResponse(response_html)
 

@@ -1,11 +1,81 @@
 from typing import Any
 
+from aiogram import F, Router
+from aiogram.exceptions import TelegramAPIError
+from aiogram.types import CallbackQuery
+from codex_bot.redis import RedisRouter
 from loguru import logger as log
 
-from src.telegram_bot.services.redis.router import RedisRouter
+from src.telegram_bot.features.redis.notifications.resources.callbacks import NotificationsCallback
 
 # Создаем роутер для уведомлений
 notifications_router = RedisRouter()
+router = Router(name="redis_notifications_router")
+
+
+async def _clear_deleted_notification_state(
+    callback_data: NotificationsCallback,
+    container: Any,
+    chat_id: int | str,
+    thread_id: int | None,
+) -> None:
+    session_id = callback_data.session_id
+    if session_id is not None:
+        session_key = str(session_id)
+        try:
+            if session_key.startswith("contact_"):
+                await container.redis.contact_cache.delete(session_key.removeprefix("contact_"))
+            else:
+                await container.redis.appointment_cache.delete(session_key)
+        except Exception as e:
+            log.warning(f"Notifications | Delete callback cache cleanup failed: {e}")
+
+    sender_key = f"{chat_id}:{thread_id}" if thread_id else str(chat_id)
+    try:
+        await container.redis.sender.clear_coords(sender_key, is_channel=True)
+    except Exception as e:
+        log.warning(f"Notifications | Delete callback sender cleanup failed: {e}")
+
+
+@router.callback_query(NotificationsCallback.filter(F.action == "delete_notification"))
+async def handle_delete_notification_callback(
+    call: CallbackQuery,
+    callback_data: NotificationsCallback,
+    container: Any,
+) -> None:
+    """
+    Handles inline "Удалить" buttons produced by Redis notification cards.
+    """
+    message = call.message
+    if not message:
+        await call.answer("Сообщение недоступно.", show_alert=True)
+        return
+
+    chat = getattr(message, "chat", None)
+    message_id = getattr(message, "message_id", None)
+    if not chat or not message_id:
+        await call.answer("Сообщение недоступно.", show_alert=True)
+        return
+
+    chat_id = chat.id
+    thread_id = getattr(message, "message_thread_id", None) or callback_data.topic_id
+
+    if not call.bot:
+        log.error("Notifications | Callback error: bot instance is None")
+        return
+
+    try:
+        await call.bot.delete_message(chat_id=chat_id, message_id=message_id)
+    except TelegramAPIError as e:
+        log.warning(
+            "Notifications | Delete callback failed | "
+            f"chat_id={chat_id} message_id={message_id} session_id={callback_data.session_id} error={e}"
+        )
+        await call.answer("Не удалось удалить сообщение.", show_alert=True)
+        return
+
+    await _clear_deleted_notification_state(callback_data, container, chat_id=chat_id, thread_id=thread_id)
+    await call.answer("Удалено")
 
 
 @notifications_router.message("new_appointment")
