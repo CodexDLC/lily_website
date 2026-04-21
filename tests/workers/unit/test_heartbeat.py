@@ -1,4 +1,5 @@
-from unittest.mock import AsyncMock
+import json
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
@@ -84,3 +85,38 @@ class TestWorkerHeartbeatRegistry:
         assert mapping["last_status"] == "failed"
         assert mapping["consecutive_failures"] == "2"
         assert mapping["last_error"] == "Some error"
+
+    @pytest.mark.asyncio
+    async def test_release_lock(self, registry, mock_redis):
+        await registry.release_lock("test.task")
+        mock_redis.delete.assert_called_with("worker:tasks:test.task:lock")
+
+    @pytest.mark.asyncio
+    async def test_schedule_next(self, registry, mock_redis, sample_task):
+        mock_ctx = {"arq_service": AsyncMock()}
+        mock_ctx["arq_service"].enqueue_job.return_value = MagicMock(job_id="next-123")
+
+        job_id = await registry.schedule_next(mock_ctx, sample_task, function_name="some_func")
+
+        assert job_id == "next-123"
+        mock_ctx["arq_service"].enqueue_job.assert_called_once()
+        # Should also call mark_finished
+        assert mock_redis.hset.called
+
+    @pytest.mark.asyncio
+    async def test_schedule_next_no_arq(self, registry, sample_task):
+        res = await registry.schedule_next({}, sample_task, function_name="func")
+        assert res is None
+
+    @pytest.mark.asyncio
+    async def test_error_truncation(self, registry, mock_redis, sample_task):
+        long_error = "A" * 2000
+        await registry.mark_finished(sample_task, status="failed", error=long_error)
+
+        mapping = mock_redis.hset.call_args[1]["mapping"]
+        assert len(mapping["last_error"]) == 1000
+
+        # Check event truncation too (300)
+        event_call = mock_redis.lpush.call_args[0][1]
+        event_data = json.loads(event_call)
+        assert len(event_data["error"]) == 300

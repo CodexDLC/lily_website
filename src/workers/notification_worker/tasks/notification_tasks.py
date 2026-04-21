@@ -281,7 +281,7 @@ async def send_group_booking_notification_task(ctx: dict[str, Any], group_id: in
         try:
             await notification_service.send_notification(
                 email=data["client_email"],
-                subject="Ваша запись в LILY Beauty Salon",
+                subject="Eingangsbestätigung: Ihre Terminanfrage | LILY Beauty",
                 template_name="bk_group_booking",
                 data=data,
             )

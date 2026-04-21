@@ -8,8 +8,8 @@ COPY pyproject.toml uv.lock ./
 # Бот использует arq и pydantic из codex_tools
 RUN uv export --frozen --format requirements.txt --no-hashes --no-dev --no-default-groups --no-emit-project --group bot --group codex_tools --output-file requirements.txt
 
-RUN python -m venv /app/.venv
-RUN /app/.venv/bin/pip install --no-cache-dir -r requirements.txt
+RUN python -m venv /app/.venv && \
+    /app/.venv/bin/pip install --no-cache-dir -r requirements.txt
 
 # === STAGE 2: Runtime ===
 FROM python:3.12-slim

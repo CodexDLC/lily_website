@@ -124,6 +124,6 @@ class AsyncEmailClient:
         async with httpx.AsyncClient() as client:
             response = await client.post(self.sendgrid_url, json=payload, headers=headers, timeout=10.0)
             if response.status_code not in [200, 201, 202]:
-                raise Exception(f"SendGrid API error: {response.status_code} - {response.text}")
+                raise RuntimeError(f"SendGrid API error: {response.status_code} - {response.text}")
 
         logger.info(f"SendGrid | Email sent successfully to {to_email}")

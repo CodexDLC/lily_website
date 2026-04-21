@@ -76,3 +76,20 @@ class AppointmentFactory(DjangoModelFactory):
     duration_minutes = 60
     price = "50.00"
     status = "pending"
+
+
+class AppointmentGroupFactory(DjangoModelFactory):
+    class Meta:
+        model = "booking.AppointmentGroup"
+
+    client = factory.SubFactory(ClientFactory)
+    status = "pending"
+
+
+class AppointmentGroupItemFactory(DjangoModelFactory):
+    class Meta:
+        model = "booking.AppointmentGroupItem"
+
+    group = factory.SubFactory(AppointmentGroupFactory)
+    appointment = factory.SubFactory(AppointmentFactory)
+    order = 0
