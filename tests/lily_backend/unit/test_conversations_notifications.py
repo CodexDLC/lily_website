@@ -1,7 +1,10 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
-from features.conversations.services.notifications import NotificationService
+from features.conversations.services.notifications import (
+    NotificationService,
+    _handle_new_contact_message,
+)
 
 
 class TestConversationsNotifications:
@@ -22,6 +25,50 @@ class TestConversationsNotifications:
     def mock_should_notify(self):
         with patch("features.conversations.services.notifications._should_notify", return_value=True) as mock:
             yield mock
+
+    def test_get_selector(self):
+        from features.conversations.services.notifications import _get_selector
+
+        selector = _get_selector()
+        assert selector is not None
+
+    def test_get_engine(self):
+        from features.conversations.services.notifications import _get_engine
+
+        engine = _get_engine()
+        assert engine is not None
+
+    def test_get_engine_no_arq(self):
+        with patch("features.conversations.services.notifications._HAS_ARQ", False):
+            from features.conversations.services.notifications import _get_engine
+
+            # Reset cache if it was used
+            _get_engine.cache_clear()
+            engine = _get_engine()
+            assert engine is not None
+
+    def test_t_fallback(self):
+        from features.conversations.services.notifications import _t
+
+        with patch("features.conversations.services.notifications._get_selector") as mock:
+            mock.return_value.get.return_value = None
+            assert _t("key", "de", "fallback") == "fallback"
+
+    def test_should_notify_logic(self):
+        from features.conversations.services.notifications import _should_notify
+
+        mock_user = MagicMock()
+        mock_user.profile.notify_service = False
+        with patch("django.contrib.auth.get_user_model") as mock_get_user:
+            mock_get_user.return_value.objects.filter.return_value.first.return_value = mock_user
+            assert _should_notify("test@test.com", "notify_service") is False
+
+    def test_should_notify_no_user(self):
+        from features.conversations.services.notifications import _should_notify
+
+        with patch("django.contrib.auth.get_user_model") as mock_get_user:
+            mock_get_user.return_value.objects.filter.return_value.first.return_value = None
+            assert _should_notify("unknown@test.com", "any") is True
 
     def test_send_booking_receipt(self, mock_engine, mock_selector, mock_should_notify):
         recipient_email = "test@example.com"
@@ -80,10 +127,104 @@ class TestConversationsNotifications:
         mock_engine.dispatch.assert_called_once()
         assert mock_engine.dispatch.call_args.kwargs["password_reset_url"] == "http://reset"  # pragma: allowlist secret
 
-    def test_should_notify_skip(self, mock_engine, mock_selector):
-        with patch("features.conversations.services.notifications._should_notify", return_value=False):
-            result = NotificationService.send_booking_receipt(
-                recipient_email="optout@example.com", client_name="Anna", context={}
+    def test_api_methods_skipped_if_not_notifying(self):
+        # We need to mock _should_notify to return False
+        # Patch it in the module where it's used
+        with (
+            patch("features.conversations.services.notifications._should_notify", return_value=False),
+            patch("features.conversations.services.notifications._get_engine") as mock_engine,
+        ):
+            NotificationService.send_booking_receipt(recipient_email="test@test.com", client_name="Anna", context={})
+            # Since it returns early, _get_engine().dispatch shouldn't be called
+            mock_engine.return_value.dispatch.assert_not_called()
+
+    def test_handle_new_contact_message_no_admin_email(self):
+        mock_msg = MagicMock()
+        mock_msg.sender_name = "John"
+        mock_msg.sender_email = "john@test.com"
+        mock_msg.body = "Hello"
+        mock_msg.subject = None
+
+        # Test the 'continue' if email is empty in ADMINS
+        with patch("django.conf.settings.ADMINS", [("Admin", "")]):
+            specs = _handle_new_contact_message(mock_msg)
+            assert len(specs) == 0
+
+    def test_send_booking_reschedule(self, mock_engine, mock_selector, mock_should_notify):
+        NotificationService.send_booking_reschedule(recipient_email="test@example.com", client_name="Anna", context={})
+        assert mock_engine.dispatch.call_args.kwargs["template_name"] == "bk_reschedule"
+
+    def test_send_booking_reminder(self, mock_engine, mock_selector):
+        with patch("features.conversations.services.notifications._should_notify", return_value=True):
+            NotificationService.send_booking_reminder(
+                recipient_email="test@example.com", client_name="Anna", context={}
             )
-            assert result is None
-            mock_engine.dispatch.assert_not_called()
+            assert mock_engine.dispatch.call_args.kwargs["template_name"] == "bk_reminder"
+
+    def test_send_booking_no_show(self, mock_engine, mock_selector, mock_should_notify):
+        NotificationService.send_booking_no_show(recipient_email="test@example.com", client_name="Anna", context={})
+        assert mock_engine.dispatch.call_args.kwargs["template_name"] == "bk_no_show"
+
+    def test_send_contact_receipt(self, mock_engine, mock_selector):
+        NotificationService.send_contact_receipt(
+            recipient_email="customer@test.com", client_name="Bob", message_text="Hi", request_id=123
+        )
+        assert mock_engine.dispatch.call_args.kwargs["template_name"] == "ct_receipt"
+        assert mock_engine.dispatch.call_args.kwargs["request_id"] == 123
+
+    def test_send_account_already_exists(self, mock_engine, mock_selector):
+        NotificationService.send_account_already_exists(
+            recipient_email="exists@test.com",
+            password_reset_url="http://reset",  # pragma: allowlist secret
+        )
+        assert mock_engine.dispatch.call_args.kwargs["template_name"] == "account/acc_already_exists"
+
+    def test_send_admin_reply(self, mock_engine, mock_selector):
+        NotificationService.send_admin_reply(
+            recipient_email="client@test.com", reply_text="Hello", history_text="...", request_id=456
+        )
+        assert mock_engine.dispatch.call_args.kwargs["template_name"] == "ct_reply"
+
+    def test_handle_new_contact_message(self):
+        from features.conversations.services.notifications import _handle_new_contact_message
+
+        mock_msg = MagicMock()
+        mock_msg.sender_name = "John"
+        mock_msg.sender_email = "john@example.com"
+        mock_msg.subject = "Support"
+        mock_msg.body = "Help me"
+        mock_msg.get_topic_display.return_value = "Support"
+        mock_msg.get_source_display.return_value = "Web"
+
+        with patch("django.conf.settings.ADMINS", [("Admin", "admin@lily.com")]):
+            specs = _handle_new_contact_message(mock_msg)
+            assert specs[0].recipient_email == "admin@lily.com"
+            assert "John" in specs[0].text_content
+
+    def test_account_verification_fallbacks(self):
+        from features.conversations.services.notifications import _account_verification_fallbacks
+
+        subj, body, greet = _account_verification_fallbacks("de", True)
+        assert "bestätigen" in subj
+
+        subj, body, greet = _account_verification_fallbacks("ru", False)
+        assert "Подтвердите" in subj
+
+        subj, body, greet = _account_verification_fallbacks("unknown", True)
+        assert "verify" in subj
+
+    def test_handle_new_contact_message_missing_email(self):
+        from features.conversations.services.notifications import _handle_new_contact_message
+
+        mock_msg = MagicMock()
+        mock_msg.sender_name = "John"
+        mock_msg.sender_email = None
+        mock_msg.body = "Hello"
+        mock_msg.subject = None
+        mock_msg.get_topic_display.return_value = "Support"
+        mock_msg.get_source_display.return_value = "Web"
+
+        with patch("django.conf.settings.ADMINS", [("Admin", "admin@lily.com")]):
+            specs = _handle_new_contact_message(mock_msg)
+            assert len(specs) == 1
+            assert "<None>" in specs[0].text_content
