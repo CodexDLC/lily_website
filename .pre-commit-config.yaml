@@ -39,10 +39,6 @@ repos:
           - "--local"
           - "--timeout"
           - "15"
-          - "--ignore-vuln"
-          - "CVE-2026-4539"
-          - "--ignore-vuln"
-          - "CVE-2026-25645"
         additional_dependencies: ["pip-audit[toml]", "toml"]
 
   # 2. Поиск "забытых" секретов и паролей (усиленный)

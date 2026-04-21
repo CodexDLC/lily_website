@@ -5,9 +5,9 @@ UI для фичи commands.
 from typing import cast
 
 from aiogram_i18n import I18nContext
+from codex_bot.base import ViewResultDTO
 
 from src.telegram_bot.features.telegram.commands.resources.keyboards import build_welcome_keyboard
-from src.telegram_bot.services.base.view_dto import ViewResultDTO
 
 
 class CommandsUI:
