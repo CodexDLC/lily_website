@@ -375,23 +375,19 @@ def test_entrypoints_do_not_auto_run_legacy_migration():
         content = path.read_text(encoding="utf-8")
         assert "RUN_LEGACY_MIGRATION" not in content
         assert "migrate_all_legacy" not in content
-        assert content.index("python /app/manage.py migrate --noinput") < content.index(
-            "python /app/manage.py load_catalog"
-        )
+        assert "python /app/manage.py migrate --noinput" not in content
+        assert "python /app/manage.py load_catalog" not in content
         assert "--access-logfile -" in content
         assert "--error-logfile -" in content
         assert "--capture-output" in content
 
 
 @pytest.mark.unit
-def test_entrypoints_import_legacy_staff_users_before_catalog_sync():
+def test_entrypoints_do_not_auto_run_legacy_staff_import_or_catalog_sync():
     for path in (Path("deploy/backend/entrypoint.sh"), Path("deploy/lily_backend/entrypoint.sh")):
         content = path.read_text(encoding="utf-8")
-        assert 'if [ -n "$LEGACY_DATABASE_URL" ]; then' in content
-        assert "python /app/manage.py migrate_users" in content
-        assert content.index("python /app/manage.py migrate --noinput") < content.index(
-            "python /app/manage.py migrate_users"
-        )
-        assert content.index("python /app/manage.py migrate_users") < content.index(
-            "python /app/manage.py load_catalog"
-        )
+        assert 'if [ -n "$LEGACY_DATABASE_URL" ]; then' not in content
+        assert "python /app/manage.py migrate_users" not in content
+        assert "python /app/manage.py update_all_content" not in content
+        assert "REDIS_URL/REDIS_PASSWORD is missing a non-empty Redis password" in content
+        assert content.index("REDIS_URL/REDIS_PASSWORD") < content.index("exec gunicorn")

@@ -379,7 +379,7 @@ wheels = [
 
 [[package]]
 name = "codex-django"
-version = "0.5.3"
+version = "0.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "codex-core" },
@@ -387,22 +387,19 @@ dependencies = [
     { name = "codex-services" },
     { name = "django" },
     { name = "django-allauth" },
-    { name = "django-debug-toolbar" },
     { name = "django-encrypted-model-fields" },
     { name = "django-extensions" },
     { name = "django-import-export" },
     { name = "django-lifecycle" },
     { name = "django-modeltranslation" },
     { name = "django-ninja" },
-    { name = "django-prometheus" },
-    { name = "django-unfold" },
     { name = "loguru" },
     { name = "pillow" },
     { name = "redis" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/41/19/c2cf53770852ac3d14d6907f40c394f7f199a02a940d69e3e3d22075ec94/codex_django-0.5.3.tar.gz", hash = "sha256:08e7fc2938beaec86be6eb9c0579761bf6ed0c101b4050357d4483740a575246", size = 1392042, upload-time = "2026-04-19T09:12:29.433Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/03/85/b3cb6d3c6e5929985eade1a56dfa2ee6a9329d2f87aa6eb464c19b46705a/codex_django-0.6.1.tar.gz", hash = "sha256:653e7997a8cf4254a69cc1f751426bd2204ca2d33f6b60ea33264986cfaf5ef4", size = 1410790, upload-time = "2026-04-22T22:37:18.857Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b1/29/0529afee2def7faeefc4b817f4e7fbc55629ab3cf6cccc2aae011196cbb8/codex_django-0.5.3-py3-none-any.whl", hash = "sha256:94e3d7280064378111ee8bf1c95e5b7fe77f731b966a8fec7cb4ff853828d85c", size = 1281486, upload-time = "2026-04-19T09:12:27.301Z" },
+    { url = "https://files.pythonhosted.org/packages/9d/56/417ab3517d13c9de0d98d0eb617b723ea74d2de6a022311ebd8124088a77/codex_django-0.6.1-py3-none-any.whl", hash = "sha256:38b2137b906cf6d91455c2cc387ef75016e30fbdf7ec8ccb2d73e8cb27fe4f0e", size = 1283757, upload-time = "2026-04-22T22:37:16.867Z" },
 ]
 
 [[package]]
@@ -421,15 +418,15 @@ wheels = [
 
 [[package]]
 name = "codex-platform"
-version = "0.3.0"
+version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "codex-core" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b7/31/0df902879e3a03b5b92b2f96d08d49e57c0e723d7a608eec669723c64d95/codex_platform-0.3.0.tar.gz", hash = "sha256:7d886da87992b5c6420620df1c294f54da3e86eaf7b55d8514f24064b0f250d0", size = 152974, upload-time = "2026-04-05T15:06:52.445Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0b/34/33053c27be91c0f718a57195a67149b276b46a031ec130951ec1a8f405c9/codex_platform-0.4.0.tar.gz", hash = "sha256:f3028ad1caeeade56ad2014edc4b5c3f41516e50fa25eceaac7cf51882cf1866", size = 163830, upload-time = "2026-04-22T19:11:43.259Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bf/cc/b959a7fab181ac11c432a15d21ab074452e7f995b38414b2025e205e58ad/codex_platform-0.3.0-py3-none-any.whl", hash = "sha256:c6fabd3a28af4c1e74b92e0c8eec37419ba1efed74ccb95bb9ee8ea8bc93f7aa", size = 52404, upload-time = "2026-04-05T15:06:50.855Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/3c/003c76047c6fb8b37811561feb194199e2cc94c8345c72d0a56bfbc66bd5/codex_platform-0.4.0-py3-none-any.whl", hash = "sha256:df8dda992b2d2fe7eb110efd4732005424d069ddb09ae5524bfe58436f01f31f", size = 55845, upload-time = "2026-04-22T19:11:41.536Z" },
 ]
 
 [package.optional-dependencies]
@@ -1383,7 +1380,7 @@ bot = [
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
     { name = "codex-bot", specifier = ">=0.2.1,<0.9.0" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-platform", extras = ["streams"], specifier = ">=0.3.0,<0.9.0" },
+    { name = "codex-platform", extras = ["streams"], specifier = ">=0.4.0,<0.9.0" },
     { name = "fluent-runtime", specifier = ">=0.4.0,<0.5.0" },
     { name = "pydantic", specifier = ">=2.0.0" },
 ]
@@ -1399,10 +1396,10 @@ dev = [
     { name = "bandit", extras = ["toml"] },
     { name = "codex-bot", specifier = ">=0.2.1,<0.9.0" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-django", specifier = "==0.5.3" },
+    { name = "codex-django", specifier = "==0.6.1" },
     { name = "codex-django-cli", specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-platform", extras = ["all"], specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-platform", extras = ["streams"], specifier = ">=0.3.0,<0.9.0" },
+    { name = "codex-platform", extras = ["all"], specifier = ">=0.4.0,<0.9.0" },
+    { name = "codex-platform", extras = ["streams"], specifier = ">=0.4.0,<0.9.0" },
     { name = "codex-services", extras = ["calendar"], specifier = ">=0.1.3,<0.9.0" },
     { name = "dj-database-url", specifier = ">=2.3.0,<3.0.0" },
     { name = "django", specifier = ">=5.2.13,<6.0" },
@@ -1438,7 +1435,7 @@ dev = [
 django = [
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-django", specifier = "==0.5.3" },
+    { name = "codex-django", specifier = "==0.6.1" },
     { name = "dj-database-url", specifier = ">=2.3.0,<3.0.0" },
     { name = "django", specifier = ">=5.2.13,<6.0" },
     { name = "django-ninja", specifier = ">=1.3.0,<2.0.0" },
@@ -1454,7 +1451,7 @@ django = [
 worker = [
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-platform", extras = ["all"], specifier = ">=0.3.0,<0.9.0" },
+    { name = "codex-platform", extras = ["all"], specifier = ">=0.4.0,<0.9.0" },
     { name = "pydantic", specifier = ">=2.0.0" },
     { name = "twilio", specifier = ">=9.10.2,<10.0.0" },
 ]
