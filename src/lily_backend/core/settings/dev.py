@@ -13,15 +13,18 @@ from .base import *  # noqa: F403
 DEBUG = True
 
 # ═══════════════════════════════════════════
-# Cache — LocMemCache (no Redis needed in dev)
+# Cache
 # ═══════════════════════════════════════════
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+if not IS_DOCKER:  # noqa: F405
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        }
     }
-}
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
+    SESSION_ENGINE = "django.contrib.sessions.backends.db"
+else:
+    CODEX_REDIS_ENABLED = True
 
 # ═══════════════════════════════════════════
 # CSRF Trusted Origins
