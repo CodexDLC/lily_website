@@ -63,19 +63,34 @@ STORAGES = {
 # Cache & Sessions
 # ═══════════════════════════════════════════
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": REDIS_URL,  # noqa: F405
-        "KEY_PREFIX": PROJECT_NAME,  # noqa: F405
-        "TIMEOUT": 300,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
-    }
-}
+# Toggle for using custom Codex Redis backends for cache and sessions.
+# If False, falls back to standard django-redis and database sessions.
+USE_CODEX_REDIS_BACKENDS = os.environ.get("USE_CODEX_REDIS_BACKENDS", "False").lower() in ("true", "1", "yes")
 
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
+if USE_CODEX_REDIS_BACKENDS:
+    CACHES = {
+        "default": {
+            "BACKEND": "codex_django.cache.backends.redis.RedisCache",
+            "LOCATION": REDIS_URL,  # noqa: F405
+            "KEY_PREFIX": PROJECT_NAME,  # noqa: F405
+            "TIMEOUT": 300,
+        }
+    }
+    SESSION_ENGINE = "codex_django.sessions.backends.redis"
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": REDIS_URL,  # noqa: F405
+            "KEY_PREFIX": PROJECT_NAME,  # noqa: F405
+            "TIMEOUT": 300,
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            },
+        }
+    }
+
+    SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 # ═══════════════════════════════════════════
 # Logging
