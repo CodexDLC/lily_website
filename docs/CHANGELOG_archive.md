@@ -1,3 +1,6 @@
+---
+render_with_liquid: false
+---
 # Changelog Archive (pre-v2.0)
 
 All notable changes to the **Lily Website** project before version 2.0.0.
