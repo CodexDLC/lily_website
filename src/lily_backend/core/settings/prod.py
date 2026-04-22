@@ -59,6 +59,24 @@ STORAGES = {
 }
 
 # ═══════════════════════════════════════════
+# Cache & Sessions
+# ═══════════════════════════════════════════
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_URL,  # noqa: F405
+        "KEY_PREFIX": PROJECT_NAME,  # noqa: F405
+        "TIMEOUT": 300,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
+# ═══════════════════════════════════════════
 # Logging
 # ═══════════════════════════════════════════
 
