@@ -7,7 +7,6 @@ from codex_django.system.mixins.settings import (
     SiteSocialSettingsMixin,
     SiteTechnicalSettingsMixin,
 )
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -87,15 +86,11 @@ class SiteSettings(
         return obj
 
     def to_dict(self):
-        data = super().to_dict()
-        for key, value in data.items():
-            if isinstance(value, bool):
-                data[key] = int(value)
-            elif value is None:
-                data[key] = ""
-            elif not isinstance(value, str | int | float | bytes):
-                data[key] = DjangoJSONEncoder().encode(value)
-        return data
+        """
+        Returns a dictionary representation of the settings.
+        Simplified to rely on base class logic for JSON serialization.
+        """
+        return super().to_dict()
 
     class Meta:
         verbose_name = _("Настройки сайта")
