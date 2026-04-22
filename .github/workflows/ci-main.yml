@@ -87,7 +87,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: deploy/backend/Dockerfile
+          file: deploy/lily_backend/Dockerfile
           push: false
           tags: check-backend:latest
           cache-from: type=gha,scope=backend
