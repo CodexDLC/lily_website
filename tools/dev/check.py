@@ -282,7 +282,7 @@ class LilyCheckRunner(BaseCheckRunner):
 
     def run_ci(self) -> None:
         """Override CI gate to ensure tests run BEFORE heavy Docker validation."""
-        # No screen clearing - per user request to avoid losing output
+        self._clear_screen()
 
         print(f"{Colors.HEADER}{Colors.BOLD}=== {self.config.project_name} CI gate ==={Colors.ENDC}")
 
@@ -307,7 +307,7 @@ class LilyCheckRunner(BaseCheckRunner):
 
     def run_all(self) -> None:
         """Override to run unit tests BEFORE heavy Docker validation."""
-        # No screen clearing
+        self._clear_screen()
 
         if not self.check_quality():
             sys.exit(1)
