@@ -102,3 +102,6 @@ AGENTS.md
 project_structure.txt
 .claude/
 tmp/
+
+# Legacy & Backups
+archive/

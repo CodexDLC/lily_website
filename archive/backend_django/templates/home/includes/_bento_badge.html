@@ -1,9 +1,0 @@
-{% load i18n %}
-{% if item.is_planned or item.active_masters_count == 0 %}
-    <span class="badge-coming-soon">{% trans "Demnächst" %}</span>
-{% elif item.min_price %}
-    <span class="bento-price-tag">
-        <span class="price-prefix">{% trans "ab" %}</span>
-        <span class="price-value">{{ item.min_price|floatformat:0 }}€</span>
-    </span>
-{% endif %}
