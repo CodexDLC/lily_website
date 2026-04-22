@@ -61,6 +61,7 @@ jobs:
       - name: Run Unit Tests (with coverage gate)
         env:
           SECRET_KEY: "test_secret_key_for_ci"  # pragma: allowlist secret
+          FIELD_ENCRYPTION_KEY: "vT1_9X9-D9Z2h8E_9X9-D9Z2h8E_9X9-D9Z2h8E_9X8=" # pragma: allowlist secret
           ENVIRONMENT: "testing"
           REDIS_HOST: "localhost"
           REDIS_PORT: "6379"
@@ -69,6 +70,7 @@ jobs:
       - name: Run Integration Tests (no coverage gate)
         env:
           SECRET_KEY: "test_secret_key_for_ci"  # pragma: allowlist secret
+          FIELD_ENCRYPTION_KEY: "vT1_9X9-D9Z2h8E_9X9-D9Z2h8E_9X9-D9Z2h8E_9X8=" # pragma: allowlist secret
           ENVIRONMENT: "testing"
           REDIS_HOST: "localhost"
           REDIS_PORT: "6379"
