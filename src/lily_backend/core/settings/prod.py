@@ -31,15 +31,16 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     LANGUAGE_COOKIE_SECURE = True
 
-# TODO: Update with your production domain(s)
-CSRF_TRUSTED_ORIGINS = [
-    "https://example.com",
-    "https://www.example.com",
-]
+DOMAIN_NAME = os.environ.get("DOMAIN_NAME", "").strip()
+if DOMAIN_NAME:
+    SITE_BASE_URL = os.environ.get("SITE_BASE_URL", f"https://{DOMAIN_NAME}/")  # noqa: F405
+    CSRF_TRUSTED_ORIGINS = [
+        f"https://{DOMAIN_NAME}",
+        f"https://www.{DOMAIN_NAME}",
+    ]
 
-# TODO: Update with your production domain
-CSRF_COOKIE_DOMAIN = ".example.com"
-SESSION_COOKIE_DOMAIN = ".example.com"
+SESSION_COOKIE_DOMAIN = os.environ.get("SESSION_COOKIE_DOMAIN") or None
+CSRF_COOKIE_DOMAIN = os.environ.get("CSRF_COOKIE_DOMAIN") or None
 
 # ═══════════════════════════════════════════
 # Static files
