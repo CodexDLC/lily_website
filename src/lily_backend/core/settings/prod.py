@@ -51,7 +51,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"  # noqa: F405
 # so nginx can cache forever and browsers always get fresh files on deploy
 STORAGES = {
     "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+        "BACKEND": "core.storage.ProductionManifestStaticFilesStorage",
     },
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
