@@ -2,7 +2,23 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
-For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
+## [1.9.2] - 2026-03-15
+
+### Added
+- **API Documentation:** Expanded technical documentation with detailed specifications for `admin`, `booking`, `instance`, `promos`, and `urls` endpoints.
+- **Documentation:** Added new feature-specific guides for `cabinet` and `promos` modules.
+- **Testing:** Introduced permission-based test suite for the admin cabinet and centralized `conftest.py` for API testing.
+
+### Changed / Refactored
+- **Cabinet:** Refined logic and UI for appointment, contact request, and master management views.
+- **Notifications:** Updated notification worker services and refined localized booking email templates.
+- **Dependencies:** Synchronized project dependencies in `pyproject.toml` and `poetry.lock`.
+
+### Fixed
+- **Cleanup:** Removed obsolete Telegram bot files and temporary initialization scripts.
+- **CI/CD:** Fixed minor issues in the automated project initialization and check tools.
+
+## [1.9.1] - 2026-03-11
 
 ## [2.2.0] - 2026-04-19
 
