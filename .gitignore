@@ -105,3 +105,9 @@ tmp/
 
 # Legacy & Backups
 archive/
+
+# Reports & Temporary
+*_coverage.txt
+pytest_output.txt
+project_structure.txt
+nul
