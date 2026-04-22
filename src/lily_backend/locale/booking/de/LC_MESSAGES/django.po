@@ -1,0 +1,130 @@
+# LILY Beauty Salon — booking domain translations
+# Language: de
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: lily_backend\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\templates\booking\steps\step_4_confirm_mock.html:76
+msgid "cancellation_policy_text_before"
+msgstr "Ich habe die"
+
+#: .\templates\booking\steps\step_4_confirm_mock.html:77
+msgid "cancellation_policy_link"
+msgstr "Stornierungsbedingungen"
+
+#: .\templates\booking\steps\step_4_confirm_mock.html:78
+msgid "cancellation_policy_text_after"
+msgstr ""
+"gelesen und akzeptiere, dass eine Absage weniger als 24 Stunden vor dem "
+"Termin nicht möglich ist."
+
+#: .\templates\includes\_promo_notification.html:13
+msgid "btn_ui_show_promo"
+msgstr "Promotion anzeigen"
+
+#: .\templates\features\booking\partials\summary_panel.html:11
+msgid "Ihre Daten"
+msgstr "Ihre Daten"
+
+#: .\templates\features\booking\partials\summary_panel.html:12
+msgid "Bitte geben Sie Ihre Kontaktdaten ein"
+msgstr "Bitte geben Sie Ihre Kontaktdaten ein"
+
+#: .\templates\features\booking\partials\summary_panel.html:27
+msgid "Vorname"
+msgstr "Vorname"
+
+#: .\templates\features\booking\partials\summary_panel.html:33
+msgid "Nachname"
+msgstr "Nachname"
+
+#: .\templates\features\booking\partials\summary_panel.html:37
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: .\templates\features\booking\partials\summary_panel.html:42
+msgid "Telefonnummer"
+msgstr "Telefonnummer"
+
+#: .\templates\features\booking\partials\summary_panel.html:47
+msgid "Anmerkungen (Optional)"
+msgstr "Anmerkungen (Optional)"
+
+#: .\templates\features\booking\partials\summary_panel.html:48
+msgid "Besonderheiten, Allergien..."
+msgstr "Besonderheiten, Allergien..."
+
+#: .\templates\features\booking\partials\summary_panel.html:57
+msgid "Bitte rufen Sie mich zur Bestätigung an"
+msgstr "Bitte rufen Sie mich zur Bestätigung an"
+
+#: .\templates\features\booking\partials\summary_panel.html:64
+msgid "Ich akzeptiere die"
+msgstr "Ich akzeptiere die"
+
+#: .\templates\features\booking\partials\summary_panel.html:64
+msgid "Stornierungsbedingungen"
+msgstr "Stornierungsbedingungen"
+
+#: .\templates\features\booking\partials\summary_panel.html:71
+msgid "Einwilligung zur Datenverarbeitung"
+msgstr "Einwilligung zur Datenverarbeitung"
+
+#: .\templates\features\booking\partials\summary_panel.html:80
+msgid "Zurück"
+msgstr "Zurück"
+
+#: .\templates\features\booking\partials\summary_panel.html:84
+msgid "Termin verbindlich buchen"
+msgstr "Termin verbindlich buchen"
+
+#: .\templates\features\booking\partials\bookable_button.html:7
+#: .\templates\features\booking\partials\bookable_button.html:8
+#: .\templates\features\booking\partials\bookable_button.html:13
+msgid "booking_button_selected"
+msgstr "Ausgewählt"
+
+#: .\templates\features\booking\partials\bookable_button.html:7
+#: .\templates\features\booking\partials\bookable_button.html:8
+#: .\templates\features\booking\partials\bookable_button.html:13
+msgid "booking_button_add"
+msgstr "Hinzufügen"
+
+#: .\templates\features\booking\partials\booking_hub.html:5
+msgid "booking_hub_cta"
+msgstr "Termin buchen"
+
+#: .\templates\features\booking\partials\booking_hub.html:6
+msgid "booking_hub_selected"
+msgstr "Ausgewählt"
+
+#: .\templates\features\booking\partials\booking_hub.html:15
+msgid "booking_hub_details"
+msgstr "Details"
+
+#: .\templates\features\booking\partials\booking_hub.html:16
+msgid "booking_hub_hide"
+msgstr "Verbergen"
+
+#: .\templates\features\booking\partials\booking_hub.html:36
+msgid "booking_hub_remove"
+msgstr "Entfernen"
+
+#: .\templates\features\booking\partials\booking_hub.html:46
+msgid "booking_hub_continue"
+msgstr "Fortfahren"
+
+#: features/booking/views/public/commit.py:88
+msgid "Bitte akzeptieren Sie die Stornierungsbedingungen."
+msgstr ""
+
+#: features/booking/views/public/commit.py:91
+msgid "Bitte akzeptieren Sie die Einwilligung zur Datenverarbeitung."
+msgstr ""

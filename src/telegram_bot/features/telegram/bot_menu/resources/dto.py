@@ -1,4 +1,4 @@
-from src.telegram_bot.services.base.context_dto import BaseBotContext
+from codex_bot.base import BaseBotContext
 
 
 class MenuContext(BaseBotContext):

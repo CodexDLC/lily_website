@@ -1,0 +1,132 @@
+{% comment %}
+  Scheduler panel — target: #bk-scheduler-panel outerHTML
+  Shown when cart is non-empty. Switches between same_day and multi_day layouts.
+{% endcomment %}
+{% load i18n %}
+<div class="bk-scheduler-panel" id="bk-scheduler-panel">
+
+  {% if cart.is_empty %}
+        {# Hidden when cart is empty #}
+  {% elif cart.mode == 'multi_day' %}
+
+    <div class="bk-scheduler-panel__title">{% trans "Termine an verschiedenen Tagen" %}</div>
+
+    {% for item in cart.items %}
+      <div class="bk-scheduler-item {% if not item.date %}bk-scheduler-item--active{% endif %}"
+           id="bk-scheduler-item-{{ item.service_id }}">
+        <div class="bk-scheduler-item__header">
+          <div class="bk-scheduler-item__name">
+            <span class="bk-scheduler-item__num">{{ forloop.counter }}</span>
+            <strong>{{ item.service_title }}</strong>
+          </div>
+          {% if item.date and item.time %}
+            <div class="bk-scheduler-item__selection">
+              <span class="bk-scheduler-item__chosen">{{ item.date }} · {{ item.time }}</span>
+              <button class="bk-btn-text"
+                      hx-get="{% url 'booking:scheduler_calendar' %}?service_id={{ item.service_id }}"
+                      hx-target="#bk-calendar-{{ item.service_id }}"
+                      hx-swap="innerHTML">{% trans "Ändern" %}</button>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="bk-scheduler-item__calendar-wrap"
+             id="bk-calendar-{{ item.service_id }}">
+          {% if not item.date %}
+{% url 'booking:scheduler_calendar' as cal_url %}
+            <div hx-get="{{ cal_url }}?service_id={{ item.service_id }}"
+                 hx-trigger="load"
+                 hx-swap="outerHTML">
+              <div class="bk-loading-spinner">
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+
+  {% else %}
+
+    <div class="bk-scheduler">
+      <div class="bk-scheduler__header">
+        <h2 class="bk-scheduler__title">
+{% trans "Выберите дату и время" %}
+        </h2>
+      </div>
+
+      <div class="bk-scheduler__layout">
+        <!-- Calendar Column -->
+        <div class="bk-scheduler__col">
+          <div class="bk-calendar"
+               id="bk-calendar"
+               hx-get="{% url 'booking:scheduler_calendar' %}"
+               hx-trigger="load"
+               hx-swap="outerHTML">
+            <div class="bk-loading-spinner">
+            </div>
+          </div>
+        </div>
+
+        <!-- Slots Column -->
+        <div class="bk-scheduler__col">
+          <div class="bk-slots-panel" id="bk-slots-panel">
+            {% if cart.date %}
+              <div hx-get="{% url 'booking:scheduler_slots' %}?date={{ cart.date }}"
+                   hx-trigger="load"
+                   hx-swap="outerHTML">
+                <div class="bk-loading-spinner">
+                </div>
+              </div>
+            {% else %}
+              <div class="bk-slots-placeholder">
+                <div class="bk-slots-placeholder__icon-inner">
+                  <svg width="64"
+                       height="64"
+                       viewBox="0 0 24 24"
+                       fill="none"
+                       class="bk-floating-svg">
+<rect x="3" y="4" width="18" height="18" rx="4" stroke="var(--color-gold)" stroke-width="1.5" />
+<path d="M16 2V6" stroke="var(--color-gold)" stroke-width="1.5" stroke-linecap="round" />
+<path d="M8 2V6" stroke="var(--color-gold)" stroke-width="1.5" stroke-linecap="round" />
+<path d="M3 10H21" stroke="var(--color-gold)" stroke-width="1.5" />
+<circle cx="8" cy="14" r="1.5" fill="var(--color-gold)" />
+<circle cx="12" cy="14" r="1.5" fill="var(--color-gold)" opacity="0.4" />
+<circle cx="16" cy="14" r="1.5" fill="var(--color-gold)" opacity="0.4" />
+<circle cx="8" cy="18" r="1.5" fill="var(--color-gold)" opacity="0.4" />
+<circle cx="12" cy="18" r="1.5" fill="var(--color-gold)" opacity="0.4" />
+                  </svg>
+                </div>
+                <p>{% trans "Bitte wählen Sie links ein Datum aus, um verfügbare Zeiten zu sehen" %}</p>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 2 Navigation -->
+      <div class="bk-panel-nav">
+        <button class="bk-btn-back"
+                hx-post="{% url 'booking:cart_set_stage' %}"
+                hx-target="#booking-wizard-content"
+                hx-vals='{"stage": 1}'>
+{% trans "Zurück zur Liste" %}
+        </button>
+
+        {% if cart.is_ready_same_day or cart.is_ready_multi_day %}
+          <button class="bk-btn-next"
+                  hx-post="{% url 'booking:cart_set_stage' %}"
+                  hx-target="#booking-wizard-content"
+                  hx-vals='{"stage": 3}'>
+{% trans "Weiter zur Bestätigung" %}
+          </button>
+        {% else %}
+          <button class="bk-btn-next"
+                  disabled
+                  title="{% trans 'Bitte wählen Sie Zeiten für alle Leistungen aus' %}">
+{% trans "Weiter" %}
+          </button>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>

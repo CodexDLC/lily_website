@@ -1,192 +1,138 @@
 #!/usr/bin/env python3
 """
-CSS Compiler для LILY Beauty Salon
+CSS Compiler for LILY project.
 
-Этот скрипт компилирует base.css в app.css, встраивая все @import
-и минифицируя результат.
+Compiles CSS entry points by resolving all @import statements.
+Reads mapping from compiler_config.json in the target static/css/ directory.
 
-Использование:
-    python tools/static/css_compiler.py
+Config format (new, canonical):
+    {
+        "css": {
+            "base.css": "app.css",
+            "cabinet.css": "cabinet_app.css"
+        }
+    }
 
-Требования:
-    pip install csscompressor
+Usage:
+    python tools/static/css_compiler.py --static-dir src/lily_backend/static
+    python tools/static/css_compiler.py --static-dir src/backend_django/static
+    python tools/static/css_compiler.py          # defaults to src/lily_backend/static
 """
 
+import argparse
 import json
 import re
 from pathlib import Path
 
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+DEFAULT_STATIC_DIR = PROJECT_ROOT / "src" / "lily_backend" / "static"
 
-def read_css_file(file_path: Path, base_path: Path) -> str:
-    """Читает CSS файл и возвращает его содержимое."""
+
+def read_css_file(file_path: Path) -> str:
     try:
-        with open(file_path, encoding="utf-8") as f:
-            return f.read()
+        return file_path.read_text(encoding="utf-8")
     except Exception as e:
-        print(f"❌ Ошибка чтения {file_path}: {e}")
+        print(f"  ERROR reading {file_path}: {e}")
         return ""
 
 
 def resolve_imports(css_content: str, base_path: Path) -> str:
-    """
-    Рекурсивно разрешает все @import в CSS.
-
-    Заменяет строки вида:
-    @import url('path/to/file.css');
-    или
-    @import url('path/to/file.css') screen and (max-width: 767px);
-
-    на содержимое импортируемых файлов.
-    """
+    """Recursively resolve all @import url(...) statements."""
     import_pattern = r"@import\s+url\(['\"](.+?)['\"]\)(?:\s+(.+?))?;"
 
-    def replace_import(match):
+    def replace_import(match: re.Match) -> str:
         import_path = match.group(1)
         media_query = match.group(2)
-
-        # Разрешаем путь относительно base_path
         full_path = (base_path / import_path).resolve()
 
         if not full_path.exists():
-            print(f"⚠️  Файл не найден: {full_path}")
+            print(f"  WARNING: not found: {full_path}")
             return f"/* Import not found: {import_path} */"
 
-        # Читаем содержимое импортируемого файла
-        imported_content = read_css_file(full_path, full_path.parent)
+        content = read_css_file(full_path)
+        content = resolve_imports(content, full_path.parent)
 
-        # Рекурсивно разрешаем вложенные импорты
-        imported_content = resolve_imports(imported_content, full_path.parent)
-
-        # Если есть media query, оборачиваем контент
         if media_query:
-            return f"/* From {import_path} */\n@media {media_query} {{\n{imported_content}\n}}"
-
-        return f"/* From {import_path} */\n{imported_content}"
+            return f"/* {import_path} */\n@media {media_query} {{\n{content}\n}}"
+        return f"/* {import_path} */\n{content}"
 
     return re.sub(import_pattern, replace_import, css_content)
 
 
 def remove_comments(css_content: str) -> str:
-    """
-    Удаляет все комментарии из CSS.
-    """
-    # Удаляем многострочные комментарии /* ... */
-    css_content = re.sub(r"/\*.*?\*/", "", css_content, flags=re.DOTALL)
-    return css_content
+    return re.sub(r"/\*.*?\*/", "", css_content, flags=re.DOTALL)
 
 
-def minify_css(css_content: str) -> str:
-    """
-    Полная минификация CSS:
-    - Удаляет комментарии
-    - Удаляет лишние пробелы и переносы строк
-    """
-    # Удаляем комментарии
-    css_content = remove_comments(css_content)
-
-    # Удаляем лишние пробелы и переносы
-    css_content = re.sub(r"\s+", " ", css_content)
-    css_content = re.sub(r"\s*([{}:;,])\s*", r"\1", css_content)
-
-    return css_content.strip()
-
-
-def compile_css(base_css_path: Path, output_path: Path, minify: bool = False, remove_comments_only: bool = False):
-    """
-    Компилирует base.css в app.css.
-
-    Args:
-        base_css_path: Путь к base.css
-        output_path: Путь для сохранения app.css
-        minify: Полная минификация (удаляет комментарии + пробелы)
-        remove_comments_only: Только удалить комментарии, сохранить форматирование
-    """
-    print("🔧 Компиляция CSS...")
-    print(f"   Источник: {base_css_path}")
-    print(f"   Выход: {output_path}")
-
-    # Читаем base.css
-    base_content = read_css_file(base_css_path, base_css_path.parent)
-
-    if not base_content:
-        print("❌ Не удалось прочитать base.css")
+def compile_entry(source: Path, output: Path) -> None:
+    print(f"  {source.name} -> {output.name}")
+    content = read_css_file(source)
+    if not content:
         return
 
-    # Разрешаем все импорты
-    compiled_content = resolve_imports(base_content, base_css_path.parent)
+    content = resolve_imports(content, source.parent)
+    content = remove_comments(content)
 
-    # Обработка комментариев и минификация
-    if minify:
-        print("   Полная минификация...")
-        compiled_content = minify_css(compiled_content)
-    elif remove_comments_only:
-        print("   Удаление комментариев...")
-        compiled_content = remove_comments(compiled_content)
-
-    # Добавляем заголовок
-    header = f"""/*
- * LILY Beauty Salon - Compiled CSS
- * Generated automatically - DO NOT EDIT
- * Source: base.css
- * Minified: {minify}
- */
-
-"""
-    compiled_content = header + compiled_content
-
-    # Сохраняем результат
-    try:
-        with open(output_path, "w", encoding="utf-8") as f:
-            f.write(compiled_content)
-
-        # Показываем статистику
-        original_size = len(base_content)
-        compiled_size = len(compiled_content)
-        print("✅ Готово!")
-        print(f"   Размер: {compiled_size:,} байт")
-        if minify or remove_comments_only:
-            savings = original_size - compiled_size
-            print(f"   Экономия: {savings:,} байт ({savings / original_size * 100:.1f}%)")
-
-    except Exception as e:
-        print(f"❌ Ошибка записи {output_path}: {e}")
+    header = f"/*\n * Compiled CSS — DO NOT EDIT\n * Source: {source.name}\n */\n\n"
+    output.write_text(header + content, encoding="utf-8")
+    print(f"    -> {output.stat().st_size:,} bytes")
 
 
-def main():
-    """Главная функция."""
-    # Определяем пути относительно tools/static/css_compiler.py
-    # .parent (static) -> .parent (tools) -> .parent (root)
-    project_root = Path(__file__).parent.parent.parent
-    css_dir = project_root / "src" / "backend_django" / "static" / "css"
+def load_css_config(css_dir: Path) -> dict[str, str]:
+    """Load compiler_config.json and extract css section.
 
+    Supports both formats:
+      - New (canonical): {"css": {"base.css": "app.css"}, ...}
+      - Old (flat):      {"base.css": "app.css"}
+    """
     config_path = css_dir / "compiler_config.json"
-
     if not config_path.exists():
-        print(f"❌ Файл конфигурации не найден: {config_path}")
-        print("Создаю конфигурацию по умолчанию...")
-        default_config = {"base.css": "app.css"}
-        with open(config_path, "w", encoding="utf-8") as f:
-            json.dump(default_config, f, indent=4)
-        config_data = default_config
-    else:
-        try:
-            with open(config_path, encoding="utf-8") as f:
-                config_data = json.load(f)
-        except json.JSONDecodeError as e:
-            print(f"❌ Ошибка парсинга {config_path}: {e}")
-            return
+        print(f"  ERROR: config not found: {config_path}")
+        return {}
 
-    for source_file, output_file in config_data.items():
-        base_css = css_dir / source_file
-        app_css = css_dir / output_file
+    data = json.loads(config_path.read_text(encoding="utf-8"))
 
-        if not base_css.exists():
-            print(f"⚠️ Пропущен {source_file}: файл не найден")
+    if "css" in data and isinstance(data["css"], dict):
+        return data["css"]
+
+    # Old flat format — everything is a string→string mapping
+    return {k: v for k, v in data.items() if isinstance(v, str)}
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Compile CSS @import chains into single files.")
+    parser.add_argument(
+        "--static-dir",
+        default=str(DEFAULT_STATIC_DIR),
+        metavar="PATH",
+        help=f"Path to static directory (default: {DEFAULT_STATIC_DIR})",
+    )
+    args = parser.parse_args()
+
+    static_dir = Path(args.static_dir)
+    css_dir = static_dir / "css"
+
+    if not css_dir.exists():
+        print(f"ERROR: css dir not found: {css_dir}")
+        return
+
+    mapping = load_css_config(css_dir)
+    if not mapping:
+        print("No CSS entries found in config.")
+        return
+
+    print(f"Static: {static_dir}")
+    print(f"Entries: {len(mapping)}")
+    print()
+
+    for source_file, output_file in mapping.items():
+        source = css_dir / source_file
+        output = css_dir / output_file
+        if not source.exists():
+            print(f"  SKIP {source_file}: not found")
             continue
+        compile_entry(source, output)
 
-        print(f"\n--- Обработка: {source_file} -> {output_file} ---")
-        # Компилируем с удалением комментариев (сохраняя читаемость)
-        compile_css(base_css, app_css, minify=False, remove_comments_only=True)
+    print("\nDone.")
 
 
 if __name__ == "__main__":

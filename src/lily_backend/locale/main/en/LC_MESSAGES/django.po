@@ -1,0 +1,341 @@
+# LILY Beauty Salon — main domain translations
+# Language: en
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: lily_backend\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\src\backend_django\templates\includes\_footer.html:84
+#: .\src\backend_django\templates\legal\faq.html:28
+#: .\src\backend_django\templates\legal\faq.html:48
+msgid "service_cat_hair"
+msgstr "Hair & Care"
+
+#: .\src\backend_django\templates\includes\_footer.html:87
+msgid "service_item_haircuts"
+msgstr "Haircuts"
+
+#: .\src\backend_django\templates\includes\_footer.html:89
+msgid "service_item_coloring"
+msgstr "Coloring"
+
+#: .\src\backend_django\templates\includes\_footer.html:91
+msgid "service_item_treatment"
+msgstr "Hair Treatment"
+
+#: .\src\backend_django\templates\includes\_footer.html:93
+msgid "service_item_styling"
+msgstr "Styling"
+
+#: .\src\backend_django\templates\includes\_footer.html:100
+#: .\src\backend_django\templates\legal\faq.html:27
+#: .\src\backend_django\templates\legal\faq.html:47
+msgid "service_cat_nails"
+msgstr "Nail Service"
+
+#: .\src\backend_django\templates\includes\_footer.html:103
+msgid "service_item_manicure"
+msgstr "Manicure"
+
+#: .\src\backend_django\templates\includes\_footer.html:105
+msgid "service_item_pedicure"
+msgstr "Pedicure"
+
+#: .\src\backend_django\templates\includes\_footer.html:107
+msgid "service_item_extension"
+msgstr "Extension"
+
+#: .\src\backend_django\templates\includes\_footer.html:115
+msgid "service_cat_beauty"
+msgstr "Beauty & Care"
+
+#: .\src\backend_django\templates\includes\_footer.html:120
+#: .\src\backend_django\templates\legal\faq.html:32
+#: .\src\backend_django\templates\legal\faq.html:51
+msgid "service_item_lashes"
+msgstr "Lash Extensions"
+
+#: .\src\backend_django\templates\includes\_footer.html:121
+msgid "service_item_lamination"
+msgstr "Lamination"
+
+#: .\src\backend_django\templates\includes\_footer.html:123
+#: .\src\backend_django\templates\legal\faq.html:31
+msgid "service_item_massage"
+msgstr "Massage"
+
+#: .\src\backend_django\templates\legal\faq.html:29
+#: .\src\backend_django\templates\legal\faq.html:49
+msgid "service_item_cosmetology"
+msgstr "Facial Cosmetology"
+
+#: .\src\backend_django\templates\legal\faq.html:30
+#: .\src\backend_django\templates\legal\faq.html:50
+msgid "service_item_depilation"
+msgstr "Depilation"
+
+msgid "cookie_modal_title"
+msgstr "Cookies? Yes, but useful ones!"
+
+msgid "cookie_modal_description"
+msgstr "We use cookies to make your visit more enjoyable. Please allow us to collect anonymous analytics — this helps us grow and make our website even more user-friendly for you."
+
+msgid "cookie_btn_accept_all"
+msgstr "Accept All"
+
+msgid "cookie_btn_essential"
+msgstr "Essential Only"
+
+msgid "cookie_btn_settings"
+msgstr "Settings"
+
+msgid "cookie_view_settings_title"
+msgstr "Privacy Settings"
+
+msgid "cookie_cat_necessary_name"
+msgstr "Necessary"
+
+msgid "cookie_cat_necessary_desc"
+msgstr "Required for the website to function properly (booking, session)."
+
+msgid "cookie_cat_analytics_name"
+msgstr "Analytics"
+
+msgid "cookie_cat_analytics_desc"
+msgstr "Help us understand how you use the website."
+
+msgid "cookie_cat_marketing_name"
+msgstr "Marketing"
+msgid "impressum_page_title"
+msgstr "Legal Notice"
+
+msgid "impressum_title"
+msgstr "Impressum (Legal Notice)"
+
+msgid "impressum_section_tmg"
+msgstr "Information according to § 5 TMG"
+
+msgid "impressum_owner_label"
+msgstr "Owner"
+
+msgid "impressum_contact_title"
+msgstr "Contact"
+
+msgid "impressum_phone_label"
+msgstr "Phone"
+
+msgid "impressum_email_label"
+msgstr "E-Mail"
+
+msgid "impressum_tax_title"
+msgstr "VAT ID"
+
+msgid "impressum_tax_id_desc"
+msgstr "VAT identification number according to § 27 a of the German Value Added Tax Act"
+
+msgid "impressum_tax_in_progress"
+msgstr "In application"
+
+msgid "impressum_dispute_title"
+msgstr "Dispute Resolution"
+
+msgid "impressum_dispute_desc_1"
+msgstr "The European Commission provides a platform for online dispute resolution (OS):"
+
+msgid "impressum_dispute_desc_2"
+msgstr "You can find our e-mail address at the top of the legal notice."
+
+msgid "impressum_dispute_willingness"
+msgstr "We are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board."
+
+msgid "impressum_liability_content_title"
+msgstr "Liability for Content"
+
+msgid "impressum_liability_content_desc"
+msgstr "As a service provider, we are responsible for our own content on these pages in accordance with general laws according to § 7 Para.1 TMG. According to §§ 8 to 10 TMG, however, we as a service provider are not obliged to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity."
+
+msgid "impressum_liability_links_title"
+msgstr "Liability for Links"
+
+msgid "impressum_liability_links_desc"
+msgstr "Our offer contains links to external third-party websites, on whose content we have no influence. Therefore, we cannot assume any liability for this external content. The respective provider or operator of the pages is always responsible for the content of the linked pages."
+
+msgid "impressum_copyright_title"
+msgstr "Copyright"
+
+msgid "impressum_copyright_desc"
+msgstr "The content and works created by the site operators on these pages are subject to German copyright law. Duplication, processing, distribution, and any kind of utilization outside the limits of copyright law require the written consent of the respective author or creator."
+
+msgid "datenschutz_page_title"
+msgstr "Privacy Policy"
+
+msgid "datenschutz_title"
+msgstr "Privacy Policy"
+
+msgid "ds_section_1_title"
+msgstr "1. Privacy at a glance"
+
+msgid "ds_section_1_subtitle_1"
+msgstr "General Notes"
+
+msgid "ds_section_1_text_1"
+msgstr "The following notes provide a simple overview of what happens to your personal data when you visit this website. Personal data are all data with which you can be personally identified."
+
+msgid "ds_section_1_subtitle_2"
+msgstr "Data collection on this website"
+
+msgid "ds_section_1_q1"
+msgstr "Who is responsible for the data collection on this website?"
+
+msgid "ds_section_1_a1"
+msgstr "The data processing on this website is performed by the website operator. Their contact details can be found in the legal notice (Impressum) of this website."
+
+msgid "ds_section_1_q2"
+msgstr "How do we collect your data?"
+
+msgid "ds_section_1_a2"
+msgstr "Your data are collected, on the one hand, by you communicating them to us (e.g., data you enter into a contact form). Other data are collected automatically or after your consent by our IT systems when you visit the website. These are primarily technical data (e.g., internet browser, operating system, or time of page call)."
+
+msgid "ds_section_2_title"
+msgstr "2. Hosting and Server Log Files"
+
+msgid "ds_section_2_text_1"
+msgstr "We host the content of our website with an external service provider. The provider of the pages automatically collects and stores information in so-called server log files, which your browser automatically transmits to us. These are:"
+
+msgid "ds_section_2_li_1"
+msgstr "Browser type and browser version"
+
+msgid "ds_section_2_li_2"
+msgstr "Used operating system"
+
+msgid "ds_section_2_li_3"
+msgstr "Referrer URL"
+
+msgid "ds_section_2_li_4"
+msgstr "Host name of the accessing computer"
+
+msgid "ds_section_2_li_5"
+msgstr "Time of the server request"
+
+msgid "ds_section_2_li_6"
+msgstr "IP address"
+
+msgid "ds_section_2_text_2"
+msgstr "A merging of this data with other data sources is not performed. The basis for data processing is Art. 6 Para. 1 lit. f GDPR."
+
+msgid "ds_section_3_title"
+msgstr "3. General Notes and Mandatory Information"
+
+msgid "ds_section_3_subtitle_1"
+msgstr "SSL or TLS Encryption"
+
+msgid "ds_section_3_text_1"
+msgstr "This site uses SSL or TLS encryption for security reasons and to protect the transmission of confidential content, such as inquiries you send to us as the site operator. You can recognize an encrypted connection by the address line of the browser changing from 'http://' to 'https://'."
+
+msgid "ds_section_3_subtitle_2"
+msgstr "Your Rights (Data Subject Rights)"
+
+msgid "ds_section_3_text_2"
+msgstr "Within the framework of the applicable legal provisions, you have the right at any time to:"
+
+msgid "ds_section_3_li_1_title"
+msgstr "Information (Art. 15 GDPR)"
+
+msgid "ds_section_3_li_1_text"
+msgstr "You have the right to receive free information about your stored personal data, their origin and recipient, and the purpose of the data processing."
+
+msgid "ds_section_3_li_2_title"
+msgstr "Correction (Art. 16 GDPR)"
+
+msgid "ds_section_3_li_2_text"
+msgstr "You have a right to the correction of incorrect data."
+
+msgid "ds_section_3_li_3_title"
+msgstr "Deletion (Art. 17 GDPR)"
+
+msgid "ds_section_3_li_3_text"
+msgstr "You can request the deletion of your data stored by us, provided that no legal retention obligations prevent this."
+
+msgid "ds_section_3_li_4_title"
+msgstr "Revocation (Art. 7 Para. 3 GDPR)"
+
+msgid "ds_section_3_li_4_text"
+msgstr "Many data processing operations are only possible with your express consent. You can revoke an already given consent at any time."
+
+msgid "ds_section_3_li_5_title"
+msgstr "Right to Complain (Art. 77 GDPR)"
+
+msgid "ds_section_3_li_5_text"
+msgstr "In the event of data protection violations, you have a right to complain to the competent supervisory authority."
+
+msgid "ds_section_3_text_3"
+msgstr "For this as well as for further questions on the subject of data protection, you can contact us at any time at the address given in the legal notice."
+
+msgid "ds_section_4_title"
+msgstr "4. Data collection on this website"
+
+msgid "ds_section_4_subtitle_1"
+msgstr "Cookies"
+
+msgid "ds_section_4_text_1"
+msgstr "Our internet pages use so-called 'cookies'. Cookies are small text files and do not cause any damage to your end device. We use technically necessary cookies to ensure the functionality of the website, as well as analysis cookies (after consent) to improve our offer."
+
+msgid "ds_section_4_subtitle_2"
+msgstr "Cookie Consent Management"
+
+msgid "ds_section_4_text_2"
+msgstr "To obtain and manage your consent for the use of cookies, we use our own cookie consent tool. This tool is operated on our own servers; no data are transmitted to third-party providers."
+
+msgid "ds_section_4_text_3"
+msgstr "The tool stores your decision (consent or rejection) in a cookie or in the local storage (localStorage) of your browser. Only your preference is stored — no personal data."
+
+msgid "ds_section_4_text_4"
+msgstr "The stored consent is automatically reset after 365 days. You can revoke or change your decision at any time via the corresponding link in the footer."
+
+msgid "ds_section_4_text_5"
+msgstr "Legal basis is Art. 6 Para. 1 lit. c GDPR and Art. 6 Para. 1 lit. f GDPR."
+
+msgid "ds_section_4_subtitle_3"
+msgstr "Contact Form"
+
+msgid "ds_section_4_text_6"
+msgstr "If you send us inquiries via the contact form, your details from the inquiry form, including the contact details you provided there, will be stored by us for processing the inquiry. The processing of these data takes place on the basis of Art. 6 Para. 1 lit. b GDPR."
+
+msgid "ds_section_5_title"
+msgstr "5. Analysis Tools and Advertising"
+
+msgid "ds_section_5_subtitle_1"
+msgstr "Google Tag Manager"
+
+msgid "ds_section_5_text_1"
+msgstr "We use the Google Tag Manager. The provider is Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Ireland. This tool allows us to manage various tracking scripts centrally. The Tag Manager itself does not collect any personal data."
+
+msgid "ds_section_5_subtitle_2"
+msgstr "Google Analytics 4"
+
+msgid "ds_section_5_text_2"
+msgstr "This website uses features of the web analysis service Google Analytics 4. The provider is Google Ireland Limited. The IP address is anonymized by default in GA4."
+
+msgid "ds_section_5_text_3"
+msgstr "The storage and analysis of data only take place if you have given us your express consent via the cookie banner (Art. 6 Para. 1 lit. a GDPR)."
+
+msgid "ds_section_6_title"
+msgstr "6. Plugins and Tools"
+
+msgid "ds_section_6_subtitle_1"
+msgstr "Google Maps"
+
+msgid "ds_section_6_text_1"
+msgstr "This site uses the mapping service Google Maps. To use the features of Google Maps, it is necessary to store your IP address. This information is usually transmitted to a Google server in the USA."
+
+msgid "cookie_cat_marketing_desc"
+msgstr "Used for personalizing ads (FB Pixel, etc.)."
+
+msgid "cookie_btn_save"
+msgstr "Save Selection"

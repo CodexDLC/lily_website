@@ -1,0 +1,156 @@
+/* =========================================
+   BOOKING SUCCESS STYLES
+   Dark luxury theme with gold accents
+   ========================================= */
+
+.bk-success-wrapper {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background-color: var(--color-emerald);
+}
+
+.bk-success {
+    max-width: 600px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--color-gold);
+    border-radius: 15px;
+    padding: 50px 40px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4),
+                inset 0 0 20px rgba(237, 208, 113, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* The Gold Frame "Extra" Step */
+.bk-success::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 1px solid rgba(237, 208, 113, 0.3);
+    border-radius: 20px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.bk-success__icon {
+    width: 80px;
+    height: 80px;
+    border: 2px solid var(--color-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: var(--color-gold);
+    margin: 0 auto 30px;
+    background: rgba(237, 208, 113, 0.1);
+    box-shadow: 0 0 15px rgba(237, 208, 113, 0.2);
+}
+
+.bk-success__title {
+    font-family: var(--font-serif, serif);
+    font-size: 36px;
+    color: var(--color-gold);
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+.bk-success__subtitle {
+    font-size: 18px;
+    color: var(--color-white);
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.bk-success__details {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.bk-success__details p {
+    margin-bottom: 12px;
+    font-size: 15px;
+    color: var(--color-white);
+    display: flex;
+    justify-content: space-between;
+}
+
+.bk-success__details p:last-child {
+    margin-bottom: 0;
+}
+
+.bk-success__details strong {
+    color: var(--color-gold);
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.bk-success__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px;
+    text-align: left;
+}
+
+.bk-success__list-item {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--color-white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bk-success__list-item:last-child {
+    border-bottom: none;
+}
+
+.bk-success__note {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+.bk-success__back {
+    display: inline-block;
+    padding: 14px 40px;
+    border: 1px solid var(--color-gold);
+    color: var(--color-gold);
+    border-radius: 50px;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bk-success__back:hover {
+    background: var(--color-gold);
+    color: var(--color-emerald);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 767px) {
+    .bk-success {
+        padding: 40px 20px;
+    }
+    .bk-success__title {
+        font-size: 28px;
+    }
+}

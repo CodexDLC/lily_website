@@ -1,0 +1,15 @@
+{% load i18n %}
+<button class="bk-btn-bookable {% if is_selected %}bk-btn-bookable--selected{% endif %}"
+        hx-post="{% if is_selected %}{% url 'booking:cart_remove' %}{% else %}{% url 'booking:cart_add' %}{% endif %}"
+        hx-vals='{"service_id": "{{ service_id }}"}'
+        hx-target="this"
+        hx-swap="outerHTML"
+        title="{% if is_selected %}{% trans 'booking_button_selected' %}{% else %}{% trans 'booking_button_add' %}{% endif %}"
+        aria-label="{% if is_selected %}{% trans 'booking_button_selected' %}{% else %}{% trans 'booking_button_add' %}{% endif %}">
+    <svg class="bk-icon-morph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path class="bk-icon-path" d="M12 5v14M5 12h14" />
+    </svg>
+    <span class="bk-btn-bookable__label">
+        {% if is_selected %}{% trans "booking_button_selected" %}{% else %}{% trans "booking_button_add" %}{% endif %}
+    </span>
+</button>

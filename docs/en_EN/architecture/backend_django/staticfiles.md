@@ -26,5 +26,5 @@ staticfiles/
 
 ## Usage
 
-*   **Development:** In a local development setup (e.g., using `docker-compose.yml`), this directory might be mounted as a volume to allow `collectstatic` to write to it.
+*   **Development:** In a local development setup (e.g., using `docker compose up`), this directory might be mounted as a volume to allow `collectstatic` to write to it.
 *   **Production:** In production, after `collectstatic` is run (often during the Docker image build or deployment script), this directory's contents are typically served by Nginx. The `deploy/nginx/site.conf` and `deploy/nginx/site-local.conf` configurations include `alias` directives to serve files from this location.

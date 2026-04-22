@@ -1,0 +1,277 @@
+{% load i18n static %}
+{% comment %}
+GDPR/DSGVO-Compliant Cookie Consent Banner
+Legal Requirements (Rechtssicherheit):
+1. Links to Impressum & Datenschutz MUST be accessible
+2. No "Cookie Wall" - banner should not block content access
+3. Equal visual weight for Accept/Reject buttons (no dark patterns)
+4. Users can revoke consent easily via footer link
+{% endcomment %}
+
+<template id="cookieConsentTemplate">
+<div id="cookieConsentBanner" class="cookie-modal-wrapper" data-nosnippet>
+  <div class="cookie-modal-overlay"></div>
+  <div class="cookie-modal-container">
+    <div class="cookie-modal-content glass-card">
+
+      <!-- View 1: Main -->
+      <div class="cookie-view-main">
+        <div class="cookie-header">
+           <img src="{% static 'img/logo_lily.webp' %}" alt="LILY" class="cookie-logo">
+           <h3 class="cookie-title">{% trans "cookie_modal_title" %}</h3>
+        </div>
+        <p class="cookie-description">
+          {% trans "cookie_modal_description" %}
+        </p>
+        <div class="cookie-actions">
+          <button id="cookieAcceptAll" class="cookie-btn btn-gold">{% trans "cookie_btn_accept_all" %}</button>
+          <button id="cookieAcceptEssential" class="cookie-btn btn-outline">{% trans "cookie_btn_essential" %}</button>
+          <button id="cookieShowSettings" class="cookie-btn-link">{% trans "cookie_btn_settings" %}</button>
+        </div>
+      </div>
+
+      <!-- View 2: Settings (Hidden by default) -->
+      <div class="cookie-view-settings">
+        <div class="cookie-header">
+           <button id="cookieBackToMain" class="btn-back">←</button>
+           <h3 class="cookie-title">{% trans "cookie_view_settings_title" %}</h3>
+        </div>
+
+        <div class="cookie-settings-list">
+          <!-- Necessary -->
+          <div class="setting-item">
+            <div class="setting-info">
+              <span class="setting-name">{% trans "cookie_cat_necessary_name" %}</span>
+              <span class="setting-desc">{% trans "cookie_cat_necessary_desc" %}</span>
+            </div>
+            <div class="setting-control">
+              <input type="checkbox" checked disabled>
+            </div>
+          </div>
+
+          <!-- Analytics -->
+          <div class="setting-item">
+            <div class="setting-info">
+              <span class="setting-name">{% trans "cookie_cat_analytics_name" %}</span>
+              <span class="setting-desc">{% trans "cookie_cat_analytics_desc" %}</span>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="cookie-check-analytics">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Marketing -->
+          <div class="setting-item">
+            <div class="setting-info">
+              <span class="setting-name">{% trans "cookie_cat_marketing_name" %}</span>
+              <span class="setting-desc">{% trans "cookie_cat_marketing_desc" %}</span>
+            </div>
+            <div class="setting-control">
+              <label class="switch">
+                <input type="checkbox" id="cookie-check-marketing">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="cookie-actions-footer">
+           <button id="cookieSaveCustom" class="cookie-btn btn-gold">{% trans "cookie_btn_save" %}</button>
+        </div>
+      </div>
+
+      <div class="cookie-legal-footer">
+        <a href="{% url 'main:impressum' %}">Impressum</a>
+        <span>•</span>
+        <a href="{% url 'main:datenschutz' %}">Datenschutz</a>
+      </div>
+    </div>
+  </div>
+</div>
+</template>
+
+<style>
+  :root {
+    --cookie-gold: #d4b896;
+    --cookie-bg: rgba(18, 18, 18, 0.95);
+    --cookie-border: rgba(212, 184, 150, 0.2);
+  }
+
+  .cookie-modal-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .cookie-modal-wrapper.is-visible {
+    display: flex;
+    opacity: 1;
+  }
+
+  .cookie-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+  }
+
+  .cookie-modal-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    z-index: 10001;
+  }
+
+  .glass-card {
+    background: var(--cookie-bg);
+    border: 1px solid var(--cookie-border);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    padding: 40px;
+    color: #fff;
+    backdrop-filter: blur(20px);
+  }
+
+  .cookie-header {
+    margin-bottom: 24px;
+    text-align: center;
+    position: relative;
+  }
+
+  .cookie-logo {
+    height: 40px;
+    margin-bottom: 16px;
+  }
+
+  .cookie-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--cookie-gold);
+  }
+
+  .cookie-description {
+    font-size: 16px;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  .cookie-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cookie-btn {
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    border: 1px solid transparent;
+  }
+
+  .btn-gold {
+    background: var(--cookie-gold);
+    color: #000;
+  }
+
+  .btn-gold:hover {
+    background: #e6d4ba;
+    transform: scale(1.02);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--cookie-gold);
+    border-color: var(--cookie-border);
+  }
+
+  .btn-outline:hover {
+    background: rgba(212,184,150,0.1);
+  }
+
+  .cookie-btn-link {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    font-size: 14px;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  /* View Toggle */
+  .cookie-view-settings { display: none; }
+  .show-settings .cookie-view-main { display: none; }
+  .show-settings .cookie-view-settings { display: block; }
+
+  .btn-back {
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--cookie-gold);
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  /* Settings List */
+  .cookie-settings-list {
+    margin-bottom: 32px;
+  }
+
+  .setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .setting-info { flex: 1; margin-right: 20px; }
+  .setting-name { display: block; font-weight: 600; color: #fff; margin-bottom: 4px; }
+  .setting-desc { font-size: 12px; color: rgba(255,255,255,0.4); display: block; }
+
+  /* Switch */
+  .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; inset: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 20px; }
+  .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: #fff; transition: .4s; border-radius: 50%; }
+  input:checked + .slider { background-color: var(--cookie-gold); }
+  input:checked + .slider:before { transform: translateX(20px); }
+
+  .cookie-legal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 24px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .cookie-legal-footer a { color: inherit; text-decoration: none; }
+
+  .cookie-modal-active { overflow: hidden; }
+
+  @media (max-width: 480px) {
+    .glass-card { padding: 24px; }
+  }
+</style>
+
+<script src="{% static 'js/app/cookie-consent.js' %}" defer></script>

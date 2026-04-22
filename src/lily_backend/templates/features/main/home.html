@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ seo.seo_title|default:"LILY Beauty Salon | Köthen" }}{% endblock %}
+{% block meta_description %}{{ seo.seo_description|default:content.home_hero_uptitle }}{% endblock %}
+
+{% block content %}
+{% include "features/main/_schema_home_page.html" %}
+<!-- HERO SPLIT SECTION -->
+<section class="hero-split">
+    <div class="container hero-grid">
+        <div class="hero-text-col">
+            <div class="hero-uptitle">{{ static_content.home_hero_uptitle }}</div>
+            <h1 class="hero-heading">{{ static_content.home_hero_title_part1 }} <br><span class="text-gold">{{ static_content.home_hero_title_gold }}</span></h1>
+            <p class="hero-desc">{{ static_content.home_hero_description }}</p>
+            <a href="{% url 'main:services' %}" class="btn-pill">{% trans "btn_cta_booking" %}</a>
+        </div>
+        <div class="hero-visual-col">
+            <!-- Adaptive Model Image -->
+            <picture>
+                <source srcset="{% static 'img/5-mobile.webp' %}" media="(max-width: 767px)">
+                <img src="{% static 'img/5.webp' %}"
+                     class="hero-model-png"
+                     alt="Model"
+                     fetchpriority="high"
+                     loading="eager"
+                     width="908"
+                     height="1008">
+            </picture>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORIES (BENTO GRID) -->
+<section class="categories-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">{{ static_content.home_services_title }}</h2>
+            <p class="section-desc">{{ static_content.home_services_subtitle }}</p>
+        </div>
+
+        <div class="bento-grid">
+            {% for item in bento %}
+            <a href="{% url 'main:service_detail' slug=item.slug %}"
+               class="bento-card {% if forloop.first %}card-large{% endif %}"
+               style="background-image: url('{% if item.image %}{{ item.image.url }}{% else %}https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=1200{% endif %}'); background-position: center center;">
+                <div class="card-overlay">
+                    <h3>{{ item.title }}</h3>
+                    <p class="bento-card-desc">
+                        {% if forloop.first %}
+                            {{ item.description|truncatechars:100 }}
+                        {% else %}
+                            {{ item.description|truncatechars:40 }}
+                        {% endif %}
+                    </p>
+                    {% if forloop.first %}<span class="arrow">→</span>{% endif %}
+                    {% include "features/main/home/includes/_bento_badge.html" with item=item %}
+                </div>
+            </a>
+            {% empty %}
+                <p class="text-center" style="color: var(--color-gold);">{% trans "No services available yet." %}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock content %}

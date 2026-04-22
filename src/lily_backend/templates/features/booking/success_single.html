@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<section class="bk-success-wrapper">
+  <div class="bk-success">
+    <div class="bk-success__icon">✓</div>
+    <h1 class="bk-success__title">{% trans "Terminanfrage erhalten!" %}</h1>
+
+    <p class="bk-success__subtitle">{% trans "Vielen Dank für Ihre Anfrage. Wir prüfen Ihren Termin und melden uns so schnell wie möglich." %}</p>
+
+    <div class="bk-success__details">
+      <p><strong>{% trans "Leistung" %}:</strong> <span>{{ appointment.service.name }}</span></p>
+      <p><strong>{% trans "Datum und Uhrzeit" %}:</strong> <span>{{ appointment.datetime_start|date:"d.m.Y H:i" }}</span></p>
+      <p><strong>{% trans "Dauer" %}:</strong> <span>{{ appointment.service.duration }} {% trans "min" %}</span></p>
+    </div>
+
+    <p class="bk-success__note">
+      {% trans "Wir senden Ihnen eine Bestätigung, sobald der Termin geprüft wurde." %}<br>
+      {% trans "Zur Stornierung oder Umbuchung nutzen Sie bitte den Link in der E-Mail (nach Bestätigung)." %}
+    </p>
+
+    <a href="{% url 'main:index' %}" class="bk-success__back">{% trans "Zur Startseite" %}</a>
+  </div>
+</section>
+{% endblock content %}

@@ -51,10 +51,11 @@ The primary asynchronous function that encapsulates the entire bot initializatio
 4.  **Initialize DI Container:** Creates an instance of `BotContainer`, passing the settings and Redis client. The `BotContainer` then initializes various services and orchestrators.
 5.  **Build Bot & Dispatcher:** Calls `build_bot()` to create the `aiogram.Bot` and `aiogram.Dispatcher` instances. The `Bot` object is then set in the `container`.
 6.  **Attach Middleware:** Attaches a series of middlewares to the `Dispatcher`'s update pipeline. The order of attachment is crucial as middlewares process updates from outside-in:
-    *   `UserValidationMiddleware`: Ensures events originate from a valid user.
-    *   `ThrottlingMiddleware`: Prevents spam and rate-limits requests.
-    *   `SecurityMiddleware`: Protects against user data spoofing.
-    *   `ContainerMiddleware`: Injects the `BotContainer` into handler data.
+    *   `codex_bot.engine.middlewares.UserValidationMiddleware`: injects user/RBAC context.
+    *   `codex_bot.engine.middlewares.ThrottlingMiddleware`: prevents spam and rate-limits requests.
+    *   `src.telegram_bot.core.security.SecurityMiddleware`: protects against FSM session spoofing.
+    *   `codex_bot.engine.middlewares.ContainerMiddleware`: injects the `BotContainer` into handler data.
+    *   `codex_bot.engine.middlewares.DirectorMiddleware`: injects request-scoped navigation context.
 7.  **Attach Routers:** Calls `build_main_router()` to collect and assemble all feature-specific routers, then includes this main router into the `Dispatcher`.
 8.  **Start Redis Stream Processor:** Initiates the `RedisStreamProcessor` managed by the `container` to start listening for messages from Redis Streams.
 9.  **Start Polling:** Calls `dp.start_polling(bot)` to begin listening for incoming updates from the Telegram API. This is the main loop of the bot.

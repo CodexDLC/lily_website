@@ -27,52 +27,54 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.12"
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
         with:
-          version: latest
-
-      - name: Configure Poetry
-        run: |
-          poetry config virtualenvs.create true
-          poetry config virtualenvs.in-project true
+          enable-cache: true
 
       - name: Load cached venv
-        id: cached-poetry-dependencies
+        id: cached-uv-environment
         uses: actions/cache@v4
         with:
           path: .venv
-          # Снова меняем ключ (v3), чтобы форсировать --sync установку
-          key: v3-venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          key: v1-venv-${{ runner.os }}-${{ hashFiles('**/uv.lock') }}
 
       - name: Install dependencies
-        # Добавляем --sync, чтобы окружение точно соответствовало lock-файлу и включало dev-группу
-        run: poetry install --no-interaction --no-root --with dev --sync
+        run: uv sync --frozen
 
       - name: Run Ruff (Lint & Format)
         run: |
-          poetry run ruff check src/
-          poetry run ruff format src/ --check
+          uv run ruff check src/
+          uv run ruff format src/ --check
 
       - name: Run Mypy (Types)
-        run: poetry run mypy src/
+        run: uv run mypy src/
 
       - name: Security Audit (pip-audit)
-        run: poetry run pip-audit --local
+        run: uv run pip-audit
 
       - name: Security SAST (Bandit)
-        # Возвращаем стандартный вызов, так как --sync гарантирует наличие бинарника
-        run: poetry run bandit -r src/ -ll
+        run: uv run bandit -r src/ -ll
 
-      - name: Run Pytest
+      - name: Run Unit Tests (with coverage gate)
         env:
-          SECRET_KEY: "test_secret_key_for_ci"
+          SECRET_KEY: "test_secret_key_for_ci"  # pragma: allowlist secret
+          FIELD_ENCRYPTION_KEY: "vT1_9X9-D9Z2h8E_9X9-D9Z2h8E_9X9-D9Z2h8E_9X8=" # pragma: allowlist secret
           ENVIRONMENT: "testing"
           REDIS_HOST: "localhost"
           REDIS_PORT: "6379"
-        run: poetry run pytest
+        run: uv run pytest -m "unit or not integration" --cov=src --cov-report=xml --cov-fail-under=90
+
+      - name: Run Integration Tests (no coverage gate)
+        env:
+          SECRET_KEY: "test_secret_key_for_ci"  # pragma: allowlist secret
+          FIELD_ENCRYPTION_KEY: "vT1_9X9-D9Z2h8E_9X9-D9Z2h8E_9X9-D9Z2h8E_9X8=" # pragma: allowlist secret
+          ENVIRONMENT: "testing"
+          REDIS_HOST: "localhost"
+          REDIS_PORT: "6379"
+        run: uv run pytest -m "integration" --no-cov
 
   build-check:
     name: Docker Build Check (Cached)
@@ -87,7 +89,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: deploy/backend/Dockerfile
+          file: deploy/lily_backend/Dockerfile
           push: false
           tags: check-backend:latest
           cache-from: type=gha,scope=backend

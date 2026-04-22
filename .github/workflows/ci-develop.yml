@@ -16,34 +16,29 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: "3.12"
 
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
         with:
-          version: latest
-
-      - name: Configure Poetry
-        run: |
-          poetry config virtualenvs.create true
-          poetry config virtualenvs.in-project true
+          enable-cache: true
 
       - name: Load cached venv
-        id: cached-poetry-dependencies
+        id: cached-uv-environment
         uses: actions/cache@v4
         with:
           path: .venv
-          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          key: v1-venv-${{ runner.os }}-${{ hashFiles('**/uv.lock') }}
 
       - name: Install dependencies
-        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-        run: poetry install --no-interaction --no-root --with dev
+        if: steps.cached-uv-environment.outputs.cache-hit != 'true'
+        run: uv sync --frozen
 
       - name: Run Ruff
-        run: poetry run ruff check src/
+        run: uv run ruff check src/
 
       - name: Run Mypy
-        run: poetry run mypy src/
+        run: uv run mypy src/
 
       - name: Run Trivy (FS Scan)
         uses: aquasecurity/trivy-action@master

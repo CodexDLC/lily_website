@@ -21,13 +21,13 @@ Configure these in: **GitHub → Repository → Settings → Secrets and variabl
 
 ```env
 # Database
-DATABASE_URL=postgresql+asyncpg://user:pass@postgres:5432/dbname
+DATABASE_URL=postgresql+asyncpg://user:pass@postgres:5432/dbname  # pragma: allowlist secret
 POSTGRES_DB=dbname
 POSTGRES_USER=user
-POSTGRES_PASSWORD=strongpassword
+POSTGRES_PASSWORD=strongpassword  # pragma: allowlist secret
 
 # Security
-SECRET_KEY=your-secret-key-here
+SECRET_KEY=your-secret-key-here  # pragma: allowlist secret
 
 # FastAPI
 DEBUG=False
@@ -35,12 +35,12 @@ ALLOWED_ORIGINS=["https://yourdomain.dev"]
 SITE_URL=https://yourdomain.dev
 
 # Telegram Bot
-BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz
+BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyz  # pragma: allowlist secret
 BACKEND_API_URL=http://backend:8000
-BACKEND_API_KEY=your-api-key
+BACKEND_API_KEY=your-api-key  # pragma: allowlist secret
 
 # Redis
-REDIS_URL=redis://redis:6379/0
+REDIS_URL=redis://redis:6379/0  # pragma: allowlist secret
 ```
 
 ### Auto-provided Secrets

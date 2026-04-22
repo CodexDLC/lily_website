@@ -1,0 +1,52 @@
+{% load i18n %}
+{% if not cart.is_empty %}
+<div class="bk-hub-container" id="bk-hub">
+  <div class="bk-hub-panel">
+    <details class="bk-hub-details">
+      <summary class="bk-hub-summary">
+        <span class="bk-hub-selected">
+          {% trans "booking_hub_selected" %} <span class="bk-hub-count">({{ cart.items|length }})</span>
+        </span>
+        <span class="bk-hub-meta">
+          <span>{{ cart.total_duration }} {% trans "min" %}</span>
+          <span class="bk-hub-meta__sep" aria-hidden="true"></span>
+          <strong>{{ cart.total_price }} €</strong>
+        </span>
+        <span class="bk-hub-toggle">
+          <span class="bk-hub-toggle__details">{% trans "booking_hub_details" %}</span>
+          <span class="bk-hub-toggle__hide">{% trans "booking_hub_hide" %}</span>
+        </span>
+      </summary>
+
+      <ul class="bk-hub-list">
+        {% for item in cart.items %}
+          <li class="bk-hub-item">
+            <div class="bk-hub-item__main">
+              <strong class="bk-hub-item__name">{{ item.service_title }}</strong>
+              <span class="bk-hub-item__duration">{{ item.duration }} {% trans "min" %}</span>
+            </div>
+            <span class="bk-hub-item__price">{{ item.price }} €</span>
+            <button type="button"
+                    class="bk-hub-item__remove"
+                    hx-post="{% url 'booking:cart_remove' %}"
+                    hx-vals='{"service_id": "{{ item.service_id }}", "source": "hub"}'
+                    hx-target="#bk-hub-placeholder"
+                    hx-swap="innerHTML"
+                    title="{% trans 'booking_hub_remove' %}"
+                    aria-label="{% trans 'booking_hub_remove' %}">
+              &times;
+            </button>
+          </li>
+        {% endfor %}
+      </ul>
+    </details>
+
+    <a href="{% url 'booking:booking_wizard' %}" class="bk-hub-continue">
+      <span>{% trans "booking_hub_continue" %}</span>
+      <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</div>
+{% else %}
+<div id="bk-hub"></div>
+{% endif %}

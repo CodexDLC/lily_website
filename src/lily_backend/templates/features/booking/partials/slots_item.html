@@ -1,0 +1,26 @@
+{% comment %}
+  Slots for a single cart item (multi-day mode) — target: #bk-slots-item-{service_id} outerHTML
+  Returned by SchedulerSlotsItemView.
+{% endcomment %}
+<div class="bk-slots-item" id="bk-slots-item-{{ service_id }}">
+  <div class="bk-slots-item__header">Время на <strong>{{ date }}</strong></div>
+
+  {% if slots %}
+  <div class="bk-slots-grid bk-slots-grid--compact">
+    {% for time, available in slots.items %}
+    {% if available %}
+    <button class="bk-slot bk-slot--available"
+            hx-post="{% url 'booking:scheduler_confirm_time' %}"
+            hx-target="#bk-scheduler-panel"
+            hx-swap="outerHTML"
+            hx-vals='{"time": "{{ time }}", "date": "{{ date }}", "service_id": "{{ service_id }}"}'
+            hx-include="[name=csrfmiddlewaretoken]">
+      {{ time }}
+    </button>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="bk-slots-item__empty">Нет свободного времени. Выберите другой день.</p>
+  {% endif %}
+</div>

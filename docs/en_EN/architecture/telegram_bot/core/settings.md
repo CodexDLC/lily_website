@@ -2,7 +2,7 @@
 
 [⬅️ Back](./README.md) | [🏠 Docs Root](../../../../../README.md)
 
-The `core/settings.py` file acts as a central registry for the bot's modular architecture. It defines which features and middlewares are active in the system.
+The `core/settings.py` file acts as a central registry for the bot's modular architecture. It defines which features are active in the system.
 
 ## 🏗️ Configuration Lists
 
@@ -18,12 +18,8 @@ A list of features that act as listeners for Redis Streams.
 - **Purpose**: Used by the `RedisStreamProcessor` to route incoming events (like notifications from the backend) to the correct logic.
 - **Format**: Relative path from `src/telegram_bot/` (e.g., `features.redis.notifications`).
 
-### `MIDDLEWARE_CLASSES`
-A list of middleware modules to be applied to the bot's dispatcher.
-- **Purpose**: Defines the order and presence of global middlewares (e.g., security, throttling, DI container injection).
-- **Format**: Full python path to the **module** containing a `setup` function (e.g., `middlewares.user_validation`).
-
-> **Note**: `I18nMiddleware` is not included in this list because it is initialized and registered separately in `core/factory.py` to handle its specific configuration requirements (locales compilation, FSM manager).
+Middlewares are attached directly in `src/telegram_bot/app_telegram.py` using `codex_bot.engine.middlewares`.
+The only project-specific middleware is `src.telegram_bot.core.security.SecurityMiddleware`.
 
 ## 🧩 Adding a New Feature
 

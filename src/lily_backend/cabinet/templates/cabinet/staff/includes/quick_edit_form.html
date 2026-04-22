@@ -1,0 +1,83 @@
+{% load i18n %}
+
+<div class="cab-modal-composer">
+    <!-- Header -->
+    <div class="cab-modal-composer__header d-flex align-items-center justify-content-between p-3 border-bottom">
+        <h5 class="m-0 fw-bold">{% trans "Edit Staff Member" %}</h5>
+        <button type="button" class="btn-close" @click="$dispatch('close-modal')"></button>
+    </div>
+
+    <form hx-post="{% url 'cabinet:staff_modal' object.pk %}"
+          hx-swap="none"
+          @htmx:after-request="if ($event.detail.xhr.status === 200) { $dispatch('close-modal'); window.location.reload(); }">
+        {% csrf_token %}
+        <div class="cab-modal-composer__body p-4">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label small fw-bold text-uppercase text-muted">{% trans "Name" %}</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors }}</div>{% endif %}
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label small fw-bold text-uppercase text-muted">{% trans "Professional Title" %}</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}<div class="text-danger small">{{ form.title.errors }}</div>{% endif %}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label small fw-bold text-uppercase text-muted">{% trans "Status" %}</label>
+                    {{ form.status }}
+                    {% if form.status.errors %}<div class="text-danger small">{{ form.status.errors }}</div>{% endif %}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label small fw-bold text-uppercase text-muted">{% trans "Years of Experience" %}</label>
+                    {{ form.years_experience }}
+                    {% if form.years_experience.errors %}<div class="text-danger small">{{ form.years_experience.errors }}</div>{% endif %}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label small fw-bold text-uppercase text-muted">{% trans "Order" %}</label>
+                    {{ form.order }}
+                    {% if form.order.errors %}<div class="text-danger small">{{ form.order.errors }}</div>{% endif %}
+                </div>
+
+                <div class="col-md-6 d-flex align-items-end">
+                    <div class="form-check mb-2">
+                        {{ form.is_public }}
+                        <label class="form-check-label" for="{{ form.is_public.id_for_label }}">
+                            {% trans "Visible on site" %}
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label small fw-bold text-uppercase text-muted">{% trans "Working Days" %}</label>
+                    <div class="d-flex flex-wrap gap-3">
+                        {% for checkbox in form.work_days %}
+                        <label class="form-check d-flex align-items-center gap-2 mb-0">
+                            {{ checkbox.tag }}
+                            <span class="form-check-label">{{ checkbox.choice_label }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    <div class="text-muted small mt-2">
+                        {% trans "Selected days will be used for booking availability." %}
+                    </div>
+                    {% if form.work_days.errors %}<div class="text-danger small">{{ form.work_days.errors }}</div>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="cab-modal-composer__footer p-3 border-top d-flex justify-content-end gap-2 bg-light">
+            <button type="button" class="btn btn-outline-secondary px-4" @click="$dispatch('close-modal')">
+                {% trans "Cancel" %}
+            </button>
+            <button type="submit" class="btn btn-primary px-4">
+                {% trans "Save Changes" %}
+            </button>
+        </div>
+    </form>
+</div>

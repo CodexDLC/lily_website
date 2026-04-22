@@ -16,9 +16,5 @@ class WorkerSettings(BaseWorkerSettings):
     BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent.parent
     TEMPLATES_DIR: str = str(Path(__file__).resolve().parent.parent / "templates")
 
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
-
 
 settings = WorkerSettings()

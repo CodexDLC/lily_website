@@ -1,0 +1,332 @@
+[
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 35,
+    "fields": {
+      "source": 14,
+      "target": 13,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 36,
+    "fields": {
+      "source": 13,
+      "target": 14,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 37,
+    "fields": {
+      "source": 15,
+      "target": 16,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 38,
+    "fields": {
+      "source": 15,
+      "target": 17,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 39,
+    "fields": {
+      "source": 15,
+      "target": 18,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 40,
+    "fields": {
+      "source": 16,
+      "target": 15,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 41,
+    "fields": {
+      "source": 17,
+      "target": 15,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 42,
+    "fields": {
+      "source": 18,
+      "target": 15,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 43,
+    "fields": {
+      "source": 16,
+      "target": 17,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 44,
+    "fields": {
+      "source": 16,
+      "target": 18,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 45,
+    "fields": {
+      "source": 17,
+      "target": 16,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 46,
+    "fields": {
+      "source": 17,
+      "target": 18,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 47,
+    "fields": {
+      "source": 18,
+      "target": 16,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 48,
+    "fields": {
+      "source": 18,
+      "target": 17,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 588,
+    "fields": {
+      "source": 19,
+      "target": 15,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 589,
+    "fields": {
+      "source": 15,
+      "target": 19,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 590,
+    "fields": {
+      "source": 19,
+      "target": 16,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 591,
+    "fields": {
+      "source": 16,
+      "target": 19,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 592,
+    "fields": {
+      "source": 19,
+      "target": 17,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 593,
+    "fields": {
+      "source": 17,
+      "target": 19,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 594,
+    "fields": {
+      "source": 19,
+      "target": 18,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 595,
+    "fields": {
+      "source": 18,
+      "target": 19,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 596,
+    "fields": {
+      "source": 19,
+      "target": 20,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 597,
+    "fields": {
+      "source": 20,
+      "target": 19,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 598,
+    "fields": {
+      "source": 20,
+      "target": 16,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 599,
+    "fields": {
+      "source": 16,
+      "target": 20,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 600,
+    "fields": {
+      "source": 20,
+      "target": 17,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 601,
+    "fields": {
+      "source": 17,
+      "target": 20,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 602,
+    "fields": {
+      "source": 20,
+      "target": 18,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  },
+  {
+    "model": "main.serviceconflictrule",
+    "pk": 603,
+    "fields": {
+      "source": 18,
+      "target": 20,
+      "rule_type": "replaces",
+      "is_active": true,
+      "note": ""
+    }
+  }
+]

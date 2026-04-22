@@ -31,6 +31,7 @@ class NotificationOrchestrator:
         html_content: str,
         from_email: str | None = None,
         timeout: int = 15,
+        headers: dict[str, str] | None = None,
     ) -> bool:
         """
         Sends email with fallback: SMTP -> SendGrid (via Twilio).
@@ -38,7 +39,7 @@ class NotificationOrchestrator:
         # 1. Primary: SMTP
         try:
             log.info(f"Orchestrator | Action: SendEmail | Step: Primary | to={to_email}")
-            await self.email_client.send_email(to_email, subject, html_content, timeout=timeout)
+            await self.email_client.send_email(to_email, subject, html_content, timeout=timeout, headers=headers)
             return True
         except Exception as e:
             log.warning(f"Orchestrator | Action: SendEmail | Step: PrimaryFailed | error={e}")
@@ -46,7 +47,14 @@ class NotificationOrchestrator:
         # 2. Fallback: SendGrid (via Twilio)
         sender = cast("str", from_email or self.email_client.smtp_from_email)
         log.info(f"Orchestrator | Action: SendEmail | Step: Fallback | to={to_email}")
-        return await self.twilio_client.send_email(to_email, subject, html_content, from_email=sender, timeout=timeout)
+        return await self.twilio_client.send_email(
+            to_email,
+            subject,
+            html_content,
+            from_email=sender,
+            timeout=timeout,
+            headers=headers,
+        )
 
     async def send_message(
         self,

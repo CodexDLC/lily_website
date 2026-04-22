@@ -1,0 +1,174 @@
+{# CODEX_DJANGO_CLI BLUEPRINT STATUS: MOVE_TO_CLI_BLUEPRINT. Reason: generated app-layer or scaffold-owned template for codex-django-cli blueprints. #}
+{% extends "cabinet/base_cabinet.html" %}
+{% load i18n %}
+
+{% block cabinet_content %}
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-10">
+      <div class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3 mb-4">
+        <div>
+          <p class="text-uppercase text-muted fw-semibold small mb-2">{% trans "Cabinet setup" %}</p>
+          <h1 class="h3 mb-2">{% trans "Booking settings" %}</h1>
+          <p class="text-muted mb-0">
+            {% trans "Manage booking rules, fallback working hours, and owner-level behavior for the booking flow." %}
+          </p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{% url 'cabinet:booking_schedule' %}" class="btn btn-light border">
+            {% trans "Back to schedule" %}
+          </a>
+          <button type="submit" form="booking-settings-form" class="btn btn-primary px-4">
+            {% trans "Save settings" %}
+          </button>
+        </div>
+      </div>
+
+      {% if storage_warning %}
+        <div class="alert alert-warning shadow-sm border-0" role="alert">
+          {{ storage_warning }}
+        </div>
+      {% endif %}
+
+      <form id="booking-settings-form" method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger shadow-sm border-0" role="alert">
+            {% for error in form.non_field_errors %}
+              <div>{{ error }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="row g-4">
+          <div class="col-12 col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+              <div class="card-header bg-white border-0 pt-4 px-4">
+                <p class="small text-uppercase text-muted fw-semibold mb-2">{% trans "Rules" %}</p>
+                <h2 class="h5 mb-1">{% trans "Booking flow" %}</h2>
+                <p class="text-muted small mb-0">
+                  {% trans "Set how granular the slot grid is and how far ahead clients can book." %}
+                </p>
+              </div>
+              <div class="card-body px-4 pb-4">
+                <div class="row g-3">
+                  {% for field in form_sections.rules %}
+                    <div class="col-12">
+                      <label class="form-label small fw-semibold text-uppercase text-muted" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      {{ field }}
+                      {% if field.help_text %}
+                        <div class="form-text small">{{ field.help_text }}</div>
+                      {% endif %}
+                      {% for error in field.errors %}
+                        <div class="text-danger small mt-1">{{ error }}</div>
+                      {% endfor %}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+              <div class="card-header bg-white border-0 pt-4 px-4">
+                <p class="small text-uppercase text-muted fw-semibold mb-2">{% trans "Hours" %}</p>
+                <h2 class="h5 mb-1">{% trans "Default working hours" %}</h2>
+                <p class="text-muted small mb-0">
+                  {% trans "These hours define the booking window when a master does not override the schedule." %}
+                </p>
+              </div>
+              <div class="card-body px-4 pb-4">
+                <div class="row g-3">
+                  {% for day in form.day_rows %}
+                    <div class="col-12 col-md-6">
+                      <div class="border rounded-3 p-3 h-100">
+                        <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+                          <p class="small text-uppercase text-muted fw-semibold mb-0">{{ day.label }}</p>
+                          <div class="form-check form-switch m-0">
+                            {{ day.closed }}
+                            <label class="form-check-label small" for="{{ day.closed.id_for_label }}">{{ day.closed.label }}</label>
+                          </div>
+                        </div>
+                        <div class="mb-3">
+                          <label class="form-label small fw-semibold text-uppercase text-muted" for="{{ day.start.id_for_label }}">{{ day.start.label }}</label>
+                          {{ day.start }}
+                          {% for error in day.start.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                          {% endfor %}
+                        </div>
+                        <div>
+                          <label class="form-label small fw-semibold text-uppercase text-muted" for="{{ day.end.id_for_label }}">{{ day.end.label }}</label>
+                          {{ day.end }}
+                          {% for error in day.end.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                          {% endfor %}
+                        </div>
+                        {% for error in day.closed.errors %}
+                          <div class="text-danger small mt-2">{{ error }}</div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+                <div class="alert alert-light border mt-3 mb-0 small" role="alert">
+                  {% trans "If a master has explicit working-day records, those records still take priority over these defaults." %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="card shadow-sm border-0">
+              <div class="card-header bg-white border-0 pt-4 px-4">
+                <p class="small text-uppercase text-muted fw-semibold mb-2">{% trans "Behavior" %}</p>
+                <h2 class="h5 mb-1">{% trans "Owner controls" %}</h2>
+                <p class="text-muted small mb-0">
+                  {% trans "Choose how Lily assigns masters and whether public booking starts only from the next day." %}
+                </p>
+              </div>
+              <div class="card-body px-4 pb-4">
+                <div class="row g-4">
+                  <div class="col-12 col-lg-5">
+                    {% with field=form.load_strategy %}
+                      <label class="form-label small fw-semibold text-uppercase text-muted" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                      {{ field }}
+                      {% if field.help_text %}
+                        <div class="form-text small">{{ field.help_text }}</div>
+                      {% endif %}
+                      {% for error in field.errors %}
+                        <div class="text-danger small mt-1">{{ error }}</div>
+                      {% endfor %}
+                    {% endwith %}
+                  </div>
+                  <div class="col-12 col-lg-7">
+                    <div class="border rounded-3 overflow-hidden">
+                      {% for field in form_sections.behavior|slice:"1:" %}
+                        <div class="d-flex align-items-start justify-content-between gap-3 p-3 {% if not forloop.last %}border-bottom{% endif %}">
+                          <div>
+                            <label class="fw-semibold mb-1 d-block" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {% if field.help_text %}
+                              <div class="text-muted small">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% for error in field.errors %}
+                              <div class="text-danger small mt-1">{{ error }}</div>
+                            {% endfor %}
+                          </div>
+                          <div class="form-check form-switch m-0 pt-1">
+                            {{ field }}
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock cabinet_content %}

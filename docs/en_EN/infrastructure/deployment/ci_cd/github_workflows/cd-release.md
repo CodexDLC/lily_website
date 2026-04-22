@@ -53,7 +53,7 @@ This is the main deployment job. It depends on `pre-deploy-check` to ensure the 
     6.  **Build and Push Bot:** Builds and pushes the Docker image for the Telegram bot service (`deploy/bot/Dockerfile`).
     7.  **Build and Push Worker:** Builds and pushes the Docker image for the worker service (`deploy/worker/Dockerfile`).
     8.  **Build and Push Nginx:** Builds and pushes the Docker image for the Nginx service (`deploy/nginx/Dockerfile`).
-    9.  **Copy configs to VPS:** Uses `appleboy/scp-action` to securely copy the `deploy/` directory (containing `docker-compose.prod.yml` and Nginx configs) to the `/opt/lily_website/` directory on the VPS.
+    9.  **Copy configs to VPS:** Uses `appleboy/scp-action` to securely copy the `deploy/` directory (containing `docker compose` configuration and Nginx configs) to the `/opt/lily_website/` directory on the VPS.
         *   **Secrets Used:** `secrets.HOST`, `secrets.USERNAME`, `secrets.SSH_KEY`.
     10. **SSH Deploy:** Connects to the VPS via SSH and executes a series of commands to update and restart the application.
         *   **Environment Variables Passed to SSH:** `DOCKER_IMAGE_BACKEND`, `DOCKER_IMAGE_BOT`, `DOCKER_IMAGE_WORKER`, `DOCKER_IMAGE_NGINX` (all tagged with `:latest`), `DOMAIN_NAME`, `REDIS_PASSWORD`, `GITHUB_TOKEN`, `GITHUB_ACTOR`.
@@ -62,7 +62,7 @@ This is the main deployment job. It depends on `pre-deploy-check` to ensure the 
             *   Creates a `.env` file from `secrets.ENV_FILE` content.
             *   Updates specific environment variables (`DOCKER_IMAGE_*`, `DOMAIN_NAME`, `REDIS_PASSWORD`) within the `.env` file.
             *   Logs in to GHCR using the provided `GITHUB_TOKEN` and `GITHUB_ACTOR`.
-            *   Pulls the latest Docker images defined in `docker-compose.prod.yml`.
+            *   Pulls the latest Docker images defined in the `docker compose` config.
             *   **Runs Database Migrations:** Executes `python manage.py migrate --noinput` within the `backend` container. If migrations fail, the deployment is aborted.
             *   **Collects Static Files:** Executes `python manage.py collectstatic --noinput` within the `backend` container.
             *   Starts/restarts Docker containers using `docker compose up -d --remove-orphans --wait --wait-timeout 120`, waiting for services to become healthy.

@@ -1,9 +1,9 @@
 from typing import Any
 
+from codex_bot.redis import RedisRouter
 from loguru import logger as log
 
 from src.telegram_bot.core.container import BotContainer
-from src.telegram_bot.services.redis.router import RedisRouter
 
 # Роутер для событий из Redis Stream
 redis_router = RedisRouter()

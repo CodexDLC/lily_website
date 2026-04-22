@@ -1,0 +1,87 @@
+{% load i18n %}
+<div class="bk-confirm-panel fade-in">
+
+  <div class="bk-panel-header">
+    <h2 class="bk-panel-title">{% trans "Ihre Daten" %}</h2>
+    <p class="bk-panel-subtitle">{% trans "Bitte geben Sie Ihre Kontaktdaten ein" %}</p>
+  </div>
+
+  {% if error %}
+    <div class="bk-error-alert">{{ error }}</div>
+  {% endif %}
+
+  <form class="bk-form"
+        hx-post="{% url 'booking:commit' %}"
+        hx-target="#booking-wizard-content"
+        hx-swap="innerHTML">
+    {% csrf_token %}
+
+    <div class="bk-form-grid">
+      <div class="bk-form-group">
+        <label>{% trans "Vorname" %} *</label>
+        <input type="text" name="first_name" value="{{ cart.contact.first_name }}" placeholder="Maria" required>
+      </div>
+
+      <div class="bk-form-group">
+        <label>{% trans "Nachname" %} *</label>
+        <input type="text" name="last_name" value="{{ cart.contact.last_name }}" placeholder="Müller" required>
+      </div>
+
+      <div class="bk-form-group">
+        <label>{% trans "E-Mail" %} *</label>
+        <input type="email" name="email" value="{{ cart.contact.email }}" placeholder="maria@example.com" required>
+      </div>
+
+      <div class="bk-form-group">
+        <label>{% trans "Telefonnummer" %} *</label>
+        <input type="tel" name="phone" value="{{ cart.contact.phone }}" placeholder="+49..." required>
+      </div>
+
+      <div class="bk-form-group full-width">
+        <label>{% trans "Anmerkungen (Optional)" %}</label>
+        <textarea name="client_notes" placeholder="{% trans 'Besonderheiten, Allergien...' %}" rows="3">{{ cart.contact.notes }}</textarea>
+      </div>
+    </div>
+
+    <!-- Checkboxes -->
+    <div class="bk-checkboxes">
+      {% if messages %}
+        <div class="bk-messages">
+          {% for message in messages %}
+            <div class="bk-error-alert {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <label class="bk-checkbox">
+        <input type="checkbox" name="request_call" {% if cart.contact.request_call %}checked{% endif %}>
+        <span class="bk-checkmark"></span>
+        <span class="bk-checkbox-label">{% trans "Bitte rufen Sie mich zur Bestätigung an" %}</span>
+      </label>
+
+      <label class="bk-checkbox">
+        <input type="checkbox" name="cancellation_policy" {% if cart.contact.cancellation_policy %}checked{% endif %}>
+        <span class="bk-checkmark"></span>
+        <span class="bk-checkbox-label">
+            {% trans "Ich akzeptiere die" %} <a href="{% url 'main:buchungsregeln' %}" target="_blank">{% trans "Stornierungsbedingungen" %}</a>
+        </span>
+      </label>
+      <label class="bk-checkbox">
+        <input type="checkbox" name="consent" {% if cart.contact.consent %}checked{% endif %}>
+        <span class="bk-checkmark"></span>
+        <span class="bk-checkbox-label">{% trans "Einwilligung zur Datenverarbeitung" %}</span>
+      </label>
+    </div><div class="bk-panel-nav">
+      <button type="button" class="bk-btn-back"
+              hx-post="{% url 'booking:cart_set_stage' %}"
+              hx-target="#booking-wizard-content"
+              hx-vals='{"stage": 2}'>
+        ← {% trans "Zurück" %}
+      </button>
+
+      <button type="submit" class="bk-btn-submit">
+        {% trans "Termin verbindlich buchen" %}
+      </button>
+    </div>
+  </form>
+</div>

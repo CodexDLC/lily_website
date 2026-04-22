@@ -86,7 +86,7 @@ BaseBotOrchestrator
                     └─ returns ViewResultDTO (text + keyboard)
 ```
 
-📄 Details: [services/base/base_orchestrator.md](../../docs/en_EN/architecture/telegram_bot/services/base/base_orchestrator.md)
+📄 Details: `codex_bot.base.BaseBotOrchestrator`
 
 ---
 
@@ -103,7 +103,7 @@ Director.set_scene("bot_menu", payload)
 > Director is the "stage manager". It knows about all features (via `BotContainer`)
 > and switches scenes when the backend returns `next_state`.
 
-📄 Details: [services/director/director.md](../../docs/en_EN/architecture/telegram_bot/services/director/director.md)
+📄 Details: `codex_bot.director.Director`
 
 ---
 
@@ -128,7 +128,7 @@ ViewSender.send(UnifiedViewDTO)
 > The bot **does not flood with new messages** — it edits existing ones.
 > IDs are stored in Redis to know what to edit.
 
-📄 Details: [services/sender/view_sender.md](../../docs/en_EN/architecture/telegram_bot/services/sender/view_sender.md)
+📄 Details: `codex_bot.sender.ViewSender`
 
 ---
 
@@ -146,7 +146,7 @@ RedisStreamProcessor (polling loop, every 1.0s)
     → ack_event() ← confirm processing
 ```
 
-📄 Details: [services/redis/stream_processor.md](../../docs/en_EN/architecture/telegram_bot/services/redis/stream_processor.md)
+📄 Details: `codex_bot.redis.RedisStreamProcessor`
 
 ---
 
@@ -169,7 +169,7 @@ A feature must have:
 - `feature_setting.py` with optional `MENU_CONFIG`, `GARBAGE_STATES`
 - `create_orchestrator(container)` — orchestrator factory
 
-📄 Details: [core/settings.md](../../docs/en_EN/architecture/telegram_bot/core/settings.md) | [services/feature_discovery/service.md](../../docs/en_EN/architecture/telegram_bot/services/feature_discovery/service.md)
+📄 Details: [core/settings.md](../../docs/en_EN/architecture/telegram_bot/core/settings.md) | `codex_bot.engine.discovery.FeatureDiscoveryService`
 
 ---
 
@@ -181,12 +181,12 @@ A feature must have:
 | Configuration | [core/config.md](../../docs/en_EN/architecture/telegram_bot/core/config.md) |
 | DI Container | [core/container.md](../../docs/en_EN/architecture/telegram_bot/core/container.md) |
 | Middlewares | [middlewares/README.md](../../docs/en_EN/architecture/telegram_bot/middlewares/README.md) |
-| Base Orchestrator | [services/base/base_orchestrator.md](../../docs/en_EN/architecture/telegram_bot/services/base/base_orchestrator.md) |
-| Director | [services/director/director.md](../../docs/en_EN/architecture/telegram_bot/services/director/director.md) |
-| ViewSender | [services/sender/view_sender.md](../../docs/en_EN/architecture/telegram_bot/services/sender/view_sender.md) |
-| FSM Manager | [services/fsm/base_manager.md](../../docs/en_EN/architecture/telegram_bot/services/fsm/base_manager.md) |
-| Redis Stream | [services/redis/stream_processor.md](../../docs/en_EN/architecture/telegram_bot/services/redis/stream_processor.md) |
-| Auto-discovery | [services/feature_discovery/service.md](../../docs/en_EN/architecture/telegram_bot/services/feature_discovery/service.md) |
+| Base Orchestrator | `codex_bot.base.BaseBotOrchestrator` |
+| Director | `codex_bot.director.Director` |
+| ViewSender | `codex_bot.sender.ViewSender` |
+| FSM Manager | `codex_bot.fsm.BaseStateManager` |
+| Redis Stream | `codex_bot.redis.RedisStreamProcessor` |
+| Auto-discovery | `codex_bot.engine.discovery.FeatureDiscoveryService` |
 | Entire Telegram Bot | [telegram_bot/README.md](../../docs/en_EN/architecture/telegram_bot/README.md) |
 
 ---

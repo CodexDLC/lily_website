@@ -99,7 +99,13 @@ class TwilioService:
             return False
 
     async def send_email(
-        self, to_email: str, subject: str, html_content: str, from_email: str, timeout: int = 15
+        self,
+        to_email: str,
+        subject: str,
+        html_content: str,
+        from_email: str,
+        timeout: int = 15,
+        headers: dict[str, str] | None = None,
     ) -> bool:
         """Отправка через SendGrid HTTP API (принадлежит Twilio)."""
         if not self.sendgrid_api_key:
@@ -113,6 +119,8 @@ class TwilioService:
             "from": {"email": from_email, "name": "Lily Beauty Salon"},
             "content": [{"type": "text/html", "value": html_content}],
         }
+        if headers:
+            payload["headers"] = headers
 
         try:
             async with httpx.AsyncClient() as client:

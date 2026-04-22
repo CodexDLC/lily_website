@@ -1,7 +1,6 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: lily_test-db
     ports:
       - "5433:5432"
     volumes:
@@ -20,7 +19,6 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: lily_test-redis
     env_file:
       - ../.env
     command: >
@@ -41,8 +39,7 @@ services:
   backend:
     build:
       context: ..
-      dockerfile: deploy/backend/Dockerfile
-    container_name: lily_test-backend
+      dockerfile: deploy/lily_backend/Dockerfile
     ports:
       - "8001:8000"
     env_file:
@@ -53,9 +50,10 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - ENVIRONMENT=testing
+      - IS_DOCKER=True
     volumes:
-      - ../src/backend_django:/app
-      - ../src/backend_django/media:/app/media
+      - ../src/lily_backend:/app
+      - ../src/lily_backend/media:/app/media
       - static_test_volume:/app/staticfiles
       - logs_test_volume:/app/logs
     depends_on:
@@ -68,7 +66,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 15s
+      start_period: 60s
     restart: unless-stopped
     networks:
       - lily_test-network
@@ -77,16 +75,16 @@ services:
     build:
       context: ..
       dockerfile: deploy/bot/Dockerfile
-    container_name: lily_test-telegram_bot
     env_file:
       - ../.env
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - BACKEND_URL=http://backend:8000
+      - IS_DOCKER=True
     volumes:
       - ../src/telegram_bot:/app/src/telegram_bot:ro
-      - ../src/shared:/app/src/shared:ro
+      - logs_test_volume:/app/logs
     restart: unless-stopped
     depends_on:
       redis:
@@ -100,7 +98,6 @@ services:
     build:
       context: ..
       dockerfile: deploy/worker/Dockerfile
-    container_name: lily_test-notification_worker
     command: arq src.workers.notification_worker.worker.WorkerSettings
     env_file:
       - ../.env
@@ -108,9 +105,9 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - BACKEND_URL=http://backend:8000
+      - IS_DOCKER=True
     volumes:
       - ../src/workers:/app/src/workers:ro
-      - ../src/shared:/app/src/shared:ro
       - logs_test_volume:/app/logs
     restart: unless-stopped
     depends_on:
@@ -125,11 +122,10 @@ services:
     build:
       context: ..
       dockerfile: deploy/nginx/Dockerfile.local
-    container_name: lily_test-nginx
     ports:
       - "8081:80"
     volumes:
-      - ../src/backend_django/media:/app/media:ro
+      - ../src/lily_backend/media:/app/media:ro
       - static_test_volume:/app/staticfiles:ro
     depends_on:
       backend:
@@ -140,7 +136,6 @@ services:
 
   mailpit:
     image: axllent/mailpit:v1.21
-    container_name: lily_test-mailpit
     ports:
       - "8026:8025"
       - "1026:1025"

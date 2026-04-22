@@ -6,7 +6,7 @@ The `I18n Middleware` is responsible for determining and managing the user's pre
 
 ## 🛠️ Class: FSMContextI18nManager
 
-Located in: `src/telegram_bot/middlewares/i18n_middleware.py`
+Provided by: `codex_bot.engine.middlewares.i18n.FSMContextI18nManager`
 
 This class extends `aiogram_i18n.managers.BaseManager` to provide a custom strategy for locale resolution and persistence.
 

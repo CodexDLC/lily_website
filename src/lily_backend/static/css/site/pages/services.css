@@ -1,0 +1,378 @@
+/* =========================================
+   SERVICES PAGE (PRICE LIST)
+   ========================================= */
+
+/* Hero Text Block */
+.hero-text-block {
+    padding: 80px 0 60px;
+    background-color: var(--color-emerald);
+    text-align: center;
+}
+
+.hero-text-block-padded {
+    padding-bottom: 40px;
+}
+
+.hero-title {
+    font-family: var(--font-serif, serif);
+    font-size: 48px;
+    color: var(--color-white);
+    margin-bottom: 10px;
+    font-weight: 400;
+}
+
+.hero-subtitle {
+    color: var(--color-gold);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.services-search {
+    width: min(100%, 520px);
+    min-width: 0;
+    height: 54px;
+    margin: 30px auto 0;
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 0 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(237, 208, 113, 0.35);
+    border-radius: 6px;
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.16);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.services-search:focus-within {
+    background: rgba(255, 255, 255, 0.11);
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px rgba(237, 208, 113, 0.18), 0 18px 42px rgba(0, 0, 0, 0.18);
+}
+
+.services-search__icon {
+    color: var(--color-gold);
+    font-size: 18px;
+}
+
+.services-search__input {
+    width: 100%;
+    min-width: 0;
+    height: 52px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-white);
+    font: inherit;
+    font-size: 16px;
+    outline: 0;
+}
+
+.services-search__input::placeholder {
+    color: rgba(245, 245, 245, 0.72);
+}
+
+.services-search__input::-webkit-search-cancel-button {
+    filter: invert(1);
+    opacity: 0.7;
+}
+
+.services-search-empty {
+    margin: 0;
+    padding: 22px;
+    border: 1px solid rgba(237, 208, 113, 0.25);
+    border-radius: 6px;
+    color: var(--color-champagne);
+    text-align: center;
+}
+
+/* Price Menu Container */
+.price-menu-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Category Header (Island Title - h2) */
+.category-header {
+    text-align: center;
+    margin-bottom: 40px;
+    margin-top: 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(237, 208, 113, 0.3);
+}
+
+.category-title {
+    font-family: var(--font-serif, serif);
+    font-size: 36px;
+    color: var(--color-white);
+    font-weight: 400;
+    margin: 0;
+}
+
+/* Category Section (within island) */
+.category-section {
+    margin-bottom: 40px;
+}
+
+.category-section:last-of-type {
+    margin-bottom: 20px;
+}
+
+/* Category Subtitle (h3 - categories within bento group) */
+.category-subtitle {
+    font-family: var(--font-serif, serif);
+    font-size: 28px;
+    color: var(--color-gold);
+    font-weight: 400;
+    margin: 0 0 10px 0;
+    text-align: center;
+}
+
+.category-desc {
+    text-align: center;
+    color: var(--color-champagne); /* Используем Шампань для описания категории */
+    font-size: 15px;
+    margin-bottom: 25px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+/* Service Row */
+.service-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px dashed rgba(245, 245, 245, 0.1);
+    transition: 0.2s;
+}
+
+.service-row:last-child {
+    border-bottom: none;
+}
+
+.service-row:hover {
+    background-color: rgba(245, 245, 245, 0.02);
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 4px;
+}
+
+/* Service Names */
+.service-names {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.service-name-main {
+    display: block;
+    font-size: 18px;
+    color: var(--color-white);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+/* Описание услуги под названием */
+.service-desc-small {
+    display: block;
+    font-size: 13px;
+    color: var(--color-champagne); /* Наш новый благородный цвет */
+    font-style: italic;
+    opacity: 0.9;
+    line-height: 1.4;
+    margin-top: 2px;
+}
+
+
+/* Service Meta (Price & Time) */
+.service-meta {
+    text-align: right;
+    min-width: 120px;
+}
+
+.meta-price {
+    display: block;
+    font-family: var(--font-serif, serif);
+    font-size: 22px;
+    color: var(--color-gold);
+    font-weight: 700;
+}
+
+.meta-time {
+    display: block;
+    font-size: 13px;
+    color: var(--color-champagne);
+    opacity: 0.6;
+    margin-top: 4px;
+}
+
+/* Service Link Wrapper */
+.service-link-wrapper {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(245, 245, 245, 0.05);
+}
+
+.more-link {
+    color: var(--color-gold);
+    text-decoration: none;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.more-link:hover {
+    color: var(--color-white);
+    letter-spacing: 2px;
+}
+
+/* =========================================
+   MOBILE ADAPTATION (iPhone 380–414px)
+   ========================================= */
+
+@media (max-width: 768px) {
+    .hero-text-block {
+        padding: 48px 0 36px;
+    }
+
+    .hero-title {
+        font-size: 34px;
+        line-height: 1.15;
+    }
+
+    .hero-subtitle {
+        font-size: 12px;
+        letter-spacing: 2px;
+    }
+
+    .services-search {
+        height: 48px;
+        margin-top: 22px;
+        padding: 0 14px;
+        gap: 10px;
+        grid-template-columns: 18px minmax(0, 1fr);
+    }
+
+    .services-search__icon {
+        font-size: 16px;
+    }
+
+    .services-search__input {
+        height: 46px;
+        font-size: 15px;
+    }
+
+    .price-menu-container {
+        gap: 28px;
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .category-header {
+        margin-bottom: 24px;
+        padding-bottom: 14px;
+    }
+
+    .category-title {
+        font-size: 26px;
+    }
+
+    .category-desc {
+        font-size: 14px;
+        margin-bottom: 18px;
+    }
+
+    /* Service row: stack content/meta/action vertically to breathe on 390px */
+    .service-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 14px 0;
+    }
+
+    .service-row:hover {
+        padding-left: 0;
+        padding-right: 0;
+        background: transparent;
+    }
+
+    .service-names {
+        padding-right: 0;
+    }
+
+    .service-name-main {
+        font-size: 16px;
+    }
+
+    .service-desc-small {
+        font-size: 12.5px;
+    }
+
+    .service-meta {
+        text-align: left;
+        min-width: 0;
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        flex-wrap: wrap;
+    }
+
+    .meta-price {
+        font-size: 20px;
+    }
+
+    .meta-time {
+        margin-top: 0;
+        opacity: 0.75;
+    }
+
+    .service-action {
+        width: 100%;
+    }
+
+    .service-action .btn,
+    .service-action button,
+    .service-action a {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .more-link {
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    .more-link:hover {
+        letter-spacing: 1px;
+    }
+}
+
+@media (max-width: 420px) {
+    .hero-title {
+        font-size: 30px;
+    }
+
+    .category-title {
+        font-size: 23px;
+    }
+
+    .services-search {
+        height: 46px;
+        padding: 0 12px;
+    }
+
+    .services-search__input {
+        height: 44px;
+        font-size: 14.5px;
+    }
+}

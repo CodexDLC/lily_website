@@ -1,0 +1,17 @@
+{% load i18n %}
+<div class="bk-stepper" id="bk-stepper" hx-swap-oob="true">
+  <div class="bk-stepper__item {% if cart.stage >= 1 %}bk-stepper__item--active{% endif %} {% if cart.stage > 1 %}bk-stepper__item--done{% endif %}">
+    <span class="bk-stepper__num">1</span>
+    <span class="bk-stepper__label">{% trans "Leistung" %}</span>
+  </div>
+  <div class="bk-stepper__sep"></div>
+  <div class="bk-stepper__item {% if cart.stage >= 2 %}bk-stepper__item--active{% endif %} {% if cart.stage > 2 %}bk-stepper__item--done{% endif %}">
+    <span class="bk-stepper__num">2</span>
+    <span class="bk-stepper__label">{% trans "Termin" %}</span>
+  </div>
+  <div class="bk-stepper__sep"></div>
+  <div class="bk-stepper__item {% if cart.stage >= 3 %}bk-stepper__item--active{% endif %}">
+    <span class="bk-stepper__num">3</span>
+    <span class="bk-stepper__label">{% trans "Daten" %}</span>
+  </div>
+</div>

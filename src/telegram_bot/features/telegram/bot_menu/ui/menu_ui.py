@@ -2,9 +2,10 @@
 UI для фичи bot_menu.
 """
 
+from codex_bot.base import ViewResultDTO
+
 from src.telegram_bot.features.telegram.bot_menu.resources.keyboards import build_dashboard_keyboard
 from src.telegram_bot.features.telegram.bot_menu.resources.texts import get_dashboard_title
-from src.telegram_bot.services.base.view_dto import ViewResultDTO
 
 
 class BotMenuUI:

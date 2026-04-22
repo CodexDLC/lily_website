@@ -1,12 +1,12 @@
 from aiogram import Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
+from codex_bot.director import Director
+from codex_bot.helper import ContextHelper
 
 from src.telegram_bot.core.container import BotContainer
 from src.telegram_bot.features.telegram.bot_menu.resources.callbacks import DashboardCallback
 from src.telegram_bot.features.telegram.bot_menu.resources.dto import MenuContext
-from src.telegram_bot.services.director.director import Director
-from src.telegram_bot.services.helper.context_helper import ContextHelper
 
 router = Router(name="bot_menu_router")
 
@@ -34,14 +34,13 @@ async def handle_dashboard_callback(
     director = Director(
         container=container,
         state=state,
-        user_id=ctx.user_id,
-        chat_id=ctx.chat_id,
+        session_key=ctx.user_id,
+        context_id=ctx.chat_id,
         trigger_id=call.message.message_id if call.message else None,
     )
-    orchestrator.set_director(director)
 
     # 4. Вызываем оркестратор
-    view_dto = await orchestrator.handle_callback(ctx)
+    view_dto = await orchestrator.handle_callback(director, ctx)
 
     if view_dto and container.view_sender:
         await container.view_sender.send(view_dto)

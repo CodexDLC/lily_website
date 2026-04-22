@@ -12,7 +12,7 @@ The project uses GitHub Actions to automate testing, linting, and deployment.
   - **Tests:** Runs `pytest` with a service container (`postgres:15`).
   - **Build Check:** Verifies that the Docker image builds successfully.
   - **Security:** Scans built images with Trivy.
-  - **Integration:** Runs full stack integration tests via Docker Compose.
+  - **Integration:** Runs full stack integration tests via `docker compose`.
 
 ### 2. CI Develop (`ci-develop.yml`)
 - **Trigger:** Push to `develop`.

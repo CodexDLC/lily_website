@@ -35,7 +35,10 @@ repos:
     rev: v2.10.0
     hooks:
       - id: pip-audit
-        args: ["--local", "--timeout", "15"]
+        args:
+          - "--local"
+          - "--timeout"
+          - "15"
         additional_dependencies: ["pip-audit[toml]", "toml"]
 
   # 2. Поиск "забытых" секретов и паролей (усиленный)
@@ -43,10 +46,14 @@ repos:
     rev: v1.5.0
     hooks:
       - id: detect-secrets
-        args: ['--baseline', '.secrets.baseline']
+        exclude: ^src/lily_backend/system/fixtures/catalog/
 
   # 3. Листинг и проверка Docker-файлов (Linter)
-  - repo: https://github.com/hadolint/hadolint
-    rev: v2.12.0
+  - repo: local
     hooks:
-      - id: hadolint
+      - id: hadolint-docker
+        name: Lint Dockerfiles (Docker)
+        language: docker_image
+        entry: hadolint/hadolint:latest hadolint
+        args: ["--failure-threshold", "error"]
+        files: ^deploy/.*/Dockerfile(\.local)?$

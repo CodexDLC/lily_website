@@ -1,12 +1,12 @@
 [project]
 name = "lily_website"
-version = "1.9.0"
+version = "2.2.0"
 description = ""
 authors = [
     {name = "CodexDLC",email = "primecodex@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.13,<3.15"
+requires-python = ">=3.12,<3.13"
 
 # Общие зависимости — всегда включены
 dependencies = [
@@ -15,70 +15,92 @@ dependencies = [
     "redis (>=5.2.1,<6.0.0)",
     "httpx (>=0.28.1,<0.29.0)",
     "django-modeltranslation (>=0.19.19,<0.20.0)",
-    "pillow (>=12.1.1,<13.0.0)",
+    "pillow>=12.2.0",
     "django-debug-toolbar (>=6.2.0,<7.0.0)",
     "holidays (>=0.63)",
     "jinja2 (>=3.1.5,<4.0.0)",
     "aiosmtplib (>=3.0.1,<4.0.0)",
     "django-unfold (>=0.79.0,<0.80.0)",
     "segno (>=1.6.6,<2.0.0)",
+    "django>=5.2.13",
+    "aiohttp>=3.13.4",
+    "anthropic>=0.87.0",
+    "cryptography>=46.0.7",
+    "pytest>=9.0.3",
+    "poetry>=2.3.3",
 ]
 
-[tool.poetry]
-packages = [
-    { include = "src" }
+[dependency-groups]
+codex_tools = [
+    "arq>=0.27.0,<0.28.0",
+    "pydantic>=2.0.0",
+    "codex-core>=0.3.0,<0.9.0",
 ]
-
-# === Группы зависимостей ===
-
-# Библиотека Codex Tools (Движки и универсальные утилиты)
-[tool.poetry.group.codex_tools.dependencies]
-arq = ">=0.27.0,<0.28.0"
-pydantic = ">=2.0.0"
-
-# Технические зависимости, общие для разных сервисов
-[tool.poetry.group.shared.dependencies]
-twilio = "^9.10.2"
-tabulate = "^0.9.0"
-requests = "^2.32.3"
-charset-normalizer = "^3.4.4"
-
-[tool.poetry.group.django.dependencies]
-django = ">=5.2.12,<6.0"
-python-dotenv = ">=1.0.0,<2.0.0"
-psycopg2-binary = ">=2.9.10,<3.0.0"
-dj-database-url = ">=2.3.0,<3.0.0"
-gunicorn = ">=23.0.0,<24.0.0"
-django-ninja = ">=1.3.0,<2.0.0"
-django-redis = ">=5.4.0,<6.0.0"
-django-prometheus = ">=2.3.1,<3.0.0"
-django-ratelimit = "^4.1.0"
-
-[tool.poetry.group.bot.dependencies]
-aiogram = ">=3.24.0,<4.0.0"
-aiogram-i18n = ">=1.4.0,<2.0.0"
-"fluent.runtime" = ">=0.4.0,<0.5.0"
-
-[tool.poetry.group.dev.dependencies]
-ruff = "*"
-mypy = "*"
-pytest = "*"
-pytest-asyncio = "*"
-pytest-django = "*"
-pre-commit = "*"
-qrcode = ">=7.0,<8.0"
-djlint = "^1.36.4"
-pip-audit = "*"
-bandit = "*"
-types-requests = "^2.32.4.20260107"
+worker = [
+    "twilio>=9.10.2,<10.0.0",
+    "codex-platform[all]>=0.3.0,<0.9.0",
+    { include-group = "codex_tools" },
+]
+django = [
+    "django>=5.2.13,<6.0",
+    "python-dotenv>=1.0.0,<2.0.0",
+    "psycopg2-binary>=2.9.10,<3.0.0",
+    "dj-database-url>=2.3.0,<3.0.0",
+    "gunicorn>=23.0.0,<24.0.0",
+    "django-ninja>=1.3.0,<2.0.0",
+    "django-prometheus>=2.3.1,<3.0.0",
+    "django-ratelimit>=4.1.0,<5.0.0",
+    "requests>=2.33.1,<3.0.0",
+    "codex-django==0.5.3",
+    { include-group = "codex_tools" },
+]
+bot = [
+    "aiogram>=3.24.0,<4.0.0",
+    "aiogram-i18n>=1.4.0,<2.0.0",
+    "codex-bot>=0.2.1,<0.9.0",
+    "codex-platform[streams]>=0.3.0,<0.9.0",
+    "fluent.runtime>=0.4.0,<0.5.0",
+    { include-group = "codex_tools" },
+]
+dev = [
+    "ruff",
+    "mypy",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-django",
+    "pytest-cov>=5.0.0,<7.0.0",
+    "pytest-mock>=3.14.0",
+    "pytest-httpx>=0.35.0",
+    "fakeredis>=2.26.0",
+    "freezegun>=1.5.1",
+    "factory-boy>=3.3.1",
+    "responses>=0.25.3",
+    "pre-commit",
+    "qrcode>=7.0,<8.0",
+    "djlint>=1.36.4,<2.0.0",
+    "pip-audit",
+    "bandit[toml]",
+    "types-requests>=2.32.4.20260107,<3.0.0",
+    "codex-services[calendar]>=0.1.3,<0.9.0",
+    "codex-django-cli>=0.3.0,<0.9.0",
+    { include-group = "django" },
+    { include-group = "bot" },
+    { include-group = "worker" },
+]
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.uv]
+default-groups = ["dev"]
 
 # === Ruff ===
 [tool.ruff]
-target-version = "py313"
+target-version = "py312"
 line-length = 120
 src = ["src"]
 
@@ -91,7 +113,7 @@ known-first-party = ["src"]
 
 # === Mypy ===
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.12"
 strict = false
 warn_return_any = false
 warn_unused_configs = true
@@ -104,15 +126,79 @@ disable_error_code = ["call-arg"]
 # === Pytest ===
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-testpaths = ["src"]
+testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-pythonpath = [".", "src/backend_django"]
 DJANGO_SETTINGS_MODULE = "core.settings.test"
+pythonpath = ["src/lily_backend", "src", "."]
 markers = [
-    "unit: Unit tests",
-    "integration: Integration tests",
+    "unit: Unit tests (fast, isolated, sqlite in-memory + fakeredis + mocks)",
+    "integration: Integration tests (sqlite + fakeredis + Django TestClient, no external services)",
+    "e2e: End-to-end tests requiring live docker-compose stack (Postgres, Redis, Mailpit, workers)",
+]
+addopts = "--tb=short --cov=src --cov-report=term-missing"
+
+# === Coverage ===
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/migrations/*",
+    "*/tests/*",
+    "*/conftest.py",
+    "*/manage.py",
+    "*/wsgi.py",
+    "*/asgi.py",
+    "*/settings/*",
+    "*/fixtures/*",
+    "*/management/commands/*",
+    "*/admin.py",
+    "*/apps.py",
+    "*/translation.py",
+    # Infrastructure & SEO
+    "*/core/sitemaps.py",
+    "*/signals.py",
+    # --- GREEN-tier glue (entry points, declarative config, UI-only) ---
+    # lily_backend glue
+    "*/lily_backend/core/logger.py",
+    "*/lily_backend/*/urls.py",
+    # workers entry points / config
+    "*/workers/notification_worker/worker.py",
+    "*/workers/system_worker/worker.py",
+    "*/workers/notification_worker/config.py",
+    "*/workers/system_worker/config.py",
+    "*/workers/core/config.py",
+    "*/workers/core/tasks.py",
+    "*/workers/core/base.py",
+    "*/workers/*/tasks/task_aggregator.py",
+    # telegram_bot bootstrap & declarative layers
+    "*/telegram_bot/app_telegram.py",
+    "*/telegram_bot/core/config.py",
+    "*/telegram_bot/core/factory.py",
+    "*/telegram_bot/core/routers.py",
+    "*/telegram_bot/core/container.py",
+    "*/telegram_bot/core/logger.py",
+    "*/telegram_bot/core/settings.py",
+    "*/telegram_bot/core/garbage_collector.py",
+    "*/telegram_bot/core/api_client.py",
+    "*/telegram_bot/features/*/feature_setting.py",
+    "*/telegram_bot/features/*/resources/keyboards.py",
+    "*/telegram_bot/features/*/resources/texts.py",
+    "*/telegram_bot/features/*/resources/callbacks.py",
+    "*/telegram_bot/features/*/ui/*",
+    "*/telegram_bot/infrastructure/redis/container.py",
+    "*/telegram_bot/infrastructure/models/base.py",
+    "*/telegram_bot/resources/*",
+]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
 ]
 
 # === djLint ===
@@ -128,6 +214,20 @@ custom_html = "true"
 
 # === Bandit ===
 [tool.bandit]
-exclude_dirs = ["tests", "features/*/tests", "tools"]
+exclude_dirs = ["tests", "tools"]
 targets = ["src"]
 skips = ["B101", "B308", "B703"]
+
+# === Quality Gate ===
+[tool.codex-check]
+project-name = "Lily"
+quality-command = "pre-commit run --all-files"
+audit-flags = "--skip-editable"
+integration-requires = "Mailpit"
+test-stages = ["unit", "integration"]
+prompt-test-stages = ["unit", "integration"]
+live-output-test-stages = ["unit", "integration"]
+no-cov-test-stages = ["integration"]
+test-paths = ["tests"]
+test-markers = { unit = "not integration" }
+types-paths = ["src", "tools"]

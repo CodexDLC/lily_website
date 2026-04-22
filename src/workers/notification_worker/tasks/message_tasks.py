@@ -1,9 +1,9 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, cast
 
+from codex_core.common.text import transliterate
 from loguru import logger as log
 
-from src.shared.utils.text import transliterate
 from src.workers.notification_worker.tasks.utils import send_status_update as _send_status_update
 
 if TYPE_CHECKING:

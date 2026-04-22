@@ -1,0 +1,1094 @@
+[
+  {
+    "model": "system.statictranslation",
+    "pk": 1,
+    "fields": {
+      "key": "home_hero_uptitle",
+      "content": "Premium Beauty Salon",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Premium Beauty Salon",
+      "content_ru": "Премиум салон красоты",
+      "content_uk": "Преміум салон краси",
+      "content_en": "Premium Beauty Salon"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 2,
+    "fields": {
+      "key": "home_hero_title_part1",
+      "content": "Die Kunst",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Die Kunst",
+      "content_ru": "Искусство",
+      "content_uk": "Мистецтво",
+      "content_en": "The Art"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 3,
+    "fields": {
+      "key": "home_hero_title_gold",
+      "content": "Ihrer Schönheit",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Ihrer Schönheit",
+      "content_ru": "вашей красоты",
+      "content_uk": "вашої краси",
+      "content_en": "of Your Beauty"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 4,
+    "fields": {
+      "key": "home_hero_description",
+      "content": "Deutsche Qualitätsstandards treffen auf ukrainische Servicekunst. Wir kreieren Looks, die inspirieren.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Deutsche Qualitätsstandards treffen auf ukrainische Servicekunst. Wir kreieren Looks, die inspirieren.",
+      "content_ru": "Немецкие стандарты качества встречаются с украинским искусством сервиса. Мы создаем образы, которые вдохновляют.",
+      "content_uk": "Німецькі стандарти якості зустрічаються з українським мистецтвом сервісу. Ми створюємо образи, що надихають.",
+      "content_en": "German quality standards meet Ukrainian service art. We create looks that inspire."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 5,
+    "fields": {
+      "key": "home_services_title",
+      "content": "Unsere Leistungen",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Unsere Leistungen",
+      "content_ru": "Наши услуги",
+      "content_uk": "Наші послуги",
+      "content_en": "Our Services"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 6,
+    "fields": {
+      "key": "home_services_subtitle",
+      "content": "Wählen Sie eine Richtung",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Wählen Sie eine Richtung",
+      "content_ru": "Выберите направление",
+      "content_uk": "Оберіть напрямок",
+      "content_en": "Choose a direction"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 7,
+    "fields": {
+      "key": "team_title",
+      "content": "Unser Team",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Unser Team",
+      "content_ru": "Наша команда",
+      "content_uk": "Наша команда",
+      "content_en": "Our Team"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 8,
+    "fields": {
+      "key": "team_subtitle",
+      "content": "SCHÖNHEITSEXPERTEN",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "SCHÖNHEITSEXPERTEN",
+      "content_ru": "ЭКСПЕРТЫ КРАСОТЫ",
+      "content_uk": "ЕКСПЕРТИ КРАСИ",
+      "content_en": "BEAUTY EXPERTS"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 9,
+    "fields": {
+      "key": "team_masters_title",
+      "content": "Unsere Meister",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Unsere Meister",
+      "content_ru": "Наши мастера",
+      "content_uk": "Наші майстри",
+      "content_en": "Our Masters"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 10,
+    "fields": {
+      "key": "team_meta_description",
+      "content": "Lernen Sie unsere Experten kennen.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Lernen Sie unsere Experten kennen.",
+      "content_ru": "Познакомьтесь с нашими экспертами.",
+      "content_uk": "Познайомтеся з нашими експертами.",
+      "content_en": "Meet our experts."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 11,
+    "fields": {
+      "key": "contacts_title",
+      "content": "Kontaktieren Sie uns",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Kontaktieren Sie uns",
+      "content_ru": "Свяжитесь с нами",
+      "content_uk": "Зв'яжіться з нами",
+      "content_en": "Contact Us"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 12,
+    "fields": {
+      "key": "contacts_subtitle",
+      "content": "ÜBER UNS & KONTAKT",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "ÜBER UNS & KONTAKT",
+      "content_ru": "О НАС И КОНТАКТЫ",
+      "content_uk": "ПРО НАС ТА КОНТАКТИ",
+      "content_en": "ABOUT US & CONTACT"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 13,
+    "fields": {
+      "key": "contacts_welcome_title",
+      "content": "Willkommen bei LILY",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Willkommen bei LILY",
+      "content_ru": "Добро пожаловать в LILY",
+      "content_uk": "Ласкаво просимо до LILY",
+      "content_en": "Welcome to LILY"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 14,
+    "fields": {
+      "key": "contacts_about_text_1",
+      "content": "LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellem Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern auch ein innerer Zustand des Selbstvertrauens.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "LILY Beauty Salon ist ein Ort, an dem deutsche Qualität auf individuellem Ansatz trifft. Wir glauben, dass Schönheit nicht nur das Äußere ist, sondern auch ein innerer Zustand des Selbstvertrauens.",
+      "content_ru": "Салон красоты LILY — это место, где немецкое качество встречается с индивидуальным подходом. Мы верим, что красота — это не только внешность, но и внутреннее состояние уверенности.",
+      "content_uk": "Салон краси LILY — це місце, де німецька якість зустрічається з індивідуальним подходом. Ми віримо, что краса — це не тільки зовнішність, а й внутрішній стан впевненості.",
+      "content_en": "LILY Beauty Salon is a place where German quality meets an individual approach. We believe that beauty is not just about appearance, but also an inner state of self-confidence."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 15,
+    "fields": {
+      "key": "contacts_about_text_2",
+      "content": "Unsere Meister verwenden nur Premium-Materialien von führenden Marken wie Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona und weitere, um Ihre natürliche Einzigartigkeit zu unterстреichen.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Unsere Meister verwenden nur Premium-Materialien von führenden Marken wie Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona und weitere, um Ihre natürliche Einzigartigkeit zu unterстреichen.",
+      "content_ru": "Наши мастера используют только премиальные материалы от ведущих брендов, таких как Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona и другие, чтобы подчеркнуть вашу природную уникальность.",
+      "content_uk": "Наші майстри використовують тільки преміальні матеріали від провідних брендів, таких как Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona та інші, щоб підкреслити вашу природну унікальність.",
+      "content_en": "Our masters use only premium materials from leading brands such as Ga&Ma, Dark, SAGA Professional, FR OPTIMA, Anubis Barcelona and others to emphasize your natural uniqueness."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 16,
+    "fields": {
+      "key": "contacts_quote",
+      "content": "Ihre Schönheit ist unsere Kunst.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Ihre Schönheit ist unsere Kunst.",
+      "content_ru": "Ваша красота — наше искусство.",
+      "content_uk": "Ваша краса — наше мистецтво.",
+      "content_en": "Your beauty is our art."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 17,
+    "fields": {
+      "key": "contacts_meta_title",
+      "content": "Kontakt | LILY Beauty Salon",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Kontakt | LILY Beauty Salon",
+      "content_ru": "Контакты | LILY Beauty Salon",
+      "content_uk": "Контакти | LILY Beauty Salon",
+      "content_en": "Contact | LILY Beauty Salon"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 18,
+    "fields": {
+      "key": "contacts_meta_description",
+      "content": "Kontaktieren Sie uns.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Kontaktieren Sie uns.",
+      "content_ru": "Свяжитесь с нами.",
+      "content_uk": "Зв'яжіться з нами.",
+      "content_en": "Contact us."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 19,
+    "fields": {
+      "key": "faq_title",
+      "content": "Häufig gestellte Fragen",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Häufig gestellte Fragen",
+      "content_ru": "Часто задаваемые вопросы",
+      "content_uk": "Часті питання",
+      "content_en": "Frequently Asked Questions"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 20,
+    "fields": {
+      "key": "faq_subtitle",
+      "content": "ALLES, WAS SIE WISSEN MÜSSEN",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "ALLES, WAS SIE WISSEN MÜSSEN",
+      "content_ru": "ВСЕ, ЧТО ВАМ НУЖНО ЗНАТЬ",
+      "content_uk": "ВСЕ, ЩО ВАМ ПОТРІБНО ЗНАТИ",
+      "content_en": "EVERYTHING YOU NEED TO KNOW"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 21,
+    "fields": {
+      "key": "faq_meta_description",
+      "content": "Antworten auf Ihre Fragen zu unseren Dienstleistungen, Marken und Terminbuchung.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Antworten auf Ihre Fragen zu unseren Dienstleistungen, Marken und Terminbuchung.",
+      "content_ru": "Ответы на ваши вопросы о наших услугах, брендах и бронировании.",
+      "content_uk": "Відповіді на ваші запитання про наші послуги, бренди та бронювання.",
+      "content_en": "Answers to your questions about our services, brands, and booking."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 22,
+    "fields": {
+      "key": "faq_q1",
+      "content": "Welche Dienstleistungen bieten Sie an?",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Welche Dienstleistungen bieten Sie an?",
+      "content_ru": "Какие услуги вы предлагаете?",
+      "content_uk": "Які послуги ви пропонуєте?",
+      "content_en": "What services do you offer?"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 23,
+    "fields": {
+      "key": "faq_a1_intro",
+      "content": "Unser Schönheitssalon bietet Leistungen in mehreren Bereichen an:",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Unser Schönheitssalon bietet Leistungen in mehreren Bereichen an:",
+      "content_ru": "Наш салон красоты предлагает услуги в нескольких направлениях:",
+      "content_uk": "Наш салон краси пропонує послуги в кількох напрямках:",
+      "content_en": "Our beauty salon offers services in several areas:"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 24,
+    "fields": {
+      "key": "faq_a1_outro",
+      "content": "Jeder Bereich umfasst verschiedene Behandlungen und Pflegeoptionen.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Jeder Bereich umfasst verschiedene Behandlungen und Pflegeoptionen.",
+      "content_ru": "Каждое направление включает в себя различные процедуры и варианты ухода.",
+      "content_uk": "Кожен напрямок включає в себе різні процедури та варіанти догляду.",
+      "content_en": "Each area includes various treatments and care options."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 25,
+    "fields": {
+      "key": "faq_a1_schema",
+      "content": "Unser Schönheitssalon bietet Leistungen in mehreren Bereichen an: Nagelservice, Friseurdienstleistungen, Gesichtskosmetik, Haarentfernung und Körperpflege, Massage, Wimpernverlängerung.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Unser Schönheitssalon bietet Leistungen in mehreren Bereichen an: Nagelservice, Friseurdienstleistungen, Gesichtskosmetik, Haarentfernung und Körperpflege, Massage, Wimpernverlängerung.",
+      "content_ru": "Наш салон красоты предлагает услуги в нескольких направлениях: ногтевой сервис, парикмахерские услуги, косметология лица, эпиляция и уход за телом, массаж, наращивание ресниц.",
+      "content_uk": "Наш салон краси пропонує послуги в кількох напрямках: нігтьовий сервіс, перукарські послуги, косметологія обличчя, епіляція та догляд за тілом, масаж, нарощування вій.",
+      "content_en": "Our beauty salon offers services in several areas: nail service, hairdressing, facial cosmetology, depilation and body care, massage, lash extensions."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 26,
+    "fields": {
+      "key": "faq_q2",
+      "content": "Mit welchen Materialien und Marken arbeiten Sie?",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Mit welchen Materialien und Marken arbeiten Sie?",
+      "content_ru": "С какими материалами и брендами вы работаете?",
+      "content_uk": "З якими матеріалами та брендами ви працюєте?",
+      "content_en": "What materials and brands do you work with?"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 27,
+    "fields": {
+      "key": "faq_a2_intro",
+      "content": "Wir verwenden professionelle Produkte von bewährten Marken:",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Wir verwenden professionelle Produkte von bewährten Marken:",
+      "content_ru": "Мы используем профессиональные продукты от проверенных брендов:",
+      "content_uk": "Ми використовуємо професійні продукти від перевірених брендів:",
+      "content_en": "We use professional products from proven brands:"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 28,
+    "fields": {
+      "key": "faq_a2_outro",
+      "content": "Eine vollständige Übersicht der verwendeten Marken finden Sie auf unserer Website.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Eine vollständige Übersicht der verwendeten Marken finden Sie auf unserer Website.",
+      "content_ru": "Полный обзор используемых брендов вы можете найти на нашем сайте.",
+      "content_uk": "Повний огляд брендів, що ми використовуємо, ви можете знайти на нашому сайті.",
+      "content_en": "A full overview of the brands used can be found on our website."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 29,
+    "fields": {
+      "key": "faq_a2_schema",
+      "content": "Wir verwenden professionelle Produkte von bewährten Marken. Nagelservice: Ga&Ma, Dark, SAGA, DNKA, Lunamoon. Haare: FR OPTIMA, Luxima, VIART. Kosmetik: Anubis, Christina, Zemits. Depilation: Italwax, Enova. Wimpern: Platinum.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Wir verwenden professionelle Produkte von bewährten Marken. Nagelservice: Ga&Ma, Dark, SAGA, DNKA, Lunamoon. Haare: FR OPTIMA, Luxima, VIART. Kosmetik: Anubis, Christina, Zemits. Depilation: Italwax, Enova. Wimpern: Platinum.",
+      "content_ru": "Мы используем профессиональные продукты от проверенных брендов. Ногтевой сервис: Ga&Ma, Dark, SAGA, DNKA, Lunamoon. Волосы: FR OPTIMA, Luxima, VIART. Косметика: Anubis, Christina, Zemits. Эпиляция: Italwax, Enova. Ресницы: Platinum.",
+      "content_uk": "Ми використовуємо професійні продукти від перевірених брендів. Нігтьовий сервіс: Ga&Ma, Dark, SAGA, DNKA, Lunamoon. Волосся: FR OPTIMA, Luxima, VIART. Косметика: Anubis, Christina, Zemits. Епіляція: Italwax, Enova. Вії: Platinum.",
+      "content_en": "We use professional products from proven brands. Nails: Ga&Ma, Dark, SAGA, DNKA, Lunamoon. Hair: FR OPTIMA, Luxima, VIART. Cosmetics: Anubis, Christina, Zemits. Depilation: Italwax, Enova. Lashes: Platinum."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 30,
+    "fields": {
+      "key": "faq_q3",
+      "content": "Sind Ihre Behandlungen für empfindliche Haut oder Nägel geeignet?",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Sind Ihre Behandlungen für empfindliche Haut oder Nägel geeignet?",
+      "content_ru": "Подходят ли ваши процедуры для чувствительной кожи или ногтей?",
+      "content_uk": "Чи підходять ваші процедури для чутливої шкіри або нігтів?",
+      "content_en": "Are your treatments suitable for sensitive skin or nails?"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 31,
+    "fields": {
+      "key": "faq_a3_p1",
+      "content": "Ja. Bei der Terminbuchung können individuelle Besonderheiten wie empfindliche Haut oder spezielle Wünsche angegeben werden.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Ja. Bei der Terminbuchung können individuelle Besonderheiten wie empfindliche Haut oder spezielle Wünsche angegeben werden.",
+      "content_ru": "Да. При бронировании можно указать индивидуальные особенности, такие как чувствительная кожа или специальные пожелания.",
+      "content_uk": "Так. При бронюванні можна вказати індивідуальні особливості, такі як чутлива шкіра або спеціальні побажання.",
+      "content_en": "Yes. When booking, individual characteristics such as sensitive skin or special requests can be specified."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 32,
+    "fields": {
+      "key": "faq_a3_p2",
+      "content": "Der passende Behandlungsablauf und die Materialien werden entsprechend ausgewählt.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Der passende Behandlungsablauf und die Materialien werden entsprechend ausgewählt.",
+      "content_ru": "Соответствующий ход процедуры и материалы будут выбраны соответствующим образом.",
+      "content_uk": "Відповідний хід процедури та матеріали будуть обрані відповідним чином.",
+      "content_en": "The appropriate treatment process and materials will be selected accordingly."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 33,
+    "fields": {
+      "key": "faq_a3_schema",
+      "content": "Ja. Bei der Terminbuchung können individuelle Besonderheiten wie empfindliche Haut oder spezielle Wünsche angegeben werden. Der passende Behandlungsablauf und die Materialien werden entsprechend ausgewählt.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Ja. Bei der Terminbuchung können individuelle Besonderheiten wie empfindliche Haut oder spezielle Wünsche angegeben werden. Der passende Behandlungsablauf und die Materialien werden entsprechend ausgewählt.",
+      "content_ru": "Да. При бронировании можно указать индивидуальные особенности. Соответствующий ход процедуры и материалы будут выбраны соответствующим образом.",
+      "content_uk": "Так. При бронюванні можна вказати індивідуальні особливості. Відповідний хід процедури та матеріали будуть обрані відповідним чином.",
+      "content_en": "Yes. Individual characteristics can be specified during booking. The treatment process and materials will be selected accordingly."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 34,
+    "fields": {
+      "key": "faq_q4",
+      "content": "Arbeiten Sie mit Problemhaut oder geschädigten Nägeln?",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Arbeiten Sie mit Problemhaut oder geschädigten Nägeln?",
+      "content_ru": "Работаете ли вы с проблемной кожей или поврежденными ногтями?",
+      "content_uk": "Чи працюєте ви з проблемною шкірою або пошкодженими нігтями?",
+      "content_en": "Do you work with problem skin or damaged nails?"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 35,
+    "fields": {
+      "key": "faq_a4_p1",
+      "content": "In unserem Salon werden kosmetische Behandlungen sowie stärkende Systeme für Nägel angeboten.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "In unserem Salon werden kosmetische Behandlungen sowie stärkende Systeme für Nägel angeboten.",
+      "content_ru": "В нашем салоне предлагаются косметологические процедуры, а также системы укрепления ногтей.",
+      "content_uk": "У нашому салоні пропонуються косметологічні процедури, а також системи зміцнення нігтів.",
+      "content_en": "Our salon offers cosmetic treatments as well as nail strengthening systems."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 36,
+    "fields": {
+      "key": "faq_a4_p2",
+      "content": "Bei speziellen Fragen oder Unsicherheiten können Sie uns vorab über das Kontaktformular oder per E‑Mail kontaktieren.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Bei speziellen Fragen oder Unsicherheiten können Sie uns vorab über das Kontaktformular oder per E‑Mail kontaktieren.",
+      "content_ru": "Если у вас есть особые вопросы или сомнения, вы можете заранее связаться с нами через контактную форму или по электронной почте.",
+      "content_uk": "Якщо у вас є особливі запитання або сумніви, ви можете заздалегідь зв'язатися з нами через контактну форму або електронною поштою.",
+      "content_en": "If you have specific questions or uncertainties, you can contact us in advance via the contact form or by email."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 37,
+    "fields": {
+      "key": "faq_a4_schema",
+      "content": "In unserem Salon werden kosmetische Behandlungen sowie stärkende Systeme für Nägel angeboten. Bei speziellen Fragen können Sie uns vorab kontaktieren.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "In unserem Salon werden kosmetische Behandlungen sowie stärkende Systeme für Nägel angeboten. Bei speziellen Fragen können Sie uns vorab kontaktieren.",
+      "content_ru": "В нашем салоне предлагаются косметологические процедуры и системы укрепления ногтей. По специальным вопросам вы можете связаться с нами заранее.",
+      "content_uk": "У нашому салоні пропонуються косметологічні процедури та системи зміцнення нігтів. Зі спеціальних питань ви можете зв'язатися з нами заздалегідь.",
+      "content_en": "Our salon offers cosmetic treatments and nail strengthening systems. For specific questions, you can contact us in advance."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 38,
+    "fields": {
+      "key": "faq_q5",
+      "content": "Ist eine individuelle Beratung möglich?",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Ist eine individuelle Beratung möglich?",
+      "content_ru": "Возможна ли индивидуальная консультация?",
+      "content_uk": "Чи можлива індивідуальна консультація?",
+      "content_en": "Is an individual consultation possible?"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 39,
+    "fields": {
+      "key": "faq_a5",
+      "content": "Ja. Wir sind offen für Rücksprache und passen Behandlungen gerne an Ihre Wünsche an.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Ja. Wir sind offen für Rücksprache und passen Behandlungen gerne an Ihre Wünsche an.",
+      "content_ru": "Да. Мы открыты для консультаций и с удовольствием адаптируем процедуры под ваши пожелания.",
+      "content_uk": "Так. Ми відкриті для консультацій і з задоволенням адаптуємо процедури під ваші побажання.",
+      "content_en": "Yes. We are open to consultation and are happy to adapt treatments to your wishes."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 40,
+    "fields": {
+      "key": "faq_q6",
+      "content": "Wie lange dauert eine Behandlung?",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Wie lange dauert eine Behandlung?",
+      "content_ru": "Сколько длится процедура?",
+      "content_uk": "Скільки триває процедура?",
+      "content_en": "How long does a treatment take?"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 41,
+    "fields": {
+      "key": "faq_a6_p1",
+      "content": "Die ungefähre Dauer jeder Behandlung ist auf der Website im Preisbereich angegeben.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Die ungefähre Dauer jeder Behandlung ist auf der Website im Preisbereich angegeben.",
+      "content_ru": "Приблизительная длительность каждой процедуры указана на сайте в разделе цен.",
+      "content_uk": "Приблизна тривалість кожної процедури вказана на сайті в розділі цін.",
+      "content_en": "The approximate duration of each treatment is indicated on the website in the price section."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 42,
+    "fields": {
+      "key": "faq_a6_p2",
+      "content": "Die tatsächliche Zeit kann je nach gewählter Leistung leicht variieren.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Die tatsächliche Zeit kann je nach gewählter Leistung leicht variieren.",
+      "content_ru": "Фактическое время может незначительно варьироваться в зависимости от выбранной услуги.",
+      "content_uk": "Фактичний час може незначно варіюватися в залежності від обраної послуги.",
+      "content_en": "The actual time may vary slightly depending on the selected service."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 43,
+    "fields": {
+      "key": "faq_a6_schema",
+      "content": "Die ungefähre Dauer jeder Behandlung ist auf der Website im Preisbereich angegeben. Die tatsächliche Zeit kann je nach gewählter Leistung leicht variieren.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Die ungefähre Dauer jeder Behandlung ist auf der Website im Preisbereich angegeben. Die tatsächliche Zeit kann je nach gewählter Leistung leicht variieren.",
+      "content_ru": "Приблизительная длительность каждой процедуры указана на сайте. Фактическое время может незначительно варьироваться.",
+      "content_uk": "Приблизна тривалість кожної процедури вказана на сайті. Фактичний час може незначно варіюватися.",
+      "content_en": "The approximate duration of each treatment is indicated on the website. The actual time may vary slightly."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 44,
+    "fields": {
+      "key": "faq_q7",
+      "content": "Wie lange hält das Ergebnis an?",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Wie lange hält das Ergebnis an?",
+      "content_ru": "Как долго держится результат?",
+      "content_uk": "Як довго тримається результат?",
+      "content_en": "How long does the result last?"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 45,
+    "fields": {
+      "key": "faq_a7_p1",
+      "content": "Die Haltbarkeit des Ergebnisses hängt von der jeweiligen Behandlung ab.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Die Haltbarkeit des Ergebnisses hängt von der jeweiligen Behandlung ab.",
+      "content_ru": "Длительность результата зависит от конкретной процедуры.",
+      "content_uk": "Тривалість результату залежить від конкретної процедури.",
+      "content_en": "The durability of the result depends on the respective treatment."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 46,
+    "fields": {
+      "key": "faq_a7_p2",
+      "content": "Detaillierte Informationen finden Sie auf der Seite der entsprechenden Dienstleistung.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Detaillierte Informationen finden Sie auf der Seite der entsprechenden Dienstleistung.",
+      "content_ru": "Подробную информацию вы найдете на странице соответствующей услуги.",
+      "content_uk": "Детальну інформацію ви знайдете на сторінці відповідної послуги.",
+      "content_en": "Detailed information can be found on the page of the corresponding service."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 47,
+    "fields": {
+      "key": "faq_a7_schema",
+      "content": "Die Haltbarkeit des Ergebnisses hängt von der jeweiligen Behandlung ab. Detaillierte Informationen finden Sie auf der Seite der entsprechenden Dienstleistung.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Die Haltbarkeit des Ergebnisses hängt von der jeweiligen Behandlung ab. Detaillierte Informationen finden Sie auf der Seite der entsprechenden Dienstleistung.",
+      "content_ru": "Длительность результата зависит от процедуры. Подробную информацию вы найдете на странице услуги.",
+      "content_uk": "Тривалість результату залежить від процедури. Детальну інформацію ви знайдете на сторінці послуги.",
+      "content_en": "The durability of the result depends on the treatment. Detailed information can be found on the service page."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 48,
+    "fields": {
+      "key": "faq_q8",
+      "content": "Wie kann ich einen Termin buchen?",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Wie kann ich einen Termin buchen?",
+      "content_ru": "Как я могу забронировать время?",
+      "content_uk": "Як я можу забронювати час?",
+      "content_en": "How can I book an appointment?"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 49,
+    "fields": {
+      "key": "faq_a8_intro",
+      "content": "Die Terminbuchung ist möglich:",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Die Terminbuchung ist möglich:",
+      "content_ru": "Бронирование возможно:",
+      "content_uk": "Бронювання можливо:",
+      "content_en": "Booking is possible:"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 50,
+    "fields": {
+      "key": "faq_a8_li1",
+      "content": "über die Startseite der Website",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "über die Startseite der Website",
+      "content_ru": "через главную страницу сайта",
+      "content_uk": "через головну сторінку сайту",
+      "content_en": "via the home page of the website"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 51,
+    "fields": {
+      "key": "faq_a8_li2",
+      "content": "über die Seite eines bestimmten Mitarbeiters",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "über die Seite eines bestimmten Mitarbeiters",
+      "content_ru": "через страницу конкретного мастера",
+      "content_uk": "через сторінку конкретного майстра",
+      "content_en": "via the page of a specific master"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 52,
+    "fields": {
+      "key": "faq_a8_outro",
+      "content": "Sie können entweder einen freien Termin wählen oder gezielt bei einem bestimmten Spezialisten buchen.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Sie können entweder einen freien Termin wählen oder gezielt bei einem bestimmten Spezialisten buchen.",
+      "content_ru": "Вы можете либо выбрать свободное время, либо записаться к конкретному специалисту.",
+      "content_uk": "Ви можете або обрати вільний час, або записатися до конкретного фахівця.",
+      "content_en": "You can either choose an available slot or book specifically with a certain specialist."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 53,
+    "fields": {
+      "key": "faq_a8_schema",
+      "content": "Die Terminbuchung ist möglich über die Startseite der Website oder über die Seite eines bestimmten Mitarbeiters.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Die Terminbuchung ist möglich über die Startseite der Website oder über die Seite eines bestimmten Mitarbeiters.",
+      "content_ru": "Бронирование возможно через главную страницу сайта или через страницу конкретного мастера.",
+      "content_uk": "Бронювання можливо через головну сторінку сайту або через сторінку конкретного майстра.",
+      "content_en": "Booking is possible via the home page of the website or via the page of a specific master."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 54,
+    "fields": {
+      "key": "faq_q9",
+      "content": "Gibt es Kontraindikationen für Behandlungen?",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Gibt es Kontraindikationen für Behandlungen?",
+      "content_ru": "Есть ли противопоказания к процедурам?",
+      "content_uk": "Чи є протипоказання до процедур?",
+      "content_en": "Are there contraindications for treatments?"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 55,
+    "fields": {
+      "key": "faq_a9_p1",
+      "content": "Informationen zu möglichen Kontraindikationen sind auf den jeweiligen Leistungsseiten angegeben.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Informationen zu möglichen Kontraindikationen sind auf den jeweiligen Leistungsseiten angegeben.",
+      "content_ru": "Информация о возможных противопоказаниях указана на страницах соответствующих услуг.",
+      "content_uk": "Інформація про можливі протипоказання вказана на сторінках відповідних послуг.",
+      "content_en": "Information on possible contraindications is provided on the respective service pages."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 56,
+    "fields": {
+      "key": "faq_a9_p2",
+      "content": "Bei Unsicherheiten empfehlen wir, sich vor der Buchung beraten zu lassen.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Bei Unsicherheiten empfehlen wir, sich vor der Buchung beraten zu lassen.",
+      "content_ru": "В случае сомнений мы рекомендуем проконсультироваться перед бронированием.",
+      "content_uk": "У разі сумнівів ми рекомендуємо проконсультуватися перед бронюванням.",
+      "content_en": "In case of uncertainty, we recommend seeking advice before booking."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 57,
+    "fields": {
+      "key": "faq_a9_schema",
+      "content": "Informationen zu möglichen Kontraindikationen sind auf den jeweiligen Leistungsseiten angegeben. Bei Unsicherheiten empfehlen wir, sich vor der Buchung beraten zu lassen.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Informationen zu möglichen Kontraindikationen sind auf den jeweiligen Leistungsseiten angegeben. Bei Unsicherheiten empfehlen wir, sich vor der Buchung beraten zu lassen.",
+      "content_ru": "Информация о противопоказаниях указана на страницах услуг. В случае сомнений рекомендуем проконсультироваться.",
+      "content_uk": "Інформація про протипоказання вказана на сторінках послуг. У разі сумнівів рекомендуємо проконсультуватися.",
+      "content_en": "Information on contraindications is provided on the service pages. In case of uncertainty, we recommend seeking advice."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 58,
+    "fields": {
+      "key": "services_title",
+      "content": "Unsere Leistungen",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Unsere Leistungen",
+      "content_ru": "Наши услуги",
+      "content_uk": "Наші послуги",
+      "content_en": "Our Services"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 59,
+    "fields": {
+      "key": "services_subtitle",
+      "content": "Wählen Sie eine Richtung",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Wählen Sie eine Richtung",
+      "content_ru": "Выберите направление",
+      "content_uk": "Оберіть напрямок",
+      "content_en": "Choose a direction"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 60,
+    "fields": {
+      "key": "services_meta_title",
+      "content": "Leistungen | LILY Beauty Salon",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Leistungen | LILY Beauty Salon",
+      "content_ru": "Услуги | LILY Beauty Salon",
+      "content_uk": "Послуги | LILY Beauty Salon",
+      "content_en": "Services | LILY Beauty Salon"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 61,
+    "fields": {
+      "key": "services_meta_description",
+      "content": "Entdecken Sie unsere Beauty-Services.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Entdecken Sie unsere Beauty-Services.",
+      "content_ru": "Откройте для себя наши бьюти-услуги.",
+      "content_uk": "Відкрийте для себе наші б'юті-послуги.",
+      "content_en": "Discover our beauty services."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 62,
+    "fields": {
+      "key": "service_detail_subtitle",
+      "content": "DETAILS & PREISE",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "DETAILS & PREISE",
+      "content_ru": "ДЕТАЛИ И ЦЕНЫ",
+      "content_uk": "ДЕТАЛІ ТА ЦІНИ",
+      "content_en": "DETAILS & PRICES"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 63,
+    "fields": {
+      "key": "service_detail_why_us",
+      "content": "Wir garantieren höchste Qualität, Hygiene und individuellen Ansatz zu jedem Kunden.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Wir garantieren höchste Qualität, Hygiene und individuellen Ansatz zu jedem Kunden.",
+      "content_ru": "Мы гарантируем высочайшее качество, гигиену и индивидуальный подход к каждому клиенту.",
+      "content_uk": "Ми гарантуємо найвищу якість, гігієну та індивідуальний підхід до кожного клієнта.",
+      "content_en": "We guarantee the highest quality, hygiene, and an individual approach to each client."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 64,
+    "fields": {
+      "key": "label_service",
+      "content": "Leistung",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Leistung",
+      "content_ru": "Услуга",
+      "content_uk": "Послуга",
+      "content_en": "Service"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 65,
+    "fields": {
+      "key": "label_explore_more",
+      "content": "Weitere Leistungen entdecken",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Weitere Leistungen entdecken",
+      "content_ru": "Узнать больше об услугах",
+      "content_uk": "Дізнатися більше про послуги",
+      "content_en": "Explore more services"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 66,
+    "fields": {
+      "key": "buchungsregeln_title",
+      "content": "Buchungsregeln & Stornierungsbedingungen",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Buchungsregeln & Stornierungsbedingungen",
+      "content_ru": "Правила бронирования и отмены записи",
+      "content_uk": "Правила бронювання та скасування запису",
+      "content_en": "Booking Rules & Cancellation Policy"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 67,
+    "fields": {
+      "key": "buchungsregeln_s1_title",
+      "content": "1. Terminbestätigung",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "1. Terminbestätigung",
+      "content_ru": "1. Подтверждение записи",
+      "content_uk": "1. Підтвердження запису",
+      "content_en": "1. Appointment Confirmation"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 68,
+    "fields": {
+      "key": "buchungsregeln_s1_p1",
+      "content": "Nach Ihrer Online-Buchung erhalten Sie eine Bestätigung Ihres Termins innerhalb von 24 Stunden. Die Bestätigung erfolgt per E-Mail oder SMS an die von Ihnen angegebenen Kontaktdaten.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Nach Ihrer Online-Buchung erhalten Sie eine Bestätigung Ihres Termins innerhalb von 24 Stunden. Die Bestätigung erfolgt per E-Mail oder SMS an die von Ihnen angegebenen Kontaktdaten.",
+      "content_ru": "После онлайн-записи вы получите подтверждение в течение 24 часов. Подтверждение будет отправлено на указанный вами адрес электронной почты или номер телефона (SMS).",
+      "content_uk": "Після онлайн-запису ви отримаєте підтвердження протягом 24 годин. Підтвердження буде надіслано на вказану вами електронну пошту або номер телефону (SMS).",
+      "content_en": "After your online booking, you will receive a confirmation of your appointment within 24 hours. The confirmation will be sent by email or SMS to the contact details you provided."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 69,
+    "fields": {
+      "key": "buchungsregeln_s1_p2",
+      "content": "Sollten Sie innerhalb von 24 Stunden keine Bestätigung erhalten haben, bitten wir Sie, uns telefonisch oder per E-Mail zu kontaktieren.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Sollten Sie innerhalb von 24 Stunden keine Bestätigung erhalten haben, bitten wir Sie, uns telefonisch oder per E-Mail zu kontaktieren.",
+      "content_ru": "Если в течение 24 часов подтверждение не пришло, просим связаться с нами по телефону или по e-mail.",
+      "content_uk": "Якщо протягом 24 годин підтвердження не надійшло, просимо зв'язатися з нами по телефону або e-mail.",
+      "content_en": "If you have not received a confirmation within 24 hours, please contact us by phone or email."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 70,
+    "fields": {
+      "key": "buchungsregeln_s2_title",
+      "content": "2. Stornierungsbedingungen",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "2. Stornierungsbedingungen",
+      "content_ru": "2. Условия отмены",
+      "content_uk": "2. Умови скасування",
+      "content_en": "2. Cancellation Policy"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 71,
+    "fields": {
+      "key": "buchungsregeln_s2_p1",
+      "content": "Eine kostenfreie Absage oder Verschiebung Ihres Termins ist bis zu 24 Stunden vor dem vereinbarten Termin möglich.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Eine kostenfreie Absage oder Verschiebung Ihres Termins ist bis zu 24 Stunden vor dem vereinbarten Termin möglich.",
+      "content_ru": "Бесплатная отмена или перенос записи возможны не позднее чем за 24 часа до назначенного времени.",
+      "content_uk": "Безкоштовне скасування або перенесення запису можливе не пізніше ніж за 24 години до призначеного часу.",
+      "content_en": "Free cancellation or rescheduling of your appointment is possible up to 24 hours before the scheduled time."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 72,
+    "fields": {
+      "key": "buchungsregeln_s2_p2",
+      "content": "Bei einer Absage weniger als 24 Stunden vor dem Termin oder bei Nichterscheinen gilt der Termin als wahrgenommen. In diesem Fall behalten wir uns vor, eine Ausfallgebühr zu erheben.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Bei einer Absage weniger als 24 Stunden vor dem Termin oder bei Nichterscheinen gilt der Termin als wahrgenommen. In diesem Fall behalten wir uns vor, eine Ausfallgebühr zu erheben.",
+      "content_ru": "При отмене менее чем за 24 часа до записи или в случае неявки визит считается состоявшимся. В этом случае мы оставляем за собой право взимать компенсацию за пропущенный сеанс.",
+      "content_uk": "При скасуванні менш ніж за 24 години до запису або у випадку неявки візит вважається таким, що відбувся. У цьому випадку ми залишаємо за собою право стягувати компенсацію за пропущений сеанс.",
+      "content_en": "In the event of a cancellation less than 24 hours before the appointment or a no-show, the appointment is considered to have taken place. In this case, we reserve the right to charge a cancellation fee."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 73,
+    "fields": {
+      "key": "buchungsregeln_s3_title",
+      "content": "3. Umbuchung",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "3. Umbuchung",
+      "content_ru": "3. Перенос записи",
+      "content_uk": "3. Перенесення запису",
+      "content_en": "3. Rescheduling"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 74,
+    "fields": {
+      "key": "buchungsregeln_s3_p1",
+      "content": "Terminverschiebungen sind ebenfalls bis zu 24 Stunden vor dem Termin möglich. Bitte kontaktieren Sie uns rechtzeitig, damit wir Ihnen einen alternativen Termin anbieten können.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Terminverschiebungen sind ebenfalls bis zu 24 Stunden vor dem Termin möglich. Bitte kontaktieren Sie uns rechtzeitig, damit wir Ihnen einen alternativen Termin anbieten können.",
+      "content_ru": "Перенос записи также возможен не позднее чем за 24 часа до визита. Пожалуйста, свяжитесь с нами заблаговременно.",
+      "content_uk": "Перенесення запису також можливе не пізніше ніж за 24 години до візиту. Будь ласка, зв'яжіться з нами заздалегідь.",
+      "content_en": "Rescheduling is also possible up to 24 hours before the appointment. Please contact us in advance so we can offer you an alternative time."
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 75,
+    "fields": {
+      "key": "buchungsregeln_s4_title",
+      "content": "4. Kontakt",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "4. Kontakt",
+      "content_ru": "4. Контакты",
+      "content_uk": "4. Контакти",
+      "content_en": "4. Contact"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 76,
+    "fields": {
+      "key": "buchungsregeln_s4_p1",
+      "content": "Bei Fragen zu Ihrer Buchung erreichen Sie uns:",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Bei Fragen zu Ihrer Buchung erreichen Sie uns:",
+      "content_ru": "По всем вопросам обращайтесь:",
+      "content_uk": "З усіх питань звертайтесь:",
+      "content_en": "If you have any questions about your booking, you can reach us:"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 77,
+    "fields": {
+      "key": "services_search_placeholder",
+      "content": "Leistung suchen",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Leistung suchen",
+      "content_ru": "Найти услугу",
+      "content_uk": "Знайти послугу",
+      "content_en": "Search service"
+    }
+  },
+  {
+    "model": "system.statictranslation",
+    "pk": 78,
+    "fields": {
+      "key": "services_search_empty",
+      "content": "Keine Leistungen gefunden.",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "content_de": "Keine Leistungen gefunden.",
+      "content_ru": "Услуги не найдены.",
+      "content_uk": "Послуги не знайдено.",
+      "content_en": "No services found."
+    }
+  }
+]

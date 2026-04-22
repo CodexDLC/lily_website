@@ -1,0 +1,44 @@
+{% load i18n %}
+<div class="row g-4">
+  <div class="col-12">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 pt-3 pb-0">
+        <h6 class="fw-semibold mb-0">{% trans "Public Display (Text)" %}</h6>
+        <p class="text-muted mb-0" style="font-size: .75rem;">
+          {% trans "These strings are shown on the website footer, contact page, and structured data." %}
+        </p>
+      </div>
+      <div class="card-body d-flex flex-column gap-3">
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Mo-Fr (Text)" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" name="working_hours_weekdays" value="{{ settings_data.working_hours_weekdays|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light" placeholder="09:00 - 18:00">
+          </div>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Saturday (Text)" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" name="working_hours_saturday" value="{{ settings_data.working_hours_saturday|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light" placeholder="10:00 - 14:00">
+          </div>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Sunday (Text)" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" name="working_hours_sunday" value="{{ settings_data.working_hours_sunday|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light" placeholder="Geschlossen">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

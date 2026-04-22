@@ -1,10 +1,8 @@
 from typing import Any, cast
 
+from codex_platform.workers.arq import BaseArqService
 from loguru import logger as log
 
-from src.shared.core.manager_redis.manager import StreamManager
-from src.shared.schemas.site_settings import SiteSettingsSchema
-from src.workers.core.base import ArqService
 from src.workers.core.base_module.dependencies import (
     DependencyFunction,
     close_common_dependencies,
@@ -21,7 +19,7 @@ async def init_arq_service(ctx: dict[str, Any], settings: WorkerSettings) -> Non
     """Инициализация ArqService."""
     log.info("Initializing ArqService...")
     try:
-        arq_service = ArqService(settings.arq_redis_settings)
+        arq_service = BaseArqService(settings.arq_redis_settings)
         await arq_service.init()
         ctx["arq_service"] = arq_service
         log.info("ArqService initialized successfully.")
@@ -38,40 +36,23 @@ async def close_arq_service(ctx: dict[str, Any], settings: WorkerSettings) -> No
         log.info("ArqService closed.")
 
 
-async def init_stream_manager(ctx: dict[str, Any], settings: WorkerSettings) -> None:
-    """Инициализация StreamManager."""
-    log.info("Initializing Stream Manager...")
-    try:
-        redis_service = ctx.get("redis_service")
-        if not redis_service:
-            raise RuntimeError("RedisService not found in context.")
-        stream_manager = StreamManager(redis_service)
-        ctx["stream_manager"] = stream_manager
-        log.info("Stream Manager initialized successfully.")
-    except Exception as e:
-        log.exception(f"Failed to initialize Stream Manager: {e}")
-        raise
-
-
 async def init_notification_service(ctx: dict[str, Any], settings: WorkerSettings) -> None:
     """Инициализация NotificationService."""
     log.info("Initializing NotificationService...")
     try:
-        site_settings = cast("SiteSettingsSchema | None", ctx.get("site_settings"))
-        if not site_settings:
-            site_settings = SiteSettingsSchema()
+        site_settings = ctx["site_settings"]
 
         notification_service = NotificationService(
             templates_dir=str(settings.TEMPLATES_DIR),
             site_url=site_settings.site_base_url,
             logo_url=site_settings.logo_url,
-            smtp_host=settings.SMTP_HOST,
-            smtp_port=settings.SMTP_PORT,
-            smtp_user=settings.SMTP_USER,
-            smtp_password=settings.SMTP_PASSWORD,
-            smtp_from_email=settings.SMTP_FROM_EMAIL,
-            smtp_use_tls=settings.SMTP_USE_TLS,
-            sendgrid_api_key=settings.SENDGRID_API_KEY,
+            smtp_host=site_settings.smtp_host,
+            smtp_port=site_settings.smtp_port,
+            smtp_user=site_settings.smtp_user,
+            smtp_password=site_settings.smtp_password,
+            smtp_from_email=site_settings.smtp_from_email,
+            smtp_use_tls=site_settings.smtp_use_tls,
+            sendgrid_api_key=site_settings.sendgrid_api_key,
             url_path_confirm=site_settings.url_path_confirm,
             url_path_cancel=site_settings.url_path_cancel,
             url_path_reschedule=site_settings.url_path_reschedule,
@@ -147,7 +128,6 @@ async def init_orchestrator(ctx: dict[str, Any], settings: WorkerSettings) -> No
 STARTUP_DEPENDENCIES: list[DependencyFunction] = [
     init_common_dependencies,
     init_arq_service,
-    init_stream_manager,
     init_notification_service,
     init_seven_io_service,
     init_twilio_service,

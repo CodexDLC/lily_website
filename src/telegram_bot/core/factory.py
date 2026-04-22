@@ -7,12 +7,12 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram_i18n import I18nMiddleware
 from aiogram_i18n.cores import FluentRuntimeCore
+from codex_bot.engine.middlewares.i18n import FSMContextI18nManager
 from loguru import logger as log
 from redis.asyncio import Redis
 from redis.exceptions import ConnectionError as RedisConnectionError
 
 from src.telegram_bot.core.config import BotSettings
-from src.telegram_bot.middlewares.i18n_middleware import FSMContextI18nManager
 
 
 def compile_locales(base_path: pathlib.Path) -> str:
@@ -86,7 +86,7 @@ async def build_bot(settings: BotSettings, redis_client: Redis) -> tuple[Bot, Di
 
     i18n_middleware = I18nMiddleware(
         core=FluentRuntimeCore(path=locales_path),
-        manager=FSMContextI18nManager(),
+        manager=FSMContextI18nManager(allowed_locales=["ru", "de"], default_locale="de"),
         default_locale="de",
     )
     i18n_middleware.setup(dp)

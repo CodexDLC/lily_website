@@ -1,0 +1,59 @@
+{# CODEX_DJANGO_CLI BLUEPRINT STATUS: MOVE_TO_CLI_BLUEPRINT. Reason: generated app-layer or scaffold-owned template for codex-django-cli blueprints. #}
+<div class="cab-summary-card p-4">
+  <div class="fw-semibold mb-3" style="font-size: .92rem;">Series summary</div>
+
+  <div class="mb-3 pb-3" style="border-bottom: 1px solid #f1f5f9;">
+    <div class="text-muted mb-1" style="font-size: .65rem; text-transform: uppercase; letter-spacing: .05em;">Series setup</div>
+    <div class="d-flex justify-content-between">
+      <span class="text-muted" style="font-size: .78rem;">Sessions</span>
+      <span style="font-size: .8rem;" x-text="sessionCount"></span>
+    </div>
+    <div class="d-flex justify-content-between">
+      <span class="text-muted" style="font-size: .78rem;">Minimum gap</span>
+      <span style="font-size: .8rem;" x-text="minGapDays + ' days'"></span>
+    </div>
+  </div>
+
+  <div class="mb-3 pb-3" style="border-bottom: 1px solid #f1f5f9;">
+    <div class="text-muted mb-1" style="font-size: .65rem; text-transform: uppercase; letter-spacing: .05em;">Client</div>
+    <div class="fw-semibold text-dark" x-text="selectedClient ? selectedClient.name : ((clientFName + ' ' + clientLName).trim() || 'Not selected')"></div>
+    <div class="text-muted small" x-text="selectedClient ? selectedClient.phone : clientPhone"></div>
+  </div>
+
+  <div class="mb-3 pb-3" style="border-bottom: 1px solid #f1f5f9;">
+    <div class="text-muted mb-1" style="font-size: .65rem; text-transform: uppercase; letter-spacing: .05em;">Service</div>
+    <div class="fw-semibold text-dark" x-text="selectedService() ? selectedService().title : 'Not selected'"></div>
+    <div class="text-muted small" x-text="selectedService() ? ('$' + selectedService().price + ' · ' + selectedService().duration + ' min') : 'Pick the recurring service'"></div>
+  </div>
+
+  <div class="mb-3">
+    <div class="text-muted mb-2" style="font-size: .65rem; text-transform: uppercase; letter-spacing: .05em;">Sessions</div>
+    <template x-for="session in serviceSessions" :key="session.index">
+      <div class="mb-3 pb-3" style="border-bottom: 1px solid #f1f5f9;">
+        <div class="fw-semibold text-dark mb-1" x-text="'Session ' + session.index"></div>
+        <div class="d-flex justify-content-between">
+          <span class="text-muted" style="font-size: .78rem;">Date</span>
+          <span style="font-size: .8rem;" x-text="selectedDateText(session.date)"></span>
+        </div>
+        <div class="d-flex justify-content-between">
+          <span class="text-muted" style="font-size: .78rem;">Time</span>
+          <span style="font-size: .8rem;" x-text="session.time || 'Pick time'"></span>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <div class="d-flex justify-content-between mb-3">
+    <span class="text-muted" style="font-size: .78rem;">Projected total</span>
+    <span class="fw-semibold" style="font-size: .95rem; color: var(--cab-primary);" x-text="totalPrice() + ' $'"></span>
+  </div>
+
+  <button type="button"
+          class="btn btn-primary w-100"
+          :disabled="!selectedServiceId || (!selectedClient && !clientFName) || !allSessionsScheduled()">
+    <span class="bi bi-calendar2-check me-1"></span>Create series scaffold
+  </button>
+  <div class="text-muted small text-center mt-2">
+    Series persistence will be wired after the course-level booking rules are finalized.
+  </div>
+</div>

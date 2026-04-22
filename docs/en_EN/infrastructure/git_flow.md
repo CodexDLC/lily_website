@@ -23,7 +23,7 @@ Since this is a monorepo, every branch **MUST** indicate which part of the syste
 ### 2. Scopes
 | Scope | Path | Description |
 |:---|:---|:---|
-| `backend` | `src/backend-fastapi` | Server-side logic |
+| `backend` | `src/lily_backend` | Server-side logic |
 | `bot` | `src/telegram_bot` | Telegram Bot |
 | `shared` | `src/shared` | Shared code (DTOs, Utils) |
 | `infra` | `docker/`, `k8s/` | DevOps, Docker, CI/CD |

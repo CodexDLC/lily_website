@@ -11,7 +11,7 @@ The easiest way to spin up the entire environment (Backend, DB, Nginx).
 ### Start
 ```bash
 # Build and start in background
-docker-compose up -d --build
+docker compose up -d --build
 ```
 - **Backend API:** `http://localhost:8000` (or via Nginx at `http://localhost`)
 - **Swagger Docs:** `http://localhost:8000/docs`
@@ -19,25 +19,25 @@ docker-compose up -d --build
 ### Logs
 ```bash
 # All services
-docker-compose logs -f
+docker compose logs -f
 
 # Specific logic
-docker-compose logs -f backend
+docker compose logs -f backend
 ```
 
 ### Stop
 ```bash
 # Stop containers
-docker-compose stop
+docker compose stop
 
 # Stop and remove containers (volumes preserved)
-docker-compose down
+docker compose down
 ```
 
 ### Cleanup (Caution!)
 ```bash
 # Remove containers, networks, and VOLUMES (DB data and uploads will be lost!)
-docker-compose down -v
+docker compose down -v
 ```
 
 ---
@@ -49,7 +49,7 @@ If you need to debug code or run without Docker.
 ### 1. Database
 You still need PostgreSQL. Run just the DB in Docker:
 ```bash
-docker-compose up -d db
+docker compose up -d db
 ```
 Or use an external Postgres (Neon, local). Ensure `.env` is configured correctly.
 

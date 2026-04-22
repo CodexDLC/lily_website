@@ -37,7 +37,7 @@ We employ a multi-layered approach to ensure code quality and security.
     *   **Tests:** Pytest (Unit + Integration).
     *   **Build:** Docker Build verification.
     *   **Security:** Trivy Image Scan (scans built Docker images for OS/Library vulnerabilities).
-    *   **Integration:** Full stack test via `docker-compose.test.yml` (Backend + DB + Redis + Bot).
+    *   **Integration:** Full stack test via `docker compose` validation (Backend + DB + Redis + Bot).
 
 ### 4. CD Production (Secure Deployment)
 *   **Trigger:** Tag push (`v*`).

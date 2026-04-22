@@ -1,0 +1,101 @@
+{% load i18n %}
+<div class="row g-4">
+  <div class="col-12">
+
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white border-0 pt-3 pb-0">
+        <h6 class="fw-semibold mb-0">{% trans "Operations" %}</h6>
+      </div>
+      <div class="card-body d-flex flex-column gap-3">
+
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" name="maintenance_mode" id="maintenance_mode"
+                 {% if settings_data.maintenance_mode %}checked{% endif %}>
+          <label class="form-check-label text-muted" for="maintenance_mode" style="font-size:.8rem;">
+            {% trans "Maintenance Mode (Site Offline)" %}
+          </label>
+        </div>
+
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" name="app_mode_enabled" id="app_mode_enabled"
+                 {% if settings_data.app_mode_enabled %}checked{% endif %}>
+          <label class="form-check-label text-muted" for="app_mode_enabled" style="font-size:.8rem;">
+            {% trans "PWA / App Mode" %}
+          </label>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white border-0 pt-3 pb-0">
+        <h6 class="fw-semibold mb-0">{% trans "Internal URL Paths (Internal Use Only)" %}</h6>
+      </div>
+      <div class="card-body d-flex flex-column gap-3">
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Contact Form Path" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" name="url_path_contact_form" value="{{ settings_data.url_path_contact_form|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light">
+          </div>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Booking Confirm" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" name="url_path_confirm" value="{{ settings_data.url_path_confirm|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light">
+          </div>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Booking Cancel" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" name="url_path_cancel" value="{{ settings_data.url_path_cancel|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light">
+          </div>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-sm-4">
+            <label class="form-label text-muted mb-0" style="font-size:.8rem;">{% trans "Booking Reschedule" %}</label>
+          </div>
+          <div class="col-sm-8">
+            <input type="text" name="url_path_reschedule" value="{{ settings_data.url_path_reschedule|default:'' }}"
+                   class="form-control form-control-sm border-0 bg-light">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 pt-3 pb-0">
+        <h6 class="fw-semibold mb-0">{% trans "Script Injection" %}</h6>
+      </div>
+      <div class="card-body d-flex flex-column gap-3">
+
+        <div>
+          <label class="form-label text-muted mb-1" style="font-size:.8rem;">{% trans "Scripts in <head>" %}</label>
+          <textarea name="head_scripts" rows="4"
+                    class="form-control form-control-sm border-0 bg-light font-monospace" style="font-size:.7rem;">{{ settings_data.head_scripts|default:'' }}</textarea>
+        </div>
+
+        <div>
+          <label class="form-label text-muted mb-1" style="font-size:.8rem;">{% trans "Scripts in <body>" %}</label>
+          <textarea name="body_scripts" rows="4"
+                    class="form-control form-control-sm border-0 bg-light font-monospace" style="font-size:.7rem;">{{ settings_data.body_scripts|default:'' }}</textarea>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
