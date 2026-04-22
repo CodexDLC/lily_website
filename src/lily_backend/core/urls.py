@@ -50,7 +50,6 @@ urlpatterns += i18n_patterns(
     path("accounts/", include("allauth.urls")),
     path("cabinet/", include("cabinet.urls")),
     path("system/", include("system.urls")),
-    path("showcase/", include("codex_django.showcase.urls")),
     path("conversations/", include("features.conversations.urls")),
     path("", include("features.booking.urls")),
     path("", include("features.main.urls", namespace="main")),

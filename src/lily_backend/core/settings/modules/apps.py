@@ -36,7 +36,6 @@ THIRD_PARTY_APPS = [
 CODEX_APPS = [
     "codex_django.core",
     "codex_django.cabinet",
-    "codex_django.showcase",
     "codex_django.tracking",
 ]
 
