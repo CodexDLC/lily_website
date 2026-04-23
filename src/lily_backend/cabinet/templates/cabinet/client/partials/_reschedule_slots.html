@@ -1,0 +1,57 @@
+{% load i18n %}
+<style>
+  .rs-slots-label { font-size: .8rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .04em; margin-bottom: .5rem; }
+  .rs-slots-grid { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .rs-slot-btn {
+    padding: .35rem .8rem; border-radius: 999px; font-size: .82rem; font-weight: 500;
+    border: 1.5px solid #d1fae5; background: #f0fdf9; color: #0f766e;
+    cursor: pointer; transition: all .12s;
+  }
+  .rs-slot-btn:hover { background: #d1fae5; border-color: #0f766e; }
+  .rs-slot-btn--active { background: #0f766e !important; color: #fff !important; border-color: #0f766e !important; }
+  .rs-confirm-row { margin-top: 1rem; display: none; }
+  .rs-confirm-btn {
+    width: 100%; padding: .75rem; border-radius: 999px;
+    background: #0f766e; color: #fff; border: none;
+    font-size: .9rem; font-weight: 600; cursor: pointer;
+    transition: background .15s, transform .12s;
+  }
+  .rs-confirm-btn:hover { background: #115e59; transform: translateY(-1px); }
+</style>
+
+<hr style="border-color: rgba(15,118,110,.15); margin: .75rem 0;">
+<div class="rs-slots-label">{{ date|date:"j N Y" }} — {% trans "select a time" %}</div>
+
+{% if slots %}
+<div class="rs-slots-grid">
+  {% for slot in slots %}
+  <button type="button" class="rs-slot-btn"
+          onclick="rsPickSlot(this, '{{ slot }}')">
+    {{ slot }}
+  </button>
+  {% endfor %}
+</div>
+
+<div class="rs-confirm-row" id="rs-confirm-row">
+  <form method="post" action="{% url 'cabinet:client_reschedule_confirm' token=appointment.finalize_token %}">
+    {% csrf_token %}
+    <input type="hidden" name="date" value="{{ date|date:'Y-m-d' }}">
+    <input type="hidden" name="time" id="rs-selected-time" value="">
+    <button type="submit" class="rs-confirm-btn">
+      <i class="bi bi-check-lg me-1"></i> {% trans "Confirm Reschedule" %}
+    </button>
+  </form>
+</div>
+
+<script>
+function rsPickSlot(btn, time) {
+  document.querySelectorAll('.rs-slot-btn').forEach(b => b.classList.remove('rs-slot-btn--active'));
+  btn.classList.add('rs-slot-btn--active');
+  document.getElementById('rs-selected-time').value = time;
+  document.getElementById('rs-confirm-row').style.display = 'block';
+}
+</script>
+
+{% else %}
+<p class="text-muted small mb-0">{% trans "No available slots for this date." %}</p>
+{% endif %}

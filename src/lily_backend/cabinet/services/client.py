@@ -91,7 +91,9 @@ class ClientService:
                     "status": row.status_tone,
                     "status_label": row.status,
                     "status_color_map": cls.STATUS_COLOR_MAP,
-                    "manage_url": f"/appointments/manage/{row.finalize_token}/" if row.finalize_token else "#",
+                    "manage_url": f"/cabinet/my/appointments/manage/{row.finalize_token}/"
+                    if row.finalize_token
+                    else "#",
                 }
                 for row in rows
             ],
@@ -193,10 +195,34 @@ class ClientService:
 
         loyalty = LoyaltyService.get_display_for_profile(profile)
 
+        upcoming_preview: list[dict[str, str]] = []
+        if client:
+            upcoming_qs = (
+                Appointment.objects.filter(
+                    client=client,
+                    status__in=["pending", "confirmed"],
+                    datetime_start__gte=timezone.now(),
+                )
+                .select_related("service", "master")
+                .order_by("datetime_start")[:3]
+            )
+            upcoming_preview = [
+                {
+                    "date": obj.datetime_start.strftime("%d %b"),
+                    "time": obj.datetime_start.strftime("%H:%M"),
+                    "service": obj.service.title,
+                    "master": obj.master.name,
+                    "status_tone": obj.status,
+                    "token": obj.finalize_token or "",
+                }
+                for obj in upcoming_qs
+            ]
+
         return {
             "client_page_title": _("My Corner"),
             "profile_form": profile_form,
             "loyalty": loyalty,
+            "upcoming_preview": upcoming_preview,
             "corner_summary": {
                 "display_name": f"{first_name} {last_name}".strip(),
                 "subtitle": _("Client since %(month)s %(year)s")

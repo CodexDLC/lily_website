@@ -6,6 +6,7 @@ from codex_django.cabinet import (
     MetricWidgetData,
     SidebarItem,
     TopbarEntry,
+    configure_space,
     declare,
 )
 from codex_django.cabinet.selector.dashboard import DashboardSelector
@@ -169,6 +170,12 @@ declare(
 
 
 # ── Client space (client-facing cabinet) ──────────────────────────────────────
+
+configure_space(
+    space="client",
+    label="LILY",
+    icon="bi-flower1",
+)
 
 
 def get_client_sidebar() -> list[SidebarItem]:
