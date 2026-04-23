@@ -18,11 +18,14 @@ For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs
 
 - **Booking Logic:** Resolved issues with availability checks by including `reschedule_proposed` status in the blocking logic.
 - **Cabinet:** Added robust error handling and user feedback for slot conflicts during rescheduling.
+- **Worker:** Resolved mypy type errors and satisfied logging protocol.
+- **Bot:** Restored localization tests and achieved 90% coverage after aiogram-i18n 1.5 migration.
 
 ### Changed / Refactored
 
 - **Architecture:** Refactored `BookingRuntimeEngineGateway` and `RuntimeBookingProvider` to support extended appointment filters and validation.
 - **Static Assets:** Cleaned up cabinet CSS/JS and optimized the CSS compiler configuration for better performance.
+- **UI Aesthetics:** Modernized site aesthetics and simplified site settings serialization.
 - **Dev Experience:** Standardized environment templates and updated scratch scripts for catalog management.
 - **Bot Dependencies:** Migrated the project to `codex-bot>=0.3.0` with `aiogram>=3.27.0` and `aiogram-i18n[runtime]>=1.5`, removing the direct `fluent.runtime` workaround from the bot dependency group.
 
