@@ -20,7 +20,7 @@
           style="cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: background 0.2s;"
           onmouseover="this.style.background='#f8fafc'"
           onmouseout="this.style.background='white'"
-          @click="$dispatch('open-modal', { url: '{% url 'cabinet:booking_modal' appt.id %}', size: 'md' })">
+          @click="$dispatch('open-modal', { url: '{% url 'cabinet:booking_modal' appt.id %}', size: '800px' })">
         <td class="px-4 py-3" style="border: none;">
           <div class="d-flex align-items-center gap-2">
             <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold flex-shrink-0"
