@@ -11,6 +11,7 @@ from system.api import api
 from unfold.sites import UnfoldAdminSite
 
 from core.sitemaps import sitemaps
+from core.views import LLMSTextView
 
 # Inject UnfoldAdminSite into default admin
 admin.site.__class__ = UnfoldAdminSite
@@ -40,13 +41,17 @@ urlpatterns: list[Any] = [
         TemplateView.as_view(template_name="manifest.json", content_type="application/json"),
         name="manifest_json",
     ),
+    path("llms.txt", LLMSTextView.as_view()),
     path("llms_de.txt", TemplateView.as_view(template_name="llms_de.txt", content_type="text/plain")),
     path("llms_en.txt", TemplateView.as_view(template_name="llms_en.txt", content_type="text/plain")),
+    path("llms_ru.txt", TemplateView.as_view(template_name="llms_ru.txt", content_type="text/plain")),
+    path("llms_uk.txt", TemplateView.as_view(template_name="llms_uk.txt", content_type="text/plain")),
     path("api/", api.urls),
 ]
 
 urlpatterns += i18n_patterns(
     path("admin/", admin.site.urls),
+    path("llms.txt", LLMSTextView.as_view()),
     path("accounts/", include("allauth.urls")),
     path("cabinet/", include("cabinet.urls")),
     path("system/", include("system.urls")),

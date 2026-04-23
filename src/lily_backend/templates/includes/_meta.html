@@ -11,7 +11,7 @@
 
 <meta name="author" content="LILY Beauty Salon">
 <meta name="generator" content="Django">
-<link rel="canonical" href="{{ CANONICAL_DOMAIN }}{{ request.path }}">
+<link rel="canonical" href="{{ CANONICAL_BASE_URL }}{{ request.path }}">
 
 {% block meta_robots %}
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -20,7 +20,7 @@
 {% include 'includes/_hreflang_tags.html' %}
 
 <meta property="og:type" content="website">
-<meta property="og:url" content="{{ CANONICAL_DOMAIN }}{{ request.path }}">
+<meta property="og:url" content="{{ CANONICAL_BASE_URL }}{{ request.path }}">
 
 <meta property="og:title"
     content="{% block og_title %}{% firstof seo.seo_title 'LILY Beauty Salon | Köthen' %}{% endblock %}">
@@ -29,7 +29,7 @@
     content="{% block og_description %}{% firstof seo.seo_description 'Ukrainian beauty experts in Köthen. High-end manicure, cosmetology, and hair care.' %}{% endblock %}">
 
 <meta property="og:image"
-    content="{% block og_image %}{% if seo.seo_image %}{{ CANONICAL_DOMAIN }}{{ seo.seo_image.url }}{% else %}{{ CANONICAL_DOMAIN }}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock %}">
+    content="{% block og_image %}{% if seo.seo_image %}{{ CANONICAL_BASE_URL }}{{ seo.seo_image.url }}{% else %}{{ CANONICAL_BASE_URL }}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock %}">
 
 <meta property="og:site_name" content="LILY Beauty Salon">
 <meta property="og:locale" content="{{ LANGUAGE_CODE }}">
@@ -43,7 +43,7 @@
     content="{% block twitter_description %}{% firstof seo.seo_description 'Ukrainian beauty experts in Köthen.' %}{% endblock %}">
 
 <meta name="twitter:image"
-    content="{% block twitter_image %}{% if twitter_image %}{{ twitter_image }}{% else %}{{ CANONICAL_DOMAIN }}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock %}">
+    content="{% block twitter_image %}{% if twitter_image %}{{ twitter_image }}{% else %}{{ CANONICAL_BASE_URL }}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock %}">
 
 {% if object.updated_at %}
 <meta property="article:modified_time" content="{{ object.updated_at.isoformat }}">

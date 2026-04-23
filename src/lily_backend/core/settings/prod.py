@@ -39,8 +39,15 @@ if DOMAIN_NAME:
         f"https://www.{DOMAIN_NAME}",
     ]
 
+# Keep cookies host-only on the canonical non-www domain unless explicitly
+# overridden. This avoids issuing duplicate CSRF/session cookies across
+# host-only + domain-scoped variants.
 SESSION_COOKIE_DOMAIN = os.environ.get("SESSION_COOKIE_DOMAIN") or None
 CSRF_COOKIE_DOMAIN = os.environ.get("CSRF_COOKIE_DOMAIN") or None
+
+# Use a fresh CSRF cookie name in production so browsers with a stale duplicate
+# `csrftoken` stop sending the old conflicting value after deploy.
+CSRF_COOKIE_NAME = os.environ.get("CSRF_COOKIE_NAME", "csrftoken_app")
 
 # ═══════════════════════════════════════════
 # Static files

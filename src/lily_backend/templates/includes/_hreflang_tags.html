@@ -2,11 +2,12 @@
 
 {% comment %}
     This template generates hreflang tags for multilingual SEO.
-    It uses CANONICAL_DOMAIN to ensure all links point to the primary domain.
+    It uses the configured canonical site base URL to ensure all links are
+    absolute and point to the primary domain.
 {% endcomment %}
 
 {% for lang_code, lang_name in LANGUAGES %}
-<link rel="alternate" hreflang="{{ lang_code }}" href="{{ CANONICAL_DOMAIN }}{% translate_url lang_code %}" />
+<link rel="alternate" hreflang="{{ lang_code }}" href="{{ CANONICAL_BASE_URL }}{% translate_url lang_code %}" />
 {% endfor %}
 {% comment %} x-default should point to the default language version. {% endcomment %}
-<link rel="alternate" hreflang="x-default" href="{{ CANONICAL_DOMAIN }}{% translate_url 'de' %}" />
+<link rel="alternate" hreflang="x-default" href="{{ CANONICAL_BASE_URL }}{% translate_url 'de' %}" />

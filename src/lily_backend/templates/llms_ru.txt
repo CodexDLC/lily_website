@@ -19,6 +19,7 @@ Our focus is on individual approach, German quality, and premium materials.
 - [Contacts](/contacts/) - Address, phone number, opening hours, and contact form.
 - [Impressum](/impressum/) - Legal notice (Imprint).
 - [Datenschutz](/datenschutz/) - Privacy Policy.
+- [FAQ](/faq/) - Часто задаваемые вопросы.
 
 ## Contact Information
 - **Address:** Lohmannstraße 111, 06366 Köthen (Anhalt), Germany
@@ -31,17 +32,17 @@ Our focus is on individual approach, German quality, and premium materials.
 
 ## Frequently Asked Questions (FAQ)
 
-- **How can I book an appointment?**
-  You can easily book an appointment online via our website or contact us by phone.
+- **Как я могу записаться на прием?**
+  Вы можете легко записаться на прием онлайн через наш веб-сайт или связаться с нами по телефону.
 
-- **Is parking available at the salon?**
-  Yes, ample parking is available near the salon.
+- **Есть ли парковка возле салона?**
+  Да, возле салона имеется достаточно парковочных мест.
 
-- **Which payment methods are accepted?**
-  We accept cash, EC card, and common credit cards.
+- **Какие способы оплаты принимаются?**
+  Мы принимаем наличные, EC-карты и распространенные кредитные карты.
 
-- **Do you offer gift vouchers?**
-  Yes, gift vouchers for all our services are available directly at the salon.
+- **Предлагаете ли вы подарочные сертификаты?**
+  Да, подарочные сертификаты на все наши услуги доступны непосредственно в салоне.
 
-- **Can I change or cancel my appointment online?**
-  Please contact us by phone to make changes or cancellations.
+- **Могу ли я изменить или отменить свою запись онлайн?**
+  Пожалуйста, свяжитесь с нами по телефону, чтобы внести изменения или отменить запись.

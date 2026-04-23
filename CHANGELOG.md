@@ -4,6 +4,15 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
 
+## [2.4.5] - 2026-04-24
+
+### Fixed
+
+- **Localization:** Fixed Redis-backed `static_content` caching so translations are now isolated per language instead of leaking the first warmed locale across the entire site.
+- **SEO:** Fixed `canonical` and `hreflang` tags to emit absolute production URLs derived from the configured site base URL.
+- **Robots / AI Context:** Corrected `robots.txt` sitemap output and restored localized `llms.txt` support for German, English, Russian, and Ukrainian, including language-aware routing with fallback.
+- **Production Cookies:** Hardened production CSRF cookie handling for the canonical non-`www` domain and introduced a fresh cookie name to bypass stale duplicate browser cookies after deploy.
+
 ## [2.4.2] - 2026-04-23
 
 ### Fixed

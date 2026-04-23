@@ -1,9 +1,10 @@
 User-agent: *
 Allow: /
 Allow: /llms.txt
+Allow: /*/llms.txt
 
 Disallow: /admin/
 Disallow: /api/
 Disallow: /static/
 
-Sitemap: http://localhost:8000/sitemap.xml
+Sitemap: {{ CANONICAL_BASE_URL }}/sitemap.xml
