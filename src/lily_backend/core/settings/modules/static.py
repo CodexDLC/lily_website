@@ -28,11 +28,9 @@ STATICFILES_IGNORE_PATTERNS = [
     "css/site/*",
     "css/adaptive/*",
     "css/components/*",
-    "css/cabinet/*",
     "css/admin/*",
     "css/pages/*",
     "css/base.css",
-    "css/cabinet.css",
     "css/pwa.css",
 ]
 
