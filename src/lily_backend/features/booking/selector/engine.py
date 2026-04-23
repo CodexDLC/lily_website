@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime, time, timedelta
+from datetime import UTC, date, datetime, time, timedelta
 from typing import Any
 
 from codex_django.booking.adapters.availability import DjangoAvailabilityAdapter
@@ -22,12 +22,22 @@ from codex_django.booking.selectors import (
     get_nearest_slots as runtime_get_nearest_slots,
 )
 
+from ..persistence import LilyBookingPersistenceHook, build_single_service_extra_fields
 from ..providers.runtime import get_booking_project_data_provider
 
 logger = logging.getLogger(__name__)
 
 MULTI_SERVICE_MAX_UNIQUE_STARTS = 100
 MULTI_SERVICE_MAX_SOLUTIONS = 1000
+DAY_NAMES = (
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+)
 
 
 def _day_bounds(target_date: date) -> tuple[datetime, datetime]:
@@ -35,6 +45,18 @@ def _day_bounds(target_date: date) -> tuple[datetime, datetime]:
 
     start = timezone.make_aware(datetime.combine(target_date, time.min))
     return start, start + timedelta(days=1)
+
+
+def _get_settings_day_schedule(settings: Any, weekday: int) -> tuple[time, time] | None:
+    """Return Lily salon hours for a weekday from BookingSettings only."""
+    day_name = DAY_NAMES[weekday]
+    if getattr(settings, f"{day_name}_is_closed", False):
+        return None
+    start_time = getattr(settings, f"work_start_{day_name}", None)
+    end_time = getattr(settings, f"work_end_{day_name}", None)
+    if not start_time or not end_time:
+        return None
+    return start_time, end_time
 
 
 class EmptyAvailableSlots:
@@ -90,7 +112,7 @@ class LoadAwareDjangoAvailabilityAdapter(DjangoAvailabilityAdapter):
                 master_id__in=[int(i) for i in resource_ids],
                 datetime_start__gte=day_start,
                 datetime_start__lt=day_end,
-                status__in=["pending", "confirmed"],
+                status__in=["pending", "confirmed", "reschedule_proposed"],
             )
             .values("master_id")
             .annotate(cnt=Count("id"))
@@ -99,45 +121,37 @@ class LoadAwareDjangoAvailabilityAdapter(DjangoAvailabilityAdapter):
         return sorted(resource_ids, key=lambda i: counts.get(int(i), 0))
 
 
-class LilyBookingPersistenceHook:
-    """Project persistence policy for chain bookings."""
+class LilyBookingAvailabilityAdapter(LoadAwareDjangoAvailabilityAdapter):
+    """Lily availability adapter.
 
-    def __init__(self, appointment_model: type[Any], *, notify_received: bool = True) -> None:
-        self.appointment_model = appointment_model
-        self.notify_received = notify_received
+    In Lily, BookingSettings owns working hours. MasterWorkingDay only marks
+    whether a master works on a weekday.
+    """
 
-    def persist_chain(
-        self,
-        solution: Any,
-        service_ids: list[int],
-        client: Any,
-        extra_fields: dict[str, Any] | None = None,
-    ) -> list[Any]:
-        appointments: list[Any] = []
-        for index, item in enumerate(getattr(solution, "items", [])):
-            fields = (extra_fields or {}).copy()
-            fields.update(
-                {
-                    "master_id": int(item.resource_id),
-                    "service_id": service_ids[index] if index < len(service_ids) else service_ids[-1],
-                    "datetime_start": item.start_time,
-                    "duration_minutes": item.duration_minutes,
-                    "client": client,
-                }
-            )
-            appointments.append(self.appointment_model.objects.create(**fields))
+    def _get_booking_settings(self) -> Any:
+        if self._booking_settings is None:
+            load = getattr(self.booking_settings_model, "load", None)
+            self._booking_settings = load() if callable(load) else self.booking_settings_model.objects.first()
+        return self._booking_settings
 
-        if not self.notify_received:
-            return appointments
+    def get_working_hours(self, master: Any, target_date: date) -> tuple[datetime, datetime] | None:
+        weekday = target_date.weekday()
+        if not self.working_day_model.objects.filter(master_id=master.pk, weekday=weekday).exists():
+            return None
 
-        # Notify about received bookings
-        from features.conversations.services.notifications import _get_engine
+        schedule = _get_settings_day_schedule(self._get_booking_settings(), weekday)
+        if schedule is None:
+            return None
 
-        engine = _get_engine()
-        for appt in appointments:
-            engine.dispatch_event("booking.received", appt)
+        start_time, end_time = schedule
+        tz = self._get_tz(master)
+        work_start_dt = datetime.combine(target_date, start_time, tzinfo=tz)
+        work_end_dt = datetime.combine(target_date, end_time, tzinfo=tz)
+        return work_start_dt.astimezone(UTC), work_end_dt.astimezone(UTC)
 
-        return appointments
+    def get_break_interval(self, master: Any, target_date: date) -> None:
+        del master, target_date
+        return None
 
 
 class BookingRuntimeEngineGateway(BookingEngineGateway):
@@ -151,7 +165,7 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
 
         feature_models = self.provider.get_feature_models()
         strategy = BookingSettings.load().load_strategy
-        return LoadAwareDjangoAvailabilityAdapter(
+        return LilyBookingAvailabilityAdapter(
             resource_model=feature_models.resource_model,
             appointment_model=feature_models.appointment_model,
             service_model=feature_models.service_model,
@@ -229,19 +243,14 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
         if MasterDayOff.objects.filter(master_id=resource_id, date=target_date).exists():
             return []
 
-        working_day = MasterWorkingDay.objects.filter(master_id=resource_id, weekday=target_date.weekday()).first()
-        if working_day:
-            start_time = working_day.start_time
-            end_time = working_day.end_time
-        else:
-            day_name = target_date.strftime("%A").lower()
-            if getattr(settings, f"{day_name}_is_closed", False):
-                return []
-            start_time = getattr(settings, f"work_start_{day_name}", None)
-            end_time = getattr(settings, f"work_end_{day_name}", None)
-
-        if not start_time or not end_time:
+        weekday = target_date.weekday()
+        if not MasterWorkingDay.objects.filter(master_id=resource_id, weekday=weekday).exists():
             return []
+
+        schedule = _get_settings_day_schedule(settings, weekday)
+        if schedule is None:
+            return []
+        start_time, end_time = schedule
 
         step = timedelta(minutes=settings.step_minutes or 30)
         window_start = timezone.make_aware(datetime.combine(target_date, start_time))
@@ -253,7 +262,11 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
                 master_id=resource_id,
                 datetime_start__gte=day_start,
                 datetime_start__lt=day_end,
-                status__in=[Appointment.STATUS_PENDING, Appointment.STATUS_CONFIRMED],
+                status__in=[
+                    Appointment.STATUS_PENDING,
+                    Appointment.STATUS_CONFIRMED,
+                    Appointment.STATUS_RESCHEDULE_PROPOSED,
+                ],
             )
         ]
 
@@ -279,6 +292,10 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
     ) -> Any:
         feature_models = self.provider.get_feature_models()
         adapter = self._build_adapter(target_date=target_date)
+        extra_fields = build_single_service_extra_fields(
+            service_ids,
+            kwargs.pop("extra_fields", None),
+        )
         persistence_hook = LilyBookingPersistenceHook(
             feature_models.appointment_model,
             notify_received=notify_received,
@@ -292,6 +309,7 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
             selected_time=selected_time,
             resource_id=resource_id,
             client=client,
+            extra_fields=extra_fields,
             persistence_hook=persistence_hook,
             **kwargs,
         )

@@ -98,7 +98,54 @@
 
       </div>
 
-      <div class="col-xl-8">
+      <div class="col-xl-8 d-flex flex-column gap-4">
+
+        {# ── Upcoming appointments widget ────────────────────────────── #}
+        <a href="{% url 'cabinet:client_appointments' %}" class="text-decoration-none">
+          <div class="card border-0 shadow-sm overflow-hidden" style="transition: box-shadow .18s, transform .18s;"
+               onmouseenter="this.style.boxShadow='0 8px 24px rgba(15,118,110,.13)'; this.style.transform='translateY(-2px)'"
+               onmouseleave="this.style.boxShadow=''; this.style.transform=''">
+            <div class="d-flex align-items-center justify-content-between px-4 pt-4 pb-3">
+              <h2 class="h6 mb-0 fw-semibold text-dark">{% trans "Upcoming Appointments" %}</h2>
+              <span class="text-muted small d-flex align-items-center gap-1">
+                {% trans "All" %} <i class="bi bi-arrow-right" style="font-size:.75rem;"></i>
+              </span>
+            </div>
+
+            {% if upcoming_preview %}
+              <ul class="list-unstyled mb-0">
+                {% for appt in upcoming_preview %}
+                <li class="d-flex align-items-center gap-3 px-4 py-2 border-top" style="font-size:.875rem;">
+                  <div class="text-center flex-shrink-0" style="min-width:38px;">
+                    <div class="fw-bold" style="color:var(--cab-primary);line-height:1.1;">{{ appt.date }}</div>
+                    <div class="text-muted" style="font-size:.72rem;">{{ appt.time }}</div>
+                  </div>
+                  <div class="flex-grow-1 overflow-hidden">
+                    <div class="fw-semibold text-dark text-truncate">{{ appt.service }}</div>
+                    <div class="text-muted text-truncate" style="font-size:.78rem;">{{ appt.master }}</div>
+                  </div>
+                  <span class="badge rounded-pill px-2"
+                        style="font-size:.7rem;
+                               background:{% if appt.status_tone == 'confirmed' %}#d1fae5{% elif appt.status_tone == 'pending' %}#fef3c7{% else %}#f3f4f6{% endif %};
+                               color:{% if appt.status_tone == 'confirmed' %}#065f46{% elif appt.status_tone == 'pending' %}#92400e{% else %}#374151{% endif %};">
+                    {% if appt.status_tone == 'confirmed' %}{% trans "Confirmed" %}{% elif appt.status_tone == 'pending' %}{% trans "Pending" %}{% else %}{{ appt.status_tone }}{% endif %}
+                  </span>
+                </li>
+                {% endfor %}
+              </ul>
+              <div class="px-4 py-3 border-top text-center">
+                <span class="text-muted small">{% trans "Click to manage all appointments" %}</span>
+              </div>
+            {% else %}
+              <div class="px-4 pb-4 pt-2 text-center text-muted small">
+                <i class="bi bi-calendar2 d-block mb-2" style="font-size:1.5rem; color:var(--cab-primary); opacity:.4;"></i>
+                {% trans "No upcoming appointments" %}
+              </div>
+            {% endif %}
+          </div>
+        </a>
+
+        {# ── Personal data ───────────────────────────────────────────── #}
         <div class="card border-0 shadow-sm">
           <div class="card-body p-4">
             <div class="d-flex align-items-center justify-content-between mb-4">

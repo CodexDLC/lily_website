@@ -13,7 +13,7 @@ wheels = [
 
 [[package]]
 name = "aiogram"
-version = "3.27.0"
+version = "3.24.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -23,22 +23,22 @@ dependencies = [
     { name = "pydantic" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b5/09/4bfeb0314b4d78739fc7c3cdcaa77eacaeb089312d9c16f3eb538d0f0f97/aiogram-3.27.0.tar.gz", hash = "sha256:ed5fd6b40d80a6cdb215ab162c9bd9d9b7892fb2710b45e3b762a98c21119297", size = 1753647, upload-time = "2026-04-03T22:57:00.39Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fd/2f/04f47e81def8f2168679b1551e665e7ee02cf063e7bddace9fb5d1ce2f35/aiogram-3.24.0.tar.gz", hash = "sha256:ec547ede5bfa8a7a4f5fb02c75391333fc43b6f3de6a6d3f00a32e27628df5f6", size = 1713321, upload-time = "2026-01-02T00:56:55.3Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/aa/1f/64c4a9428d15ccea5aa7b204fd53061b94407640d6b075cd61c38899dd53/aiogram-3.27.0-py3-none-any.whl", hash = "sha256:26a091b6266d87db514e02703072035e7c17feebef480f927083bcfb22f634a3", size = 727326, upload-time = "2026-04-03T22:56:58.427Z" },
+    { url = "https://files.pythonhosted.org/packages/22/a5/7ba5f75b56f87a956b9e5a3e823bcbb5b55fc968914a16f3c7aa659cfc89/aiogram-3.24.0-py3-none-any.whl", hash = "sha256:eb3cc05b0ec53c7e24d7eada5c069aee2f431332e2e7bc2c8adf30d13b02f715", size = 706866, upload-time = "2026-01-02T00:56:53.115Z" },
 ]
 
 [[package]]
 name = "aiogram-i18n"
-version = "1.5"
+version = "1.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiogram" },
     { name = "click" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0c/db/f488713e1f6707ea7eacafed1909834a691c8d7a149b65b1a3936adf386d/aiogram_i18n-1.5.tar.gz", hash = "sha256:15f7d8064aba842fe6b8529c8962063415b2ca86b6c603d24cba41788dc35062", size = 19665, upload-time = "2026-03-07T23:36:17.483Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ed/b4/97191bf90bcd5ee37990a233b0d3d611ea5037dbf768a28c0d196cb32f4f/aiogram_i18n-1.4.tar.gz", hash = "sha256:6e41304a166fe3bccb74f98b00dc4e85fac0cee815ae7f2c85f539e37e65818b", size = 33451, upload-time = "2024-06-04T12:37:21.771Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d4/09/a5ffedd5fca4e623a3e59ca39e88efe3671415eaaf9189b932d7b43b92d4/aiogram_i18n-1.5-py3-none-any.whl", hash = "sha256:6ce55978d32c8d1008d59f029c300506c6de48a18c8c346de3f666bd78013779", size = 33851, upload-time = "2026-03-07T23:36:16.374Z" },
+    { url = "https://files.pythonhosted.org/packages/0f/ba/f978b917b911bc610b8266978b3ab460b882031fc9665e9daff4498650bd/aiogram_i18n-1.4-py3-none-any.whl", hash = "sha256:a1f838cfd6fa9a459d5f4514e9693e4fe75d27a0138686d92880faff11447007", size = 37045, upload-time = "2024-06-04T12:37:20.008Z" },
 ]
 
 [[package]]
@@ -336,14 +336,14 @@ wheels = [
 
 [[package]]
 name = "click"
-version = "8.3.2"
+version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/57/75/31212c6bf2503fdf920d87fee5d7a86a2e3bcf444984126f13d8e4016804/click-8.3.2.tar.gz", hash = "sha256:14162b8b3b3550a7d479eafa77dfd3c38d9dc8951f6f69c78913a8f9a7540fd5", size = 302856, upload-time = "2026-04-03T19:14:45.118Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593, upload-time = "2024-12-21T18:38:44.339Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e4/20/71885d8b97d4f3dde17b1fdb92dbd4908b00541c5a3379787137285f602e/click-8.3.2-py3-none-any.whl", hash = "sha256:1924d2c27c5653561cd2cae4548d1406039cb79b858b747cfea24924bbc1616d", size = 108379, upload-time = "2026-04-03T19:14:43.505Z" },
+    { url = "https://files.pythonhosted.org/packages/7e/d4/7ebdbd03970677812aac39c869717059dbb71a4cfc033ca6e5221787892c/click-8.1.8-py3-none-any.whl", hash = "sha256:63c132bbbed01578a06712a2d1f497bb62d9c1c0d329b7903a866228027263b2", size = 98188, upload-time = "2024-12-21T18:38:41.666Z" },
 ]
 
 [[package]]
@@ -379,7 +379,7 @@ wheels = [
 
 [[package]]
 name = "codex-django"
-version = "0.5.3"
+version = "0.6.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "codex-core" },
@@ -387,22 +387,19 @@ dependencies = [
     { name = "codex-services" },
     { name = "django" },
     { name = "django-allauth" },
-    { name = "django-debug-toolbar" },
     { name = "django-encrypted-model-fields" },
     { name = "django-extensions" },
     { name = "django-import-export" },
     { name = "django-lifecycle" },
     { name = "django-modeltranslation" },
     { name = "django-ninja" },
-    { name = "django-prometheus" },
-    { name = "django-unfold" },
     { name = "loguru" },
     { name = "pillow" },
     { name = "redis" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/41/19/c2cf53770852ac3d14d6907f40c394f7f199a02a940d69e3e3d22075ec94/codex_django-0.5.3.tar.gz", hash = "sha256:08e7fc2938beaec86be6eb9c0579761bf6ed0c101b4050357d4483740a575246", size = 1392042, upload-time = "2026-04-19T09:12:29.433Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/83/70/c5fa8b9d8a97b6141ae0f2fdc3bb523e1451573b4e7d90de610b45bb91f5/codex_django-0.6.3.tar.gz", hash = "sha256:af197b2c137e8ce0f0f236b23d5f4f7467d310357952e78a87576ea228639d5b", size = 1413100, upload-time = "2026-04-23T11:10:27.733Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b1/29/0529afee2def7faeefc4b817f4e7fbc55629ab3cf6cccc2aae011196cbb8/codex_django-0.5.3-py3-none-any.whl", hash = "sha256:94e3d7280064378111ee8bf1c95e5b7fe77f731b966a8fec7cb4ff853828d85c", size = 1281486, upload-time = "2026-04-19T09:12:27.301Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/f1/e9db9225231736ce0e521de0a9c9471cef87d290ebe853b2146a2772f8e6/codex_django-0.6.3-py3-none-any.whl", hash = "sha256:bc1dfef1b0c197b35e4ed9438fd7035a903d7fa8d02c648020c3eba9f7bcc49c", size = 1284388, upload-time = "2026-04-23T11:10:25.444Z" },
 ]
 
 [[package]]
@@ -421,15 +418,15 @@ wheels = [
 
 [[package]]
 name = "codex-platform"
-version = "0.3.0"
+version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "codex-core" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b7/31/0df902879e3a03b5b92b2f96d08d49e57c0e723d7a608eec669723c64d95/codex_platform-0.3.0.tar.gz", hash = "sha256:7d886da87992b5c6420620df1c294f54da3e86eaf7b55d8514f24064b0f250d0", size = 152974, upload-time = "2026-04-05T15:06:52.445Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0b/34/33053c27be91c0f718a57195a67149b276b46a031ec130951ec1a8f405c9/codex_platform-0.4.0.tar.gz", hash = "sha256:f3028ad1caeeade56ad2014edc4b5c3f41516e50fa25eceaac7cf51882cf1866", size = 163830, upload-time = "2026-04-22T19:11:43.259Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bf/cc/b959a7fab181ac11c432a15d21ab074452e7f995b38414b2025e205e58ad/codex_platform-0.3.0-py3-none-any.whl", hash = "sha256:c6fabd3a28af4c1e74b92e0c8eec37419ba1efed74ccb95bb9ee8ea8bc93f7aa", size = 52404, upload-time = "2026-04-05T15:06:50.855Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/3c/003c76047c6fb8b37811561feb194199e2cc94c8345c72d0a56bfbc66bd5/codex_platform-0.4.0-py3-none-any.whl", hash = "sha256:df8dda992b2d2fe7eb110efd4732005424d069ddb09ae5524bfe58436f01f31f", size = 55845, upload-time = "2026-04-22T19:11:41.536Z" },
 ]
 
 [package.optional-dependencies]
@@ -758,6 +755,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/6f/8f/94038fe739b095aca3e4708ecc8a4e77f1fcfd87bed5d6baff43d4c80bc4/django-ratelimit-4.1.0.tar.gz", hash = "sha256:555943b283045b917ad59f196829530d63be2a39adb72788d985b90c81ba808b", size = 11551, upload-time = "2023-07-24T20:34:32.374Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/fb/78/2c59b30cd8bc8068d02349acb6aeed5c4e05eb01cdf2107ccd76f2e81487/django_ratelimit-4.1.0-py2.py3-none-any.whl", hash = "sha256:d047a31cf94d83ef1465d7543ca66c6fc16695559b5f8d814d1b51df15110b92", size = 11608, upload-time = "2023-07-24T20:34:31.362Z" },
+]
+
+[[package]]
+name = "django-redis"
+version = "6.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "redis" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/08/53/dbcfa1e528e0d6c39947092625b2c89274b5d88f14d357cee53c4d6dbbd4/django_redis-6.0.0.tar.gz", hash = "sha256:2d9cb12a20424a4c4dde082c6122f486628bae2d9c2bee4c0126a4de7fda00dd", size = 56904, upload-time = "2025-06-17T18:15:46.376Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7e/79/055dfcc508cfe9f439d9f453741188d633efa9eab90fc78a67b0ab50b137/django_redis-6.0.0-py3-none-any.whl", hash = "sha256:20bf0063a8abee567eb5f77f375143c32810c8700c0674ced34737f8de4e36c0", size = 33687, upload-time = "2025-06-17T18:15:34.165Z" },
 ]
 
 [[package]]
@@ -1236,7 +1246,7 @@ wheels = [
 
 [[package]]
 name = "lily-website"
-version = "2.2.0"
+version = "2.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
@@ -1291,6 +1301,7 @@ dev = [
     { name = "django-ninja" },
     { name = "django-prometheus" },
     { name = "django-ratelimit" },
+    { name = "django-redis" },
     { name = "djlint" },
     { name = "factory-boy" },
     { name = "fakeredis" },
@@ -1325,6 +1336,7 @@ django = [
     { name = "django-ninja" },
     { name = "django-prometheus" },
     { name = "django-ratelimit" },
+    { name = "django-redis" },
     { name = "gunicorn" },
     { name = "psycopg2-binary" },
     { name = "pydantic" },
@@ -1363,12 +1375,12 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 bot = [
-    { name = "aiogram", specifier = ">=3.24.0,<4.0.0" },
-    { name = "aiogram-i18n", specifier = ">=1.4.0,<2.0.0" },
+    { name = "aiogram", specifier = ">=3.24.0,<3.25.0" },
+    { name = "aiogram-i18n", specifier = ">=1.4.0,<1.5.0" },
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
     { name = "codex-bot", specifier = ">=0.2.1,<0.9.0" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-platform", extras = ["streams"], specifier = ">=0.3.0,<0.9.0" },
+    { name = "codex-platform", extras = ["streams"], specifier = ">=0.4.0,<0.9.0" },
     { name = "fluent-runtime", specifier = ">=0.4.0,<0.5.0" },
     { name = "pydantic", specifier = ">=2.0.0" },
 ]
@@ -1378,22 +1390,23 @@ codex-tools = [
     { name = "pydantic", specifier = ">=2.0.0" },
 ]
 dev = [
-    { name = "aiogram", specifier = ">=3.24.0,<4.0.0" },
-    { name = "aiogram-i18n", specifier = ">=1.4.0,<2.0.0" },
+    { name = "aiogram", specifier = ">=3.24.0,<3.25.0" },
+    { name = "aiogram-i18n", specifier = ">=1.4.0,<1.5.0" },
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
     { name = "bandit", extras = ["toml"] },
     { name = "codex-bot", specifier = ">=0.2.1,<0.9.0" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-django", specifier = "==0.5.3" },
+    { name = "codex-django", specifier = "==0.6.3" },
     { name = "codex-django-cli", specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-platform", extras = ["all"], specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-platform", extras = ["streams"], specifier = ">=0.3.0,<0.9.0" },
+    { name = "codex-platform", extras = ["all"], specifier = ">=0.4.0,<0.9.0" },
+    { name = "codex-platform", extras = ["streams"], specifier = ">=0.4.0,<0.9.0" },
     { name = "codex-services", extras = ["calendar"], specifier = ">=0.1.3,<0.9.0" },
     { name = "dj-database-url", specifier = ">=2.3.0,<3.0.0" },
     { name = "django", specifier = ">=5.2.13,<6.0" },
     { name = "django-ninja", specifier = ">=1.3.0,<2.0.0" },
     { name = "django-prometheus", specifier = ">=2.3.1,<3.0.0" },
     { name = "django-ratelimit", specifier = ">=4.1.0,<5.0.0" },
+    { name = "django-redis", specifier = ">=6.0.0,<7.0.0" },
     { name = "djlint", specifier = ">=1.36.4,<2.0.0" },
     { name = "factory-boy", specifier = ">=3.3.1" },
     { name = "fakeredis", specifier = ">=2.26.0" },
@@ -1422,12 +1435,13 @@ dev = [
 django = [
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-django", specifier = "==0.5.3" },
+    { name = "codex-django", specifier = "==0.6.3" },
     { name = "dj-database-url", specifier = ">=2.3.0,<3.0.0" },
     { name = "django", specifier = ">=5.2.13,<6.0" },
     { name = "django-ninja", specifier = ">=1.3.0,<2.0.0" },
     { name = "django-prometheus", specifier = ">=2.3.1,<3.0.0" },
     { name = "django-ratelimit", specifier = ">=4.1.0,<5.0.0" },
+    { name = "django-redis", specifier = ">=6.0.0,<7.0.0" },
     { name = "gunicorn", specifier = ">=23.0.0,<24.0.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.10,<3.0.0" },
     { name = "pydantic", specifier = ">=2.0.0" },
@@ -1437,7 +1451,7 @@ django = [
 worker = [
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-platform", extras = ["all"], specifier = ">=0.3.0,<0.9.0" },
+    { name = "codex-platform", extras = ["all"], specifier = ">=0.4.0,<0.9.0" },
     { name = "pydantic", specifier = ">=2.0.0" },
     { name = "twilio", specifier = ">=9.10.2,<10.0.0" },
 ]

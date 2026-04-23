@@ -2,23 +2,48 @@
 
 All notable changes to the **Lily Website** project will be documented in this file.
 
-## [1.9.2] - 2026-03-15
+For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
+
+## [2.4.0] - 2026-04-23
 
 ### Added
-- **API Documentation:** Expanded technical documentation with detailed specifications for `admin`, `booking`, `instance`, `promos`, and `urls` endpoints.
-- **Documentation:** Added new feature-specific guides for `cabinet` and `promos` modules.
-- **Testing:** Introduced permission-based test suite for the admin cabinet and centralized `conftest.py` for API testing.
 
-### Changed / Refactored
-- **Cabinet:** Refined logic and UI for appointment, contact request, and master management views.
-- **Notifications:** Updated notification worker services and refined localized booking email templates.
-- **Dependencies:** Synchronized project dependencies in `pyproject.toml` and `poetry.lock`.
+- **Booking Management:** Implemented advanced appointment management with real-time slot overlap validation in the cabinet.
+- **Booking Engine:** Introduced `LilyBookingPersistenceHook` for a clean separation of booking creation and notification logic.
+- **Cabinet UI:** Enhanced the appointment schedule with HTMX-powered modals and dynamic status updates.
+- **Infrastructure:** Integrated Redis-based action tokens for secure, short-lived operations (e.g., booking confirmations).
+- **Automation:** Added recovery documentation and streamlined redis backend configuration for workers.
 
 ### Fixed
-- **Cleanup:** Removed obsolete Telegram bot files and temporary initialization scripts.
-- **CI/CD:** Fixed minor issues in the automated project initialization and check tools.
 
-## [1.9.1] - 2026-03-11
+- **Booking Logic:** Resolved issues with availability checks by including `reschedule_proposed` status in the blocking logic.
+- **Cabinet:** Added robust error handling and user feedback for slot conflicts during rescheduling.
+
+### Changed / Refactored
+
+- **Architecture:** Refactored `BookingRuntimeEngineGateway` and `RuntimeBookingProvider` to support extended appointment filters and validation.
+- **Static Assets:** Cleaned up cabinet CSS/JS and optimized the CSS compiler configuration for better performance.
+- **Dev Experience:** Standardized environment templates and updated scratch scripts for catalog management.
+
+## [2.3.0] - 2026-04-22
+
+
+### Added
+
+- **Maintenance Panel:** Implemented a centralized "System Maintenance" dashboard in the admin cabinet for manual data synchronization and catalog management.
+- **Service Search:** Integrated full-text search for the service catalog with mobile UI optimizations.
+- **Infrastructure:** Added `FIELD_ENCRYPTION_KEY` support for GitHub Actions CI to ensure encrypted fields don't break automated tests.
+
+### Fixed
+
+- **Dev Tools:** Restored terminal screen clearing in the `check.py` runner for a better developer experience.
+- **Linting:** Resolved multiple Ruff errors in `scratch/build_service_fixtures.py` (unused variables and loop controls).
+- **Security:** Hardened field encryption by enforcing proper Fernet key validation across all environments.
+- **Git:** Optimized repository size by excluding the `archive/` directory from Git tracking and moving it to `.gitignore`.
+
+### Changed / Refactored
+
+- **Architecture:** Refined modularity in the system module to support granular data loading from the admin interface.
 
 ## [2.2.0] - 2026-04-19
 

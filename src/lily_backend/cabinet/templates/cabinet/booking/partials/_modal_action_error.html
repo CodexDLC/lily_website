@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<div class="cab-modal-composer">
+  <div class="cab-modal-composer__header d-flex align-items-center justify-content-between p-3 border-bottom">
+    <h5 class="m-0 fw-bold text-gradient">{{ obj.title }}</h5>
+    <button type="button" class="btn-close" @click="$dispatch('close-modal')"></button>
+  </div>
+  <div class="p-4">
+    <div class="alert alert-danger mb-3" role="alert">
+      {% if booking_action_error %}{{ booking_action_error }}{% else %}{% trans "Action could not be completed." %}{% endif %}
+    </div>
+    {% if booking_action_field_errors %}
+      <ul class="small text-danger mb-3">
+        {% for field, error in booking_action_field_errors.items %}
+          <li><strong>{{ field }}:</strong> {{ error }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <button type="button" class="btn btn-outline-secondary" @click="$dispatch('close-modal')">
+      {% trans "Close" %}
+    </button>
+  </div>
+</div>

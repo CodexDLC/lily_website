@@ -8,8 +8,7 @@ Reads mapping from compiler_config.json in the target static/css/ directory.
 Config format (new, canonical):
     {
         "css": {
-            "base.css": "app.css",
-            "cabinet.css": "cabinet_app.css"
+            "base.css": "app.css"
         }
     }
 

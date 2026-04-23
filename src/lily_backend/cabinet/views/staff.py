@@ -65,20 +65,14 @@ class MasterQuickEditForm(forms.ModelForm):
 
         for weekday in selected_days:
             booking_day_schedule = settings.get_day_schedule(weekday)
-            fallback_start = booking_day_schedule[0] if booking_day_schedule is not None else None
-            fallback_end = booking_day_schedule[1] if booking_day_schedule is not None else None
+            start_time = booking_day_schedule[0] if booking_day_schedule is not None else None
+            end_time = booking_day_schedule[1] if booking_day_schedule is not None else None
             defaults = {
-                "start_time": master.work_start or fallback_start,
-                "end_time": master.work_end or fallback_end,
-                "break_start": master.break_start,
-                "break_end": master.break_end,
+                "start_time": start_time,
+                "end_time": end_time,
+                "break_start": None,
+                "break_end": None,
             }
-            if weekday in existing:
-                current = existing[weekday]
-                defaults["start_time"] = current.start_time or defaults["start_time"]
-                defaults["end_time"] = current.end_time or defaults["end_time"]
-                defaults["break_start"] = current.break_start or defaults["break_start"]
-                defaults["break_end"] = current.break_end or defaults["break_end"]
             if defaults["start_time"] and defaults["end_time"]:
                 MasterWorkingDay.objects.update_or_create(
                     master=master,

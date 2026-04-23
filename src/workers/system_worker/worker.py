@@ -64,7 +64,8 @@ async def worker_shutdown(ctx: dict) -> None:
 class WorkerSettings(BaseArqWorkerSettings):
     redis_settings = settings.arq_redis_settings
     max_jobs = settings.arq_max_jobs
-    job_timeout = max(settings.arq_job_timeout, settings.internal_api_timeout + 30)
+    # ARQ requires job_timeout to be an integer.
+    job_timeout = int(max(settings.arq_job_timeout, settings.internal_api_timeout + 30))
     keep_result = settings.arq_keep_result
     queue_name = "system"
 

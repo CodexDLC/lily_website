@@ -42,6 +42,14 @@ class WorkerSettings(BaseWorkerConfig):
         """Absolute path to the logs folder in the project root."""
         return str(ROOT_DIR / self.log_dir_name)
 
+    @log_dir.setter
+    def log_dir(self, value: str) -> None:
+        """
+        Dummy setter to satisfy LoggingSettingsProtocol.
+        Required because setup_logging expects log_dir to be settable.
+        """
+        pass
+
     @property
     def service_name_suffix(self) -> str:
         """Suffix for service name when running locally."""

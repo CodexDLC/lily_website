@@ -52,10 +52,11 @@ class TestMasterQuickEditFormGaps:
         assert wd.start_time == booking_settings.work_start_monday
         assert wd.end_time == booking_settings.work_end_monday
 
-    def test_sync_working_days_preserve_existing_times(self, master, booking_settings):
-        """Test that existing working day times are preserved if they exist."""
+    def test_sync_working_days_refreshes_existing_times_from_settings(self, master, booking_settings):
+        """Existing working day times are not preserved as hidden overrides."""
         wd_monday = master.working_days.get(weekday=0)
         wd_monday.start_time = timezone.datetime.strptime("11:00", "%H:%M").time()
+        wd_monday.end_time = timezone.datetime.strptime("14:00", "%H:%M").time()
         wd_monday.save()
 
         with patch("features.booking.booking_settings.BookingSettings.load", return_value=booking_settings):
@@ -63,8 +64,8 @@ class TestMasterQuickEditFormGaps:
             MasterQuickEditForm._sync_working_days(master, [0])
 
         wd_monday.refresh_from_db()
-        # Should still be 11:00, not reset to default 09:00
-        assert wd_monday.start_time == timezone.datetime.strptime("11:00", "%H:%M").time()
+        assert wd_monday.start_time == booking_settings.work_start_monday
+        assert wd_monday.end_time == booking_settings.work_end_monday
 
     def test_sync_working_days_no_times_available(self, category, booking_settings):
         """Test that no MasterWorkingDay is created if no start/end time is available anywhere."""

@@ -14,6 +14,7 @@ from codex_django.booking import (
     BookingQuickCreateServiceOptionState,
 )
 from core.logger import logger
+from django.db import transaction
 from django.db.models import Count, Prefetch, Q
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -27,6 +28,12 @@ from ..models import Appointment, Master, MasterDayOff, MasterWorkingDay
 
 class RuntimeBookingProvider(BookingProjectDataProvider):
     """Project provider backed by real Django ORM."""
+
+    BLOCKING_APPOINTMENT_STATUSES = (
+        Appointment.STATUS_PENDING,
+        Appointment.STATUS_CONFIRMED,
+        Appointment.STATUS_RESCHEDULE_PROPOSED,
+    )
 
     @staticmethod
     def get_bookable_masters_queryset():
@@ -53,6 +60,10 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
             .order_by("category__order", "order")
         )
 
+    @classmethod
+    def get_cabinet_bookable_services_queryset(cls):
+        return cls.get_bookable_services_queryset().filter(category__is_active=True, category__is_planned=False)
+
     # ── Feature models contract ───────────────────────────────────────────────
 
     def get_feature_models(self) -> BookingFeatureModels:
@@ -68,9 +79,10 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
     # ── Category / Service lists ──────────────────────────────────────────────
 
     def get_service_categories(self) -> Any:
+        category_ids = self.get_cabinet_bookable_services_queryset().values_list("category_id", flat=True)
         return ServiceCategory.objects.prefetch_related(
-            Prefetch("services", queryset=self.get_bookable_services_queryset())
-        ).all()
+            Prefetch("services", queryset=self.get_cabinet_bookable_services_queryset())
+        ).filter(is_active=True, is_planned=False, id__in=category_ids)
 
     def get_public_services(self) -> list[dict[str, Any]]:
         """Services for the public booking page — includes conflict rule data."""
@@ -119,7 +131,7 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
                 "conflicts_with": [r["target_id"] for r in rules_from.get(s.id, [])],
                 "conflict_rules": rules_from.get(s.id, []),
             }
-            for s in self.get_bookable_services_queryset()
+            for s in self.get_cabinet_bookable_services_queryset()
         ]
 
     # ── Master list ───────────────────────────────────────────────────────────
@@ -142,13 +154,38 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
 
     # ── Appointment list ──────────────────────────────────────────────────────
 
-    def get_cabinet_appointments(self) -> list[dict[str, Any]]:
+    def get_cabinet_appointments(self, **kwargs: Any) -> list[dict[str, Any]]:
+        status = kwargs.get("status")
+        master_id = kwargs.get("master_id")
+        search = kwargs.get("search")
+        date_from = kwargs.get("date_from")
+        date_to = kwargs.get("date_to")
+
+        qs = Appointment.objects.select_related("master", "service", "client")
+
+        if status and status != "all":
+            qs = qs.filter(status=status)
+        if master_id:
+            qs = qs.filter(master_id=master_id)
+        if search:
+            qs = qs.filter(
+                Q(client__first_name__icontains=search)
+                | Q(client__last_name__icontains=search)
+                | Q(client__phone__icontains=search)
+                | Q(service__name__icontains=search)
+            )
+        if date_from:
+            qs = qs.filter(datetime_start__date__gte=date_from)
+        if date_to:
+            qs = qs.filter(datetime_start__date__lte=date_to)
+
         result = []
-        qs = Appointment.objects.select_related("master", "service", "client").order_by("-datetime_start")[:500]
+        qs = qs.order_by("-datetime_start")
         for appt in qs:
             local_dt = timezone.localtime(appt.datetime_start)
             client = appt.client
             client_name = getattr(client, "full_name", str(client)) if client else str(_("Unnamed Client"))
+            price = appt.price_actual if appt.price_actual is not None else appt.price
 
             result.append(
                 {
@@ -163,7 +200,7 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
                     "client_created_at": client.created_at.isoformat() if client else None,
                     "phone": client.phone if client else "",
                     "service_title": appt.service.name,
-                    "price": float(appt.price_actual or appt.price),
+                    "price": float(price),
                     "status": appt.status,
                 }
             )
@@ -200,7 +237,7 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
         start_time: str,
     ) -> list[BookingQuickCreateServiceOptionState]:
         del booking_date, start_time
-        qs = self.get_bookable_services_queryset()
+        qs = self.get_cabinet_bookable_services_queryset()
         if resource_id:
             qs = qs.filter(masters__id=resource_id)
         return [
@@ -316,6 +353,27 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
         client_phone: str,
         client_email: str = "",
     ) -> dict[str, object]:
+        try:
+            service = Service.objects.get(id=service_id)
+            master = Master.objects.get(id=resource_id)
+            naive_dt = dt_module.datetime.strptime(f"{booking_date} {start_time}", "%Y-%m-%d %H:%M")
+        except (Service.DoesNotExist, Master.DoesNotExist):
+            return {"id": 0, "error": "Service or master not found"}
+        except ValueError:
+            return {"id": 0, "error": "Invalid booking date or time"}
+
+        aware_dt = timezone.make_aware(naive_dt)
+        if self._has_blocking_overlap(
+            resource_id=master.id,
+            start_at=aware_dt,
+            duration_minutes=service.duration,
+        ):
+            return {
+                "id": 0,
+                "error": "Selected slot is already occupied. Choose another time.",
+                "code": "slot-overlap",
+            }
+
         client: Client | None = None
         if client_phone:
             client = Client.objects.filter(phone=client_phone).first()
@@ -332,24 +390,26 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
                 status=Client.STATUS_GUEST,
             )
 
-        try:
-            service = Service.objects.get(id=service_id)
-            master = Master.objects.get(id=resource_id)
-        except (Service.DoesNotExist, Master.DoesNotExist):
-            return {"id": 0, "error": "Service or master not found"}
-
-        naive_dt = dt_module.datetime.strptime(f"{booking_date} {start_time}", "%Y-%m-%d %H:%M")
-        aware_dt = timezone.make_aware(naive_dt)
-
-        appt = Appointment.objects.create(
-            client=client,
-            master=master,
-            service=service,
-            datetime_start=aware_dt,
-            duration_minutes=service.duration,
-            price=service.price,
-            source=Appointment.SOURCE_ADMIN,
-        )
+        with transaction.atomic():
+            if self._has_blocking_overlap(
+                resource_id=master.id,
+                start_at=aware_dt,
+                duration_minutes=service.duration,
+            ):
+                return {
+                    "id": 0,
+                    "error": "Selected slot is already occupied. Choose another time.",
+                    "code": "slot-overlap",
+                }
+            appt = Appointment.objects.create(
+                client=client,
+                master=master,
+                service=service,
+                datetime_start=aware_dt,
+                duration_minutes=service.duration,
+                price=service.price,
+                source=Appointment.SOURCE_ADMIN,
+            )
         return {
             "id": appt.id,
             "master_id": appt.master_id,
@@ -374,9 +434,42 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
             return None
 
         naive_dt = dt_module.datetime.strptime(f"{booking_date} {start_time}", "%Y-%m-%d %H:%M")
-        appt.datetime_start = timezone.make_aware(naive_dt)
+        aware_dt = timezone.make_aware(naive_dt)
+        if self._has_blocking_overlap(
+            resource_id=appt.master_id,
+            start_at=aware_dt,
+            duration_minutes=appt.duration_minutes,
+            exclude_appointment_id=appt.id,
+        ):
+            return {"id": 0, "error": "Selected slot is already occupied. Choose another time.", "code": "slot-overlap"}
+        appt.datetime_start = aware_dt
         appt.save(update_fields=["datetime_start", "updated_at"])
         return {"id": appt.id, "date": booking_date, "time": start_time}
+
+    def _has_blocking_overlap(
+        self,
+        *,
+        resource_id: int,
+        start_at: dt_module.datetime,
+        duration_minutes: int,
+        exclude_appointment_id: int | None = None,
+    ) -> bool:
+        end_at = start_at + dt_module.timedelta(minutes=duration_minutes)
+        day_start = start_at.replace(hour=0, minute=0, second=0, microsecond=0)
+        day_end = day_start + dt_module.timedelta(days=1)
+        qs = Appointment.objects.filter(
+            master_id=resource_id,
+            datetime_start__gte=day_start,
+            datetime_start__lt=day_end,
+            status__in=self.BLOCKING_APPOINTMENT_STATUSES,
+        )
+        if exclude_appointment_id:
+            qs = qs.exclude(pk=exclude_appointment_id)
+        return any(
+            appt.datetime_start < end_at
+            and appt.datetime_start + dt_module.timedelta(minutes=appt.duration_minutes) > start_at
+            for appt in qs.only("datetime_start", "duration_minutes")
+        )
 
     # ── Cabinet action (confirm / cancel / reschedule) ────────────────────────
 
@@ -443,6 +536,48 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
                     ok=True,
                     code="booking-cancel",
                     message=_("Cancelled"),
+                    ui_effect="reload_modal",
+                    target_url="",
+                )
+            except ValidationError as e:
+                return BookingActionResult(
+                    ok=False,
+                    code="booking-validation-error",
+                    message=str(e),
+                    ui_effect="none",
+                    target_url="",
+                )
+
+        if action == "complete":
+            from django.core.exceptions import ValidationError
+
+            try:
+                appt.mark_completed()
+                return BookingActionResult(
+                    ok=True,
+                    code="booking-complete",
+                    message=_("Completed"),
+                    ui_effect="reload_modal",
+                    target_url="",
+                )
+            except ValidationError as e:
+                return BookingActionResult(
+                    ok=False,
+                    code="booking-validation-error",
+                    message=str(e),
+                    ui_effect="none",
+                    target_url="",
+                )
+
+        if action == "no_show":
+            from django.core.exceptions import ValidationError
+
+            try:
+                appt.mark_no_show()
+                return BookingActionResult(
+                    ok=True,
+                    code="booking-no-show",
+                    message=_("Marked as no show"),
                     ui_effect="reload_modal",
                     target_url="",
                 )

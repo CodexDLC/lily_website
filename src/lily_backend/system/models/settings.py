@@ -85,6 +85,13 @@ class SiteSettings(
         obj, created = cls.objects.get_or_create(pk=1)
         return obj
 
+    def to_dict(self):
+        """
+        Returns a dictionary representation of the settings.
+        Simplified to rely on base class logic for JSON serialization.
+        """
+        return super().to_dict()
+
     class Meta:
         verbose_name = _("Настройки сайта")
         verbose_name_plural = _("Настройки сайта")

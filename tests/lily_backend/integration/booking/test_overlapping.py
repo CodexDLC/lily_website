@@ -4,7 +4,7 @@ from unittest.mock import patch
 from django.test import TestCase
 from django.utils import timezone
 from features.booking.booking_settings import BookingSettings
-from features.booking.models import Appointment, Master
+from features.booking.models import Appointment, Master, MasterWorkingDay
 from features.booking.providers.runtime import RuntimeBookingProvider
 from features.main.models import Service, ServiceCategory
 
@@ -29,6 +29,12 @@ class BackToBackBookingTest(TestCase):
             name="Service 30", slug="service-30", category=self.category, duration=30, price=100
         )
         self.master = Master.objects.create(name="Test Master", slug="test-master")
+        MasterWorkingDay.objects.create(
+            master=self.master,
+            weekday=0,
+            start_time=time(8, 0),
+            end_time=time(18, 0),
+        )
         self.provider = RuntimeBookingProvider()
 
         settings = BookingSettings.load()
@@ -107,12 +113,6 @@ class BackToBackBookingTest(TestCase):
         gateway = get_booking_engine_gateway()
 
         self.master.categories.add(self.category)
-        from features.booking.models import MasterWorkingDay
-
-        MasterWorkingDay.objects.create(
-            master=self.master, weekday=booking_date.weekday(), start_time=time(8, 0), end_time=time(18, 0)
-        )
-
         service_120.masters.add(self.master)
 
         slots = gateway.get_available_slots(service_ids=[service_120.id], target_date=booking_date)

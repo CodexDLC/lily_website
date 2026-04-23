@@ -54,11 +54,11 @@ services:
     container_name: lily_website-redis
     env_file: .env
     command: >
-      sh -c "redis-server --requirepass $${REDIS_PASSWORD} --appendonly yes"
+      sh -c "redis-server --requirepass \"$${REDIS_PASSWORD}\" --appendonly yes"
     volumes:
       - redis-data:/data
     healthcheck:
-      test: ["CMD", "sh", "-c", "REDISCLI_AUTH=${REDIS_PASSWORD} redis-cli ping"]
+      test: ["CMD", "sh", "-c", "REDISCLI_AUTH=\"$${REDIS_PASSWORD}\" redis-cli ping"]
       interval: 10s
       timeout: 5s
       retries: 3

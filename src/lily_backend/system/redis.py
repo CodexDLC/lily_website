@@ -40,7 +40,9 @@ class ActionTokenRedisManager(BaseDjangoRedisManager):
             "action_type": action_type,
         }
 
-        self.client.set(key, json.dumps(data), ex=int(timedelta(hours=ttl_hours).total_seconds()))
+        # Using codex-platform synchronous operation pattern for type-safe Redis interactions.
+        with self.sync_string() as redis:
+            redis.set(key, json.dumps(data), ttl=int(timedelta(hours=ttl_hours).total_seconds()))
         return token
 
     def get_token_data(self, token: str) -> ActionTokenData | None:
@@ -48,7 +50,8 @@ class ActionTokenRedisManager(BaseDjangoRedisManager):
         Retrieves and decodes token data if it exists.
         """
         key = self.make_key(token)
-        raw_data = self.client.get(key)
+        with self.sync_string() as redis:
+            raw_data = redis.get(key)
 
         if not raw_data:
             return None
@@ -63,4 +66,5 @@ class ActionTokenRedisManager(BaseDjangoRedisManager):
         Removes the token after successful use.
         """
         key = self.make_key(token)
-        self.client.delete(key)
+        with self.sync_string() as redis:
+            redis.delete(key)
