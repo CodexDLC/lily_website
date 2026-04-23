@@ -40,7 +40,7 @@ async def test_main_flow_mocked():
         patch(
             "src.telegram_bot.app_telegram.build_bot",
             new_callable=AsyncMock,
-            return_value=(MagicMock(), MagicMock(spec=Dispatcher)),
+            return_value=(MagicMock(), MagicMock(spec=Dispatcher), MagicMock()),
         ) as mock_build_bot,
         patch("src.telegram_bot.app_telegram.build_main_router"),
         patch("src.telegram_bot.app_telegram.attach_middlewares") as mock_attach_middlewares,
@@ -56,7 +56,7 @@ async def test_main_flow_mocked():
         class StopPollingError(Exception):
             pass
 
-        _, mock_dp = await mock_build_bot()
+        _, mock_dp, _ = await mock_build_bot()
         mock_dp.start_polling = AsyncMock(side_effect=StopPollingError)
 
         with pytest.raises(StopPollingError):

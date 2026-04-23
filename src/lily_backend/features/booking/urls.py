@@ -39,9 +39,9 @@ urlpatterns = [
     # Commit
     path("booking/commit/", BookingCommitView.as_view(), name="commit"),
     # ── Success pages ──────────────────────────────────────────────────────────
-    path("booking/success/<str:token>/", BookingSuccessSingleView.as_view(), name="success_single"),
     path("booking/success/group/<str:token>/", BookingSuccessGroupView.as_view(), name="success_group"),
     path("booking/success/multi/", BookingSuccessMultiView.as_view(), name="success_multi"),
+    path("booking/success/<str:token>/", BookingSuccessSingleView.as_view(), name="success_single"),
     # ── Appointment management (email token actions) ───────────────────────────
     path("appointments/manage/<str:token>/", AppointmentManageView.as_view(), name="booking_manage"),
     path("appointments/confirm/<str:token>/", ConfirmAppointmentView.as_view(), name="booking_confirm"),

@@ -71,8 +71,9 @@ async def main() -> None:
     log.debug("BotContainer initialized")
 
     # 5. Bot + Dispatcher
-    bot, dp = await build_bot(settings, redis_client)
-    container.set_bot(bot)
+    bot, dp, i18n_middleware = await build_bot(settings, redis_client)
+    container.set_bot(bot, i18n_middleware=i18n_middleware)
+
     log.info("Bot and Dispatcher created")
 
     # 6. Инициализация ARQ

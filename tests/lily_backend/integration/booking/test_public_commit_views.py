@@ -251,34 +251,28 @@ class TestSuccessPages:
         resp = client.get(url)
         assert resp.status_code == 404
 
-    def test_success_multi_view_renders(self, db, pending_appointment, rf):
-        """Test BookingSuccessMultiView directly (bypasses URL routing bug where
-        success/<str:token>/ shadows success/multi/).
-        See spawn_task: Fix URL ordering: success_multi shadowed by success_single.
-        """
-        from django.contrib.auth.models import AnonymousUser
-        from features.booking.views.public.commit import BookingSuccessMultiView
-
+    def test_success_multi_view_renders_via_url(self, client, pending_appointment):
         pending_appointment.finalize_token = "MULTIOK"
         pending_appointment.save()
 
-        request = rf.get("/fake/", {"tokens": "MULTIOK"})
-        request.session = {}
-        request.user = AnonymousUser()
-        view = BookingSuccessMultiView.as_view()
-        resp = view(request)
+        resp = client.get(reverse("booking:success_multi"), {"tokens": "MULTIOK"})
+        assert resp.status_code == 200
+        assert pending_appointment.service.name.encode() in resp.content
+        assert pending_appointment.master.name.encode() in resp.content
+
+    def test_success_multi_view_renders_empty_tokens_via_url(self, client):
+        resp = client.get(reverse("booking:success_multi"), {"tokens": ""})
         assert resp.status_code == 200
 
-    def test_success_multi_view_renders_empty_tokens(self, db, rf):
-        from django.contrib.auth.models import AnonymousUser
-        from features.booking.views.public.commit import BookingSuccessMultiView
+    def test_success_group_route_is_not_shadowed(self, client, pending_appointment, client_obj):
+        from features.booking.models import AppointmentGroup, AppointmentGroupItem
 
-        request = rf.get("/fake/", {"tokens": ""})
-        request.session = {}
-        request.user = AnonymousUser()
-        view = BookingSuccessMultiView.as_view()
-        resp = view(request)
+        group = AppointmentGroup.objects.create(client=client_obj)
+        AppointmentGroupItem.objects.create(group=group, appointment=pending_appointment, order=0)
+
+        resp = client.get(reverse("booking:success_group", kwargs={"token": group.group_token}))
         assert resp.status_code == 200
+        assert pending_appointment.service.name.encode() in resp.content
 
 
 # ── _get_or_create_client utility ─────────────────────────────────────────────

@@ -1,10 +1,20 @@
 from types import SimpleNamespace
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
 from src.telegram_bot.features.redis.notifications.handlers.handlers import handle_delete_notification_callback
 from src.telegram_bot.features.redis.notifications.resources.callbacks import NotificationsCallback
+
+
+@pytest.fixture(autouse=True)
+def mock_i18n():
+    mock = MagicMock()
+    # Mocking common notification keys
+    mock.notifications.alert.deleted.return_value = "Удалено"
+    mock.notifications.error.contact.notfound.return_value = "Не найдено"
+    with patch("aiogram_i18n.I18nContext.get_current", return_value=mock):
+        yield mock
 
 
 def _make_call(chat_id: int = -100123, message_id: int = 42, thread_id: int | None = 7):
@@ -30,12 +40,12 @@ def _make_container():
 
 
 @pytest.mark.asyncio
-async def test_delete_notification_callback_deletes_booking_message_and_state():
+async def test_delete_notification_callback_deletes_booking_message_and_state(mock_i18n):
     call = _make_call()
     container = _make_container()
     callback_data = NotificationsCallback(action="delete_notification", session_id=123, topic_id=7)
 
-    await handle_delete_notification_callback(call, callback_data, container)
+    await handle_delete_notification_callback(call, callback_data, container, mock_i18n)
 
     call.bot.delete_message.assert_awaited_once_with(chat_id=-100123, message_id=42)
     container.redis.appointment_cache.delete.assert_awaited_once_with("123")
@@ -45,12 +55,12 @@ async def test_delete_notification_callback_deletes_booking_message_and_state():
 
 
 @pytest.mark.asyncio
-async def test_delete_notification_callback_clears_contact_cache():
+async def test_delete_notification_callback_clears_contact_cache(mock_i18n):
     call = _make_call(thread_id=11)
     container = _make_container()
     callback_data = NotificationsCallback(action="delete_notification", session_id="contact_55", topic_id=None)
 
-    await handle_delete_notification_callback(call, callback_data, container)
+    await handle_delete_notification_callback(call, callback_data, container, mock_i18n)
 
     container.redis.contact_cache.delete.assert_awaited_once_with("55")
     container.redis.appointment_cache.delete.assert_not_awaited()

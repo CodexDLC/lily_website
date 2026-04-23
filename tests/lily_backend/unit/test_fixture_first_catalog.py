@@ -370,28 +370,20 @@ def test_data_maintenance_streams_command_output_to_console(capsys):
 
 
 @pytest.mark.unit
-def test_entrypoints_do_not_auto_run_legacy_migration():
-    for path in (Path("deploy/backend/entrypoint.sh"), Path("deploy/lily_backend/entrypoint.sh")):
-        content = path.read_text(encoding="utf-8")
-        assert "RUN_LEGACY_MIGRATION" not in content
-        assert "migrate_all_legacy" not in content
-        assert content.index("python /app/manage.py migrate --noinput") < content.index(
-            "python /app/manage.py load_catalog"
-        )
-        assert "--access-logfile -" in content
-        assert "--error-logfile -" in content
-        assert "--capture-output" in content
+def test_current_backend_entrypoint_runs_startup_commands_before_gunicorn():
+    content = Path("deploy/lily_backend/entrypoint.sh").read_text(encoding="utf-8")
 
-
-@pytest.mark.unit
-def test_entrypoints_import_legacy_staff_users_before_catalog_sync():
-    for path in (Path("deploy/backend/entrypoint.sh"), Path("deploy/lily_backend/entrypoint.sh")):
-        content = path.read_text(encoding="utf-8")
-        assert 'if [ -n "$LEGACY_DATABASE_URL" ]; then' in content
-        assert "python /app/manage.py migrate_users" in content
-        assert content.index("python /app/manage.py migrate --noinput") < content.index(
-            "python /app/manage.py migrate_users"
-        )
-        assert content.index("python /app/manage.py migrate_users") < content.index(
-            "python /app/manage.py load_catalog"
-        )
+    assert Path("deploy/backend/entrypoint.sh").exists() is False
+    assert 'if [ "$#" -gt 0 ]; then' in content
+    assert 'exec "$@"' in content
+    assert "python /app/manage.py collectstatic --noinput" in content
+    assert "python /app/manage.py migrate --noinput" in content
+    assert "python /app/manage.py load_catalog" in content
+    assert "python /app/manage.py update_all_content" in content
+    assert 'if [ "$RUN_LEGACY_MIGRATION" = "true" ]; then' in content
+    assert "python /app/manage.py migrate_all_legacy" in content
+    assert "exec gunicorn core.wsgi:application" in content
+    assert content.index("collectstatic") < content.index("exec gunicorn")
+    assert content.index("migrate --noinput") < content.index("exec gunicorn")
+    assert content.index("load_catalog") < content.index("exec gunicorn")
+    assert content.index("update_all_content") < content.index("exec gunicorn")

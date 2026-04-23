@@ -9,11 +9,11 @@
     <p class="bk-success__subtitle">{% trans "Vielen Dank für Ihre Anfrage. Wir prüfen die Verfügbarkeit und melden uns so schnell wie möglich." %}</p>
 
     <div class="bk-success__groups">
-      {% for item in group.items.all %}
+      {% for appointment in appointments %}
         <div class="bk-success__group-item">
-          <p><strong>{% trans "Leistung" %}:</strong> <span>{{ item.appointment.service.name }}</span></p>
-          <p><strong>{% trans "Datum & Uhrzeit" %}:</strong> <span>{{ item.appointment.datetime_start|date:"d.m.Y H:i" }}</span></p>
-          <p><strong>{% trans "Master" %}:</strong> <span>{{ item.appointment.master.name }}</span></p>
+          <p><strong>{% trans "Leistung" %}:</strong> <span>{{ appointment.service.name }}</span></p>
+          <p><strong>{% trans "Datum & Uhrzeit" %}:</strong> <span>{{ appointment.datetime_start|date:"d.m.Y H:i" }}</span></p>
+          <p><strong>{% trans "Master" %}:</strong> <span>{{ appointment.master.name }}</span></p>
         </div>
       {% endfor %}
     </div>

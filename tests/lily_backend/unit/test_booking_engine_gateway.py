@@ -8,6 +8,8 @@ get_available_slots (audience filtering, fallback).
 from __future__ import annotations
 
 import datetime as dt
+from decimal import Decimal
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -15,6 +17,7 @@ from django.utils import timezone
 from features.booking.selector.engine import (
     BookingRuntimeEngineGateway,
     EmptyAvailableSlots,
+    LilyBookingAvailabilityAdapter,
     LoadAwareDjangoAvailabilityAdapter,
 )
 
@@ -121,6 +124,61 @@ class TestLoadAwareDjangoAvailabilityAdapter:
         assert result == []
 
 
+@pytest.mark.unit
+class TestLilyBookingAvailabilityAdapter:
+    def _make_adapter(self) -> LilyBookingAvailabilityAdapter:
+        from features.booking.booking_settings import BookingSettings
+        from features.booking.models import Appointment, Master, MasterDayOff, MasterWorkingDay
+        from features.main.models import Service
+
+        return LilyBookingAvailabilityAdapter(
+            resource_model=Master,
+            appointment_model=Appointment,
+            service_model=Service,
+            working_day_model=MasterWorkingDay,
+            day_off_model=MasterDayOff,
+            booking_settings_model=BookingSettings,
+            timezone="UTC",
+            load_strategy="fill_first",
+            target_date=dt.date(2026, 5, 11),
+        )
+
+    def test_working_hours_ignore_master_working_day_times(self, db, master, booking_settings):
+        from features.booking.models import MasterWorkingDay
+
+        booking_settings.monday_is_closed = False
+        booking_settings.work_start_monday = dt.time(8, 0)
+        booking_settings.work_end_monday = dt.time(18, 0)
+        booking_settings.save(update_fields=["monday_is_closed", "work_start_monday", "work_end_monday"])
+
+        MasterWorkingDay.objects.filter(master=master, weekday=0).update(
+            start_time=dt.time(10, 0),
+            end_time=dt.time(14, 0),
+        )
+
+        start, end = self._make_adapter().get_working_hours(master, dt.date(2026, 5, 11))
+
+        assert start.time() == dt.time(8, 0)
+        assert end.time() == dt.time(18, 0)
+
+    def test_working_hours_require_master_working_day(self, db, booking_settings):
+        from tests.factories import MasterFactory
+
+        booking_settings.monday_is_closed = False
+        booking_settings.work_start_monday = dt.time(8, 0)
+        booking_settings.work_end_monday = dt.time(18, 0)
+        booking_settings.save(update_fields=["monday_is_closed", "work_start_monday", "work_end_monday"])
+        master = MasterFactory(working_days=False)
+
+        assert self._make_adapter().get_working_hours(master, dt.date(2026, 5, 11)) is None
+
+    def test_working_hours_respect_booking_settings_closed_day(self, db, master, booking_settings):
+        booking_settings.monday_is_closed = True
+        booking_settings.save(update_fields=["monday_is_closed"])
+
+        assert self._make_adapter().get_working_hours(master, dt.date(2026, 5, 11)) is None
+
+
 # ── BookingRuntimeEngineGateway: get_resource_day_slots ───────────────────────
 
 
@@ -191,6 +249,59 @@ class TestGetResourceDaySlots:
         target = dt.date(2026, 5, 10)  # Sunday
         gateway = self._gateway()
         slots = gateway.get_resource_day_slots(resource_id=m.pk, target_date=target, audience="cabinet")
+        assert slots == []
+
+    def test_slots_use_booking_settings_not_master_working_day_times(self, db, master, booking_settings):
+        from features.booking.models import MasterWorkingDay
+
+        booking_settings.saturday_is_closed = False
+        booking_settings.work_start_saturday = dt.time(8, 0)
+        booking_settings.work_end_saturday = dt.time(18, 0)
+        booking_settings.save(update_fields=["saturday_is_closed", "work_start_saturday", "work_end_saturday"])
+
+        MasterWorkingDay.objects.filter(master=master, weekday=5).update(
+            start_time=dt.time(10, 0),
+            end_time=dt.time(14, 0),
+        )
+
+        slots = self._gateway().get_resource_day_slots(
+            resource_id=master.pk,
+            target_date=dt.date(2026, 5, 16),
+            audience="cabinet",
+        )
+
+        assert "14:00" in slots
+        assert "17:30" in slots
+
+    def test_no_slots_when_booking_settings_closes_day_even_if_master_working_day_exists(
+        self, db, master, booking_settings
+    ):
+        booking_settings.saturday_is_closed = True
+        booking_settings.save(update_fields=["saturday_is_closed"])
+
+        slots = self._gateway().get_resource_day_slots(
+            resource_id=master.pk,
+            target_date=dt.date(2026, 5, 16),
+            audience="cabinet",
+        )
+
+        assert slots == []
+
+    def test_no_slots_when_master_has_no_working_day_even_if_booking_settings_open(self, db, booking_settings):
+        from tests.factories import MasterFactory
+
+        booking_settings.saturday_is_closed = False
+        booking_settings.work_start_saturday = dt.time(8, 0)
+        booking_settings.work_end_saturday = dt.time(18, 0)
+        booking_settings.save(update_fields=["saturday_is_closed", "work_start_saturday", "work_end_saturday"])
+        master = MasterFactory(working_days=False)
+
+        slots = self._gateway().get_resource_day_slots(
+            resource_id=master.pk,
+            target_date=dt.date(2026, 5, 16),
+            audience="cabinet",
+        )
+
         assert slots == []
 
 
@@ -296,3 +407,90 @@ class TestGetNearestSlots:
             # second positional arg to runtime_get_nearest_slots is the effective_search_from
             call_args = mock_nearest.call_args
             assert call_args[0][2] == tomorrow
+
+
+@pytest.mark.unit
+class TestCreateBookingPersistence:
+    def test_single_service_any_resource_persists_service_price(
+        self,
+        db,
+        master,
+        service,
+        client_obj,
+        booking_settings,
+    ):
+        service.masters.add(master)
+        service.price = Decimal("77.50")
+        service.save(update_fields=["price"])
+
+        gateway = BookingRuntimeEngineGateway()
+        appointment = gateway.create_booking(
+            service_ids=[service.pk],
+            target_date=dt.date(2026, 5, 11),
+            selected_time="10:00",
+            resource_id=None,
+            client=client_obj,
+            notify_received=False,
+        )[0]
+
+        appointment.refresh_from_db()
+        assert appointment.price == Decimal("77.50")
+        assert appointment.service_id == service.pk
+        assert appointment.master_id == master.pk
+
+    def test_multi_service_chain_persists_corresponding_service_prices(
+        self,
+        db,
+        master,
+        service,
+        client_obj,
+        booking_settings,
+    ):
+        from tests.factories import ServiceFactory
+
+        service.masters.add(master)
+        service.price = Decimal("40.00")
+        service.duration = 30
+        service.save(update_fields=["price", "duration"])
+        service_two = ServiceFactory(category=service.category, price=Decimal("95.00"), duration=45)
+        service_two.masters.add(master)
+
+        gateway = BookingRuntimeEngineGateway()
+        appointments = gateway.create_booking(
+            service_ids=[service.pk, service_two.pk],
+            target_date=dt.date(2026, 5, 11),
+            selected_time="10:00",
+            resource_id=None,
+            client=client_obj,
+            notify_received=False,
+        )
+
+        prices_by_service = {appointment.service_id: appointment.price for appointment in appointments}
+        assert prices_by_service == {
+            service.pk: Decimal("40.00"),
+            service_two.pk: Decimal("95.00"),
+        }
+
+    def test_missing_service_does_not_create_zero_price_appointment(self, db, client_obj):
+        from features.booking.models import Appointment
+        from features.booking.persistence import BookingServiceNotFoundError, LilyBookingPersistenceHook
+
+        solution = SimpleNamespace(
+            items=[
+                SimpleNamespace(
+                    resource_id=123,
+                    start_time=timezone.make_aware(dt.datetime(2026, 5, 11, 10, 0)),
+                    duration_minutes=60,
+                )
+            ]
+        )
+        hook = LilyBookingPersistenceHook(Appointment, notify_received=False)
+
+        with pytest.raises(BookingServiceNotFoundError):
+            hook.persist_chain(
+                solution=solution,
+                service_ids=[999999],
+                client=client_obj,
+            )
+
+        assert Appointment.objects.count() == 0

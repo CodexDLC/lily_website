@@ -1,5 +1,8 @@
+from typing import cast
+
+from aiogram_i18n import I18nContext
+
 from .dto import BookingNotificationPayload
-from .texts import NotificationsTexts
 
 
 def format_new_booking(
@@ -12,21 +15,23 @@ def format_new_booking(
     """
     Формирует текст уведомления о новой брони с учетом статусов отправки.
     """
-    title = NotificationsTexts.NEW_BOOKING_TITLE.format(client_name=payload.client_name)
+    i18n = cast("I18nContext", I18nContext.get_current())
+
+    title = i18n.notifications.new.booking.title(client_name=payload.client_name)
 
     if payload.visits_count == 0:
-        visits_info = "Новый клиент 🆕"
+        visits_info = i18n.notifications.new.booking.visits.new()
     else:
-        visits_info = f"Постоянный клиент ({payload.visits_count + 1}-й визит) ⭐"
+        visits_info = i18n.notifications.new.booking.visits.regular(count=payload.visits_count + 1)
 
     client_notes = payload.client_notes if payload.client_notes else "—"
     price_str = f"{payload.price:g}"
 
     promo_info = ""
     if payload.active_promo_title:
-        promo_info = f"🎯 <b>Промо:</b> {payload.active_promo_title}\n"
+        promo_info = i18n.notifications.new.booking.promo(title=payload.active_promo_title)
 
-    details = NotificationsTexts.BOOKING_DETAILS.format(
+    details = i18n.notifications.new.booking.details(
         id=payload.id,
         client_name=payload.client_name,
         client_phone=payload.client_phone,
@@ -42,11 +47,14 @@ def format_new_booking(
     # Добавляем блок статусов, если они не "none"
     status_block = ""
     if email_status != "none" or twilio_status != "none":
-        e_icon = NotificationsTexts.STATUS_ICONS.get(email_status, "❓")
-        t_icon = NotificationsTexts.STATUS_ICONS.get(twilio_status, "❓")
+        icons = i18n.notifications.status.icons
+        e_icon = getattr(icons, email_status, lambda: "❓")()
+        t_icon = getattr(icons, twilio_status, lambda: "❓")()
+
         effective_email_label = email_label or payload.email_notification_label or ""
         effective_twilio_label = twilio_label or payload.twilio_notification_label or ""
-        status_block = "\n" + NotificationsTexts.NOTIFICATION_STATUSES.format(
+
+        status_block = "\n" + i18n.notifications.status.block(
             email_status=e_icon,
             email_label=effective_email_label,
             twilio_status=t_icon,
@@ -59,6 +67,6 @@ def format_new_booking(
 def format_contact_preview() -> str:
     """
     Формирует короткий текст превью контактной заявки.
-    Полный текст — из Redis-кеша при нажатии «Прочитать».
     """
-    return NotificationsTexts.CONTACT_PREVIEW_TEXT
+    i18n = cast("I18nContext", I18nContext.get_current())
+    return i18n.notifications.new.contact.preview.text()

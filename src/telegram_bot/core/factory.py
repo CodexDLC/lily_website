@@ -58,7 +58,7 @@ def compile_locales(base_path: pathlib.Path) -> str:
     return str(tmp_dir / "{locale}")
 
 
-async def build_bot(settings: BotSettings, redis_client: Redis) -> tuple[Bot, Dispatcher]:
+async def build_bot(settings: BotSettings, redis_client: Redis) -> tuple[Bot, Dispatcher, I18nMiddleware]:
     """
     Создает и конфигурирует экземпляры Bot и Dispatcher.
     """
@@ -92,4 +92,4 @@ async def build_bot(settings: BotSettings, redis_client: Redis) -> tuple[Bot, Di
     i18n_middleware.setup(dp)
 
     log.info("BotFactory | status=finished")
-    return bot, dp
+    return bot, dp, i18n_middleware

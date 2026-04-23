@@ -21,3 +21,15 @@ The primary quality gate for the project. It automates linting, type checking, u
 
 ## 🌳 `generate_project_tree.py`
 Generates a visual representation of the project structure for documentation purposes.
+
+## 🕸 `graphify_wiki.py`
+Builds `graphify-out/wiki/` from the existing `graphify-out/graph.json` even when the installed `graphify` CLI does not expose a `wiki` command.
+
+### Usage
+- `powershell -ExecutionPolicy Bypass -File tools/dev/graphify_wiki.ps1`
+- `python tools/dev/graphify_wiki.py .`
+
+### What it does
+1. Reuses the already generated `graphify-out/graph.json`.
+2. Imports the installed `graphifyy` package directly from the local `uv` tool environment when needed.
+3. Writes `graphify-out/wiki/index.md` plus one article per community and god node.

@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from collections.abc import Mapping
 
 from codex_django.booking import (
+    BookingActionResult,
     BookingBridge,
     BookingFormFieldState,
     BookingFormState,
@@ -36,6 +37,7 @@ from codex_django.booking.cabinet.types import (
     ServiceSelectorData,
 )
 from codex_django.cabinet import CalendarGridData, CalendarSlot
+from django.core.paginator import Paginator
 from django.urls import reverse
 
 from ..providers import get_booking_project_data_provider
@@ -44,6 +46,9 @@ from .cabinet_availability import CabinetBookingAvailabilityService
 
 class BookingCabinetWorkflowService:
     """Default cabinet workflow over the active booking project provider."""
+
+    BLOCKING_SCHEDULE_STATUSES = {"pending", "confirmed", "reschedule_proposed"}
+    LIST_PAGE_SIZE = 15
 
     def __init__(self, provider: Any = None) -> None:
         self.provider = provider or get_booking_project_data_provider()
@@ -114,8 +119,12 @@ class BookingCabinetWorkflowService:
 
         master_id_to_idx = {master["id"]: index for index, master in enumerate(masters)}
         events = []
+        show_cancelled = request.GET.get("show_cancelled") == "1"
         for appt in self.provider.get_cabinet_appointments():
             if str(appt.get("date")) != current_date:
+                continue
+            status = str(appt.get("status", "pending"))
+            if status not in self.BLOCKING_SCHEDULE_STATUSES and not (show_cancelled and status == "cancelled"):
                 continue
             master_id = appt["master_id"]
             if master_id not in master_id_to_idx:
@@ -130,7 +139,6 @@ class BookingCabinetWorkflowService:
             duration = int(appt.get("duration", 60))
             span = max(1, duration // step)
             client_name = str(appt.get("client_name", "Unknown"))
-            status = str(appt.get("status", "pending"))
             service_title = str(appt.get("service_title", "Service"))
             price = int(appt.get("price", 0))
             appt_id = int(appt.get("id", 0))
@@ -186,6 +194,18 @@ class BookingCabinetWorkflowService:
         )
         return {"calendar": calendar, "rows": rows_data}
 
+    @staticmethod
+    def _category_key(category: Any) -> str:
+        return str(getattr(category, "bento_group", "") or getattr(category, "slug", ""))
+
+    def _get_selector_categories(self, services: list[dict[str, Any]]) -> list[tuple[str, str]]:
+        service_categories = {str(service.get("category", "all")) for service in services}
+        return [
+            (self._category_key(cat), cat.name)
+            for cat in self.provider.get_service_categories()
+            if self._category_key(cat) in service_categories
+        ]
+
     def _get_booking_builder_tabs(self, *, mode: str) -> list[dict[str, str]]:
         return [
             {
@@ -214,7 +234,7 @@ class BookingCabinetWorkflowService:
         start_date = datetime.today().date()
         available_days = self.availability.build_picker_days(start_date=start_date, horizon=self.builder_day_horizon)
 
-        categories = [(cat.slug, cat.name) for cat in self.provider.get_service_categories()]
+        categories = self._get_selector_categories(services)
         selector = ServiceSelectorData(
             items=[
                 ServiceItem(
@@ -324,7 +344,7 @@ class BookingCabinetWorkflowService:
             )
             for service in services
         ]
-        categories = [(cat.slug, cat.name) for cat in self.provider.get_service_categories()]
+        categories = self._get_selector_categories(services)
         selector = ServiceSelectorData(
             items=service_items,
             categories=categories,
@@ -455,6 +475,16 @@ class BookingCabinetWorkflowService:
                 current_dt += timedelta(minutes=int(service.get("duration", 30)))
             target_date = selected_date
 
+        errors = [str(item["error"]) for item in created if isinstance(item, dict) and item.get("error")]
+        created = [item for item in created if not (isinstance(item, dict) and item.get("error"))]
+        if errors:
+            return {
+                "ok": False,
+                "target_url": reverse("cabinet:booking_new"),
+                "message": errors[0],
+                "created": created,
+            }
+
         target_url = f"{reverse('cabinet:booking_schedule')}?date={target_date}"
         return {
             "ok": bool(created),
@@ -464,18 +494,36 @@ class BookingCabinetWorkflowService:
         }
 
     def get_list_context(self, request: Any, *, status: str | None = None) -> dict[str, Any]:
-        del request
-        all_appts = self.provider.get_cabinet_appointments()
-        masters = {master["id"]: master for master in self.provider.get_cabinet_masters()}
-        appointments = [appt for appt in all_appts if not status or status == "all" or appt["status"] == status]
+        request_status = request.GET.get("status")
+        if not isinstance(request_status, str):
+            request_status = None
+        active_status = status or request_status or "all"
+        filters = {
+            "status": None,
+            "master_id": request.GET.get("master_id"),
+            "search": request.GET.get("search"),
+            "date_from": request.GET.get("date_from"),
+            "date_to": request.GET.get("date_to"),
+        }
+        all_appts = self.provider.get_cabinet_appointments(**filters)
+        masters_list = self.provider.get_cabinet_masters()
+        masters = {master["id"]: master for master in masters_list}
+        appointments = all_appts
+        if active_status and active_status != "all":
+            appointments = [appt for appt in all_appts if appt["status"] == active_status]
+        page_number = request.GET.get("page") or 1
+        paginator = Paginator(appointments, self.LIST_PAGE_SIZE)
+        page_obj = paginator.get_page(page_number)
         processed_rows = []
         status_map = {
             "pending": {"label": "Pending", "color": "#d97706", "bg": "#fef3c7"},
             "confirmed": {"label": "Confirmed", "color": "#059669", "bg": "#d1fae5"},
             "completed": {"label": "Completed", "color": "#2563eb", "bg": "#dbeafe"},
             "cancelled": {"label": "Cancelled", "color": "#dc2626", "bg": "#fee2e2"},
+            "no_show": {"label": "No show", "color": "#7f1d1d", "bg": "#fee2e2"},
+            "reschedule_proposed": {"label": "Reschedule", "color": "#7c3aed", "bg": "#ede9fe"},
         }
-        for appt in appointments:
+        for appt in page_obj.object_list:
             master = masters.get(appt["master_id"], {})
             client_name = appt.get("client_name", "Unknown")
             initials = "".join(part[0] for part in client_name.split() if part)[:2].upper()
@@ -499,8 +547,17 @@ class BookingCabinetWorkflowService:
             "confirmed": len([appt for appt in all_appts if appt["status"] == "confirmed"]),
             "completed": len([appt for appt in all_appts if appt["status"] == "completed"]),
             "cancelled": len([appt for appt in all_appts if appt["status"] == "cancelled"]),
+            "no_show": len([appt for appt in all_appts if appt["status"] == "no_show"]),
         }
-        return {"appointments": processed_rows, "counts": counts, "current_status": status or "all"}
+        return {
+            "appointments": processed_rows,
+            "counts": counts,
+            "current_status": active_status or "all",
+            "masters_list": masters_list,
+            "page_obj": page_obj,
+            "paginator": paginator,
+            "filters": filters,
+        }
 
 
 class BookingCabinetBridgeAdapter(BookingBridge):
@@ -643,7 +700,7 @@ class BookingCabinetBridgeAdapter(BookingBridge):
                 form=BookingFormState(
                     fields=[
                         BookingFormFieldState(
-                            name="reason",
+                            name="cancel_reason",
                             label="Reason for cancellation",
                             field_type="select",
                             value="out_of_time",
@@ -655,7 +712,7 @@ class BookingCabinetBridgeAdapter(BookingBridge):
                             ],
                         ),
                         BookingFormFieldState(
-                            name="custom_reason",
+                            name="cancel_note",
                             label="Comment",
                             field_type="textarea",
                             placeholder="Describe the reason...",
@@ -697,8 +754,9 @@ class BookingCabinetBridgeAdapter(BookingBridge):
                 ],
             )
 
+        status = str(appt.get("status", ""))
         actions = []
-        if str(appt.get("status", "")) == "pending":
+        if status == "pending":
             actions.append(
                 BookingModalActionState(
                     label="Confirm",
@@ -708,24 +766,48 @@ class BookingCabinetBridgeAdapter(BookingBridge):
                     icon="bi-check",
                 )
             )
-        actions.extend(
-            [
-                BookingModalActionState(
-                    label="Reschedule",
-                    kind="open_mode",
-                    value="reschedule",
-                    style="btn-outline-primary",
-                    icon="bi-calendar-event",
-                ),
-                BookingModalActionState(
-                    label="Cancel",
-                    kind="open_mode",
-                    value="cancel",
-                    style="btn-outline-danger",
-                    icon="bi-trash",
-                ),
-            ]
-        )
+        if status == "confirmed":
+            actions.extend(
+                [
+                    BookingModalActionState(
+                        label="Complete",
+                        kind="execute",
+                        value="complete",
+                        method="POST",
+                        style="btn-success",
+                        icon="bi-check2-circle",
+                    ),
+                    BookingModalActionState(
+                        label="No show",
+                        kind="execute",
+                        value="no_show",
+                        method="POST",
+                        style="btn-outline-secondary",
+                        icon="bi-person-x",
+                    ),
+                ]
+            )
+        if status in {"pending", "confirmed", "reschedule_proposed"}:
+            actions.extend(
+                [
+                    BookingModalActionState(
+                        label="Reschedule",
+                        kind="open_mode",
+                        value="reschedule",
+                        style="btn-outline-primary",
+                        icon="bi-calendar-event",
+                    ),
+                    BookingModalActionState(
+                        label="Cancel",
+                        kind="open_mode",
+                        value="cancel",
+                        style="btn-outline-danger",
+                        icon="bi-trash",
+                    ),
+                ]
+            )
+        if not actions:
+            actions.append(BookingModalActionState(label="Close", kind="close", style="btn-secondary"))
         return replace(state, actions=actions)
 
     def execute_action(self, request: Any, booking_id: int, action: str, payload: Any) -> Any:
@@ -783,24 +865,53 @@ class BookingCabinetBridgeAdapter(BookingBridge):
                 client_email=client_email,
             )
             created_dict = cast("dict[str, Any]", created)
-            return self.provider.run_cabinet_action(
-                booking_id=int(created_dict["id"]),
-                action=action,
-                redirect_url=self._modal_url(int(created_dict["id"])),
+            if created_dict.get("error"):
+                return BookingActionResult(
+                    ok=False,
+                    code=str(created_dict.get("code", "booking-create-error")),
+                    message=str(created_dict["error"]),
+                    ui_effect="none",
+                    target_url="",
+                )
+            return BookingActionResult(
+                ok=True,
+                code="booking-create",
+                message="Created",
+                ui_effect="close_modal",
+                target_url=self._modal_url(int(created_dict["id"])),
             )
 
         if action == "reschedule":
             selected_date = str(payload.get("date"))
             selected_time = str(payload.get("time"))
-            self.provider.update_quick_appointment(
+            updated = self.provider.update_quick_appointment(
                 booking_id=booking_id,
                 booking_date=selected_date,
                 start_time=selected_time,
             )
-            return self.provider.run_cabinet_action(
-                booking_id=booking_id,
-                action=action,
-                redirect_url=self._modal_url(booking_id),
+            updated_dict = cast("dict[str, Any] | None", updated)
+            if not updated_dict:
+                return BookingActionResult(
+                    ok=False,
+                    code="booking-not-found",
+                    message="Appointment not found.",
+                    ui_effect="none",
+                    target_url="",
+                )
+            if updated_dict.get("error"):
+                return BookingActionResult(
+                    ok=False,
+                    code=str(updated_dict.get("code", "booking-reschedule-error")),
+                    message=str(updated_dict["error"]),
+                    ui_effect="none",
+                    target_url="",
+                )
+            return BookingActionResult(
+                ok=True,
+                code="booking-reschedule",
+                message="Rescheduled",
+                ui_effect="close_modal",
+                target_url=self._modal_url(booking_id),
             )
 
         del request
@@ -808,6 +919,7 @@ class BookingCabinetBridgeAdapter(BookingBridge):
             booking_id=booking_id,
             action=action,
             redirect_url=self._modal_url(booking_id),
+            payload=payload,
         )
 
 

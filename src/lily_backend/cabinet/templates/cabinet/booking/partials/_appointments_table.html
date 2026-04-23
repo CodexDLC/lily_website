@@ -16,7 +16,11 @@
     </thead>
     <tbody>
       {% for appt in appointments %}
-      <tr class="align-middle">
+      <tr class="align-middle"
+          style="cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: background 0.2s;"
+          onmouseover="this.style.background='#f8fafc'"
+          onmouseout="this.style.background='white'"
+          @click="$dispatch('open-modal', { url: '{% url 'cabinet:booking_modal' appt.id %}', size: '800px' })">
         <td class="px-4 py-3" style="border: none;">
           <div class="d-flex align-items-center gap-2">
             <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold flex-shrink-0"
@@ -69,3 +73,50 @@
     </tbody>
   </table>
 </div>
+
+{% if page_obj and page_obj.paginator.num_pages > 1 %}
+<div class="d-flex align-items-center justify-content-between mt-3">
+  <div class="text-muted small">
+    {% blocktrans with number=page_obj.number pages=page_obj.paginator.num_pages %}Page {{ number }} of {{ pages }}{% endblocktrans %}
+  </div>
+  <div class="btn-group btn-group-sm" role="group">
+    <button type="button"
+            class="btn btn-outline-secondary"
+            {% if not page_obj.has_previous %}disabled{% endif %}
+            {% if page_obj.has_previous %}
+            hx-get="{% url 'cabinet:booking_list' %}?page={{ page_obj.previous_page_number }}&status={{ current_status }}"
+            hx-target="#appointments-panel"
+            hx-swap="outerHTML"
+            hx-push-url="true"
+            hx-include="#booking-filters input[name='search'], #booking-filters select[name='master_id'], #booking-filters input[name='date_from'], #booking-filters input[name='date_to']"
+            {% endif %}>
+      {% trans "Previous" %}
+    </button>
+    {% for num in page_obj.paginator.page_range %}
+      {% if num == page_obj.number or num <= 2 or num > page_obj.paginator.num_pages|add:"-2" or num >= page_obj.number|add:"-1" and num <= page_obj.number|add:"1" %}
+      <button type="button"
+              class="btn {% if num == page_obj.number %}btn-dark{% else %}btn-outline-secondary{% endif %}"
+              hx-get="{% url 'cabinet:booking_list' %}?page={{ num }}&status={{ current_status }}"
+              hx-target="#appointments-panel"
+              hx-swap="outerHTML"
+              hx-push-url="true"
+              hx-include="#booking-filters input[name='search'], #booking-filters select[name='master_id'], #booking-filters input[name='date_from'], #booking-filters input[name='date_to']">
+        {{ num }}
+      </button>
+      {% endif %}
+    {% endfor %}
+    <button type="button"
+            class="btn btn-outline-secondary"
+            {% if not page_obj.has_next %}disabled{% endif %}
+            {% if page_obj.has_next %}
+            hx-get="{% url 'cabinet:booking_list' %}?page={{ page_obj.next_page_number }}&status={{ current_status }}"
+            hx-target="#appointments-panel"
+            hx-swap="outerHTML"
+            hx-push-url="true"
+            hx-include="#booking-filters input[name='search'], #booking-filters select[name='master_id'], #booking-filters input[name='date_from'], #booking-filters input[name='date_to']"
+            {% endif %}>
+      {% trans "Next" %}
+    </button>
+  </div>
+</div>
+{% endif %}

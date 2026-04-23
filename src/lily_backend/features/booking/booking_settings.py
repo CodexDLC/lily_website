@@ -40,24 +40,24 @@ class BookingSettings(AbstractBookingSettings):
     )
 
     DEFAULT_DAY_HOURS = {
-        "monday": (False, time(9, 0), time(18, 0)),
-        "tuesday": (False, time(9, 0), time(18, 0)),
-        "wednesday": (False, time(9, 0), time(18, 0)),
-        "thursday": (False, time(9, 0), time(18, 0)),
-        "friday": (False, time(9, 0), time(18, 0)),
-        "saturday": (False, time(10, 0), time(14, 0)),
+        "monday": (False, time(8, 0), time(18, 0)),
+        "tuesday": (False, time(8, 0), time(18, 0)),
+        "wednesday": (False, time(8, 0), time(18, 0)),
+        "thursday": (False, time(8, 0), time(18, 0)),
+        "friday": (False, time(8, 0), time(18, 0)),
+        "saturday": (False, time(8, 0), time(18, 0)),
         "sunday": (True, None, None),
     }
 
     @classmethod
     def load(cls):
-        obj, _created = cls.objects.get_or_create(pk=1)
+        obj, created = cls.objects.get_or_create(pk=1)
         update_fields: list[str] = []
         for day, (is_closed, start, end) in cls.DEFAULT_DAY_HOURS.items():
             closed_field = f"{day}_is_closed"
             start_field = f"work_start_{day}"
             end_field = f"work_end_{day}"
-            if getattr(obj, closed_field) != is_closed:
+            if created and getattr(obj, closed_field) != is_closed:
                 setattr(obj, closed_field, is_closed)
                 update_fields.append(closed_field)
             if getattr(obj, start_field) is None and start is not None:

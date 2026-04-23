@@ -111,3 +111,6 @@ archive/
 pytest_output.txt
 project_structure.txt
 nul
+
+# Graphify
+graphify-out/

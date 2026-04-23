@@ -131,13 +131,58 @@ def test_booking_action_post(rf, staff_user, mock_booking_service):
     request = rf.post(url)
     request.user = staff_user
 
-    mock_booking_service.perform_action.return_value = {"target_url": "/list/"}
+    mock_booking_service.perform_action.return_value = {
+        "ok": True,
+        "code": "booking-confirm",
+        "message": "Confirmed",
+        "field_errors": {},
+        "target_url": "/list/",
+    }
 
     view = BookingActionView.as_view()
     response = view(request, pk=123, action="confirm")
 
     assert response.status_code == 302
     mock_booking_service.perform_action.assert_called_with(request, booking_id=123, action="confirm")
+
+
+def test_booking_action_htmx_success_triggers_booking_changed(rf, staff_user, mock_booking_service):
+    url = reverse("cabinet:booking_action", kwargs={"pk": 123, "action": "confirm"})
+    request = rf.post(url, HTTP_HX_REQUEST="true")
+    request.user = staff_user
+
+    mock_booking_service.perform_action.return_value = {
+        "ok": True,
+        "code": "booking-confirm",
+        "message": "Confirmed",
+        "field_errors": {},
+        "target_url": "/cabinet/booking/123/modal/",
+    }
+
+    response = BookingActionView.as_view()(request, pk=123, action="confirm")
+
+    assert response.status_code == 204
+    assert "booking:changed" in response["HX-Trigger"]
+
+
+def test_booking_action_htmx_validation_error_renders_modal_error(rf, staff_user, mock_booking_service):
+    url = reverse("cabinet:booking_action", kwargs={"pk": 123, "action": "confirm"})
+    request = rf.post(url, HTTP_HX_REQUEST="true")
+    request.user = staff_user
+
+    mock_booking_service.perform_action.return_value = {
+        "ok": False,
+        "code": "booking-validation-error",
+        "message": "Only pending appointments can be confirmed.",
+        "field_errors": {},
+        "target_url": "",
+    }
+    mock_booking_service.get_booking_modal_context.return_value = {"obj": MagicMock(title="Booking #123", sections=[])}
+
+    response = BookingActionView.as_view()(request, pk=123, action="confirm")
+
+    assert response.status_code == 422
+    assert b"Only pending appointments can be confirmed" in response.content
 
 
 @patch("src.lily_backend.cabinet.views.booking.BookingSettingsForm")

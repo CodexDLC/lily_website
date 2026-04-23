@@ -97,6 +97,32 @@ class TestGetCabinetServices:
         assert s is not None
         assert master.pk in s["master_ids"]
 
+    def test_uses_bento_group_category_key(self, db, master, provider):
+        from tests.factories import ServiceCategoryFactory, ServiceFactory
+
+        category = ServiceCategoryFactory(slug="hair-removal", bento_group="hair_removal")
+        service = ServiceFactory(category=category)
+        service.masters.add(master)
+
+        result = provider.get_cabinet_services()
+        row = next(s for s in result if s["id"] == service.pk)
+        assert row["category"] == "hair_removal"
+
+    def test_excludes_inactive_and_planned_categories(self, db, master, provider):
+        from tests.factories import ServiceCategoryFactory, ServiceFactory
+
+        planned_category = ServiceCategoryFactory(slug="planned-hair", bento_group="hair", is_planned=True)
+        inactive_category = ServiceCategoryFactory(slug="inactive-hair", bento_group="hair", is_active=False)
+        planned_service = ServiceFactory(category=planned_category, slug="planned-service")
+        inactive_service = ServiceFactory(category=inactive_category, slug="inactive-service")
+        planned_service.masters.add(master)
+        inactive_service.masters.add(master)
+
+        result = provider.get_cabinet_services()
+        ids = {row["id"] for row in result}
+        assert planned_service.pk not in ids
+        assert inactive_service.pk not in ids
+
 
 # ── get_cabinet_masters ───────────────────────────────────────────────────────
 
@@ -164,6 +190,21 @@ class TestGetCabinetAppointments:
         )
         result = provider.get_cabinet_appointments()
         assert any(a["id"] == appt.pk for a in result)
+
+    def test_zero_price_actual_is_not_replaced_by_base_price(
+        self,
+        db,
+        pending_appointment,
+        provider,
+    ):
+        pending_appointment.price = Decimal("50.00")
+        pending_appointment.price_actual = Decimal("0.00")
+        pending_appointment.save(update_fields=["price", "price_actual"])
+
+        result = provider.get_cabinet_appointments()
+        row = next(a for a in result if a["id"] == pending_appointment.pk)
+
+        assert row["price"] == 0.0
 
 
 # ── get_schedule_prefill ──────────────────────────────────────────────────────
@@ -325,6 +366,60 @@ class TestCreateQuickAppointment:
         assert result["id"] == 0
         assert "error" in result
 
+    def test_rejects_overlapping_active_booking(self, db, master, service, client_obj, provider):
+        from features.booking.models import Appointment
+
+        service.masters.add(master)
+        existing_start = timezone.make_aware(dt.datetime(2026, 5, 10, 10, 0))
+        Appointment.objects.create(
+            client=client_obj,
+            master=master,
+            service=service,
+            datetime_start=existing_start,
+            duration_minutes=60,
+            price=service.price,
+            status=Appointment.STATUS_CONFIRMED,
+        )
+
+        result = provider.create_quick_appointment(
+            resource_id=master.pk,
+            booking_date="2026-05-10",
+            start_time="10:30",
+            service_id=service.pk,
+            client_name="Overlap Client",
+            client_phone="+49000999000",
+        )
+
+        assert result["id"] == 0
+        assert result["code"] == "slot-overlap"
+        assert Appointment.objects.filter(client__phone="+49000999000").count() == 0
+
+    def test_cancelled_booking_does_not_block_slot(self, db, master, service, client_obj, provider):
+        from features.booking.models import Appointment
+
+        service.masters.add(master)
+        existing_start = timezone.make_aware(dt.datetime(2026, 5, 10, 10, 0))
+        Appointment.objects.create(
+            client=client_obj,
+            master=master,
+            service=service,
+            datetime_start=existing_start,
+            duration_minutes=60,
+            price=service.price,
+            status=Appointment.STATUS_CANCELLED,
+        )
+
+        result = provider.create_quick_appointment(
+            resource_id=master.pk,
+            booking_date="2026-05-10",
+            start_time="10:30",
+            service_id=service.pk,
+            client_name="Allowed Client",
+            client_phone="+49000888000",
+        )
+
+        assert result["id"] > 0
+
 
 # ── update_quick_appointment ──────────────────────────────────────────────────
 
@@ -372,6 +467,29 @@ class TestRunCabinetAction:
             )
         assert result.ok
         assert result.code == "booking-cancel"
+
+    def test_complete_action(self, db, confirmed_appointment, provider):
+        result = provider.run_cabinet_action(booking_id=confirmed_appointment.pk, action="complete")
+        confirmed_appointment.refresh_from_db()
+        assert result.ok
+        assert result.code == "booking-complete"
+        assert confirmed_appointment.status == "completed"
+
+    def test_complete_action_rejects_pending(self, db, pending_appointment, provider):
+        result = provider.run_cabinet_action(booking_id=pending_appointment.pk, action="complete")
+        pending_appointment.refresh_from_db()
+        assert not result.ok
+        assert result.code == "booking-validation-error"
+        assert pending_appointment.status == "pending"
+
+    def test_no_show_action(self, db, confirmed_appointment, provider):
+        with patch("features.conversations.services.notifications._get_engine") as mock_eng:
+            mock_eng.return_value = MagicMock()
+            result = provider.run_cabinet_action(booking_id=confirmed_appointment.pk, action="no_show")
+        confirmed_appointment.refresh_from_db()
+        assert result.ok
+        assert result.code == "booking-no-show"
+        assert confirmed_appointment.status == "no_show"
 
     def test_reschedule_action_valid_format(self, db, pending_appointment, provider):
         result = provider.run_cabinet_action(

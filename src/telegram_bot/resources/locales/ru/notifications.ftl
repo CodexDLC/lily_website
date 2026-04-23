@@ -1,25 +1,61 @@
-# Notifications Feature
-notifications-title = 👋 <b>Уведомления</b>
-notifications-description = Это стартовый экран фичи уведомлений.
+notifications =
+    .new =
+        .booking =
+            .title = ✨ <b>Новая запись: { $client_name }</b>
+            .details =
+                📅 <b>Когда:</b> { $datetime }
+                ✂️ <b>Услуга:</b> { $service_name }
+                👤 <b>Мастер:</b> { $master_name }
+                ────────────────────
+                📊 <b>Визиты:</b> { $visits_info }
+                💰 <b>Сумма:</b> { $price } €
+                { $promo_info }
+                📝 <b>Заметка:</b> { $client_notes }
 
-# Reject Reasons (Buttons)
-notifications-reason-busy = Мастер занят / Нет времени
-notifications-reason-ill = Мастер заболел
-notifications-reason-materials = Нет материалов
-notifications-reason-blacklist = Клиент в черном списке
-
-# Statuses
-notifications-status-approved = ✅ ЗАЯВКА ПОДТВЕРЖДЕНА
-notifications-status-rejected = ❌ ЗАЯВКА ОТКЛОНЕНА
-
-# Prompts & Alerts
-notifications-prompt-select-reason = Выберите причину отклонения:
-notifications-alert-approved = Заявка подтверждена, письмо отправлено
-notifications-alert-rejected = Заявка отклонена
-notifications-alert-cancelled = Отменено
-notifications-alert-deleted = Сообщение удалено
-notifications-error-api = ⚠️ Ошибка связи с сервером
-notifications-error-contact-notfound = ⚠️ <b>Текст заявки не найден (устарел).</b>{"\n\n"}Попробуйте найти её в админ-панели.
-
-# Buttons
-notifications-btn-delete = 🗑 Удалить из ленты
+                🆔 <b>ID записи:</b> #{ $id }
+            .visits =
+                .new = Новый клиент 🆕
+                .regular = Постоянный клиент ({ $count }-й визит) ⭐
+            .promo = 🎯 <b>Промо:</b> { $title }
+        .contact =
+            .preview =
+                .title = 📋 <b>Новая заявка с сайта</b>
+                .text = 📋 <b>Новая заявка с сайта</b>\n\nНажмите «Прочитать» для просмотра.
+    .status =
+        .block =
+            ────────────────────
+            📧 <b>Email:</b> { $email_status } { $email_label }
+            📱 <b>WhatsApp:</b> { $twilio_status } { $twilio_label }
+        .icons =
+            .waiting = ⏳
+            .sent = ✅
+            .success = ✅
+            .failed = ❌
+            .none = —
+        .approved = ✅ ЗАЯВКА ПОДТВЕРЖДЕНА
+        .rejected = ❌ ЗАЯВКА ОТКЛОНЕНА
+    .btn =
+        .approve = ✅ Подтвердить
+        .reject = ❌ Отклонить
+        .delete = 🗑 Удалить
+        .open =
+            .crm = 🔗 Открыть в CRM
+            .bot = 🤖 Открыть бота
+        .read = 📖 Прочитать
+        .reply = ✉️ Ответить
+    .prompt =
+        .reason = Выберите причину отклонения:
+    .alert =
+        .approved = Заявка подтверждена, письмо отправлено
+        .rejected = Заявка отклонена
+        .cancelled = Отменено
+        .deleted = Сообщение удалено
+    .error =
+        .api = ⚠️ Ошибка связи с сервером
+        .contact =
+            .notfound = ⚠️ <b>Текст заявки не найден (устарел).</b>{"\n\n"}Попробуйте найти её в админ-панели.
+    .reasons =
+        .busy = Мастер занят / Нет времени
+        .ill = Мастер заболел
+        .materials = Нет материалов
+        .blacklist = Клиент в черном списке

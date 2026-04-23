@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Manage Appointment" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+  .mgmt-wrapper {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    background-color: var(--color-emerald);
+  }
+  .mgmt-inner {
+    max-width: 560px;
+    width: 100%;
+  }
+
+  /* Card */
+  .mgmt-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--color-gold);
+    border-radius: 15px;
+    padding: 40px 36px;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,.4), inset 0 0 20px rgba(237,208,113,.08);
+    backdrop-filter: blur(10px);
+    margin-bottom: 24px;
+  }
+  .mgmt-card::before {
+    content: '';
+    position: absolute;
+    top: -8px; left: -8px; right: -8px; bottom: -8px;
+    border: 1px solid rgba(237,208,113,.2);
+    border-radius: 20px;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .mgmt-service-name {
+    font-family: var(--font-serif, serif);
+    font-size: 1.5rem;
+    color: var(--color-gold);
+    margin-bottom: 1.5rem;
+    letter-spacing: .5px;
+    line-height: 1.3;
+  }
+  .mgmt-meta-row {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .6rem 0;
+    border-bottom: 1px solid rgba(237,208,113,.12);
+    color: var(--color-text-main);
+    font-size: .9rem;
+  }
+  .mgmt-meta-row:last-child { border-bottom: none; }
+  .mgmt-meta-icon {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(237,208,113,.1);
+    border: 1px solid rgba(237,208,113,.25);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: .85rem;
+    color: var(--color-gold);
+  }
+  .mgmt-master-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(237,208,113,.15);
+    border: 1px solid var(--color-gold);
+    color: var(--color-gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .7rem; font-weight: 700;
+    flex-shrink: 0;
+    letter-spacing: .03em;
+  }
+  .mgmt-status-badge {
+    display: inline-flex; align-items: center; gap: .35rem;
+    padding: .3rem .85rem;
+    border-radius: 999px;
+    font-size: .75rem; font-weight: 600;
+    margin-top: 1.25rem;
+    border: 1px solid rgba(237,208,113,.3);
+    background: rgba(237,208,113,.08);
+    color: var(--color-gold);
+  }
+
+  /* Buttons */
+  .mgmt-actions { display: flex; flex-direction: column; gap: .75rem; }
+  .mgmt-btn {
+    display: flex; align-items: center; justify-content: center; gap: .5rem;
+    width: 100%;
+    padding: .85rem 1.5rem;
+    border-radius: 999px;
+    font-size: .92rem; font-weight: 600;
+    cursor: pointer; text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    border: none;
+    letter-spacing: .02em;
+  }
+  .mgmt-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+  .mgmt-btn:active { transform: translateY(0); }
+
+  .mgmt-btn-primary {
+    background: var(--color-gold);
+    color: var(--color-emerald);
+  }
+  .mgmt-btn-primary:hover { background: #f0d87a; color: var(--color-emerald); }
+
+  .mgmt-btn-danger {
+    background: transparent;
+    color: var(--color-danger, #f87171);
+    border: 1.5px solid var(--color-danger, #f87171);
+  }
+  .mgmt-btn-danger:hover { background: rgba(248,113,113,.1); color: #f87171; }
+
+  .mgmt-btn-secondary {
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1.5px solid rgba(245,245,245,.2);
+  }
+  .mgmt-btn-secondary:hover { background: rgba(255,255,255,.05); color: var(--color-text-main); }
+
+  /* Info boxes */
+  .mgmt-warning-box {
+    background: rgba(237,208,113,.08);
+    border: 1.5px solid rgba(237,208,113,.4);
+    border-radius: .75rem;
+    padding: 1rem 1.125rem;
+    font-size: .875rem;
+    color: var(--color-text-main);
+    line-height: 1.6;
+    margin-bottom: .75rem;
+  }
+  .mgmt-warning-box strong { color: var(--color-gold); }
+
+  .mgmt-error-box {
+    background: rgba(248,113,113,.08);
+    border: 1.5px solid rgba(248,113,113,.35);
+    border-radius: .75rem;
+    padding: 1rem 1.125rem;
+    font-size: .875rem;
+    color: #fca5a5;
+    line-height: 1.55;
+  }
+  .mgmt-confirm-box {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: .75rem;
+    padding: 1rem 1.125rem;
+    font-size: .875rem;
+    color: var(--color-text-muted);
+    margin-bottom: .75rem;
+  }
+  .mgmt-separator { text-align: center; font-size: .78rem; color: var(--color-text-muted); margin: .25rem 0; }
+  .mgmt-cancel-section { display: none; }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="mgmt-wrapper">
+  <div class="mgmt-inner">
+
+    {# ── Appointment card ─────────────────────────────────────────────── #}
+    <div class="mgmt-card">
+      <div class="mgmt-service-name">{{ appointment.service.title }}</div>
+
+      <div class="mgmt-meta-row">
+        <div class="mgmt-master-avatar">{{ appointment.master.name|slice:":1"|upper }}</div>
+        <span>{{ appointment.master.name }}</span>
+      </div>
+
+      <div class="mgmt-meta-row">
+        <div class="mgmt-meta-icon"><i class="bi bi-calendar3"></i></div>
+        <span>{{ appointment.datetime_start|date:"j N Y" }}</span>
+      </div>
+
+      <div class="mgmt-meta-row">
+        <div class="mgmt-meta-icon"><i class="bi bi-clock"></i></div>
+        <span>
+          {{ appointment.datetime_start|time:"H:i" }}
+          {% if appointment.duration_minutes %}
+          &mdash; <span style="opacity:.65; font-size:.82rem;">{{ appointment.duration_minutes }} {% trans "min" %}</span>
+          {% endif %}
+        </span>
+      </div>
+
+      {% if appointment.price %}
+      <div class="mgmt-meta-row">
+        <div class="mgmt-meta-icon"><i class="bi bi-tag"></i></div>
+        <span>&euro;{{ appointment.price }}</span>
+      </div>
+      {% endif %}
+
+      <div>
+        <span class="mgmt-status-badge">
+          <span style="font-size:.5rem;">&#9679;</span>
+          {{ appointment.get_status_display }}
+        </span>
+      </div>
+    </div>
+
+    {# ── Actions ──────────────────────────────────────────────────────── #}
+    {% if appointment.status == "pending" or appointment.status == "confirmed" %}
+    <div class="mgmt-actions">
+
+      <a href="{% url 'booking:booking_reschedule' token=appointment.finalize_token %}"
+         class="mgmt-btn mgmt-btn-primary">
+        <i class="bi bi-calendar2-check"></i> {% trans "Reschedule Appointment" %}
+      </a>
+
+      {% if can_cancel %}
+        <button type="button" class="mgmt-btn mgmt-btn-danger"
+                onclick="document.getElementById('cancel-section').style.display='block'; this.style.display='none';">
+          <i class="bi bi-x-circle"></i> {% trans "Cancel Appointment" %}
+        </button>
+
+        <div id="cancel-section" class="mgmt-cancel-section">
+          {% if show_loyalty_warning %}
+          <div class="mgmt-warning-box">
+            <strong>{% trans "We are really looking forward to seeing you!" %}</strong><br>
+            {% blocktrans %}Cancelling less than 24 hours before your visit will slightly reduce your loyalty level and XP. Perhaps rescheduling would be more convenient?{% endblocktrans %}
+          </div>
+          <div class="mgmt-actions">
+            <a href="{% url 'booking:booking_reschedule' token=appointment.finalize_token %}"
+               class="mgmt-btn mgmt-btn-primary">
+              <i class="bi bi-calendar2-check"></i> {% trans "Reschedule Instead" %}
+            </a>
+            <div class="mgmt-separator">{% trans "or" %}</div>
+            <form method="post" action="{% url 'booking:booking_cancel_action' token=appointment.finalize_token %}">
+              {% csrf_token %}
+              <input type="hidden" name="reason" value="client">
+              <button type="submit" class="mgmt-btn mgmt-btn-danger">
+                <i class="bi bi-x-circle"></i> {% trans "Cancel Anyway" %}
+              </button>
+            </form>
+          </div>
+
+          {% else %}
+          <div class="mgmt-confirm-box">{% trans "Are you sure you want to cancel this appointment?" %}</div>
+          <div class="mgmt-actions">
+            <form method="post" action="{% url 'booking:booking_cancel_action' token=appointment.finalize_token %}">
+              {% csrf_token %}
+              <input type="hidden" name="reason" value="client">
+              <button type="submit" class="mgmt-btn mgmt-btn-danger">
+                <i class="bi bi-x-circle"></i> {% trans "Yes, Cancel" %}
+              </button>
+            </form>
+            <button type="button" class="mgmt-btn mgmt-btn-secondary"
+                    onclick="document.getElementById('cancel-section').style.display='none'; document.querySelector('.mgmt-btn-danger[onclick]').style.display='flex';">
+              {% trans "No, Keep It" %}
+            </button>
+          </div>
+          {% endif %}
+        </div>
+
+      {% else %}
+        <div class="mgmt-error-box">
+          <i class="bi bi-exclamation-circle me-1"></i>
+          {% trans "This appointment cannot be cancelled less than 2 hours before the start time." %}
+        </div>
+      {% endif %}
+
+    </div>
+
+    {% else %}
+    <div style="text-align:center; color: var(--color-text-muted); font-size: .9rem; padding: 1rem 0;">
+      {% if appointment.status == "cancelled" %}
+        <i class="bi bi-x-circle fs-3 d-block mb-2" style="color:#f87171;"></i>
+        {% trans "This appointment has been cancelled." %}
+      {% elif appointment.status == "completed" %}
+        <i class="bi bi-check-circle fs-3 d-block mb-2" style="color:var(--color-gold);"></i>
+        {% trans "This appointment has been completed." %}
+      {% else %}
+        {% trans "This appointment can no longer be managed." %}
+      {% endif %}
+    </div>
+    <div class="mgmt-actions" style="margin-top:1.25rem;">
+      <a href="{% url 'booking:booking_wizard' %}" class="mgmt-btn mgmt-btn-primary">
+        <i class="bi bi-plus-lg"></i> {% trans "Book a New Appointment" %}
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
