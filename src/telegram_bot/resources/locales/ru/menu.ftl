@@ -1,8 +1,9 @@
-# Main Menu
-menu-dashboard-title = <b>📱 Главное меню</b>\n\nВыберите нужный раздел ниже:
-
-# Admin Dashboard
-menu-admin-title = <b>🔐 Панель управления</b>\n\nУправление системой и статистика.
-
-# Menu Buttons
-menu-btn-back-to-user = ⬅️ Вернуться в меню
+menu =
+    .dashboard =
+        .title = <b>📱 Главное меню</b>\n\nВыберите нужный раздел ниже:
+    .admin =
+        .title = <b>🔐 Панель управления</b>\n\nУправление системой и статистика.
+    .btn =
+        .back =
+            .to =
+                .user = ⬅️ Вернуться в меню

@@ -98,13 +98,24 @@ class BotContainer(BaseBotContainer):
         )
         log.info("BotContainer | ARQ pool initialized.")
 
-    def set_bot(self, bot: Bot) -> None:
+    def set_bot(self, bot: Bot, i18n_middleware: Any | None = None) -> None:
         super().set_bot(bot)
+        self.i18n = i18n_middleware
 
         self.redis_dispatcher.setup(self)
-        self.stream_processor.set_message_callback(self.redis_dispatcher.process_message)
+        self.stream_processor.set_message_callback(self.process_redis_message)
 
         log.debug("Bot object set and BotRedisDispatcher initialized in BotContainer.")
+
+    async def process_redis_message(self, message: dict[str, Any]) -> None:
+        """
+        Wraps redis message processing with I18nContext.
+        """
+        if self.i18n:
+            async with self.i18n.context():
+                await self.redis_dispatcher.process_message(message)
+        else:
+            await self.redis_dispatcher.process_message(message)
 
     def _include_redis_routers(self) -> None:
         for feature_path in INSTALLED_REDIS_FEATURES:

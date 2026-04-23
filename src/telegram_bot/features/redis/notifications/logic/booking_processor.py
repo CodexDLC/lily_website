@@ -1,5 +1,6 @@
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
+from aiogram_i18n import I18nContext
 from codex_bot.base import UnifiedViewDTO, ViewResultDTO
 from loguru import logger as log
 
@@ -144,9 +145,11 @@ class BookingProcessor:
         )
 
     async def handle_failure(self, raw_payload: dict[str, Any], error_msg: str) -> UnifiedViewDTO:
+        i18n = cast("I18nContext", I18nContext.get_current())
         booking_id = raw_payload.get("id", "???")
         log.error(f"Bot: BookingProcessor | Action: FailureHandled | appt_id={booking_id} | error={error_msg}")
-        text = f"⚠️ <b>Error processing notification #{booking_id}</b>\n<b>Error:</b> {error_msg}"
+
+        text = i18n.notifications.error.api(booking_id=booking_id, error=error_msg)
         return UnifiedViewDTO(
             content=ViewResultDTO(text=text),
             chat_id=self.settings.telegram_admin_channel_id,

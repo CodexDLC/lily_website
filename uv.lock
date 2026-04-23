@@ -13,7 +13,7 @@ wheels = [
 
 [[package]]
 name = "aiogram"
-version = "3.24.0"
+version = "3.27.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -23,22 +23,27 @@ dependencies = [
     { name = "pydantic" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fd/2f/04f47e81def8f2168679b1551e665e7ee02cf063e7bddace9fb5d1ce2f35/aiogram-3.24.0.tar.gz", hash = "sha256:ec547ede5bfa8a7a4f5fb02c75391333fc43b6f3de6a6d3f00a32e27628df5f6", size = 1713321, upload-time = "2026-01-02T00:56:55.3Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b5/09/4bfeb0314b4d78739fc7c3cdcaa77eacaeb089312d9c16f3eb538d0f0f97/aiogram-3.27.0.tar.gz", hash = "sha256:ed5fd6b40d80a6cdb215ab162c9bd9d9b7892fb2710b45e3b762a98c21119297", size = 1753647, upload-time = "2026-04-03T22:57:00.39Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/22/a5/7ba5f75b56f87a956b9e5a3e823bcbb5b55fc968914a16f3c7aa659cfc89/aiogram-3.24.0-py3-none-any.whl", hash = "sha256:eb3cc05b0ec53c7e24d7eada5c069aee2f431332e2e7bc2c8adf30d13b02f715", size = 706866, upload-time = "2026-01-02T00:56:53.115Z" },
+    { url = "https://files.pythonhosted.org/packages/aa/1f/64c4a9428d15ccea5aa7b204fd53061b94407640d6b075cd61c38899dd53/aiogram-3.27.0-py3-none-any.whl", hash = "sha256:26a091b6266d87db514e02703072035e7c17feebef480f927083bcfb22f634a3", size = 727326, upload-time = "2026-04-03T22:56:58.427Z" },
 ]
 
 [[package]]
 name = "aiogram-i18n"
-version = "1.4"
+version = "1.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiogram" },
     { name = "click" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ed/b4/97191bf90bcd5ee37990a233b0d3d611ea5037dbf768a28c0d196cb32f4f/aiogram_i18n-1.4.tar.gz", hash = "sha256:6e41304a166fe3bccb74f98b00dc4e85fac0cee815ae7f2c85f539e37e65818b", size = 33451, upload-time = "2024-06-04T12:37:21.771Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0c/db/f488713e1f6707ea7eacafed1909834a691c8d7a149b65b1a3936adf386d/aiogram_i18n-1.5.tar.gz", hash = "sha256:15f7d8064aba842fe6b8529c8962063415b2ca86b6c603d24cba41788dc35062", size = 19665, upload-time = "2026-03-07T23:36:17.483Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0f/ba/f978b917b911bc610b8266978b3ab460b882031fc9665e9daff4498650bd/aiogram_i18n-1.4-py3-none-any.whl", hash = "sha256:a1f838cfd6fa9a459d5f4514e9693e4fe75d27a0138686d92880faff11447007", size = 37045, upload-time = "2024-06-04T12:37:20.008Z" },
+    { url = "https://files.pythonhosted.org/packages/d4/09/a5ffedd5fca4e623a3e59ca39e88efe3671415eaaf9189b932d7b43b92d4/aiogram_i18n-1.5-py3-none-any.whl", hash = "sha256:6ce55978d32c8d1008d59f029c300506c6de48a18c8c346de3f666bd78013779", size = 33851, upload-time = "2026-03-07T23:36:16.374Z" },
+]
+
+[package.optional-dependencies]
+runtime = [
+    { name = "fluent-runtime" },
 ]
 
 [[package]]
@@ -348,8 +353,7 @@ wheels = [
 
 [[package]]
 name = "codex-bot"
-version = "0.2.1"
-source = { registry = "https://pypi.org/simple" }
+source = { directory = "../../codex_tools/codex_bot" }
 dependencies = [
     { name = "aiogram" },
     { name = "aiohttp" },
@@ -359,10 +363,65 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "questionary" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e9/02/52338498ce4ce65724d26db76db5e349077ab25416b4a8a70b10ba3d1528/codex_bot-0.2.1.tar.gz", hash = "sha256:43f49418d87eac20c5a7bb5e85fa348de0a131cb52f2dfbe2e8a323acf8ff697", size = 286188, upload-time = "2026-04-18T22:03:12.915Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c6/e2/862628f1f18bf7fbc825a0cfe015c7093c0b948df05fb7d6e6673389b1db/codex_bot-0.2.1-py3-none-any.whl", hash = "sha256:9519962079195aa46d87fbb9d18d157ecb25cb9ce67b455a111f46a59a4db16f", size = 145318, upload-time = "2026-04-18T22:03:11.582Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "aiogram", specifier = ">=3.27.0,<4.0" },
+    { name = "aiogram-i18n", extras = ["runtime"], marker = "extra == 'all'", specifier = ">=1.5,<2.0" },
+    { name = "aiogram-i18n", extras = ["runtime"], marker = "extra == 'dev'", specifier = ">=1.5,<2.0" },
+    { name = "aiogram-i18n", extras = ["runtime"], marker = "extra == 'i18n'", specifier = ">=1.5,<2.0" },
+    { name = "aiohttp", specifier = ">=3.13.4" },
+    { name = "aiosqlite", marker = "extra == 'all'", specifier = ">=0.19.0" },
+    { name = "aiosqlite", marker = "extra == 'db'", specifier = ">=0.19.0" },
+    { name = "aiosqlite", marker = "extra == 'dev'", specifier = ">=0.19.0" },
+    { name = "aiosqlite", marker = "extra == 'sqlite'", specifier = ">=0.19.0" },
+    { name = "alembic", marker = "extra == 'all'", specifier = ">=1.13.0" },
+    { name = "alembic", marker = "extra == 'db'", specifier = ">=1.13.0" },
+    { name = "alembic", marker = "extra == 'dev'", specifier = ">=1.13.0" },
+    { name = "arq", marker = "extra == 'all'", specifier = ">=0.25" },
+    { name = "arq", marker = "extra == 'arq'", specifier = ">=0.25" },
+    { name = "arq", marker = "extra == 'dev'", specifier = ">=0.25" },
+    { name = "asyncpg", marker = "extra == 'all'", specifier = ">=0.29.0" },
+    { name = "asyncpg", marker = "extra == 'db'", specifier = ">=0.29.0" },
+    { name = "asyncpg", marker = "extra == 'dev'", specifier = ">=0.29.0" },
+    { name = "asyncpg", marker = "extra == 'postgres'", specifier = ">=0.29.0" },
+    { name = "bandit", marker = "extra == 'dev'", specifier = ">=1.7" },
+    { name = "codex-platform", marker = "extra == 'all'" },
+    { name = "codex-platform", marker = "extra == 'dev'" },
+    { name = "codex-platform", marker = "extra == 'redis'" },
+    { name = "detect-secrets", marker = "extra == 'dev'", specifier = ">=1.5" },
+    { name = "httpx", marker = "extra == 'all'", specifier = ">=0.27,<1.0" },
+    { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.27,<1.0" },
+    { name = "httpx", marker = "extra == 'http'", specifier = ">=0.27,<1.0" },
+    { name = "jinja2", specifier = ">=3.1.0" },
+    { name = "loguru", marker = "extra == 'all'", specifier = ">=0.7.0" },
+    { name = "loguru", marker = "extra == 'cli'", specifier = ">=0.7.0" },
+    { name = "loguru", marker = "extra == 'dev'", specifier = ">=0.7.0" },
+    { name = "mike", marker = "extra == 'docs'", specifier = ">=2.0" },
+    { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.5" },
+    { name = "mkdocs-include-markdown-plugin", marker = "extra == 'docs'" },
+    { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.0" },
+    { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.24" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.10" },
+    { name = "pip-audit", marker = "extra == 'dev'", specifier = ">=2.7" },
+    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.0" },
+    { name = "pydantic", specifier = ">=2.0,<3.0" },
+    { name = "pydantic-settings", specifier = ">=2.0" },
+    { name = "pygments", marker = "extra == 'dev'", specifier = "==2.19.1" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3" },
+    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23" },
+    { name = "pytest-cov", marker = "extra == 'dev'" },
+    { name = "python-dotenv", specifier = ">=1.0.0" },
+    { name = "questionary", specifier = ">=2.0.0" },
+    { name = "redis", marker = "extra == 'all'", specifier = ">=5.0,<6.0" },
+    { name = "redis", marker = "extra == 'dev'", specifier = ">=5.0,<6.0" },
+    { name = "redis", marker = "extra == 'redis'", specifier = ">=5.0,<6.0" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.4" },
+    { name = "sqlalchemy", marker = "extra == 'all'", specifier = ">=2.0" },
+    { name = "sqlalchemy", marker = "extra == 'db'", specifier = ">=2.0" },
+    { name = "sqlalchemy", marker = "extra == 'dev'", specifier = ">=2.0" },
 ]
+provides-extras = ["all", "arq", "cli", "db", "dev", "docs", "http", "i18n", "postgres", "redis", "sqlite"]
 
 [[package]]
 name = "codex-core"
@@ -1272,12 +1331,11 @@ dependencies = [
 [package.dev-dependencies]
 bot = [
     { name = "aiogram" },
-    { name = "aiogram-i18n" },
+    { name = "aiogram-i18n", extra = ["runtime"] },
     { name = "arq" },
     { name = "codex-bot" },
     { name = "codex-core" },
     { name = "codex-platform", extra = ["streams"] },
-    { name = "fluent-runtime" },
     { name = "pydantic" },
 ]
 codex-tools = [
@@ -1287,7 +1345,7 @@ codex-tools = [
 ]
 dev = [
     { name = "aiogram" },
-    { name = "aiogram-i18n" },
+    { name = "aiogram-i18n", extra = ["runtime"] },
     { name = "arq" },
     { name = "bandit" },
     { name = "codex-bot" },
@@ -1305,7 +1363,6 @@ dev = [
     { name = "djlint" },
     { name = "factory-boy" },
     { name = "fakeredis" },
-    { name = "fluent-runtime" },
     { name = "freezegun" },
     { name = "gunicorn" },
     { name = "mypy" },
@@ -1375,13 +1432,12 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 bot = [
-    { name = "aiogram", specifier = ">=3.24.0,<3.25.0" },
-    { name = "aiogram-i18n", specifier = ">=1.4.0,<1.5.0" },
+    { name = "aiogram", specifier = ">=3.27.0,<4.0" },
+    { name = "aiogram-i18n", extras = ["runtime"], specifier = ">=1.5,<2.0" },
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
-    { name = "codex-bot", specifier = ">=0.2.1,<0.9.0" },
+    { name = "codex-bot", directory = "../../codex_tools/codex_bot" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
     { name = "codex-platform", extras = ["streams"], specifier = ">=0.4.0,<0.9.0" },
-    { name = "fluent-runtime", specifier = ">=0.4.0,<0.5.0" },
     { name = "pydantic", specifier = ">=2.0.0" },
 ]
 codex-tools = [
@@ -1390,11 +1446,11 @@ codex-tools = [
     { name = "pydantic", specifier = ">=2.0.0" },
 ]
 dev = [
-    { name = "aiogram", specifier = ">=3.24.0,<3.25.0" },
-    { name = "aiogram-i18n", specifier = ">=1.4.0,<1.5.0" },
+    { name = "aiogram", specifier = ">=3.27.0,<4.0" },
+    { name = "aiogram-i18n", extras = ["runtime"], specifier = ">=1.5,<2.0" },
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
     { name = "bandit", extras = ["toml"] },
-    { name = "codex-bot", specifier = ">=0.2.1,<0.9.0" },
+    { name = "codex-bot", directory = "../../codex_tools/codex_bot" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
     { name = "codex-django", specifier = "==0.6.3" },
     { name = "codex-django-cli", specifier = ">=0.3.0,<0.9.0" },
@@ -1410,7 +1466,6 @@ dev = [
     { name = "djlint", specifier = ">=1.36.4,<2.0.0" },
     { name = "factory-boy", specifier = ">=3.3.1" },
     { name = "fakeredis", specifier = ">=2.26.0" },
-    { name = "fluent-runtime", specifier = ">=0.4.0,<0.5.0" },
     { name = "freezegun", specifier = ">=1.5.1" },
     { name = "gunicorn", specifier = ">=23.0.0,<24.0.0" },
     { name = "mypy" },

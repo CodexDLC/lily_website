@@ -3,6 +3,7 @@ from typing import Any
 from aiogram import F, Router
 from aiogram.exceptions import TelegramAPIError
 from aiogram.types import CallbackQuery
+from aiogram_i18n import I18nContext
 from codex_bot.redis import RedisRouter
 from loguru import logger as log
 
@@ -42,19 +43,20 @@ async def handle_delete_notification_callback(
     call: CallbackQuery,
     callback_data: NotificationsCallback,
     container: Any,
+    i18n: I18nContext,
 ) -> None:
     """
     Handles inline "Удалить" buttons produced by Redis notification cards.
     """
     message = call.message
     if not message:
-        await call.answer("Сообщение недоступно.", show_alert=True)
+        await call.answer(i18n.notifications.error.contact.notfound(), show_alert=True)
         return
 
     chat = getattr(message, "chat", None)
     message_id = getattr(message, "message_id", None)
     if not chat or not message_id:
-        await call.answer("Сообщение недоступно.", show_alert=True)
+        await call.answer(i18n.notifications.error.contact.notfound(), show_alert=True)
         return
 
     chat_id = chat.id
@@ -71,11 +73,13 @@ async def handle_delete_notification_callback(
             "Notifications | Delete callback failed | "
             f"chat_id={chat_id} message_id={message_id} session_id={callback_data.session_id} error={e}"
         )
-        await call.answer("Не удалось удалить сообщение.", show_alert=True)
+        await call.answer(
+            i18n.notifications.error.api(booking_id=callback_data.session_id or "???", error=str(e)), show_alert=True
+        )
         return
 
     await _clear_deleted_notification_state(callback_data, container, chat_id=chat_id, thread_id=thread_id)
-    await call.answer("Удалено")
+    await call.answer(i18n.notifications.alert.deleted())
 
 
 @notifications_router.message("new_appointment")
