@@ -24,6 +24,7 @@ For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs
 - **Architecture:** Refactored `BookingRuntimeEngineGateway` and `RuntimeBookingProvider` to support extended appointment filters and validation.
 - **Static Assets:** Cleaned up cabinet CSS/JS and optimized the CSS compiler configuration for better performance.
 - **Dev Experience:** Standardized environment templates and updated scratch scripts for catalog management.
+- **Bot Dependencies:** Migrated the project to `codex-bot>=0.3.0` with `aiogram>=3.27.0` and `aiogram-i18n[runtime]>=1.5`, removing the direct `fluent.runtime` workaround from the bot dependency group.
 
 ## [2.3.0] - 2026-04-22
 

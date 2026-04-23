@@ -56,11 +56,10 @@ django = [
     { include-group = "codex_tools" },
 ]
 bot = [
-    "aiogram>=3.24.0,<3.25.0",
-    "aiogram-i18n>=1.4.0,<1.5.0",
-    "codex-bot>=0.2.1,<0.9.0",
+    "aiogram>=3.27.0,<4.0",
+    "aiogram-i18n[runtime]>=1.5,<2.0",
+    "codex-bot>=0.3.0,<0.9.0",
     "codex-platform[streams]>=0.4.0,<0.9.0",
-    "fluent.runtime>=0.4.0,<0.5.0",
     { include-group = "codex_tools" },
 ]
 dev = [
@@ -98,6 +97,9 @@ packages = ["src"]
 
 [tool.uv]
 default-groups = ["dev"]
+
+[tool.uv.sources]
+codex-bot = { path = "../../codex_tools/codex_bot" }
 
 # === Ruff ===
 [tool.ruff]
