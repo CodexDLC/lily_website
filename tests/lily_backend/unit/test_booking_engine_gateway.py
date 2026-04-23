@@ -8,6 +8,8 @@ get_available_slots (audience filtering, fallback).
 from __future__ import annotations
 
 import datetime as dt
+from decimal import Decimal
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -296,3 +298,90 @@ class TestGetNearestSlots:
             # second positional arg to runtime_get_nearest_slots is the effective_search_from
             call_args = mock_nearest.call_args
             assert call_args[0][2] == tomorrow
+
+
+@pytest.mark.unit
+class TestCreateBookingPersistence:
+    def test_single_service_any_resource_persists_service_price(
+        self,
+        db,
+        master,
+        service,
+        client_obj,
+        booking_settings,
+    ):
+        service.masters.add(master)
+        service.price = Decimal("77.50")
+        service.save(update_fields=["price"])
+
+        gateway = BookingRuntimeEngineGateway()
+        appointment = gateway.create_booking(
+            service_ids=[service.pk],
+            target_date=dt.date(2026, 5, 11),
+            selected_time="10:00",
+            resource_id=None,
+            client=client_obj,
+            notify_received=False,
+        )[0]
+
+        appointment.refresh_from_db()
+        assert appointment.price == Decimal("77.50")
+        assert appointment.service_id == service.pk
+        assert appointment.master_id == master.pk
+
+    def test_multi_service_chain_persists_corresponding_service_prices(
+        self,
+        db,
+        master,
+        service,
+        client_obj,
+        booking_settings,
+    ):
+        from tests.factories import ServiceFactory
+
+        service.masters.add(master)
+        service.price = Decimal("40.00")
+        service.duration = 30
+        service.save(update_fields=["price", "duration"])
+        service_two = ServiceFactory(category=service.category, price=Decimal("95.00"), duration=45)
+        service_two.masters.add(master)
+
+        gateway = BookingRuntimeEngineGateway()
+        appointments = gateway.create_booking(
+            service_ids=[service.pk, service_two.pk],
+            target_date=dt.date(2026, 5, 11),
+            selected_time="10:00",
+            resource_id=None,
+            client=client_obj,
+            notify_received=False,
+        )
+
+        prices_by_service = {appointment.service_id: appointment.price for appointment in appointments}
+        assert prices_by_service == {
+            service.pk: Decimal("40.00"),
+            service_two.pk: Decimal("95.00"),
+        }
+
+    def test_missing_service_does_not_create_zero_price_appointment(self, db, client_obj):
+        from features.booking.models import Appointment
+        from features.booking.persistence import BookingServiceNotFoundError, LilyBookingPersistenceHook
+
+        solution = SimpleNamespace(
+            items=[
+                SimpleNamespace(
+                    resource_id=123,
+                    start_time=timezone.make_aware(dt.datetime(2026, 5, 11, 10, 0)),
+                    duration_minutes=60,
+                )
+            ]
+        )
+        hook = LilyBookingPersistenceHook(Appointment, notify_received=False)
+
+        with pytest.raises(BookingServiceNotFoundError):
+            hook.persist_chain(
+                solution=solution,
+                service_ids=[999999],
+                client=client_obj,
+            )
+
+        assert Appointment.objects.count() == 0

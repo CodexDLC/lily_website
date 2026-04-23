@@ -22,6 +22,7 @@ from codex_django.booking.selectors import (
     get_nearest_slots as runtime_get_nearest_slots,
 )
 
+from ..persistence import LilyBookingPersistenceHook, build_single_service_extra_fields
 from ..providers.runtime import get_booking_project_data_provider
 
 logger = logging.getLogger(__name__)
@@ -90,54 +91,13 @@ class LoadAwareDjangoAvailabilityAdapter(DjangoAvailabilityAdapter):
                 master_id__in=[int(i) for i in resource_ids],
                 datetime_start__gte=day_start,
                 datetime_start__lt=day_end,
-                status__in=["pending", "confirmed"],
+                status__in=["pending", "confirmed", "reschedule_proposed"],
             )
             .values("master_id")
             .annotate(cnt=Count("id"))
             .values_list("master_id", "cnt")
         )
         return sorted(resource_ids, key=lambda i: counts.get(int(i), 0))
-
-
-class LilyBookingPersistenceHook:
-    """Project persistence policy for chain bookings."""
-
-    def __init__(self, appointment_model: type[Any], *, notify_received: bool = True) -> None:
-        self.appointment_model = appointment_model
-        self.notify_received = notify_received
-
-    def persist_chain(
-        self,
-        solution: Any,
-        service_ids: list[int],
-        client: Any,
-        extra_fields: dict[str, Any] | None = None,
-    ) -> list[Any]:
-        appointments: list[Any] = []
-        for index, item in enumerate(getattr(solution, "items", [])):
-            fields = (extra_fields or {}).copy()
-            fields.update(
-                {
-                    "master_id": int(item.resource_id),
-                    "service_id": service_ids[index] if index < len(service_ids) else service_ids[-1],
-                    "datetime_start": item.start_time,
-                    "duration_minutes": item.duration_minutes,
-                    "client": client,
-                }
-            )
-            appointments.append(self.appointment_model.objects.create(**fields))
-
-        if not self.notify_received:
-            return appointments
-
-        # Notify about received bookings
-        from features.conversations.services.notifications import _get_engine
-
-        engine = _get_engine()
-        for appt in appointments:
-            engine.dispatch_event("booking.received", appt)
-
-        return appointments
 
 
 class BookingRuntimeEngineGateway(BookingEngineGateway):
@@ -253,7 +213,11 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
                 master_id=resource_id,
                 datetime_start__gte=day_start,
                 datetime_start__lt=day_end,
-                status__in=[Appointment.STATUS_PENDING, Appointment.STATUS_CONFIRMED],
+                status__in=[
+                    Appointment.STATUS_PENDING,
+                    Appointment.STATUS_CONFIRMED,
+                    Appointment.STATUS_RESCHEDULE_PROPOSED,
+                ],
             )
         ]
 
@@ -279,6 +243,10 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
     ) -> Any:
         feature_models = self.provider.get_feature_models()
         adapter = self._build_adapter(target_date=target_date)
+        extra_fields = build_single_service_extra_fields(
+            service_ids,
+            kwargs.pop("extra_fields", None),
+        )
         persistence_hook = LilyBookingPersistenceHook(
             feature_models.appointment_model,
             notify_received=notify_received,
@@ -292,6 +260,7 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
             selected_time=selected_time,
             resource_id=resource_id,
             client=client,
+            extra_fields=extra_fields,
             persistence_hook=persistence_hook,
             **kwargs,
         )

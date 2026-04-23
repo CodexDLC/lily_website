@@ -5,3 +5,12 @@
 {% block cabinet_content %}
     {% include "cabinet/components/calendar_grid.html" with calendar=calendar %}
 {% endblock cabinet_content %}
+
+{% block extra_js %}
+<script>
+document.body.addEventListener('booking:changed', function () {
+  window.dispatchEvent(new CustomEvent('close-modal'));
+  window.location.reload();
+});
+</script>
+{% endblock extra_js %}

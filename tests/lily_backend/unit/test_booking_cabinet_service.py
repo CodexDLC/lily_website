@@ -237,6 +237,52 @@ class TestGetScheduleContext:
         ctx = svc.get_schedule_context(self._request("2026-05-11"))
         assert ctx["calendar"].events == []
 
+    def test_cancelled_appointment_is_hidden_from_schedule_by_default(self):
+        prov = _mock_provider()
+        prov.get_cabinet_appointments.return_value = [
+            {
+                "id": 5,
+                "master_id": 1,
+                "date": "2026-05-11",
+                "time": "10:00",
+                "duration": 60,
+                "client_name": "Cancelled Client",
+                "status": "cancelled",
+                "service_title": "Cut",
+                "price": 50,
+                "admin_notes": "",
+                "client_notes": "",
+                "client_created_at": None,
+            }
+        ]
+        svc, _, _ = _make_workflow(provider=prov)
+        ctx = svc.get_schedule_context(self._request("2026-05-11"))
+        assert ctx["calendar"].events == []
+
+    def test_cancelled_appointment_can_be_shown_with_optional_layer(self):
+        prov = _mock_provider()
+        prov.get_cabinet_appointments.return_value = [
+            {
+                "id": 6,
+                "master_id": 1,
+                "date": "2026-05-11",
+                "time": "10:00",
+                "duration": 60,
+                "client_name": "Cancelled Client",
+                "status": "cancelled",
+                "service_title": "Cut",
+                "price": 50,
+                "admin_notes": "",
+                "client_notes": "",
+                "client_created_at": None,
+            }
+        ]
+        req = self._request("2026-05-11")
+        req.GET.get.side_effect = lambda k, d=None: {"date": "2026-05-11", "show_cancelled": "1"}.get(k, d)
+        svc, _, _ = _make_workflow(provider=prov)
+        ctx = svc.get_schedule_context(req)
+        assert len(ctx["calendar"].events) == 1
+
 
 @pytest.mark.unit
 class TestGetNewBookingContext:
@@ -252,6 +298,31 @@ class TestGetNewBookingContext:
         assert ctx["builder_mode"] == "single"
         assert "selector" in ctx
         assert "picker" in ctx
+
+    def test_category_key_matches_service_item_category(self):
+        cat = MagicMock()
+        cat.slug = "hair-removal"
+        cat.bento_group = "hair_removal"
+        cat.name = "Depilation"
+        prov = _mock_provider()
+        prov.get_cabinet_services.return_value = [
+            {
+                "id": 12,
+                "title": "Waxing",
+                "price": 40.0,
+                "duration": 45,
+                "category": "hair_removal",
+                "master_ids": [1],
+                "conflicts_with": [],
+                "conflict_rules": [],
+            }
+        ]
+        prov.get_service_categories.return_value = [cat]
+        svc, _, _ = _make_workflow(provider=prov)
+        svc.availability.build_picker_days.return_value = []
+        ctx = svc.get_new_booking_context(self._request("single"))
+        assert ctx["selector"].categories == [("hair_removal", "Depilation")]
+        assert ctx["selector"].items[0].category == "hair_removal"
 
     def test_separate_mode(self):
         svc, _, _ = _make_workflow()
@@ -400,6 +471,18 @@ class TestGetListContext:
         assert "status_label" in row
         assert "status_color" in row
 
+    def test_paginates_rows_and_counts_before_pagination(self):
+        prov = _mock_provider()
+        prov.get_cabinet_appointments.return_value = [self._appt("pending") | {"id": idx} for idx in range(20)]
+        req = MagicMock()
+        req.GET.get.side_effect = lambda key, default=None: {"page": "2", "status": "pending"}.get(key, default)
+        svc, _, _ = _make_workflow(provider=prov)
+        ctx = svc.get_list_context(req)
+        assert len(ctx["appointments"]) == 5
+        assert ctx["counts"]["all"] == 20
+        assert ctx["counts"]["pending"] == 20
+        assert ctx["page_obj"].number == 2
+
 
 # ── BookingCabinetBridgeAdapter ───────────────────────────────────────────────
 
@@ -522,6 +605,24 @@ class TestBridgeGetModalState:
         action_values = [a.value for a in state.actions]
         assert "confirm" not in action_values
 
+    def test_mode_detail_confirmed_has_complete_and_no_show_actions(self):
+        bridge, prov = _make_bridge()
+        appt = {**self._appt_dict(), "status": "confirmed"}
+        prov.get_cabinet_appointments.return_value = [appt]
+        state = bridge.get_modal_state(self._req(), booking_id=10, mode="detail")
+        action_values = [a.value for a in state.actions]
+        assert "complete" in action_values
+        assert "no_show" in action_values
+
+    def test_mode_detail_completed_is_terminal(self):
+        bridge, prov = _make_bridge()
+        appt = {**self._appt_dict(), "status": "completed"}
+        prov.get_cabinet_appointments.return_value = [appt]
+        state = bridge.get_modal_state(self._req(), booking_id=10, mode="detail")
+        action_values = [a.value for a in state.actions]
+        assert action_values == [""]
+        assert state.actions[0].kind == "close"
+
 
 @pytest.mark.unit
 class TestBridgeExecuteAction:
@@ -632,7 +733,24 @@ class TestBridgeExecuteAction:
         result = bridge.execute_action(MagicMock(), booking_id=10, action="cancel", payload={})
         assert result.code == "booking-cancel"
         prov.run_cabinet_action.assert_called_once_with(
-            booking_id=10, action="cancel", redirect_url=bridge._modal_url(10)
+            booking_id=10, action="cancel", redirect_url=bridge._modal_url(10), payload={}
+        )
+
+    def test_cancel_action_uses_modal_field_names(self):
+        bridge, prov = _make_bridge()
+        prov.run_cabinet_action.return_value = MagicMock(ok=True, code="booking-cancel")
+
+        bridge.execute_action(
+            MagicMock(),
+            booking_id=10,
+            action="cancel",
+            payload={"cancel_reason": "master_ill", "cancel_note": "Sick"},
+        )
+        prov.run_cabinet_action.assert_called_once_with(
+            booking_id=10,
+            action="cancel",
+            redirect_url=bridge._modal_url(10),
+            payload={"cancel_reason": "master_ill", "cancel_note": "Sick"},
         )
 
 

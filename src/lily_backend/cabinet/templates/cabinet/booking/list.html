@@ -30,29 +30,18 @@
     </a>
   </div>
 
-  {# Filters #}
-  <div class="d-flex gap-2 mb-4 flex-wrap">
-    {% for key, val in counts.items %}
-    <a href="{% if key == 'all' %}{% url 'cabinet:booking_list' %}{% else %}{% url 'cabinet:booking_list_filtered' key %}{% endif %}"
-       hx-get="{% if key == 'all' %}{% url 'cabinet:booking_list' %}{% else %}{% url 'cabinet:booking_list_filtered' key %}{% endif %}"
-       hx-target="#appointments-container"
-       hx-swap="outerHTML"
-       hx-push-url="true"
-       class="btn btn-sm {% if current_status == key %}btn-dark{% else %}btn-outline-secondary{% endif %}"
-       style="font-size: .8rem; border-radius: 20px;">
-      {% if key == 'all' %}{% trans "All Appointments" %}{% else %}{{ key|capfirst }}{% endif %}
-      <span class="ms-1 {% if current_status == key %}text-white-50{% else %}text-muted{% endif %}" style="font-size: .72rem;">({{ val }})</span>
-    </a>
-    {% endfor %}
-  </div>
-
-  {# Table Container #}
-  {% include "cabinet/booking/partials/_appointments_table.html" %}
+  {% include "cabinet/booking/partials/_appointments_panel.html" %}
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-// Legacy apptModal removed. Global modal in base_cabinet handles open-modal event.
+document.body.addEventListener('booking:changed', function () {
+  window.dispatchEvent(new CustomEvent('close-modal'));
+  const panel = document.querySelector('#appointments-panel');
+  if (panel && window.htmx) {
+    window.htmx.ajax('GET', window.location.href, { target: '#appointments-panel', swap: 'outerHTML' });
+  }
+});
 </script>
 {% endblock %}

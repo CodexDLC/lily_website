@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+import json
 from typing import Any
 
 from core.logger import logger
 from django import forms
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import TemplateView
@@ -144,7 +145,7 @@ class BookingCreateView(BaseBookingView):
 
     def post(self, request: Any, *args: Any, **kwargs: Any) -> HttpResponse:
         result = BookingService.create_new_booking(request)
-        return redirect(result["target_url"])
+        return redirect(result["target_url"] or "cabinet:booking_list")
 
 
 class BookingListView(BaseBookingView):
@@ -154,7 +155,7 @@ class BookingListView(BaseBookingView):
 
     def get_template_names(self) -> list[str]:
         if self.request.headers.get("HX-Request"):
-            return ["cabinet/booking/partials/_appointments_table.html"]
+            return ["cabinet/booking/partials/_appointments_panel.html"]
         return [self.template_name]
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -188,7 +189,25 @@ class BookingActionView(BaseBookingView):
             booking_id=self.kwargs["pk"],
             action=self.kwargs["action"],
         )
-        return redirect(result["target_url"])
+        if request.headers.get("HX-Request"):
+            if result["ok"]:
+                response = HttpResponse(status=204)
+                response["HX-Trigger"] = json.dumps(
+                    {
+                        "booking:changed": {
+                            "code": result["code"],
+                            "message": str(result["message"]),
+                            "target_url": result["target_url"],
+                        }
+                    }
+                )
+                return response
+
+            context = BookingService.get_booking_modal_context(request, self.kwargs["pk"])
+            context["booking_action_error"] = result["message"]
+            context["booking_action_field_errors"] = result["field_errors"]
+            return render(request, "cabinet/booking/partials/_modal_action_error.html", context, status=422)
+        return redirect(result["target_url"] or "cabinet:booking_list")
 
 
 class BookingSettingsView(BaseBookingView):

@@ -50,7 +50,7 @@ class TestBookingListView:
         view = BookingListView()
         view.request = request
         templates = view.get_template_names()
-        assert "cabinet/booking/partials/_appointments_table.html" in templates
+        assert "cabinet/booking/partials/_appointments_panel.html" in templates
 
     @patch("cabinet.views.booking.BookingService.get_list_context")
     def test_get_context_data(self, mock_get_list, mock_request):
