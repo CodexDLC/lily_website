@@ -4,6 +4,12 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
 
+## [2.4.2] - 2026-04-23
+
+### Fixed
+
+- **Infrastructure:** Resolved Redis authentication issues in the backend by switching from DSN-based connection to direct parameter passing, preventing issues with special characters in passwords.
+
 ## [2.4.1] - 2026-04-23
 
 ### Fixed
@@ -37,7 +43,6 @@ For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs
 - **Bot Dependencies:** Migrated the project to `codex-bot>=0.3.0` with `aiogram>=3.27.0` and `aiogram-i18n[runtime]>=1.5`, removing the direct `fluent.runtime` workaround from the bot dependency group.
 
 ## [2.3.0] - 2026-04-22
-
 
 ### Added
 

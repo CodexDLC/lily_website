@@ -24,10 +24,14 @@ class DjangoArqClient:
     async def get_pool(cls) -> Any:
         current_loop = asyncio.get_running_loop()
         if cls._pool is None or cls._pool_loop is not current_loop:
-            redis_url = str(
-                getattr(settings, "ARQ_REDIS_URL", None) or getattr(settings, "REDIS_URL", "redis://localhost:6379/0")
+            cls._pool = await create_pool(
+                RedisSettings(
+                    host=getattr(settings, "REDIS_HOST", "localhost"),
+                    port=getattr(settings, "REDIS_PORT", 6379),
+                    password=getattr(settings, "REDIS_PASSWORD", None),
+                    database=0,
+                )
             )
-            cls._pool = await create_pool(RedisSettings.from_dsn(redis_url))
             cls._pool_loop = current_loop
         return cls._pool
 
