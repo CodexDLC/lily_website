@@ -353,7 +353,8 @@ wheels = [
 
 [[package]]
 name = "codex-bot"
-source = { directory = "../../codex_tools/codex_bot" }
+version = "0.3.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiogram" },
     { name = "aiohttp" },
@@ -363,65 +364,10 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "questionary" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "aiogram", specifier = ">=3.27.0,<4.0" },
-    { name = "aiogram-i18n", extras = ["runtime"], marker = "extra == 'all'", specifier = ">=1.5,<2.0" },
-    { name = "aiogram-i18n", extras = ["runtime"], marker = "extra == 'dev'", specifier = ">=1.5,<2.0" },
-    { name = "aiogram-i18n", extras = ["runtime"], marker = "extra == 'i18n'", specifier = ">=1.5,<2.0" },
-    { name = "aiohttp", specifier = ">=3.13.4" },
-    { name = "aiosqlite", marker = "extra == 'all'", specifier = ">=0.19.0" },
-    { name = "aiosqlite", marker = "extra == 'db'", specifier = ">=0.19.0" },
-    { name = "aiosqlite", marker = "extra == 'dev'", specifier = ">=0.19.0" },
-    { name = "aiosqlite", marker = "extra == 'sqlite'", specifier = ">=0.19.0" },
-    { name = "alembic", marker = "extra == 'all'", specifier = ">=1.13.0" },
-    { name = "alembic", marker = "extra == 'db'", specifier = ">=1.13.0" },
-    { name = "alembic", marker = "extra == 'dev'", specifier = ">=1.13.0" },
-    { name = "arq", marker = "extra == 'all'", specifier = ">=0.25" },
-    { name = "arq", marker = "extra == 'arq'", specifier = ">=0.25" },
-    { name = "arq", marker = "extra == 'dev'", specifier = ">=0.25" },
-    { name = "asyncpg", marker = "extra == 'all'", specifier = ">=0.29.0" },
-    { name = "asyncpg", marker = "extra == 'db'", specifier = ">=0.29.0" },
-    { name = "asyncpg", marker = "extra == 'dev'", specifier = ">=0.29.0" },
-    { name = "asyncpg", marker = "extra == 'postgres'", specifier = ">=0.29.0" },
-    { name = "bandit", marker = "extra == 'dev'", specifier = ">=1.7" },
-    { name = "codex-platform", marker = "extra == 'all'" },
-    { name = "codex-platform", marker = "extra == 'dev'" },
-    { name = "codex-platform", marker = "extra == 'redis'" },
-    { name = "detect-secrets", marker = "extra == 'dev'", specifier = ">=1.5" },
-    { name = "httpx", marker = "extra == 'all'", specifier = ">=0.27,<1.0" },
-    { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.27,<1.0" },
-    { name = "httpx", marker = "extra == 'http'", specifier = ">=0.27,<1.0" },
-    { name = "jinja2", specifier = ">=3.1.0" },
-    { name = "loguru", marker = "extra == 'all'", specifier = ">=0.7.0" },
-    { name = "loguru", marker = "extra == 'cli'", specifier = ">=0.7.0" },
-    { name = "loguru", marker = "extra == 'dev'", specifier = ">=0.7.0" },
-    { name = "mike", marker = "extra == 'docs'", specifier = ">=2.0" },
-    { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.5" },
-    { name = "mkdocs-include-markdown-plugin", marker = "extra == 'docs'" },
-    { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.0" },
-    { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.24" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.10" },
-    { name = "pip-audit", marker = "extra == 'dev'", specifier = ">=2.7" },
-    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.0" },
-    { name = "pydantic", specifier = ">=2.0,<3.0" },
-    { name = "pydantic-settings", specifier = ">=2.0" },
-    { name = "pygments", marker = "extra == 'dev'", specifier = "==2.19.1" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3" },
-    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23" },
-    { name = "pytest-cov", marker = "extra == 'dev'" },
-    { name = "python-dotenv", specifier = ">=1.0.0" },
-    { name = "questionary", specifier = ">=2.0.0" },
-    { name = "redis", marker = "extra == 'all'", specifier = ">=5.0,<6.0" },
-    { name = "redis", marker = "extra == 'dev'", specifier = ">=5.0,<6.0" },
-    { name = "redis", marker = "extra == 'redis'", specifier = ">=5.0,<6.0" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.4" },
-    { name = "sqlalchemy", marker = "extra == 'all'", specifier = ">=2.0" },
-    { name = "sqlalchemy", marker = "extra == 'db'", specifier = ">=2.0" },
-    { name = "sqlalchemy", marker = "extra == 'dev'", specifier = ">=2.0" },
+sdist = { url = "https://files.pythonhosted.org/packages/7f/d0/3c399e60639466085e737340e45999589d6d40190002ac586b5f78a310c6/codex_bot-0.3.0.tar.gz", hash = "sha256:3b5dac8a8b0547ce90c950609933b976d43238c602e41bd5ae715f34bb9f4014", size = 287855, upload-time = "2026-04-23T19:45:22.073Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/80/fa/cb760f99405b028e71bc6813c4d630d2064f8132d2ca090882a958b3bd37/codex_bot-0.3.0-py3-none-any.whl", hash = "sha256:abba7cbd203fef7506dd16034c9b94e0749c9ee4a33960c2ae15175643a10258", size = 145363, upload-time = "2026-04-23T19:45:20.334Z" },
 ]
-provides-extras = ["all", "arq", "cli", "db", "dev", "docs", "http", "i18n", "postgres", "redis", "sqlite"]
 
 [[package]]
 name = "codex-core"
@@ -1435,7 +1381,7 @@ bot = [
     { name = "aiogram", specifier = ">=3.27.0,<4.0" },
     { name = "aiogram-i18n", extras = ["runtime"], specifier = ">=1.5,<2.0" },
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
-    { name = "codex-bot", directory = "../../codex_tools/codex_bot" },
+    { name = "codex-bot", specifier = ">=0.3.0,<0.9.0" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
     { name = "codex-platform", extras = ["streams"], specifier = ">=0.4.0,<0.9.0" },
     { name = "pydantic", specifier = ">=2.0.0" },
@@ -1450,7 +1396,7 @@ dev = [
     { name = "aiogram-i18n", extras = ["runtime"], specifier = ">=1.5,<2.0" },
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
     { name = "bandit", extras = ["toml"] },
-    { name = "codex-bot", directory = "../../codex_tools/codex_bot" },
+    { name = "codex-bot", specifier = ">=0.3.0,<0.9.0" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
     { name = "codex-django", specifier = "==0.6.3" },
     { name = "codex-django-cli", specifier = ">=0.3.0,<0.9.0" },

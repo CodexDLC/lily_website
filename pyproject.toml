@@ -98,9 +98,6 @@ packages = ["src"]
 [tool.uv]
 default-groups = ["dev"]
 
-[tool.uv.sources]
-codex-bot = { path = "../../codex_tools/codex_bot" }
-
 # === Ruff ===
 [tool.ruff]
 target-version = "py312"
