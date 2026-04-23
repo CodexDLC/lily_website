@@ -47,7 +47,7 @@ async def test_build_bot_success(mock_redis):
         patch("src.telegram_bot.core.factory.I18nMiddleware"),
         patch("src.telegram_bot.core.factory.compile_locales", return_value="mock_path"),
     ):
-        bot, dp = await build_bot(settings, mock_redis)
+        bot, dp, i18n = await build_bot(settings, mock_redis)
 
         assert bot.token == "123:ABC"
         assert dp is not None

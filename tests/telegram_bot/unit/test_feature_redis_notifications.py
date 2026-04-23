@@ -11,13 +11,22 @@ from src.telegram_bot.features.redis.notifications.logic.orchestrator import Not
 @pytest.fixture(autouse=True)
 def mock_i18n_global():
     mock_i18n = MagicMock()
-    # Basic i18n mocks for formatters
-    mock_i18n.menu.admin.title.return_value = "Admin"
-    mock_i18n.menu.dashboard.title.return_value = "Dashboard"
-    mock_i18n.common.buttons.confirm.return_value = "Confirm"
-    mock_i18n.common.buttons.reject.return_value = "Reject"
-    mock_i18n.notifications.new_booking_title.return_value = "New Booking"
-    mock_i18n.notifications.contact_form_title.return_value = "Contact Form"
+    mock_i18n.notifications.new.booking.title.return_value = "New Booking"
+    mock_i18n.notifications.new.booking.visits.new.return_value = "New Client"
+    mock_i18n.notifications.new.booking.visits.regular.return_value = "Regular Client"
+    mock_i18n.notifications.new.booking.details.return_value = "Details"
+    mock_i18n.notifications.new.booking.promo.return_value = "Promo"
+    mock_i18n.notifications.status.icons.sent.return_value = "✅"
+    mock_i18n.notifications.status.icons.waiting.return_value = "⏳"
+    mock_i18n.notifications.status.icons.none.return_value = "❓"
+    mock_i18n.notifications.status.block.return_value = "Status Block"
+    mock_i18n.notifications.alert.deleted.return_value = "Deleted"
+    mock_i18n.notifications.new.contact.preview.text.return_value = "New Contact Preview"
+    mock_i18n.notifications.btn.open.crm.return_value = "Open CRM"
+    mock_i18n.notifications.btn.delete.return_value = "Delete"
+    mock_i18n.notifications.btn.open.bot.return_value = "Open Bot"
+    mock_i18n.notifications.error.api.return_value = "Error processing notification: API Error"
+
     with patch("aiogram_i18n.I18nContext.get_current", return_value=mock_i18n):
         yield mock_i18n
 
@@ -196,8 +205,7 @@ class TestNotificationHandlers:
         mock_container.redis.contact_cache.save.assert_called_with(1, message_data)
         mock_container.view_sender.send.assert_called()
 
-    @pytest.mark.asyncio
-    async def test_handle_delete_notification_callback(self, mock_container):
+    async def test_handle_delete_notification_callback(self, mock_container, mock_i18n_global):
         from src.telegram_bot.features.redis.notifications.handlers.handlers import handle_delete_notification_callback
         from src.telegram_bot.features.redis.notifications.resources.callbacks import NotificationsCallback
 
@@ -208,7 +216,7 @@ class TestNotificationHandlers:
 
         callback_data = NotificationsCallback(action="delete_notification", session_id="123", topic_id=None)
 
-        await handle_delete_notification_callback(call, callback_data, mock_container)
+        await handle_delete_notification_callback(call, callback_data, mock_container, mock_i18n_global)
 
         call.bot.delete_message.assert_called_with(chat_id=123, message_id=456)
         mock_container.redis.appointment_cache.delete.assert_called_with("123")
