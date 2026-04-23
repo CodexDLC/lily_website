@@ -188,6 +188,6 @@ jobs:
             docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py collectstatic --noinput
 
             # 3. Rolling Update
-            docker compose -f docker-compose.prod.yml up -d --no-deps --wait backend bot worker nginx
+            docker compose -f docker-compose.prod.yml up -d --no-deps --wait backend bot worker system_worker nginx
             docker image prune -f
             echo "✅ Deployment $VERSION completed!"

@@ -4,6 +4,13 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
 
+## [2.4.1] - 2026-04-23
+
+### Fixed
+
+- **Infrastructure:** Restored the missing `system_worker` in production and test Docker configurations.
+- **CI/CD:** Updated the deployment workflow to automatically start the `system_worker` on the VPS.
+
 ## [2.4.0] - 2026-04-23
 
 ### Added

@@ -156,7 +156,7 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 ### Fixed
 - **Templates:** Resolved `TemplateSyntaxError` in `cabinet/appointments/list.html` (duplicate `{% raw %}{% empty %}{% endraw %}` tag).
-- **Templates:** Fixed incorrect `{% get_current_language %}` usage in `cabinet/auth/magic_link.html`.
+- **Templates:** Fixed incorrect `{% raw %}{% get_current_language %}{% endraw %}` usage in `cabinet/auth/magic_link.html`.
 - **Security:** Replaced `random.randint` with `secrets.randbelow` for cryptographically strong bot access codes in `Master` model.
 - **Security:** Enabled `autoescape` in Jinja2 environment for worker templates.
 

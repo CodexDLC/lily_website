@@ -49,6 +49,20 @@ services:
     networks:
       - lily_website-network
 
+  system_worker:
+    image: ${DOCKER_IMAGE_WORKER}
+    container_name: lily_website-system_worker
+    command: arq src.workers.system_worker.worker.WorkerSettings
+    env_file: .env
+    volumes:
+      - logs_volume:/app/logs
+    restart: always
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - lily_website-network
+
   redis:
     image: redis:7-alpine
     container_name: lily_website-redis

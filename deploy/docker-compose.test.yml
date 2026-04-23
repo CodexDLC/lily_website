@@ -118,6 +118,30 @@ services:
     networks:
       - lily_test-network
 
+  system_worker:
+    build:
+      context: ..
+      dockerfile: deploy/worker/Dockerfile
+    command: arq src.workers.system_worker.worker.WorkerSettings
+    env_file:
+      - ../.env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - BACKEND_URL=http://backend:8000
+      - IS_DOCKER=True
+    volumes:
+      - ../src/workers:/app/src/workers:ro
+      - logs_test_volume:/app/logs
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    networks:
+      - lily_test-network
+
   nginx:
     build:
       context: ..
