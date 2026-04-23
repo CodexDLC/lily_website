@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from urllib.parse import quote_plus
 
 # In container: /app. Locally: src/backend_django
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
@@ -20,9 +19,9 @@ if REDIS_HOST == "localhost" and IS_INSIDE_DOCKER:
 
 if REDIS_PASSWORD:
     clean_password = REDIS_PASSWORD.strip("'\"").strip()
-    encoded_password = quote_plus(clean_password)
-    REDIS_URL = f"redis://:{encoded_password}@{REDIS_HOST}:{REDIS_PORT}/0"
+    REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 else:
+    clean_password = None
     REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 
 # ═══════════════════════════════════════════
@@ -35,6 +34,9 @@ CACHES = {
         "LOCATION": REDIS_URL,
         "KEY_PREFIX": PROJECT_NAME,
         "TIMEOUT": 300,
+        "OPTIONS": {
+            "PASSWORD": clean_password,
+        },
     }
 }
 
