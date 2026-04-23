@@ -4,7 +4,29 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
 
+## [2.4.0] - 2026-04-23
+
+### Added
+
+- **Booking Management:** Implemented advanced appointment management with real-time slot overlap validation in the cabinet.
+- **Booking Engine:** Introduced `LilyBookingPersistenceHook` for a clean separation of booking creation and notification logic.
+- **Cabinet UI:** Enhanced the appointment schedule with HTMX-powered modals and dynamic status updates.
+- **Infrastructure:** Integrated Redis-based action tokens for secure, short-lived operations (e.g., booking confirmations).
+- **Automation:** Added recovery documentation and streamlined redis backend configuration for workers.
+
+### Fixed
+
+- **Booking Logic:** Resolved issues with availability checks by including `reschedule_proposed` status in the blocking logic.
+- **Cabinet:** Added robust error handling and user feedback for slot conflicts during rescheduling.
+
+### Changed / Refactored
+
+- **Architecture:** Refactored `BookingRuntimeEngineGateway` and `RuntimeBookingProvider` to support extended appointment filters and validation.
+- **Static Assets:** Cleaned up cabinet CSS/JS and optimized the CSS compiler configuration for better performance.
+- **Dev Experience:** Standardized environment templates and updated scratch scripts for catalog management.
+
 ## [2.3.0] - 2026-04-22
+
 
 ### Added
 

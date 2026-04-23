@@ -17,6 +17,7 @@ from django.utils import timezone
 from features.booking.selector.engine import (
     BookingRuntimeEngineGateway,
     EmptyAvailableSlots,
+    LilyBookingAvailabilityAdapter,
     LoadAwareDjangoAvailabilityAdapter,
 )
 
@@ -123,6 +124,61 @@ class TestLoadAwareDjangoAvailabilityAdapter:
         assert result == []
 
 
+@pytest.mark.unit
+class TestLilyBookingAvailabilityAdapter:
+    def _make_adapter(self) -> LilyBookingAvailabilityAdapter:
+        from features.booking.booking_settings import BookingSettings
+        from features.booking.models import Appointment, Master, MasterDayOff, MasterWorkingDay
+        from features.main.models import Service
+
+        return LilyBookingAvailabilityAdapter(
+            resource_model=Master,
+            appointment_model=Appointment,
+            service_model=Service,
+            working_day_model=MasterWorkingDay,
+            day_off_model=MasterDayOff,
+            booking_settings_model=BookingSettings,
+            timezone="UTC",
+            load_strategy="fill_first",
+            target_date=dt.date(2026, 5, 11),
+        )
+
+    def test_working_hours_ignore_master_working_day_times(self, db, master, booking_settings):
+        from features.booking.models import MasterWorkingDay
+
+        booking_settings.monday_is_closed = False
+        booking_settings.work_start_monday = dt.time(8, 0)
+        booking_settings.work_end_monday = dt.time(18, 0)
+        booking_settings.save(update_fields=["monday_is_closed", "work_start_monday", "work_end_monday"])
+
+        MasterWorkingDay.objects.filter(master=master, weekday=0).update(
+            start_time=dt.time(10, 0),
+            end_time=dt.time(14, 0),
+        )
+
+        start, end = self._make_adapter().get_working_hours(master, dt.date(2026, 5, 11))
+
+        assert start.time() == dt.time(8, 0)
+        assert end.time() == dt.time(18, 0)
+
+    def test_working_hours_require_master_working_day(self, db, booking_settings):
+        from tests.factories import MasterFactory
+
+        booking_settings.monday_is_closed = False
+        booking_settings.work_start_monday = dt.time(8, 0)
+        booking_settings.work_end_monday = dt.time(18, 0)
+        booking_settings.save(update_fields=["monday_is_closed", "work_start_monday", "work_end_monday"])
+        master = MasterFactory(working_days=False)
+
+        assert self._make_adapter().get_working_hours(master, dt.date(2026, 5, 11)) is None
+
+    def test_working_hours_respect_booking_settings_closed_day(self, db, master, booking_settings):
+        booking_settings.monday_is_closed = True
+        booking_settings.save(update_fields=["monday_is_closed"])
+
+        assert self._make_adapter().get_working_hours(master, dt.date(2026, 5, 11)) is None
+
+
 # ── BookingRuntimeEngineGateway: get_resource_day_slots ───────────────────────
 
 
@@ -193,6 +249,59 @@ class TestGetResourceDaySlots:
         target = dt.date(2026, 5, 10)  # Sunday
         gateway = self._gateway()
         slots = gateway.get_resource_day_slots(resource_id=m.pk, target_date=target, audience="cabinet")
+        assert slots == []
+
+    def test_slots_use_booking_settings_not_master_working_day_times(self, db, master, booking_settings):
+        from features.booking.models import MasterWorkingDay
+
+        booking_settings.saturday_is_closed = False
+        booking_settings.work_start_saturday = dt.time(8, 0)
+        booking_settings.work_end_saturday = dt.time(18, 0)
+        booking_settings.save(update_fields=["saturday_is_closed", "work_start_saturday", "work_end_saturday"])
+
+        MasterWorkingDay.objects.filter(master=master, weekday=5).update(
+            start_time=dt.time(10, 0),
+            end_time=dt.time(14, 0),
+        )
+
+        slots = self._gateway().get_resource_day_slots(
+            resource_id=master.pk,
+            target_date=dt.date(2026, 5, 16),
+            audience="cabinet",
+        )
+
+        assert "14:00" in slots
+        assert "17:30" in slots
+
+    def test_no_slots_when_booking_settings_closes_day_even_if_master_working_day_exists(
+        self, db, master, booking_settings
+    ):
+        booking_settings.saturday_is_closed = True
+        booking_settings.save(update_fields=["saturday_is_closed"])
+
+        slots = self._gateway().get_resource_day_slots(
+            resource_id=master.pk,
+            target_date=dt.date(2026, 5, 16),
+            audience="cabinet",
+        )
+
+        assert slots == []
+
+    def test_no_slots_when_master_has_no_working_day_even_if_booking_settings_open(self, db, booking_settings):
+        from tests.factories import MasterFactory
+
+        booking_settings.saturday_is_closed = False
+        booking_settings.work_start_saturday = dt.time(8, 0)
+        booking_settings.work_end_saturday = dt.time(18, 0)
+        booking_settings.save(update_fields=["saturday_is_closed", "work_start_saturday", "work_end_saturday"])
+        master = MasterFactory(working_days=False)
+
+        slots = self._gateway().get_resource_day_slots(
+            resource_id=master.pk,
+            target_date=dt.date(2026, 5, 16),
+            audience="cabinet",
+        )
+
         assert slots == []
 
 
