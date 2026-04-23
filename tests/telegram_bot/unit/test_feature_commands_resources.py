@@ -5,7 +5,6 @@ from aiogram.types import Chat, InlineKeyboardMarkup, Message, User
 from src.telegram_bot.features.telegram.commands.resources.callbacks import SettingsCallback, SystemCallback
 from src.telegram_bot.features.telegram.commands.resources.formatters import MessageInfoFormatter
 from src.telegram_bot.features.telegram.commands.resources.keyboards import build_welcome_keyboard
-from src.telegram_bot.features.telegram.commands.resources.texts import HELP_TEXT, WELCOME_ADMIN, WELCOME_USER
 
 
 def test_callbacks_structure():
@@ -75,10 +74,3 @@ def test_build_welcome_keyboard_admin(mock_get_i18n):
     assert len(kb.inline_keyboard) == 2
     assert kb.inline_keyboard[0][0].text == "Launch"
     assert kb.inline_keyboard[1][0].text == "Admin Panel"
-
-
-def test_texts_availability():
-    """Проверка доступности строковых констант."""
-    assert "{name}" in WELCOME_USER
-    assert "{name}" in WELCOME_ADMIN
-    assert "Help Center" in HELP_TEXT

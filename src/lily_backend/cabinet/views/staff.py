@@ -68,10 +68,10 @@ class MasterQuickEditForm(forms.ModelForm):
             start_time = booking_day_schedule[0] if booking_day_schedule is not None else None
             end_time = booking_day_schedule[1] if booking_day_schedule is not None else None
             defaults = {
-                "start_time": start_time,
-                "end_time": end_time,
-                "break_start": None,
-                "break_end": None,
+                "start_time": master.work_start or start_time,
+                "end_time": master.work_end or end_time,
+                "break_start": master.break_start,
+                "break_end": master.break_end,
             }
             if defaults["start_time"] and defaults["end_time"]:
                 MasterWorkingDay.objects.update_or_create(
