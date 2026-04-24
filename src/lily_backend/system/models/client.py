@@ -64,6 +64,15 @@ class Client(models.Model):
         db_index=True,
     )
 
+    unsubscribe_token = models.UUIDField(
+        _("unsubscribe token"),
+        default=uuid.uuid4,
+        unique=True,
+        editable=False,
+        db_index=True,
+    )
+    email_opt_out_at = models.DateTimeField(_("email opt-out at"), null=True, blank=True)
+
     note = models.TextField(_("internal note"), blank=True)
 
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)

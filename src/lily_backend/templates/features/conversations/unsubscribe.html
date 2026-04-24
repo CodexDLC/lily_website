@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Unsubscribe" %}{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width:520px;">
+  <div class="card border-0 shadow-sm text-center p-5">
+    {% if already_done %}
+      <div class="mb-3">
+        <span class="bi bi-check-circle-fill text-success" style="font-size:3rem;"></span>
+      </div>
+      <h4 class="fw-semibold mb-2">{% trans "Already unsubscribed" %}</h4>
+      <p class="text-muted mb-0">{% trans "You are already removed from our marketing list." %}</p>
+    {% elif success %}
+      <div class="mb-3">
+        <span class="bi bi-check-circle-fill text-success" style="font-size:3rem;"></span>
+      </div>
+      <h4 class="fw-semibold mb-2">{% trans "Successfully unsubscribed" %}</h4>
+      <p class="text-muted mb-0">
+        {% trans "You have been removed from our marketing email list. You will no longer receive promotional emails from us." %}
+      </p>
+    {% elif not_found %}
+      <div class="mb-3">
+        <span class="bi bi-exclamation-circle-fill text-warning" style="font-size:3rem;"></span>
+      </div>
+      <h4 class="fw-semibold mb-2">{% trans "Link not found" %}</h4>
+      <p class="text-muted mb-0">{% trans "This unsubscribe link is invalid or has already been used." %}</p>
+    {% else %}
+      {# Confirm step — show button to unsubscribe #}
+      <div class="mb-3">
+        <span class="bi bi-envelope-x" style="font-size:3rem;color:#6366f1;"></span>
+      </div>
+      <h4 class="fw-semibold mb-2">{% trans "Unsubscribe from emails" %}</h4>
+      <p class="text-muted mb-3">{% trans "Click below to remove yourself from our marketing email list." %}</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger px-4">{% trans "Confirm Unsubscribe" %}</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

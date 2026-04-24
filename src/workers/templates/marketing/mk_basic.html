@@ -1,0 +1,27 @@
+{% extends "base_email.html" %}
+
+{% block title %}{{ subject }}{% endblock title %}
+
+{% block content %}
+    <tr>
+        <td style="padding-bottom: 20px; color: #555555; font-family: Arial, sans-serif; font-size: 17px; line-height: 1.6;">
+            {{ greeting }}
+        </td>
+    </tr>
+
+    <tr>
+        <td style="color: #333333; font-family: Arial, sans-serif; font-size: 16px; line-height: 1.7; white-space: pre-wrap;">
+            {{ body_text }}
+        </td>
+    </tr>
+
+    <tr><td height="40" style="font-size: 0; line-height: 0;">&nbsp;</td></tr>
+
+    <tr>
+        <td align="center" style="color: #aaaaaa; font-family: Arial, sans-serif; font-size: 12px;">
+            <a href="{{ unsubscribe_url }}" style="color: #aaaaaa; text-decoration: underline;">
+                Abmelden / Unsubscribe
+            </a>
+        </td>
+    </tr>
+{% endblock content %}
