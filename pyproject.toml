@@ -197,7 +197,7 @@ skips = ["B101", "B308", "B703"]
 [tool.codex-check]
 project-name = "Lily"
 quality-command = "pre-commit run --all-files"
-audit-flags = "--skip-editable --ignore-vuln CVE-2026-3219"
+audit-flags = "--skip-editable --ignore-vuln CVE-2026-3219"  # pip 26.0.1 vulnerability with no fix available yet
 integration-requires = "Mailpit"
 test-stages = ["unit", "integration"]
 prompt-test-stages = ["unit", "integration"]

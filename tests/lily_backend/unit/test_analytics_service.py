@@ -79,12 +79,12 @@ class TestAnalyticsService:
         month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         prev_month_start = (month_start - timedelta(days=15)).replace(day=1)
 
-        # Create appointment today
+        # Create appointment yesterday
         Appointment.objects.create(
             client=client_obj,
             master=master,
             service=service,
-            datetime_start=now - timedelta(hours=1),
+            datetime_start=now - timedelta(days=1),
             duration_minutes=30,
             price=100,
             status=Appointment.STATUS_COMPLETED,
