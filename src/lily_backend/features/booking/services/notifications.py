@@ -5,6 +5,10 @@ from typing import TYPE_CHECKING, Any
 
 from codex_django.notifications import NotificationDispatchSpec, notification_handler
 
+from features.notifications.services.recipients import get_admin_notification_emails
+
+from .admin_context import build_admin_booking_context
+
 if TYPE_CHECKING:
     from features.booking.models import Appointment, AppointmentGroup
 
@@ -116,7 +120,7 @@ def handle_booking_received(appt: Appointment) -> NotificationDispatchSpec:
         subject_key="bk_receipt_subject",
         event_type="booking.received",
         template_name="bk_receipt",  # No dedicated HTML found, using block
-        channels=["email", "telegram"],
+        channels=["email"],
         language=appt.lang,
         context=build_booking_notification_context(appt),
     )
@@ -133,7 +137,7 @@ def handle_booking_group_received(group: AppointmentGroup) -> NotificationDispat
         subject_key="bk_receipt_subject",
         event_type="booking.received",
         template_name="bk_group_booking",
-        channels=["email", "telegram"],
+        channels=["email"],
         language=context["booking_language"],
         context=context,
     )
@@ -166,4 +170,66 @@ def handle_booking_rescheduled(appt: Appointment) -> NotificationDispatchSpec:
         channels=["email"],
         language=appt.lang,
         context=build_booking_notification_context(appt),
+    )
+
+
+def _iter_admin_booking_specs(appt_or_group, event_type: str, template_name: str, subject_key: str):
+    is_group = hasattr(appt_or_group, "items")
+    client = appt_or_group.client
+
+    if is_group:
+        context_base = build_booking_group_notification_context(appt_or_group)
+        language = context_base.get("booking_language", "de")
+    else:
+        language = appt_or_group.lang or "de"
+
+    for email in get_admin_notification_emails():
+        context = build_admin_booking_context(appt_or_group, email)
+        yield NotificationDispatchSpec(
+            recipient_email=email,
+            client_name=client.first_name if client else "",
+            subject_key=subject_key,
+            event_type=event_type,
+            template_name=template_name,
+            channels=["email"],
+            language=language,
+            context=context,
+        )
+
+
+@notification_handler("booking.received")
+def handle_booking_received_admin(appt):
+    return list(
+        _iter_admin_booking_specs(appt, "booking.received", "emails/admin_booking_received.html", "bk_receipt_subject")
+    )
+
+
+@notification_handler("booking.group_received")
+def handle_booking_group_received_admin(group):
+    return list(
+        _iter_admin_booking_specs(
+            group, "booking.received", "emails/admin_booking_group_received.html", "bk_receipt_subject"
+        )
+    )
+
+
+@notification_handler("booking.cancelled")
+def handle_booking_cancelled_admin(appt):
+    if getattr(appt, "_booking_origin", "client") == "staff":
+        return []
+    return list(
+        _iter_admin_booking_specs(
+            appt, "booking.cancelled", "emails/admin_booking_cancelled.html", "bk_cancellation_subject"
+        )
+    )
+
+
+@notification_handler("booking.rescheduled")
+def handle_booking_rescheduled_admin(appt):
+    if getattr(appt, "_booking_origin", "client") == "staff":
+        return []
+    return list(
+        _iter_admin_booking_specs(
+            appt, "booking.rescheduled", "emails/admin_booking_rescheduled.html", "bk_reschedule_subject"
+        )
     )

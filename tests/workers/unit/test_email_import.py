@@ -152,3 +152,71 @@ class TestEmailImportLogic:
         mock_task.queue_name = "q"
         await _schedule_next(ctx, mock_task)
         ctx["arq_service"].enqueue_job.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_schedule_next_no_arq(self, ctx):
+        ctx["arq_service"] = None
+        await _schedule_next(ctx, MagicMock())
+        # Should return silently
+
+    def test_extract_text_body_part_none(self):
+        msg = MagicMock()
+        msg.get_body.return_value = None
+        assert _extract_text(msg) == ""
+
+    def test_extract_text_attribute_error(self):
+        msg = MagicMock()
+        msg.get_body.side_effect = AttributeError
+        assert _extract_text(msg) == ""
+
+    def test_normalize_truncation(self, settings):
+        from src.workers.system_worker.tasks.email_import import _normalize
+
+        msg = EmailMessage()
+        msg.set_content("A" * 100)
+        settings.email_import_max_body_chars = 10
+        item = _normalize("1", msg, settings, raw_size=100, oversized=False)
+        assert len(item.body) == 10
+        assert item.text_truncated is True
+
+    def test_attachments_extraction(self):
+        from src.workers.system_worker.tasks.email_import import _attachments
+
+        msg = EmailMessage()
+        msg.set_content("Body")
+        msg.add_attachment(b"content", maintype="application", subtype="octet-stream", filename="test.txt")
+
+        # We need to use walk() or similar if the structure is complex
+        # EmailMessage handles this.
+        results = _attachments(msg)
+        assert len(results) == 1
+        assert results[0]["filename"] == "test.txt"
+
+    @patch("src.workers.system_worker.tasks.email_import.imaplib.IMAP4_SSL")
+    def test_fetch_emails_search_failed(self, mock_imap, settings):
+        mock_conn = MagicMock()
+        mock_imap.return_value = mock_conn
+        mock_conn.uid.return_value = ("ERROR", [])
+        assert _fetch_emails(settings) == []
+
+    @patch("src.workers.system_worker.tasks.email_import.imaplib.IMAP4_SSL")
+    def test_fetch_emails_fetch_one_none(self, mock_imap, settings):
+        mock_conn = MagicMock()
+        mock_imap.return_value = mock_conn
+        mock_conn.uid.side_effect = [
+            ("OK", [b"1"]),  # search
+            ("ERROR", []),  # fetch meta (causes fetch_one to return None)
+        ]
+        assert _fetch_emails(settings) == []
+
+    def test_move_message_no_folder(self):
+        _move_message(MagicMock(), "1", "")
+        # Should return silently
+
+    @pytest.mark.asyncio
+    async def test_import_emails_task_with_oversized_item(self, ctx):
+        ctx["heartbeat_registry"].should_run.return_value = True
+        with patch("src.workers.system_worker.tasks.email_import._fetch_emails") as mock_fetch:
+            mock_fetch.return_value = [MagicMock(spam=False, oversized=True)]
+            res = await import_emails_task(ctx)
+            assert res["oversized"] == 1

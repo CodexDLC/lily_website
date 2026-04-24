@@ -15,6 +15,7 @@ from .views.booking import (
     BookingSlotFetchView,
     NewBookingView,
 )
+from .views.campaigns import AudienceCountView, CampaignCreateView, CampaignDetailView, CampaignListView
 from .views.client import (
     ClientAppointmentsView,
     ClientCancelAppointmentView,
@@ -37,6 +38,7 @@ from .views.conversations import (
     ThreadView,
     manual_check_view,
 )
+from .views.magic_login import magic_login_view
 from .views.ops import DataMaintenanceView, WorkerOpsView
 from .views.services import CategoryStatusToggleView, ServiceQuickEditView, ServicesListView
 from .views.site_settings import site_settings_tab_view, site_settings_view
@@ -79,6 +81,9 @@ urlpatterns = [
     # Ops
     path("ops/workers/", WorkerOpsView.as_view(), name="ops_workers"),
     path("ops/maintenance/", DataMaintenanceView.as_view(), name="ops_maintenance"),
+    path("ops/notifications/", include("features.notifications.urls")),
+    # Auth
+    path("auth/magic-login/", magic_login_view, name="magic_login"),
     # Booking
     path("booking/schedule/", BookingScheduleView.as_view(), name="booking_schedule"),
     path("booking/settings/", BookingSettingsView.as_view(), name="booking_settings"),
@@ -103,6 +108,15 @@ urlpatterns = [
     path("conversations/<int:pk>/action/<str:action>/", ThreadActionView.as_view(), name="conversations_action"),
     path("conversations/actions/bulk/", InboxBulkActionView.as_view(), name="conversations_bulk_action"),
     path("conversations/check-inbox/", manual_check_view, name="conversations_check_inbox"),
+    # Campaigns
+    path("conversations/campaigns/", CampaignListView.as_view(), name="conversations_campaigns"),
+    path("conversations/campaigns/new/", CampaignCreateView.as_view(), name="conversations_campaigns_new"),
+    path(
+        "conversations/campaigns/audience-count/",
+        AudienceCountView.as_view(),
+        name="conversations_campaigns_audience_count",
+    ),
+    path("conversations/campaigns/<int:pk>/", CampaignDetailView.as_view(), name="conversations_campaigns_detail"),
     # Users / Clients
     path("users/", UserListView.as_view(), name="users_list"),
     path("users/modal/<str:id_token>/", ClientDetailView.as_view(), name="user_modal"),

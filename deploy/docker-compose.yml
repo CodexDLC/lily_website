@@ -70,27 +70,6 @@ services:
     networks:
       - lily_website-network
 
-  bot:
-    build:
-      context: ..
-      dockerfile: deploy/bot/Dockerfile
-    container_name: ${CONTAINER_PREFIX:-lily_website}-telegram_bot
-    env_file:
-      - ../.env
-    environment:
-      - PROJECT_NAME=telegram_bot
-    volumes:
-      - ../src/telegram_bot:/app/src/telegram_bot:ro
-      - ../logs:/app/logs
-    restart: unless-stopped
-    depends_on:
-      redis:
-        condition: service_healthy
-      backend:
-        condition: service_healthy
-    networks:
-      - lily_website-network
-
   worker:
     build:
       context: ..

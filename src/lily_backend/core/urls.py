@@ -7,6 +7,7 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 from django.views.generic import TemplateView
+from features.conversations.views.unsubscribe import UnsubscribeView
 from system.api import api
 from unfold.sites import UnfoldAdminSite
 
@@ -47,6 +48,7 @@ urlpatterns: list[Any] = [
     path("llms_ru.txt", TemplateView.as_view(template_name="llms_ru.txt", content_type="text/plain")),
     path("llms_uk.txt", TemplateView.as_view(template_name="llms_uk.txt", content_type="text/plain")),
     path("api/", api.urls),
+    path("u/<uuid:token>/", UnsubscribeView.as_view(), name="unsubscribe"),
 ]
 
 urlpatterns += i18n_patterns(

@@ -53,7 +53,8 @@ def test_fetch_days_returns_empty_when_horizon_is_fully_blocked(service, master,
 
 
 def test_fetch_slots_supports_any_master_without_master_id(service, master, booking_settings, site_settings_obj):
-    target_date = timezone.localdate() + timedelta(days=1)
+    service.masters.add(master)
+    target_date = timezone.localdate() + timedelta(days=2)
 
     client = Client()
     client.force_login(_make_staff_user())

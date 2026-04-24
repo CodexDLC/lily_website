@@ -52,14 +52,7 @@ django = [
     "django-ratelimit>=4.1.0,<5.0.0",
     "django-redis>=6.0.0,<7.0.0",
     "requests>=2.33.1,<3.0.0",
-    "codex-django==0.6.3",
-    { include-group = "codex_tools" },
-]
-bot = [
-    "aiogram>=3.27.0,<4.0",
-    "aiogram-i18n[runtime]>=1.5,<2.0",
-    "codex-bot>=0.3.0,<0.9.0",
-    "codex-platform[streams]>=0.4.0,<0.9.0",
+    "codex-django==0.6.5",
     { include-group = "codex_tools" },
 ]
 dev = [
@@ -84,7 +77,6 @@ dev = [
     "codex-services[calendar]>=0.1.3,<0.9.0",
     "codex-django-cli>=0.3.0,<0.9.0",
     { include-group = "django" },
-    { include-group = "bot" },
     { include-group = "worker" },
 ]
 
@@ -103,6 +95,7 @@ default-groups = ["dev"]
 target-version = "py312"
 line-length = 120
 src = ["src"]
+exclude = ["archive", "tests", "tools"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "B", "A", "SIM", "TCH"]
@@ -171,24 +164,6 @@ omit = [
     "*/workers/core/tasks.py",
     "*/workers/core/base.py",
     "*/workers/*/tasks/task_aggregator.py",
-    # telegram_bot bootstrap & declarative layers
-    "*/telegram_bot/app_telegram.py",
-    "*/telegram_bot/core/config.py",
-    "*/telegram_bot/core/factory.py",
-    "*/telegram_bot/core/routers.py",
-    "*/telegram_bot/core/container.py",
-    "*/telegram_bot/core/logger.py",
-    "*/telegram_bot/core/settings.py",
-    "*/telegram_bot/core/garbage_collector.py",
-    "*/telegram_bot/core/api_client.py",
-    "*/telegram_bot/features/*/feature_setting.py",
-    "*/telegram_bot/features/*/resources/keyboards.py",
-    "*/telegram_bot/features/*/resources/texts.py",
-    "*/telegram_bot/features/*/resources/callbacks.py",
-    "*/telegram_bot/features/*/ui/*",
-    "*/telegram_bot/infrastructure/redis/container.py",
-    "*/telegram_bot/infrastructure/models/base.py",
-    "*/telegram_bot/resources/*",
 ]
 
 [tool.coverage.report]
@@ -222,7 +197,7 @@ skips = ["B101", "B308", "B703"]
 [tool.codex-check]
 project-name = "Lily"
 quality-command = "pre-commit run --all-files"
-audit-flags = "--skip-editable"
+audit-flags = "--skip-editable --ignore-vuln CVE-2026-3219"  # pip 26.0.1 vulnerability with no fix available yet
 integration-requires = "Mailpit"
 test-stages = ["unit", "integration"]
 prompt-test-stages = ["unit", "integration"]

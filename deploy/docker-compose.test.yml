@@ -71,29 +71,6 @@ services:
     networks:
       - lily_test-network
 
-  bot:
-    build:
-      context: ..
-      dockerfile: deploy/bot/Dockerfile
-    env_file:
-      - ../.env
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - BACKEND_URL=http://backend:8000
-      - IS_DOCKER=True
-    volumes:
-      - ../src/telegram_bot:/app/src/telegram_bot:ro
-      - logs_test_volume:/app/logs
-    restart: unless-stopped
-    depends_on:
-      redis:
-        condition: service_healthy
-      backend:
-        condition: service_healthy
-    networks:
-      - lily_test-network
-
   worker:
     build:
       context: ..

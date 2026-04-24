@@ -79,24 +79,33 @@ function initFooter() {
 }
 
 // 3. HTMX CSRF Configuration
-document.body.addEventListener('htmx:configRequest', (event) => {
-    event.detail.headers['X-CSRFToken'] = getCookie('csrftoken');
-});
+function getCsrfToken() {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    if (meta && meta.content) return meta.content;
 
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+    const input = document.querySelector('input[name=csrfmiddlewaretoken]');
+    if (input && input.value) return input.value;
+
+    // Fallback: pick the csrftoken* cookie with the longest name to beat
+    // any stale duplicates left from older deploys (e.g. legacy "csrftoken"
+    // colliding with renamed "csrftoken_app").
+    let best = null;
+    const re = /(?:^|;\s*)(csrftoken[^=]*)=([^;]+)/g;
+    let match;
+    while ((match = re.exec(document.cookie)) !== null) {
+        if (!best || match[1].length > best[0].length) {
+            best = [match[1], match[2]];
         }
     }
-    return cookieValue;
+    return best ? decodeURIComponent(best[1]) : null;
 }
+
+document.body.addEventListener('htmx:configRequest', (event) => {
+    const token = getCsrfToken();
+    if (token) {
+        event.detail.headers['X-CSRFToken'] = token;
+    }
+});
 
 // 4. Auth Modal
 function openAuthModal() {

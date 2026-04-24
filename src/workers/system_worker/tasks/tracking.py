@@ -43,6 +43,8 @@ async def flush_tracking_task(ctx: dict[str, Any], payload: dict[str, Any] | Non
     except Exception as exc:
         log.exception("flush_tracking_task failed")
         await registry.mark_finished(task, status="failed", error=str(exc))
+        # Ensure we still try to reschedule even if this run failed
+        await _schedule_next(ctx, registry, task)
         raise
     finally:
         await registry.release_lock(task.task_id)

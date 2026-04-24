@@ -37,7 +37,10 @@ async def booking_maintenance_task(ctx: dict[str, Any], payload: dict[str, Any] 
         await registry.mark_finished(task, status="success")
         return {"status": "ok", "actions": 0}
     except Exception as exc:
+        log.exception("booking_maintenance_task failed")
         await registry.mark_finished(task, status="failed", error=str(exc))
+        # Ensure we still try to reschedule even if this run failed
+        await _schedule_next(ctx, task)
         raise
     finally:
         await registry.release_lock(task.task_id)

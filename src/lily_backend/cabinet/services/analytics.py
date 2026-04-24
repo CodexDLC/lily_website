@@ -162,7 +162,15 @@ class AnalyticsService:
             .annotate(total=Sum(_price))
             .order_by("day")
         )
-        day_map: dict[str, float] = {row["day"].isoformat(): float(row["total"] or 0) for row in daily_qs}
+
+        day_map: dict[str, float] = {}
+        for row in daily_qs:
+            day = row["day"]
+            if day:
+                # SQLite can return str, date, or datetime. Normalize to 'YYYY-MM-DD'
+                if not isinstance(day, str):
+                    day = day.strftime("%Y-%m-%d")
+                day_map[day] = float(row["total"] or 0)
 
         labels: list[str] = []
         values: list[float] = []

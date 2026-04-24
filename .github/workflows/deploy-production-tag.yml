@@ -85,18 +85,6 @@ jobs:
           cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-backend:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-backend:buildcache,mode=max
 
-      - name: Build and Push Bot
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: deploy/bot/Dockerfile
-          push: true
-          tags: |
-            ghcr.io/${{ env.REPO_LOWER }}-bot:latest
-            ghcr.io/${{ env.REPO_LOWER }}-bot:${{ env.VERSION }}
-          cache-from: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-bot:buildcache
-          cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-bot:buildcache,mode=max
-
       - name: Build and Push Worker
         uses: docker/build-push-action@v5
         with:
@@ -155,7 +143,6 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         env:
           DOCKER_IMAGE_BACKEND: ghcr.io/${{ env.REPO_LOWER }}-backend:${{ env.VERSION }}
-          DOCKER_IMAGE_BOT: ghcr.io/${{ env.REPO_LOWER }}-bot:${{ env.VERSION }}
           DOCKER_IMAGE_WORKER: ghcr.io/${{ env.REPO_LOWER }}-worker:${{ env.VERSION }}
           DOCKER_IMAGE_NGINX: ghcr.io/${{ env.REPO_LOWER }}-nginx:${{ env.VERSION }}
           DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
@@ -167,7 +154,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_BOT,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DOMAIN_NAME,REDIS_PASSWORD,GITHUB_TOKEN,GITHUB_ACTOR,VERSION
+          envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DOMAIN_NAME,REDIS_PASSWORD,GITHUB_TOKEN,GITHUB_ACTOR,VERSION
           script: |
             set -e
             cd /opt/lily_website/deploy
@@ -177,7 +164,6 @@ jobs:
               grep -q "^$1=" .env && sed -i "s|^$1=.*|$1=$2|g" .env || echo "$1=$2" >> .env
             }
             update_var "DOCKER_IMAGE_BACKEND" "$DOCKER_IMAGE_BACKEND"
-            update_var "DOCKER_IMAGE_BOT" "$DOCKER_IMAGE_BOT"
             update_var "DOCKER_IMAGE_WORKER" "$DOCKER_IMAGE_WORKER"
             update_var "DOCKER_IMAGE_NGINX" "$DOCKER_IMAGE_NGINX"
 
@@ -188,6 +174,6 @@ jobs:
             docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py collectstatic --noinput
 
             # 3. Rolling Update
-            docker compose -f docker-compose.prod.yml up -d --no-deps --wait backend bot worker system_worker nginx
+            docker compose -f docker-compose.prod.yml up -d --no-deps --wait backend worker system_worker nginx
             docker image prune -f
             echo "✅ Deployment $VERSION completed!"

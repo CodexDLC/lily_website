@@ -1,3 +1,4 @@
+from arq import cron
 from codex_core.common.loguru_setup import setup_logging
 from codex_platform.workers.arq import BaseArqWorkerSettings, base_shutdown, base_startup
 from loguru import logger as log
@@ -5,6 +6,7 @@ from loguru import logger as log
 from src.workers.core.config import WorkerSettings as CoreWorkerSettings
 
 from .dependencies import SHUTDOWN_DEPENDENCIES, STARTUP_DEPENDENCIES
+from .tasks.maintenance import ensure_tasks_scheduled, system_watchdog_task
 from .tasks.task_aggregator import FUNCTIONS
 
 settings = CoreWorkerSettings()
@@ -20,36 +22,6 @@ async def worker_startup(ctx: dict) -> None:
 
     await ensure_tasks_scheduled(ctx)
     log.info("SystemWorkerStartup | All dependencies initialized.")
-
-
-async def ensure_tasks_scheduled(ctx: dict) -> None:
-    """Ensures that periodic tasks are enqueued if they aren't already."""
-    arq_service = ctx.get("arq_service")
-    if not arq_service:
-        log.warning("Seeding skipped: arq_service not found in context.")
-        return
-
-    # Task mapping: (function_name, task_id)
-    tasks = [
-        ("import_emails_task", "conversations.import"),
-        ("flush_tracking_task", "tracking.flush"),
-        ("booking_maintenance_task", "booking.worker"),
-    ]
-
-    for func_name, task_id in tasks:
-        # ARQ's job_id uniqueness prevents double-enqueuing if already scheduled.
-        try:
-            job = await arq_service.enqueue_job(
-                func_name,
-                _job_id=f"{task_id}:next",
-                _queue_name="system",
-            )
-            if job:
-                log.info("Seeding task scheduled: {}", task_id)
-            else:
-                log.debug("Seeding skipped: {} already in queue.", task_id)
-        except Exception as exc:
-            log.error("Failed to seed task {}: {}", task_id, exc)
 
 
 async def worker_shutdown(ctx: dict) -> None:
@@ -73,3 +45,6 @@ class WorkerSettings(BaseArqWorkerSettings):
     on_shutdown = worker_shutdown
 
     functions = FUNCTIONS
+    cron_jobs = [
+        cron(system_watchdog_task, minute=None, run_at_startup=True),
+    ]
