@@ -1,0 +1,39 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans "New Group Booking Request" %}</h2>
+<p>{% trans "A new group booking has been received from" %} {{ first_name }} {{ last_name }}.</p>
+
+<table cellpadding="0" cellspacing="0" border="0" style="width: 100%; margin-top: 20px; margin-bottom: 20px;">
+    <tr>
+        <td style="padding-bottom: 10px;"><strong>{% trans "Date" %}:</strong></td>
+        <td style="padding-bottom: 10px;">{{ booking_date }}</td>
+    </tr>
+    <tr>
+        <td style="padding-bottom: 10px;"><strong>{% trans "Client Email" %}:</strong></td>
+        <td style="padding-bottom: 10px;">{{ client_email }}</td>
+    </tr>
+    <tr>
+        <td style="padding-bottom: 10px;"><strong>{% trans "Client Phone" %}:</strong></td>
+        <td style="padding-bottom: 10px;">{{ client_phone }}</td>
+    </tr>
+    <tr>
+        <td colspan="2" style="padding-top: 15px; padding-bottom: 10px; border-bottom: 1px solid #eeeeee;"><strong>{% trans "Appointments" %}:</strong></td>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td colspan="2" style="padding-top: 10px; padding-bottom: 10px; border-bottom: 1px solid #eeeeee;">
+            {{ item.time }} - <strong>{{ item.service_name }}</strong> ({% trans "with" %} {{ item.master_name }})<br>
+            <span style="font-size: 13px; color: #666666;">{{ item.duration_minutes }} {% trans "min" %}</span>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<p style="text-align: center; margin-top: 30px;">
+    <a href="{{ action_url }}" style="display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">
+        {% trans "View in Cabinet" %}
+    </a>
+</p>
+{% endblock %}

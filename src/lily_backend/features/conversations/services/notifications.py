@@ -196,7 +196,7 @@ class NotificationService:
             client_name=client_name,
             template_name="bk_receipt",
             event_type="booking.received",
-            channels=["email", "telegram"],
+            channels=["email"],
             language=lang,
             subject_key="bk_receipt_subject",
             subject=_t("bk_receipt_subject", lang, "Eingangsbestätigung: Ihre Terminanfrage"),
@@ -232,7 +232,7 @@ class NotificationService:
             client_name=client_name,
             template_name="bk_confirmation",
             event_type="booking.confirmed",
-            channels=["email", "telegram"],
+            channels=["email"],
             language=lang,
             subject_key="bk_confirmation_subject",
             subject=_t("bk_confirmation_subject", lang, "Terminbestätigung"),
@@ -268,7 +268,7 @@ class NotificationService:
             client_name=client_name,
             template_name="bk_cancellation",
             event_type="booking.cancelled",
-            channels=["email", "telegram"],
+            channels=["email"],
             language=lang,
             subject_key="bk_cancellation_subject",
             subject=_t("bk_cancellation_subject", lang, "Terminabsage"),
@@ -300,7 +300,7 @@ class NotificationService:
             client_name=client_name,
             template_name="bk_reschedule",
             event_type="booking.rescheduled",
-            channels=["email", "telegram"],
+            channels=["email"],
             language=lang,
             subject_key="bk_reschedule_subject",
             subject=_t("bk_reschedule_subject", lang, "Terminvorschlag"),
@@ -333,7 +333,7 @@ class NotificationService:
             client_name=client_name,
             template_name="bk_reminder",
             event_type="booking.reminder",
-            channels=["email", "telegram"],
+            channels=["email"],
             language=lang,
             subject_key="bk_reminder_subject",
             subject=_t("bk_reminder_subject", lang, "Terminerinnerung"),
@@ -368,7 +368,7 @@ class NotificationService:
             client_name=client_name,
             template_name="bk_no_show",
             event_type="booking.no_show",
-            channels=["email", "telegram"],
+            channels=["email"],
             language=lang,
             subject_key="bk_noshow_subject",
             subject=_t("bk_noshow_subject", lang, "Termin verpasst?"),
@@ -399,7 +399,7 @@ class NotificationService:
             client_name=client_name,
             template_name="ct_receipt",
             event_type="contact.receipt",
-            channels=["email", "telegram"],
+            channels=["email"],
             language=lang,
             subject_key="ct_receipt_subject",
             subject=_t("ct_receipt_subject", lang, "Wir haben Ihre Anfrage erhalten | LILY Beauty"),
@@ -560,16 +560,33 @@ class NotificationService:
 @notification_handler("conversations.new_message")
 def _handle_new_contact_message(message) -> list[NotificationDispatchSpec]:
     """Notify all staff (ADMINS) of a new contact form message."""
+    import urllib.parse
+
+    from django.core.signing import TimestampSigner
+    from django.urls import reverse
+
     specs = []
+    base_url = getattr(settings, "SITE_BASE_URL", "http://localhost:8000").rstrip("/")
+    magic_login_path = reverse("cabinet:magic_login")
+    target_path = reverse("cabinet:conversations_thread", kwargs={"pk": message.pk})
+
     for _idx, email in getattr(settings, "ADMINS", ()):
         if not email:
             continue
+
+        signer = TimestampSigner()
+        token = signer.sign(email)
+        query_string = urllib.parse.urlencode({"token": token, "target": target_path})
+        action_url = f"{base_url}{magic_login_path}?{query_string}"
+
         subject = f"[New message] {message.sender_name} — {(message.subject or message.body)[:60]}"
         body = (
             f"From: {message.sender_name} <{message.sender_email}>\n"
             f"Topic: {message.get_topic_display()}\n"
             f"Source: {message.get_source_display()}\n\n"
-            f"{message.body}"
+            f"{message.body}\n\n"
+            f"--- \n"
+            f"Reply now: {action_url}"
         )
         specs.append(
             NotificationDispatchSpec(

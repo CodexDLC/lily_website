@@ -4,14 +4,11 @@ from typing import TYPE_CHECKING, Any, cast
 from arq import Retry
 from loguru import logger as log
 
-from src.workers.core.streams import RedisStreams
 from src.workers.notification_worker.schemas import NotificationPayload
-from src.workers.notification_worker.tasks.utils import send_status_update
 
 if TYPE_CHECKING:
     from codex_platform.redis_service import RedisService
 
-    from src.workers.core.streams import StreamManager
     from src.workers.notification_worker.services.notification_service import NotificationService
 
 
@@ -141,7 +138,6 @@ async def _send_email(
 async def _send_to_stream(
     ctx: dict[str, Any],
     payload: NotificationPayload,
-    stream_manager: "StreamManager",
 ) -> None:
     """
     Sends the Telegram channel via Redis Stream.
@@ -150,15 +146,9 @@ async def _send_to_stream(
     a task retry — doing so would resend the already-delivered email.
     """
     try:
-        bot_payload = BotPayloadEnricher.enrich(payload)
-        await stream_manager.add_event(
-            RedisStreams.BotEvents.NAME,
-            {"type": _stream_event_type(payload.event_type), **bot_payload},
-        )
-        log.info(f"Task: universal_notification | Action: StreamSent | event={payload.event_type}")
+        log.debug("Telegram bot notifications are disabled. Skipping stream write.")
     except Exception as exc:
         log.error(f"Task: universal_notification | Action: StreamFailed | error={exc}")
-        # Intentionally not re-raising: email already sent, retrying would duplicate it.
 
 
 # ---------------------------------------------------------------------------
@@ -188,39 +178,12 @@ async def send_universal_notification_task(
     log.info(f"Task: universal_notification | ID: {payload_model.notification_id} | Channels: {payload_model.channels}")
 
     notification_service = cast("NotificationService", ctx.get("notification_service"))
-    stream_manager = cast("StreamManager", ctx.get("stream_manager"))
 
-    # 1. Telegram FIRST — бот должен закешировать данные до прихода notification_status
-    if "telegram" in payload_model.channels and payload_model.event_type and stream_manager:
-        await _send_to_stream(ctx, payload_model, stream_manager)
-
-    # 2. Email SECOND + status update чтобы бот обновил карточку (✅ письмо отправлено + 🗑)
     if "email" in payload_model.channels and payload_model.recipient.email and payload_model.template_name:
-        appointment_id = payload_model.context_data.get("id") or payload_model.context_data.get("group_id")
         try:
             await _send_email(ctx, payload_model, notification_service)
-            if appointment_id and stream_manager:
-                await send_status_update(
-                    ctx,
-                    int(appointment_id),
-                    "email",
-                    "success",
-                    event_type=payload_model.event_type,
-                    template_name=payload_model.template_name,
-                    notification_label=_notification_label(payload_model.event_type, payload_model.template_name),
-                )
         except Exception as exc:
             log.error(f"Task: universal_notification | Action: EmailFailed | error={exc}")
-            if appointment_id and stream_manager:
-                await send_status_update(
-                    ctx,
-                    int(appointment_id),
-                    "email",
-                    "failed",
-                    event_type=payload_model.event_type,
-                    template_name=payload_model.template_name,
-                    notification_label=_notification_label(payload_model.event_type, payload_model.template_name),
-                )
             raise Retry(defer=ctx["job_try"] * 30) from exc
 
 
@@ -254,28 +217,8 @@ async def send_group_booking_notification_task(ctx: dict[str, Any], group_id: in
         log.error(f"Task: send_group_booking_notification_task | Action: JSONDecodeError | key={cache_key}")
         return
 
-    stream_manager = cast("StreamManager", ctx.get("stream_manager"))
-    if stream_manager:
-        items: list[dict] = data.get("items", [])
-        bot_payload: dict[str, str] = {
-            "id": str(data["group_id"]),
-            "client_name": str(data.get("client_name", "")),
-            "first_name": str(data.get("first_name", "")),
-            "last_name": str(data.get("last_name", "")),
-            "client_phone": str(data.get("client_phone", "")),
-            "client_email": str(data.get("client_email", "")),
-            "service_name": f"Gruppe ({len(items)})",
-            "master_name": str(items[0]["master_name"]) if items else "",
-            "datetime": str(data.get("booking_date", "")),
-            "duration_minutes": str(data.get("total_duration", 0)),
-            "price": str(data.get("total_price", 0.0)),
-            "request_call": "False",
-        }
-        try:
-            await stream_manager.add_event(RedisStreams.BotEvents.NAME, {"type": "new_appointment", **bot_payload})
-            log.info(f"Task: send_group_booking_notification_task | Action: StreamSent | group_id={group_id}")
-        except Exception as exc:
-            log.error(f"Task: send_group_booking_notification_task | Action: StreamFailed | error={exc}")
+    # Stream writing to bot has been disabled
+    log.debug(f"Task: send_group_booking_notification_task | Action: StreamDisabled | group_id={group_id}")
 
     if data.get("client_email"):
         try:
@@ -302,7 +245,6 @@ async def send_booking_notification_task(ctx: dict[str, Any], appointment_id: in
 
     redis_service = cast("RedisService", ctx.get("redis_service"))
     notification_service = cast("NotificationService", ctx.get("notification_service"))
-    stream_manager = cast("StreamManager", ctx.get("stream_manager"))
 
     cache_key = f"notifications:cache:{appointment_id}"
     raw_data = await redis_service.string.get(cache_key)
@@ -311,12 +253,8 @@ async def send_booking_notification_task(ctx: dict[str, Any], appointment_id: in
 
     data = json.loads(raw_data)
 
-    if stream_manager:
-        try:
-            await stream_manager.add_event(RedisStreams.BotEvents.NAME, {"type": "new_appointment", **data})
-            log.info(f"Task: send_booking_notification_task | Action: StreamSent | appointment_id={appointment_id}")
-        except Exception as exc:
-            log.error(f"Task: send_booking_notification_task | Action: StreamFailed | error={exc}")
+    # Stream writing to bot has been disabled
+    log.debug(f"Task: send_booking_notification_task | Action: StreamDisabled | appointment_id={appointment_id}")
 
     if data.get("client_email"):
         try:
@@ -335,19 +273,14 @@ async def send_contact_notification_task(ctx: dict[str, Any], request_id: int) -
     log.info(f"Task: send_contact_notification_task | Action: Start | request_id={request_id}")
 
     redis_service = cast("RedisService", ctx.get("redis_service"))
-    stream_manager = cast("StreamManager", ctx.get("stream_manager"))
 
     cache_key = f"notifications:contact_cache:{request_id}"
     raw_data = await redis_service.string.get(cache_key)
     if not raw_data:
         return
 
-    data = json.loads(raw_data)
-    if stream_manager:
-        try:
-            await stream_manager.add_event(RedisStreams.BotEvents.NAME, {"type": "new_contact_request", **data})
-        except Exception as exc:
-            raise Retry(defer=10) from exc
+    # Stream writing to bot has been disabled
+    log.debug(f"Task: send_contact_notification_task | Action: StreamDisabled | request_id={request_id}")
 
 
 async def requeue_event_task(ctx: dict[str, Any], event_data: dict[str, Any]) -> None:

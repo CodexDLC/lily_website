@@ -51,7 +51,7 @@ def test_handle_booking_received(mock_appt):
     spec = handle_booking_received(mock_appt)
     assert spec.event_type == "booking.received"
     assert spec.subject_key == "bk_receipt_subject"
-    assert spec.channels == ["email", "telegram"]
+    assert spec.channels == ["email"]
 
 
 def test_handle_booking_group_received(client_obj, master, service):
@@ -90,7 +90,7 @@ def test_handle_booking_group_received(client_obj, master, service):
     assert spec.recipient_email == "anna@test.local"
     assert spec.event_type == "booking.received"
     assert spec.template_name == "bk_group_booking"
-    assert spec.channels == ["email", "telegram"]
+    assert spec.channels == ["email"]
     assert spec.context["total_price"] == "80.00"
     assert spec.context["datetime"] == appt_one.datetime_start.strftime("%d.%m.%Y %H:%M")
     assert "client_name" not in spec.context
@@ -160,6 +160,7 @@ def test_same_day_chain_sends_one_group_received_event(client_obj, master, servi
         resource_id=None,
         client=client_obj,
         notify_received=False,
+        extra_fields=None,
     )
     assert redirect_url == reverse("booking:success_group", kwargs={"token": appt_one.group_item.group.group_token})
     engine.dispatch_event.assert_has_calls([call("booking.group_received", appt_one.group_item.group)])

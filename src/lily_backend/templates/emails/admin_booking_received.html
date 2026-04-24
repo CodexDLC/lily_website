@@ -1,0 +1,46 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans "New Booking Request" %}</h2>
+<p>{% trans "A new booking has been received from" %} {{ client_name }}.</p>
+
+<table cellpadding="0" cellspacing="0" border="0" style="width: 100%; margin-top: 20px; margin-bottom: 20px;">
+    <tr>
+        <td style="padding-bottom: 10px;"><strong>{% trans "Service" %}:</strong></td>
+        <td style="padding-bottom: 10px;">{{ service_name }}</td>
+    </tr>
+    <tr>
+        <td style="padding-bottom: 10px;"><strong>{% trans "Date & Time" %}:</strong></td>
+        <td style="padding-bottom: 10px;">{{ datetime }}</td>
+    </tr>
+    <tr>
+        <td style="padding-bottom: 10px;"><strong>{% trans "Master" %}:</strong></td>
+        <td style="padding-bottom: 10px;">{{ master_name }}</td>
+    </tr>
+    <tr>
+        <td style="padding-bottom: 10px;"><strong>{% trans "Duration" %}:</strong></td>
+        <td style="padding-bottom: 10px;">{{ duration_minutes }} {% trans "min" %}</td>
+    </tr>
+    <tr>
+        <td style="padding-bottom: 10px;"><strong>{% trans "Client Email" %}:</strong></td>
+        <td style="padding-bottom: 10px;">{{ client_email }}</td>
+    </tr>
+    <tr>
+        <td style="padding-bottom: 10px;"><strong>{% trans "Client Phone" %}:</strong></td>
+        <td style="padding-bottom: 10px;">{{ client_phone }}</td>
+    </tr>
+    {% if client_notes %}
+    <tr>
+        <td style="padding-bottom: 10px;"><strong>{% trans "Client Notes" %}:</strong></td>
+        <td style="padding-bottom: 10px;">{{ client_notes }}</td>
+    </tr>
+    {% endif %}
+</table>
+
+<p style="text-align: center; margin-top: 30px;">
+    <a href="{{ action_url }}" style="display: inline-block; padding: 12px 24px; background-color: #4f46e5; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: bold;">
+        {% trans "View in Cabinet" %}
+    </a>
+</p>
+{% endblock %}
