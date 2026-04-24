@@ -5,7 +5,6 @@ Provides cross-domain fixtures (fakeredis, freezegun helpers, httpx mocking)
 that are not tied to any single feature. Per-domain fixtures live in:
 
   - tests/lily_backend/conftest.py  (Django ORM fixtures)
-  - tests/telegram_bot/conftest.py  (aiogram bot fixtures)
   - tests/workers/conftest.py       (arq/worker fixtures)
   - tests/e2e/conftest.py           (live docker stack fixtures)
 """

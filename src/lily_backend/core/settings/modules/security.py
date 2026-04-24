@@ -42,6 +42,11 @@ if DEBUG:
         "http://127.0.0.1:8080",
         "http://localhost:8080",
     ]
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS += [
+        "http://host.docker.internal:8080",
+        "http://host.docker.internal:8000",
+    ]
 
 # Canonical domain for SEO (no trailing slash)
 CANONICAL_DOMAIN = os.environ.get("CANONICAL_DOMAIN", "")

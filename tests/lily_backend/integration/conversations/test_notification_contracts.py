@@ -95,10 +95,8 @@ async def test_universal_notification_task_routes_booking_received_to_bot_event(
         },
     )
 
-    stream_manager.add_event.assert_awaited_once()
-    _stream_name, payload = stream_manager.add_event.await_args.args
-    assert payload["type"] == "new_appointment"
-    assert payload["id"] == "7"
+    # Stream writing to bot has been disabled
+    stream_manager.add_event.assert_not_awaited()
     notification_service.send_notification.assert_not_awaited()
 
 
@@ -122,15 +120,9 @@ async def test_universal_notification_task_status_update_includes_email_label():
         },
     )
 
-    stream_manager.add_event.assert_awaited_once()
-    _stream_name, payload = stream_manager.add_event.await_args.args
-    assert payload["type"] == "notification_status"
-    assert payload["appointment_id"] == 7
-    assert payload["channel"] == "email"
-    assert payload["status"] == "success"
-    assert payload["event_type"] == "booking.confirmed"
-    assert payload["template_name"] == "bk_confirmation"
-    assert payload["notification_label"] == "Подтверждение записи"
+    # Stream writing to bot has been disabled, but email is still sent
+    stream_manager.add_event.assert_not_awaited()
+    notification_service.send_notification.assert_awaited_once()
 
 
 def test_account_adapter_prefers_request_language(monkeypatch):

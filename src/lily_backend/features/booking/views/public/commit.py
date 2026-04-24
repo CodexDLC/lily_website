@@ -130,9 +130,17 @@ class BookingCommitView(View):
             resource_id=None,
             client=client,
             notify_received=False,
+            extra_fields={"client_notes": cart.contact.get("notes", "")} if cart.contact.get("notes") else None,
         )
 
         appointments = result if isinstance(result, list) else [result]
+
+        notes = cart.contact.get("notes", "")
+        if notes and appointments:
+            from features.conversations.services.threads import create_booking_thread
+
+            create_booking_thread(appointments[0])
+
         from features.conversations.services.notifications import _get_engine
 
         engine = _get_engine()
@@ -171,10 +179,20 @@ class BookingCommitView(View):
                 selected_time=item.time,
                 resource_id=None,
                 client=client,
+                extra_fields={"client_notes": cart.contact.get("notes", "")} if cart.contact.get("notes") else None,
             )
             appts = result if isinstance(result, list) else [result]
             for appt in appts:
                 tokens.append(appt.finalize_token)
+
+        notes = cart.contact.get("notes", "")
+        if notes and tokens:
+            from features.booking.models import Appointment
+            from features.conversations.services.threads import create_booking_thread
+
+            first_appt = Appointment.objects.filter(finalize_token=tokens[0]).first()
+            if first_appt:
+                create_booking_thread(first_appt)
 
         tokens_param = ",".join(tokens)
         return f"{reverse('booking:success_multi')}?tokens={tokens_param}"

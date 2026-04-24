@@ -27,7 +27,6 @@ class SiteSettingsAdmin(ModelAdmin):
                     "site_base_url",
                     "logo_url",
                     "price_range",
-                    "telegram_bot_username",
                 ),
             },
         ),
@@ -101,9 +100,13 @@ class SiteSettingsAdmin(ModelAdmin):
             {
                 "fields": ("email_from", "email_sender_name", "email_reply_to"),
                 "classes": ("collapse",),
-                "description": _(
-                    "SMTP transport (host, port, credentials, TLS) is configured via EMAIL_* "
-                    "environment variables in settings.py, not through this form."
+                "description": format_html(
+                    '{} <br><br> <strong><a href="/admin/notifications/notificationrecipient/">{} →</a></strong>',
+                    _(
+                        "SMTP transport (host, port, credentials, TLS) is configured via EMAIL_* "
+                        "environment variables in settings.py, not through this form."
+                    ),
+                    _("Manage recipients"),
                 ),
             },
         ),

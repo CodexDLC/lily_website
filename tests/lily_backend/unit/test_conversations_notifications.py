@@ -145,6 +145,8 @@ class TestConversationsNotifications:
         mock_msg.body = "Hello"
         mock_msg.subject = None
 
+        mock_msg.pk = 1
+
         # Test the 'continue' if email is empty in ADMINS
         with patch("django.conf.settings.ADMINS", [("Admin", "")]):
             specs = _handle_new_contact_message(mock_msg)
@@ -193,6 +195,7 @@ class TestConversationsNotifications:
         mock_msg.sender_email = "john@example.com"
         mock_msg.subject = "Support"
         mock_msg.body = "Help me"
+        mock_msg.pk = 1
         mock_msg.get_topic_display.return_value = "Support"
         mock_msg.get_source_display.return_value = "Web"
 
@@ -221,6 +224,7 @@ class TestConversationsNotifications:
         mock_msg.sender_email = None
         mock_msg.body = "Hello"
         mock_msg.subject = None
+        mock_msg.pk = 1
         mock_msg.get_topic_display.return_value = "Support"
         mock_msg.get_source_display.return_value = "Web"
 

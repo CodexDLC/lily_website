@@ -530,6 +530,7 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
                 # 6.4: Send cancellation notification
                 from features.conversations.services.notifications import _get_engine
 
+                appt._booking_origin = "staff"
                 _get_engine().dispatch_event("booking.cancelled", appt)
 
                 return BookingActionResult(
@@ -600,8 +601,14 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
                 # Assuming format %d.%m.%Y %H:%M as per Bot API example
                 try:
                     naive_dt = dt_module.datetime.strptime(new_dt_str, "%d.%m.%Y %H:%M")
+                    appt._booking_origin = "staff"
                     appt.datetime_start = timezone.make_aware(naive_dt)
                     appt.save(update_fields=["datetime_start", "updated_at"])
+
+                    from features.conversations.services.notifications import _get_engine
+
+                    _get_engine().dispatch_event("booking.rescheduled", appt)
+
                     return BookingActionResult(
                         ok=True,
                         code="booking-reschedule",

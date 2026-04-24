@@ -53,6 +53,7 @@ LOCAL_APPS = [
     "cabinet",
     "features.conversations",
     "features.booking",
+    "features.notifications",
 ]
 
 INSTALLED_APPS = (

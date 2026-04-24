@@ -76,3 +76,5 @@ from .modules.email import *  # noqa
 # ═══════════════════════════════════════════
 # General Settings
 # ═══════════════════════════════════════════
+
+CONVERSATIONS_RECIPIENT_MODEL = "system.Client"

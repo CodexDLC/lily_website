@@ -44,6 +44,8 @@ def test_public_slots_render_normalized_string_times(client, service, master):
     service.masters.add(master)
     _store_cart(client, service=service)
     target_date = timezone.localdate() + timedelta(days=1)
+    if target_date.weekday() == 6:  # Sunday
+        target_date += timedelta(days=1)
 
     response = client.get(
         reverse("booking:scheduler_slots"),

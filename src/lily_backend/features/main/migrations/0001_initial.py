@@ -7,11 +7,11 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     initial = True
 
-    dependencies = [
+    dependencies: list[tuple[str, str]] = [
         ("booking", "0001_initial"),
     ]
 
-    operations = [
+    operations: list[migrations.operations.base.Operation] = [
         migrations.CreateModel(
             name="ServiceCategory",
             fields=[
