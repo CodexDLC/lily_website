@@ -1,9 +1,0 @@
-menu =
-    .dashboard =
-        .title = <b>📱 Hauptmenü</b>\n\nWählen Sie unten einen Dienst oder Bereich aus:
-    .admin =
-        .title = <b>🔐 Admin-Bereich</b>\n\nSystemverwaltung und Statistiken.
-    .btn =
-        .back =
-            .to =
-                .user = ⬅️ Zurück zum Menü

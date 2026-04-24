@@ -20,21 +20,6 @@ services:
     networks:
       - lily_website-network
 
-  bot:
-    image: ${DOCKER_IMAGE_BOT}
-    container_name: lily_website-telegram_bot
-    env_file: .env
-    volumes:
-      - logs_volume:/app/logs
-    restart: always
-    depends_on:
-      redis:
-        condition: service_healthy
-      backend:
-        condition: service_healthy
-    networks:
-      - lily_website-network
-
   worker:
     image: ${DOCKER_IMAGE_WORKER}
     container_name: lily_website-worker_arq

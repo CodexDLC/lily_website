@@ -95,15 +95,6 @@ jobs:
           cache-from: type=gha,scope=backend
           cache-to: type=gha,mode=max,scope=backend
 
-      - name: Build Bot
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: deploy/bot/Dockerfile
-          push: false
-          cache-from: type=gha,scope=bot
-          cache-to: type=gha,mode=max,scope=bot
-
       - name: Build Worker
         uses: docker/build-push-action@v5
         with:
