@@ -86,7 +86,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Backend
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: deploy/lily_backend/Dockerfile
@@ -96,7 +96,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=backend
 
       - name: Build Worker
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: deploy/worker/Dockerfile
@@ -105,7 +105,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=worker
 
       - name: Build Nginx
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: deploy/nginx/Dockerfile

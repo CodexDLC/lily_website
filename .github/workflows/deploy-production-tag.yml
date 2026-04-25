@@ -74,7 +74,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push Backend
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: deploy/lily_backend/Dockerfile
@@ -86,7 +86,7 @@ jobs:
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-backend:buildcache,mode=max
 
       - name: Build and Push Worker
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: deploy/worker/Dockerfile
@@ -98,7 +98,7 @@ jobs:
           cache-to: type=registry,ref=ghcr.io/${{ env.REPO_LOWER }}-worker:buildcache,mode=max
 
       - name: Build and Push Nginx
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: deploy/nginx/Dockerfile

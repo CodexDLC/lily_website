@@ -13,6 +13,7 @@ For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs
 ### Changed
 
 - **Infrastructure:** `SITE_BASE_URL` is now automatically synchronized from environment variables to the database during initialization, ensuring correct links across all environments.
+- **Infrastructure:** Updated GitHub Actions to use Node.js 24 compatible versions (docker/build-push-action@v6) to resolve deprecation warnings.
 - **Fixtures:** Updated default Saturday working hours to `09:00 - 18:00` and set "Lily" as the default contact person.
 
 ### Fixed
