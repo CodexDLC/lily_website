@@ -124,15 +124,27 @@ async def _send_email(
     ctx: dict[str, Any],
     payload: NotificationPayload,
     notification_service: "NotificationService",
+    raw_payload: dict[str, Any],
 ) -> None:
-    """Sends the email channel. Raises Retry on failure (primary channel)."""
-    await notification_service.send_notification(
-        email=payload.recipient.email,  # type: ignore[arg-type]
-        subject=payload.subject or "Notification from LILY Salon",
-        template_name=payload.template_name,  # type: ignore[arg-type]
-        data=payload.context_data,
-        headers=_mailbox_headers(payload.context_data),
-    )
+    """Sends the email channel. Raises Retry on failure."""
+    mode = getattr(payload, "mode", raw_payload.get("mode", "template"))
+    html_content = getattr(payload, "html_content", raw_payload.get("html_content"))
+
+    if mode == "rendered" and html_content:
+        await notification_service.send_rendered_notification(
+            email=payload.recipient.email,  # type: ignore[arg-type]
+            subject=payload.subject or raw_payload.get("subject") or "Notification from LILY Salon",
+            html_content=html_content,
+            headers=_mailbox_headers(payload.context_data),
+        )
+    elif payload.template_name:
+        await notification_service.send_notification(
+            email=payload.recipient.email,  # type: ignore[arg-type]
+            subject=payload.subject or "Notification from LILY Salon",
+            template_name=payload.template_name,
+            data=payload.context_data,
+            headers=_mailbox_headers(payload.context_data),
+        )
 
 
 async def _send_to_stream(
@@ -179,12 +191,54 @@ async def send_universal_notification_task(
 
     notification_service = cast("NotificationService", ctx.get("notification_service"))
 
-    if "email" in payload_model.channels and payload_model.recipient.email and payload_model.template_name:
+    # Defensive extraction in case of partial worker reloads
+    mode = getattr(payload_model, "mode", raw_payload.get("mode", "template"))
+    html_content = getattr(payload_model, "html_content", raw_payload.get("html_content"))
+
+    should_send_email = (
+        "email" in payload_model.channels
+        and payload_model.recipient.email
+        and (payload_model.template_name or (mode == "rendered" and html_content))
+    )
+
+    if should_send_email:
         try:
-            await _send_email(ctx, payload_model, notification_service)
+            await _send_email(ctx, payload_model, notification_service, raw_payload)
         except Exception as exc:
             log.error(f"Task: universal_notification | Action: EmailFailed | error={exc}")
             raise Retry(defer=ctx["job_try"] * 30) from exc
+
+
+async def send_rendered_notification_task(
+    ctx: dict[str, Any],
+    payload: dict[str, Any],
+) -> None:
+    """
+    Task for sending pre-rendered HTML emails.
+    Payload expected keys: 'email', 'subject', 'html_content', 'headers' (optional).
+    """
+    email = payload.get("email")
+    subject = payload.get("subject", "Notification from LILY Salon")
+    html_content = payload.get("html_content")
+    headers = payload.get("headers")
+
+    if not email or not html_content:
+        log.error(f"Task: send_rendered_notification_task | Action: MissingFields | email={email}")
+        return
+
+    log.info(f"Task: send_rendered_notification_task | Action: Send | to={email}")
+    notification_service = cast("NotificationService", ctx.get("notification_service"))
+
+    try:
+        await notification_service.send_rendered_notification(
+            email=email,
+            subject=subject,
+            html_content=html_content,
+            headers=headers,
+        )
+    except Exception as exc:
+        log.error(f"Task: send_rendered_notification_task | Action: Failed | error={exc}")
+        raise Retry(defer=ctx["job_try"] * 30) from exc
 
 
 # ---------------------------------------------------------------------------

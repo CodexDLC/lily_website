@@ -1,7 +1,7 @@
 from codex_platform.workers.arq import CORE_FUNCTIONS
 from loguru import logger
 
-from .campaign_tasks import send_campaign_task
+from .campaign_tasks import send_campaign_batch_task
 from .email_tasks import send_email_task
 from .message_tasks import send_appointment_notification, send_message_task
 from .notification_tasks import (
@@ -9,6 +9,7 @@ from .notification_tasks import (
     send_booking_notification_task,
     send_contact_notification_task,
     send_group_booking_notification_task,
+    send_rendered_notification_task,
     send_universal_notification_task,
 )
 
@@ -24,7 +25,8 @@ FUNCTIONS = [
     send_appointment_notification,
     send_message_task,
     send_universal_notification_task,
-    send_campaign_task,
+    send_rendered_notification_task,
+    send_campaign_batch_task,
 ] + CORE_FUNCTIONS
 
 logger.info(f"Worker: Aggregator | Action: Initialized | tasks_count={len(FUNCTIONS)}")

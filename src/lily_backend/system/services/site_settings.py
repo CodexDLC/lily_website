@@ -17,15 +17,20 @@ class SiteSettingsService(LibrarySiteSettingsService):
 
     TABS_CONFIG = LibrarySiteSettingsService.TABS_CONFIG | {
         "general": {"label": _("General"), "icon": "bi-info-circle"},
+        "notifications": {"label": _("Notifications"), "icon": "bi-bell"},
         "work_hours": {"label": _("Work Hours"), "icon": "bi-clock"},
         "hiring": {"label": _("Hiring"), "icon": "bi-person-plus"},
         "technical": {"label": _("Technical Settings"), "icon": "bi-tools"},
     }
 
-    @staticmethod
-    def save_context(request: HttpRequest) -> tuple[bool, str]:
-        return LibrarySiteSettingsService.save_context(request)  # type: ignore[no-any-return]
+    @classmethod
+    def save_context(cls, request: HttpRequest) -> tuple[bool, str]:
+        return super().save_context(request)
 
-    @staticmethod
-    def get_context(request: HttpRequest) -> dict[str, Any]:
-        return LibrarySiteSettingsService.get_context(request)  # type: ignore[no-any-return]
+    @classmethod
+    def get_context(cls, request: HttpRequest) -> dict[str, Any]:
+        from features.notifications.models import NotificationRecipient
+
+        context = super().get_context(request)
+        context["recipients"] = NotificationRecipient.objects.all().order_by("-enabled", "email")
+        return context

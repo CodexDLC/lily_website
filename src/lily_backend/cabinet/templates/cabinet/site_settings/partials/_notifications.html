@@ -1,0 +1,108 @@
+{% load i18n %}
+
+<div class="row g-4">
+  <div class="col-12">
+
+    <!-- Information Card -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white border-0 pt-3 pb-0">
+        <h6 class="fw-semibold mb-0">{% trans "sys_settings_notifications_title" %}</h6>
+      </div>
+      <div class="card-body">
+        <p class="text-muted small mb-0">
+          {% trans "sys_settings_notifications_desc" %}
+        </p>
+      </div>
+    </div>
+
+    <!-- Add Recipient Card -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white border-0 pt-3 pb-0">
+        <h6 class="fw-semibold mb-0">{% trans "sys_settings_notifications_add_title" %}</h6>
+      </div>
+      <div class="card-body">
+        <form method="post" action="{% url 'cabinet:add_recipient' %}" class="row g-3 align-items-end">
+          {% csrf_token %}
+          <div class="col-md-5">
+            <label for="email" class="form-label text-muted small mb-1">{% trans "sys_settings_notifications_email_label" %}</label>
+            <input type="email" name="email" id="email" required
+                   class="form-control form-control-sm border-0 bg-light"
+                   placeholder="admin@example.com">
+          </div>
+          <div class="col-md-5">
+            <label for="name" class="form-label text-muted small mb-1">{% trans "sys_settings_notifications_name_label" %}</label>
+            <input type="text" name="name" id="name"
+                   class="form-control form-control-sm border-0 bg-light"
+                   placeholder="John Doe">
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary btn-sm w-100 fw-semibold">
+              <span class="bi bi-plus-lg me-1"></span>
+              {% trans "sys_settings_notifications_btn_add" %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Recipients List Card -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white border-0 pt-3 pb-0">
+        <h6 class="fw-semibold mb-0">{% trans "sys_settings_notifications_list_title" %}</h6>
+      </div>
+      <div class="card-body px-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0" style="font-size: .85rem;">
+            <thead class="bg-light">
+              <tr>
+                <th class="ps-4 border-0 text-muted fw-medium">{% trans "sys_settings_notifications_th_email" %}</th>
+                <th class="border-0 text-muted fw-medium">{% trans "sys_settings_notifications_th_name" %}</th>
+                <th class="border-0 text-muted fw-medium">{% trans "sys_settings_notifications_th_status" %}</th>
+                <th class="pe-4 border-0 text-muted fw-medium text-end">{% trans "sys_settings_notifications_th_actions" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for recipient in recipients %}
+              <tr>
+                <td class="ps-4 fw-medium">{{ recipient.email }}</td>
+                <td class="text-muted">{{ recipient.name|default:"-" }}</td>
+                <td>
+                  <form method="post" action="{% url 'cabinet:toggle_recipient' recipient.pk %}" class="d-inline">
+                    {% csrf_token %}
+                    <div class="form-check form-switch d-inline-block">
+                      <input class="form-check-input cursor-pointer" type="checkbox"
+                             role="switch"
+                             onchange="this.form.submit()"
+                             {% if recipient.enabled %}checked{% endif %}>
+                      <span class="ms-1 {% if recipient.enabled %}text-success{% else %}text-muted{% endif %}">
+                        {% if recipient.enabled %}{% trans "sys_settings_notifications_status_active" %}{% else %}{% trans "sys_settings_notifications_status_inactive" %}{% endif %}
+                      </span>
+                    </div>
+                  </form>
+                </td>
+                <td class="pe-4 text-end">
+                  <form method="post" action="{% url 'cabinet:delete_recipient' recipient.pk %}"
+                        class="d-inline" onsubmit="return confirm('{% trans "sys_settings_notifications_confirm_delete" %}');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link btn-sm text-danger p-0 border-0">
+                      <span class="bi bi-trash"></span>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% empty %}
+              <tr>
+                <td colspan="4" class="text-center py-4 text-muted">
+                  <span class="bi bi-info-circle me-1"></span>
+                  {% trans "sys_settings_notifications_empty" %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

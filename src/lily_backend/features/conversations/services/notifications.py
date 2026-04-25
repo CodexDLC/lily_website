@@ -465,7 +465,7 @@ class NotificationService:
         return _get_engine().dispatch(
             recipient_email=recipient_email,
             client_name=user_name,
-            template_name="account/acc_password_reset",
+            template_name="account/acc_password_reset.html",
             event_type="account.password_reset",
             channels=["email"],
             language=lang,

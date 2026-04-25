@@ -152,6 +152,17 @@ class NotificationService:
         html_content = self.renderer.render(full_template_path, full_context)
         await self.email_client.send_email(email, subject, html_content, headers=headers)
 
+    async def send_rendered_notification(
+        self,
+        email: str,
+        subject: str,
+        html_content: str,
+        headers: dict[str, str] | None = None,
+    ) -> None:
+        """Sends pre-rendered HTML notification directly."""
+        log.debug(f"NotificationService: Sending pre-rendered notification to {email}")
+        await self.email_client.send_email(email, subject, html_content, headers=headers)
+
     # --- Specific Helpers (Legacy/Convenience) ---
 
     async def send_booking_confirmation(self, recipient_email: str, client_name: str, context: dict) -> None:
