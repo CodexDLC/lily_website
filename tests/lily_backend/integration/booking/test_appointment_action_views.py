@@ -138,7 +138,9 @@ class TestCancelAppointmentView:
                 reverse("booking:booking_cancel_action", kwargs={"token": "CXLEVT"}),
                 {"reason": "client"},
             )
-            engine_mock.dispatch_event.assert_called_once()
+            # Called twice: once in model.cancel() and once in view
+            assert engine_mock.dispatch_event.call_count == 2
+            engine_mock.dispatch_event.assert_any_call("booking.cancelled", pending_appointment)
             event_name = engine_mock.dispatch_event.call_args[0][0]
             assert event_name == "booking.cancelled"
 

@@ -35,7 +35,7 @@ def test_handle_booking_confirmed(mock_appt):
     spec = handle_booking_confirmed(mock_appt)
     assert spec.recipient_email == "test@example.com"
     assert spec.event_type == "booking.confirmed"
-    assert spec.template_name == "emails/booking_confirmed.html"
+    assert spec.template_name == "bk_confirmation"
     assert spec.context["service"] == "Test Service"
 
 
@@ -43,7 +43,7 @@ def test_handle_booking_cancelled(mock_appt):
     spec = handle_booking_cancelled(mock_appt)
     assert spec.recipient_email == "test@example.com"
     assert spec.event_type == "booking.cancelled"
-    assert spec.template_name == "emails/booking_cancelled.html"
+    assert spec.template_name == "bk_cancellation"
     assert spec.context["reason_text"] == "Client Reason"
 
 

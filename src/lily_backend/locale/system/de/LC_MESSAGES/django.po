@@ -2349,3 +2349,48 @@ msgstr "Rechtliches"
 
 msgid "footer_dev_credit"
 msgstr "Entwickelt von"
+
+msgid "sys_settings_notifications_title"
+msgstr "Empfänger von Admin-Benachrichtigungen"
+
+msgid "sys_settings_notifications_desc"
+msgstr "Konfigurieren Sie, wer E-Mail-Benachrichtigungen über neue Buchungen, Stornierungen und Kontaktformular-Einsendungen erhält."
+
+msgid "sys_settings_notifications_add_title"
+msgstr "Neuen Empfänger hinzufügen"
+
+msgid "sys_settings_notifications_email_label"
+msgstr "E-Mail-Adresse"
+
+msgid "sys_settings_notifications_name_label"
+msgstr "Name (Optional)"
+
+msgid "sys_settings_notifications_btn_add"
+msgstr "Hinzufügen"
+
+msgid "sys_settings_notifications_list_title"
+msgstr "Aktuelle Empfänger"
+
+msgid "sys_settings_notifications_th_email"
+msgstr "E-Mail"
+
+msgid "sys_settings_notifications_th_name"
+msgstr "Name"
+
+msgid "sys_settings_notifications_th_status"
+msgstr "Status"
+
+msgid "sys_settings_notifications_th_actions"
+msgstr "Aktionen"
+
+msgid "sys_settings_notifications_status_active"
+msgstr "Aktiv"
+
+msgid "sys_settings_notifications_status_inactive"
+msgstr "Inaktiv"
+
+msgid "sys_settings_notifications_confirm_delete"
+msgstr "Sind Sie sicher?"
+
+msgid "sys_settings_notifications_empty"
+msgstr "Noch keine Empfänger hinzugefügt. Das System verwendet standardmäßig die Admin-E-Mails."

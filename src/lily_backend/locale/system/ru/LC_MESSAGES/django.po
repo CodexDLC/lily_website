@@ -2386,3 +2386,48 @@ msgstr "Документы"
 
 msgid "footer_dev_credit"
 msgstr "Разработано"
+
+msgid "sys_settings_notifications_title"
+msgstr "Получатели административных уведомлений"
+
+msgid "sys_settings_notifications_desc"
+msgstr "Настройте, кто получает уведомления по электронной почте о новых бронированиях, отменах и сообщениях из контактной формы."
+
+msgid "sys_settings_notifications_add_title"
+msgstr "Добавить нового получателя"
+
+msgid "sys_settings_notifications_email_label"
+msgstr "Электронная почта"
+
+msgid "sys_settings_notifications_name_label"
+msgstr "Имя (необязательно)"
+
+msgid "sys_settings_notifications_btn_add"
+msgstr "Добавить"
+
+msgid "sys_settings_notifications_list_title"
+msgstr "Текущие получатели"
+
+msgid "sys_settings_notifications_th_email"
+msgstr "Email"
+
+msgid "sys_settings_notifications_th_name"
+msgstr "Имя"
+
+msgid "sys_settings_notifications_th_status"
+msgstr "Статус"
+
+msgid "sys_settings_notifications_th_actions"
+msgstr "Действия"
+
+msgid "sys_settings_notifications_status_active"
+msgstr "Активен"
+
+msgid "sys_settings_notifications_status_inactive"
+msgstr "Неактивен"
+
+msgid "sys_settings_notifications_confirm_delete"
+msgstr "Вы уверены?"
+
+msgid "sys_settings_notifications_empty"
+msgstr "Получатели еще не добавлены. Система использует стандартные адреса администратора."

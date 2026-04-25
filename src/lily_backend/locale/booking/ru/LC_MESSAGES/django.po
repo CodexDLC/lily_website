@@ -126,3 +126,141 @@ msgstr "Пожалуйста, примите условия отмены."
 #: features/booking/views/public/commit.py:91
 msgid "Bitte akzeptieren Sie die Einwilligung zur Datenverarbeitung."
 msgstr "Пожалуйста, дайте согласие на обработку персональных данных."
+
+msgid "bk_wizard_title"
+msgstr "Онлайн-запись"
+
+msgid "bk_wizard_subtitle"
+msgstr "ЗАПИСЬ В НЕСКОЛЬКО ШАГОВ"
+
+msgid "bk_cart_empty_title"
+msgstr "Ваша корзина пуста"
+
+msgid "bk_cart_empty_text"
+msgstr "Пожалуйста, выберите услуги в каталоге, чтобы продолжить бронирование."
+
+msgid "bk_cart_empty_cta"
+msgstr "Перейти к услугам"
+
+msgid "bk_step_1"
+msgstr "Услуга"
+
+msgid "bk_step_2"
+msgstr "Запись"
+
+msgid "bk_step_3"
+msgstr "Данные"
+
+msgid "bk_scheduler_multi_day_title"
+msgstr "Записи на разные дни"
+
+msgid "bk_btn_edit"
+msgstr "Изменить"
+
+msgid "bk_scheduler_title"
+msgstr "Выберите дату и время"
+
+msgid "bk_scheduler_no_date_hint"
+msgstr "Пожалуйста, выберите дату слева, чтобы увидеть доступное время"
+
+msgid "bk_nav_back_to_list"
+msgstr "Назад к списку"
+
+msgid "bk_nav_next"
+msgstr "Далее к подтверждению"
+
+msgid "bk_nav_next_simple"
+msgstr "Далее"
+
+msgid "bk_nav_next_disabled_hint"
+msgstr "Пожалуйста, выберите время для всех услуг"
+
+msgid "bk_sidebar_title"
+msgstr "Ваша запись"
+
+msgid "bk_sidebar_min"
+msgstr "мин"
+
+msgid "bk_sidebar_datum"
+msgstr "Дата"
+
+msgid "bk_sidebar_zeit"
+msgstr "Время"
+
+msgid "bk_sidebar_total"
+msgstr "Итого"
+
+msgid "bk_confirm_title"
+msgstr "Ваши данные"
+
+msgid "bk_confirm_subtitle"
+msgstr "Пожалуйста, введите ваши контактные данные"
+
+msgid "bk_field_first_name"
+msgstr "Имя"
+
+msgid "bk_field_last_name"
+msgstr "Фамилия"
+
+msgid "bk_field_email"
+msgstr "E-Mail"
+
+msgid "bk_field_phone"
+msgstr "Номер телефона"
+
+msgid "bk_field_notes"
+msgstr "Заметки (необязательно)"
+
+msgid "bk_field_notes_placeholder"
+msgstr "Особенности, аллергия..."
+
+msgid "bk_check_call"
+msgstr "Пожалуйста, перезвоните мне для подтверждения"
+
+msgid "bk_check_cancellation_pre"
+msgstr "Я принимаю"
+
+msgid "bk_check_cancellation_link"
+msgstr "условия отмены"
+
+msgid "bk_check_consent"
+msgstr "Согласие на обработку персональных данных"
+
+msgid "bk_nav_back"
+msgstr "Назад"
+
+msgid "bk_btn_commit"
+msgstr "Забронировать визит"
+
+msgid "bk_cart_title"
+msgstr "Ваше бронирование"
+
+msgid "bk_cart_subtitle"
+msgstr "Выберите желаемые услуги"
+
+msgid "bk_btn_remove"
+msgstr "Удалить из бронирования"
+
+msgid "bk_err_empty_cart"
+msgstr "Корзина пуста. Пожалуйста, добавьте услуги."
+
+msgid "bk_err_name_required"
+msgstr "Пожалуйста, введите ваше имя и фамилию."
+
+msgid "bk_err_contact_required"
+msgstr "Пожалуйста, укажите номер телефона или e-mail."
+
+msgid "bk_err_cancellation_required"
+msgstr "Пожалуйста, примите условия отмены."
+
+msgid "bk_err_consent_required"
+msgstr "Пожалуйста, дайте согласие на обработку персональных данных."
+
+msgid "bk_err_time_required"
+msgstr "Пожалуйста, выберите дату и время."
+
+msgid "bk_err_multi_time_required"
+msgstr "Пожалуйста, выберите дату и время для каждой услуги."
+
+msgid "bk_err_commit_failed"
+msgstr "Ошибка при создании бронирования: %(exc)s"

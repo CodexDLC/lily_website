@@ -134,12 +134,12 @@ class TestConversationsAlerts:
     def test_build_thread_reply_specs(self, mock_ctx, mock_subj):
         msg = MagicMock(sender_email="test@test.com")
         reply = MagicMock(body="Hello")
-        mock_ctx.return_value = {}
+        mock_ctx.return_value = {"reply_text": "Hello"}
         mock_subj.return_value = "Subject"
 
         spec = _build_thread_reply_specs(msg, reply)
         assert spec.recipient_email == "test@test.com"
-        assert spec.text_content == "Hello"
+        assert spec.context["reply_text"] == "Hello"
 
     def test_build_reply_context(self):
         msg = MagicMock(pk=1, thread_key="tk")

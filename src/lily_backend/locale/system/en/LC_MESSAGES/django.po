@@ -2394,3 +2394,48 @@ msgstr "Legal"
 
 msgid "footer_dev_credit"
 msgstr "Developed by"
+
+msgid "sys_settings_notifications_title"
+msgstr "Admin Notification Recipients"
+
+msgid "sys_settings_notifications_desc"
+msgstr "Configure who receives email notifications about new bookings, cancellations, and contact form submissions."
+
+msgid "sys_settings_notifications_add_title"
+msgstr "Add New Recipient"
+
+msgid "sys_settings_notifications_email_label"
+msgstr "Email Address"
+
+msgid "sys_settings_notifications_name_label"
+msgstr "Name (Optional)"
+
+msgid "sys_settings_notifications_btn_add"
+msgstr "Add"
+
+msgid "sys_settings_notifications_list_title"
+msgstr "Current Recipients"
+
+msgid "sys_settings_notifications_th_email"
+msgstr "Email"
+
+msgid "sys_settings_notifications_th_name"
+msgstr "Name"
+
+msgid "sys_settings_notifications_th_status"
+msgstr "Status"
+
+msgid "sys_settings_notifications_th_actions"
+msgstr "Actions"
+
+msgid "sys_settings_notifications_status_active"
+msgstr "Active"
+
+msgid "sys_settings_notifications_status_inactive"
+msgstr "Inactive"
+
+msgid "sys_settings_notifications_confirm_delete"
+msgstr "Are you sure?"
+
+msgid "sys_settings_notifications_empty"
+msgstr "No recipients added yet. System falls back to default admin emails."

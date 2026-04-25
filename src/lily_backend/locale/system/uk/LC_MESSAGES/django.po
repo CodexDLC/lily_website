@@ -2383,3 +2383,47 @@ msgstr "Документи"
 
 msgid "footer_dev_credit"
 msgstr "Розроблено"
+msgid "sys_settings_notifications_title"
+msgstr "Отримувачі адміністративних сповіщень"
+
+msgid "sys_settings_notifications_desc"
+msgstr "Налаштуйте, хто отримує повідомлення електронною поштою про нові бронювання, скасування та повідомлення з контактної форми."
+
+msgid "sys_settings_notifications_add_title"
+msgstr "Додати нового отримувача"
+
+msgid "sys_settings_notifications_email_label"
+msgstr "Електронна пошта"
+
+msgid "sys_settings_notifications_name_label"
+msgstr "Ім'я (необов'язково)"
+
+msgid "sys_settings_notifications_btn_add"
+msgstr "Додати"
+
+msgid "sys_settings_notifications_list_title"
+msgstr "Поточні отримувачі"
+
+msgid "sys_settings_notifications_th_email"
+msgstr "Email"
+
+msgid "sys_settings_notifications_th_name"
+msgstr "Ім'я"
+
+msgid "sys_settings_notifications_th_status"
+msgstr "Статус"
+
+msgid "sys_settings_notifications_th_actions"
+msgstr "Дії"
+
+msgid "sys_settings_notifications_status_active"
+msgstr "Активний"
+
+msgid "sys_settings_notifications_status_inactive"
+msgstr "Неактивний"
+
+msgid "sys_settings_notifications_confirm_delete"
+msgstr "Ви впевнені?"
+
+msgid "sys_settings_notifications_empty"
+msgstr "Отримувачів ще не додано. Система використовує стандартні адреси адміністратора."

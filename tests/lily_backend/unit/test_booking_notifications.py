@@ -19,7 +19,7 @@ class TestBookingNotifications:
     def test_handle_booking_confirmed(self):
         appt = AppointmentFactory()
         spec = handle_booking_confirmed(appt)
-        assert spec.template_name == "emails/booking_confirmed.html"
+        assert spec.template_name == "bk_confirmation"
         assert spec.event_type == "booking.confirmed"
         assert spec.context["id"] == appt.pk
         assert spec.context["service_name"] == appt.service.name
@@ -29,7 +29,7 @@ class TestBookingNotifications:
     def test_handle_booking_cancelled(self):
         appt = AppointmentFactory()
         spec = handle_booking_cancelled(appt)
-        assert spec.template_name == "emails/booking_cancelled.html"
+        assert spec.template_name == "bk_cancellation"
         assert spec.event_type == "booking.cancelled"
         assert spec.context["id"] == appt.pk
         assert "reason_text" in spec.context

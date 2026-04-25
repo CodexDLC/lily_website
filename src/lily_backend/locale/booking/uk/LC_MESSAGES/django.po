@@ -128,3 +128,165 @@ msgstr "Будь ласка, прийміть умови скасування."
 #: features/booking/views/public/commit.py:91
 msgid "Bitte akzeptieren Sie die Einwilligung zur Datenverarbeitung."
 msgstr "Будь ласка, надайте згоду на обробку персональних даних."
+
+msgid "bk_wizard_title"
+msgstr "Онлайн-запис"
+
+msgid "bk_wizard_subtitle"
+msgstr "ЗАПИС ЗА КІЛЬКА КРОКІВ"
+
+msgid "bk_cart_empty_title"
+msgstr "Ваша корзина порожня"
+
+msgid "bk_cart_empty_text"
+msgstr "Будь ласка, виберіть послуги в каталозі, щоб продовжити бронювання."
+
+msgid "bk_cart_empty_cta"
+msgstr "Перейти до послуг"
+
+msgid "bk_step_1"
+msgstr "Послуга"
+
+msgid "bk_step_2"
+msgstr "Запис"
+
+msgid "bk_step_3"
+msgstr "Дані"
+
+msgid "bk_scheduler_multi_day_title"
+msgstr "Записи на різні дні"
+
+msgid "bk_btn_edit"
+msgstr "Змінити"
+
+msgid "bk_scheduler_title"
+msgstr "Виберіть дату та час"
+
+msgid "bk_scheduler_no_date_hint"
+msgstr "Будь ласка, виберіть дату зліва, щоб побачити доступний час"
+
+msgid "bk_nav_back_to_list"
+msgstr "Назад до списку"
+
+msgid "bk_nav_next"
+msgstr "Далі до підтвердження"
+
+msgid "bk_nav_next_simple"
+msgstr "Далі"
+
+msgid "bk_nav_next_disabled_hint"
+msgstr "Будь ласка, виберіть час для всіх послуг"
+
+msgid "bk_sidebar_title"
+msgstr "Ваш запис"
+
+msgid "bk_sidebar_min"
+msgstr "хв"
+
+msgid "bk_sidebar_datum"
+msgstr "Дата"
+
+msgid "bk_sidebar_zeit"
+msgstr "Час"
+
+msgid "bk_sidebar_total"
+msgstr "Разом"
+
+msgid "bk_confirm_title"
+msgstr "Ваші дані"
+
+msgid "bk_confirm_subtitle"
+msgstr "Будь ласка, введіть ваші контактні дані"
+
+msgid "bk_field_first_name"
+msgstr "Ім'я"
+
+msgid "bk_field_last_name"
+msgstr "Прізвище"
+
+msgid "bk_field_email"
+msgstr "E-Mail"
+
+msgid "bk_field_phone"
+msgstr "Номер телефону"
+
+msgid "bk_field_notes"
+msgstr "Замітки (необов'язково)"
+
+msgid "bk_field_notes_placeholder"
+msgstr "Особливості, алергія..."
+
+msgid "bk_check_call"
+msgstr "Будь ласка, зателефонуйте мені для підтвердження"
+
+msgid "bk_check_cancellation_pre"
+msgstr "Я приймаю"
+
+msgid "bk_check_cancellation_link"
+msgstr "умови скасування"
+
+msgid "bk_check_consent"
+msgstr "Згода на обробку персональних даних"
+
+msgid "bk_nav_back"
+msgstr "Назад"
+
+msgid "bk_btn_commit"
+msgstr "Забронювати візит"
+
+msgid "bk_cart_title"
+msgstr "Ваше бронювання"
+
+msgid "bk_cart_subtitle"
+msgstr "Виберіть бажані послуги"
+
+msgid "bk_btn_remove"
+msgstr "Видалити з бронювання"
+
+msgid "bk_err_empty_cart"
+msgstr "Кошик порожній. Будь ласка, додайте послуги."
+
+msgid "bk_err_name_required"
+msgstr "Будь ласка, введіть ваше ім'я та прізвище."
+
+msgid "bk_err_contact_required"
+msgstr "Будь ласка, вкажіть номер телефону або e-mail."
+
+msgid "bk_err_cancellation_required"
+msgstr "Будь ласка, прийміть умови скасування."
+
+msgid "bk_err_consent_required"
+msgstr "Будь ласка, надайте згоду на обробку персональних даних."
+
+msgid "bk_err_time_required"
+msgstr "Будь ласка, виберіть дату та час."
+
+msgid "bk_err_multi_time_required"
+msgstr "Будь ласка, виберіть дату та час для кожної послуги."
+
+msgid "bk_err_commit_failed"
+msgstr "Помилка при створенні бронювання: %(exc)s"
+
+msgid "Terminanfrage erhalten!"
+msgstr "Запит на запис отримано!"
+
+msgid "Vielen Dank für Ihre Anfrage. Wir prüfen Ihren Termin und melden uns so schnell wie möglich."
+msgstr "Дякуємо за ваш запит. Ми перевіримо ваш запис і зв'яжемося з вами якнайшвидше."
+
+msgid "Leistung"
+msgstr "Послуга"
+
+msgid "Datum und Uhrzeit"
+msgstr "Дата та час"
+
+msgid "Dauer"
+msgstr "Тривалість"
+
+msgid "Wir senden Ihnen eine Bestätigung, sobald der Termin geprüft wurde."
+msgstr "Ми надішлемо вам підтвердження, як только запис буде перевірено."
+
+msgid "Zur Stornierung oder Umbuchung nutzen Sie bitte den Link in der E-Mail (nach Bestätigung)."
+msgstr "Для скасування або перенесення скористайтеся посиланням в електронному листі (після підтвердження)."
+
+msgid "Zur Startseite"
+msgstr "На головну"

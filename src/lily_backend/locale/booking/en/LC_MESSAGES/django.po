@@ -128,3 +128,141 @@ msgstr "Please accept the cancellation policy."
 #: features/booking/views/public/commit.py:91
 msgid "Bitte akzeptieren Sie die Einwilligung zur Datenverarbeitung."
 msgstr "Please accept the data processing consent."
+
+msgid "bk_wizard_title"
+msgstr "Online Booking"
+
+msgid "bk_wizard_subtitle"
+msgstr "BOOK YOUR APPOINTMENT IN JUST A FEW STEPS"
+
+msgid "bk_cart_empty_title"
+msgstr "Your cart is empty"
+
+msgid "bk_cart_empty_text"
+msgstr "Please select services from the catalog to continue booking."
+
+msgid "bk_cart_empty_cta"
+msgstr "Go to Services"
+
+msgid "bk_step_1"
+msgstr "Service"
+
+msgid "bk_step_2"
+msgstr "Appointment"
+
+msgid "bk_step_3"
+msgstr "Details"
+
+msgid "bk_scheduler_multi_day_title"
+msgstr "Appointments on different days"
+
+msgid "bk_btn_edit"
+msgstr "Change"
+
+msgid "bk_scheduler_title"
+msgstr "Choose date and time"
+
+msgid "bk_scheduler_no_date_hint"
+msgstr "Please select a date on the left to see available times"
+
+msgid "bk_nav_back_to_list"
+msgstr "Back to list"
+
+msgid "bk_nav_next"
+msgstr "Continue to confirmation"
+
+msgid "bk_nav_next_simple"
+msgstr "Next"
+
+msgid "bk_nav_next_disabled_hint"
+msgstr "Please select times for all services"
+
+msgid "bk_sidebar_title"
+msgstr "Your Appointment"
+
+msgid "bk_sidebar_min"
+msgstr "min"
+
+msgid "bk_sidebar_datum"
+msgstr "Date"
+
+msgid "bk_sidebar_zeit"
+msgstr "Time"
+
+msgid "bk_sidebar_total"
+msgstr "Total"
+
+msgid "bk_confirm_title"
+msgstr "Your Data"
+
+msgid "bk_confirm_subtitle"
+msgstr "Please enter your contact details"
+
+msgid "bk_field_first_name"
+msgstr "First Name"
+
+msgid "bk_field_last_name"
+msgstr "Last Name"
+
+msgid "bk_field_email"
+msgstr "E-Mail"
+
+msgid "bk_field_phone"
+msgstr "Phone Number"
+
+msgid "bk_field_notes"
+msgstr "Notes (Optional)"
+
+msgid "bk_field_notes_placeholder"
+msgstr "Special requests, allergies..."
+
+msgid "bk_check_call"
+msgstr "Please call me for confirmation"
+
+msgid "bk_check_cancellation_pre"
+msgstr "I accept the"
+
+msgid "bk_check_cancellation_link"
+msgstr "cancellation conditions"
+
+msgid "bk_check_consent"
+msgstr "Consent to data processing"
+
+msgid "bk_nav_back"
+msgstr "Back"
+
+msgid "bk_btn_commit"
+msgstr "Book appointment"
+
+msgid "bk_cart_title"
+msgstr "Your Booking"
+
+msgid "bk_cart_subtitle"
+msgstr "Select desired services"
+
+msgid "bk_btn_remove"
+msgstr "Remove from booking"
+
+msgid "bk_err_empty_cart"
+msgstr "The cart is empty. Please add services."
+
+msgid "bk_err_name_required"
+msgstr "Please enter your first and last name."
+
+msgid "bk_err_contact_required"
+msgstr "Please provide a phone number or e-mail address."
+
+msgid "bk_err_cancellation_required"
+msgstr "Please accept the cancellation policy."
+
+msgid "bk_err_consent_required"
+msgstr "Please accept the data processing consent."
+
+msgid "bk_err_time_required"
+msgstr "Please select a date and time."
+
+msgid "bk_err_multi_time_required"
+msgstr "Please select date and time for each service."
+
+msgid "bk_err_commit_failed"
+msgstr "Error creating booking: %(exc)s"

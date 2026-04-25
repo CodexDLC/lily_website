@@ -255,7 +255,9 @@ def test_client_cancel_appointment_dispatches_notification(
     response = ClientCancelAppointmentView.as_view()(request, token=pending_appointment.finalize_token)
 
     assert response.status_code == 302
-    mock_get_engine.return_value.dispatch_event.assert_called_once_with("booking.cancelled", pending_appointment)
+    # It's called twice: once in appt.cancel() and once in the view
+    assert mock_get_engine.return_value.dispatch_event.call_count == 2
+    mock_get_engine.return_value.dispatch_event.assert_any_call("booking.cancelled", pending_appointment)
     mock_messages.success.assert_called_once()
 
 

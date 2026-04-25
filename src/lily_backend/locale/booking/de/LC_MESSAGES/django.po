@@ -127,4 +127,142 @@ msgstr ""
 
 #: features/booking/views/public/commit.py:91
 msgid "Bitte akzeptieren Sie die Einwilligung zur Datenverarbeitung."
-msgstr ""
+msgstr "Bitte akzeptieren Sie die Einwilligung zur Datenverarbeitung."
+
+msgid "bk_wizard_title"
+msgstr "Online Terminbuchung"
+
+msgid "bk_wizard_subtitle"
+msgstr "IN WENIGEN SCHRITTEN ZUM TERMIN"
+
+msgid "bk_cart_empty_title"
+msgstr "Ваша корзина пуста"
+
+msgid "bk_cart_empty_text"
+msgstr "Пожалуйста, выберите услуги в каталоге, чтобы продолжить бронирование."
+
+msgid "bk_cart_empty_cta"
+msgstr "Перейти к услугам"
+
+msgid "bk_step_1"
+msgstr "Leistung"
+
+msgid "bk_step_2"
+msgstr "Termin"
+
+msgid "bk_step_3"
+msgstr "Daten"
+
+msgid "bk_scheduler_multi_day_title"
+msgstr "Termine an verschiedenen Tagen"
+
+msgid "bk_btn_edit"
+msgstr "Ändern"
+
+msgid "bk_scheduler_title"
+msgstr "Wählen Sie Datum und Uhrzeit"
+
+msgid "bk_scheduler_no_date_hint"
+msgstr "Bitte wählen Sie links ein Datum aus, um verfügbare Zeiten zu sehen"
+
+msgid "bk_nav_back_to_list"
+msgstr "Zurück zur Liste"
+
+msgid "bk_nav_next"
+msgstr "Weiter zur Bestätigung"
+
+msgid "bk_nav_next_simple"
+msgstr "Weiter"
+
+msgid "bk_nav_next_disabled_hint"
+msgstr "Bitte wählen Sie Zeiten für alle Leistungen aus"
+
+msgid "bk_sidebar_title"
+msgstr "Ihr Termin"
+
+msgid "bk_sidebar_min"
+msgstr "min"
+
+msgid "bk_sidebar_datum"
+msgstr "Datum"
+
+msgid "bk_sidebar_zeit"
+msgstr "Zeit"
+
+msgid "bk_sidebar_total"
+msgstr "Gesamt"
+
+msgid "bk_confirm_title"
+msgstr "Ihre Daten"
+
+msgid "bk_confirm_subtitle"
+msgstr "Bitte geben Sie Ihre Kontaktdaten ein"
+
+msgid "bk_field_first_name"
+msgstr "Vorname"
+
+msgid "bk_field_last_name"
+msgstr "Nachname"
+
+msgid "bk_field_email"
+msgstr "E-Mail"
+
+msgid "bk_field_phone"
+msgstr "Telefonnummer"
+
+msgid "bk_field_notes"
+msgstr "Anmerkungen (Optional)"
+
+msgid "bk_field_notes_placeholder"
+msgstr "Besonderheiten, Allergien..."
+
+msgid "bk_check_call"
+msgstr "Bitte rufen Sie mich zur Bestätigung an"
+
+msgid "bk_check_cancellation_pre"
+msgstr "Ich akzeptiere die"
+
+msgid "bk_check_cancellation_link"
+msgstr "Stornierungsbedingungen"
+
+msgid "bk_check_consent"
+msgstr "Einwilligung zur Datenverarbeitung"
+
+msgid "bk_nav_back"
+msgstr "Zurück"
+
+msgid "bk_btn_commit"
+msgstr "Termin verbindlich buchen"
+
+msgid "bk_cart_title"
+msgstr "Ihre Buchung"
+
+msgid "bk_cart_subtitle"
+msgstr "Gewünschte Leistungen auswählen"
+
+msgid "bk_btn_remove"
+msgstr "Vom Termin entfernen"
+
+msgid "bk_err_empty_cart"
+msgstr "Der Warenkorb ist leer. Bitte fügen Sie Dienstleistungen hinzu."
+
+msgid "bk_err_name_required"
+msgstr "Bitte geben Sie Ihren Vornamen und Nachnamen ein."
+
+msgid "bk_err_contact_required"
+msgstr "Bitte geben Sie eine Telefonnummer oder E-Mail-Adresse an."
+
+msgid "bk_err_cancellation_required"
+msgstr "Bitte akzeptieren Sie die Stornierungsbedingungen."
+
+msgid "bk_err_consent_required"
+msgstr "Bitte akzeptieren Sie die Einwilligung zur Datenverarbeitung."
+
+msgid "bk_err_time_required"
+msgstr "Bitte wählen Sie ein Datum und eine Uhrzeit."
+
+msgid "bk_err_multi_time_required"
+msgstr "Bitte wählen Sie Datum und Uhrzeit für jede Dienstleistung."
+
+msgid "bk_err_commit_failed"
+msgstr "Fehler bei der Erstellung der Buchung: %(exc)s"
