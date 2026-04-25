@@ -348,5 +348,299 @@
       "text_uk": "Якщо ви не надсилали цей запит, просто ігноруйте цей лист. Ваш обліковий запис у безпеці.",
       "text_en": "If you did not make this request, you can ignore this email. Your account is secure."
     }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 26,
+    "fields": {
+      "key": "bk_receipt_subject",
+      "category": "booking",
+      "description": "Subject for booking request receipt",
+      "text": "Eingangsbestätigung: Ihre Terminanfrage",
+      "text_de": "Eingangsbestätigung: Ihre Terminanfrage",
+      "text_ru": "Подтверждение получения: ваш запрос на запись",
+      "text_uk": "Підтвердження отримання: ваш запит на запис",
+      "text_en": "Receipt confirmation: Your booking request"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 27,
+    "fields": {
+      "key": "bk_receipt_tag",
+      "category": "booking",
+      "description": "Status tag for booking receipt",
+      "text": "STATUS: IN PRÜFUNG ⏳",
+      "text_de": "STATUS: IN PRÜFUNG ⏳",
+      "text_ru": "СТАТУС: НА ПРОВЕРКЕ ⏳",
+      "text_uk": "СТАТУС: НА ПЕРЕВІРЦІ ⏳",
+      "text_en": "STATUS: PENDING ⏳"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 28,
+    "fields": {
+      "key": "bk_receipt_body",
+      "category": "booking",
+      "description": "Main body for booking receipt",
+      "text": "Wir prüfen, ob der Termin verfügbar ist. Bitte warten Sie auf die verbindliche Bestätigung.",
+      "text_de": "Wir prüfen, ob der Termin verfügbar ist. Bitte warten Sie auf die verbindliche Bestätigung.",
+      "text_ru": "Мы проверяем доступность выбранного времени. Пожалуйста, дождитесь окончательного подтверждения.",
+      "text_uk": "Ми перевіряємо доступність вибраного часу. Будь ласка, дочекайтеся остаточного підтвердження.",
+      "text_en": "We are checking availability for your request. Please wait for the final confirmation."
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 29,
+    "fields": {
+      "key": "bk_confirmation_subject",
+      "category": "booking",
+      "description": "Subject for booking confirmation",
+      "text": "Terminbestätigung",
+      "text_de": "Terminbestätigung",
+      "text_ru": "Подтверждение записи",
+      "text_uk": "Підтвердження запису",
+      "text_en": "Booking Confirmation"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 30,
+    "fields": {
+      "key": "bk_confirmation_tag",
+      "category": "booking",
+      "description": "Status tag for booking confirmation",
+      "text": "TERMINBESTÄTIGUNG",
+      "text_de": "TERMINBESTÄTIGUNG",
+      "text_ru": "ЗАПИСЬ ПОДТВЕРЖДЕНА",
+      "text_uk": "ЗАПИС ПІДТВЕРДЖЕНО",
+      "text_en": "BOOKING CONFIRMED"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 31,
+    "fields": {
+      "key": "bk_confirmation_body",
+      "category": "booking",
+      "description": "Main body for booking confirmation",
+      "text": "Ihr Termin wurde успешно подтвержден.",
+      "text_de": "Ihr Termin wurde erfolgreich bestätigt.",
+      "text_ru": "Ваш визит успешно подтвержден. Мы ждем вас!",
+      "text_uk": "Ваш візит успішно підтверджено. Ми чекаємо на вас!",
+      "text_en": "Your appointment has been successfully confirmed. We look forward to seeing you!"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 32,
+    "fields": {
+      "key": "bk_btn_calendar",
+      "category": "booking",
+      "description": "Add to calendar button text",
+      "text": "In den Kalender eintragen",
+      "text_de": "In den Kalender eintragen",
+      "text_ru": "Добавить в календарь",
+      "text_uk": "Додати в календар",
+      "text_en": "Add to Calendar"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 33,
+    "fields": {
+      "key": "bk_cancellation_subject",
+      "category": "booking",
+      "description": "Subject for booking cancellation",
+      "text": "Terminabsage",
+      "text_de": "Terminabsage",
+      "text_ru": "Отмена записи",
+      "text_uk": "Скасування запису",
+      "text_en": "Booking Cancellation"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 34,
+    "fields": {
+      "key": "bk_cancellation_tag",
+      "category": "booking",
+      "description": "Status tag for booking cancellation",
+      "text": "TERMINABSAGE",
+      "text_de": "TERMINABSAGE",
+      "text_ru": "ЗАПИСЬ ОТМЕНЕНА",
+      "text_uk": "ЗАПИС СКАСОВАНО",
+      "text_en": "BOOKING CANCELLED"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 35,
+    "fields": {
+      "key": "bk_cancellation_body",
+      "category": "booking",
+      "description": "Main body for booking cancellation",
+      "text": "Ihr Termin wurde storniert.",
+      "text_de": "Ihr Termin wurde storniert.",
+      "text_ru": "Ваша запись была отменена.",
+      "text_uk": "Ваш запис було скасовано.",
+      "text_en": "Your appointment has been cancelled."
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 36,
+    "fields": {
+      "key": "bk_reschedule_subject",
+      "category": "booking",
+      "description": "Subject for booking reschedule proposal",
+      "text": "Terminvorschlag",
+      "text_de": "Terminvorschlag",
+      "text_ru": "Предложение по переносу записи",
+      "text_uk": "Пропозиція щодо перенесення запису",
+      "text_en": "Booking Reschedule Proposal"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 37,
+    "fields": {
+      "key": "bk_reschedule_tag",
+      "category": "booking",
+      "description": "Status tag for booking reschedule",
+      "text": "TERMINVORSCHLAG",
+      "text_de": "TERMINVORSCHLAG",
+      "text_ru": "НОВОЕ ВРЕМЯ",
+      "text_uk": "НОВИЙ ЧАС",
+      "text_en": "NEW PROPOSAL"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 38,
+    "fields": {
+      "key": "bk_reschedule_body",
+      "category": "booking",
+      "description": "Main body for booking reschedule proposal",
+      "text": "Wir haben einen neuen Terminvorschlag für Sie.",
+      "text_de": "Wir haben einen neuen Terminvorschlag für Sie.",
+      "text_ru": "У нас есть новое предложение по времени для вашего визита. Пожалуйста, подтвердите его.",
+      "text_uk": "У нас є нова пропозиція щодо часу для вашого візиту. Будь ласка, підтвердіть її.",
+      "text_en": "We have a new time proposal for your appointment. Please confirm if it works for you."
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 39,
+    "fields": {
+      "key": "bk_btn_confirm",
+      "category": "booking",
+      "description": "Confirm button text",
+      "text": "Termin bestätigen",
+      "text_de": "Termin bestätigen",
+      "text_ru": "Подтвердить время",
+      "text_uk": "Підтвердити час",
+      "text_en": "Confirm Appointment"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 40,
+    "fields": {
+      "key": "bk_reminder_subject",
+      "category": "booking",
+      "description": "Subject for booking reminder",
+      "text": "Terminerinnerung",
+      "text_de": "Terminerinnerung",
+      "text_ru": "Напоминание о записи",
+      "text_uk": "Нагадування про запис",
+      "text_en": "Booking Reminder"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 41,
+    "fields": {
+      "key": "bk_reminder_tag",
+      "category": "booking",
+      "description": "Status tag for booking reminder",
+      "text": "ERINNERUNG",
+      "text_de": "ERINNERUNG",
+      "text_ru": "НАПОМИНАНИЕ",
+      "text_uk": "НАГАДУВАННЯ",
+      "text_en": "REMINDER"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 42,
+    "fields": {
+      "key": "bk_reminder_body",
+      "category": "booking",
+      "description": "Main body for booking reminder",
+      "text": "Wir freuen uns auf Sie! Hier ist eine Erinnerung an Ihren Termin.",
+      "text_de": "Wir freuen uns auf Sie! Hier ist eine Erinnerung an Ihren Termin.",
+      "text_ru": "Мы очень ждем вас! Напоминаем о вашем визите.",
+      "text_uk": "Ми дуже чекаємо на вас! Нагадуємо про ваш візит.",
+      "text_en": "We look forward to seeing you! Here is a reminder of your appointment."
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 43,
+    "fields": {
+      "key": "bk_btn_reschedule",
+      "category": "booking",
+      "description": "Reschedule button text",
+      "text": "Termin umbuchen",
+      "text_de": "Termin umbuchen",
+      "text_ru": "Перенести запись",
+      "text_uk": "Перенести запис",
+      "text_en": "Reschedule"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 44,
+    "fields": {
+      "key": "bk_noshow_subject",
+      "category": "booking",
+      "description": "Subject for no-show notification",
+      "text": "Termin verpasst?",
+      "text_de": "Termin verpasst?",
+      "text_ru": "Вы пропустили запись?",
+      "text_uk": "Ви пропустили запис?",
+      "text_en": "Missed your appointment?"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 45,
+    "fields": {
+      "key": "bk_noshow_tag",
+      "category": "booking",
+      "description": "Status tag for no-show",
+      "text": "TERMIN VERPASST",
+      "text_de": "TERMIN VERPASST",
+      "text_ru": "ЗАПИСЬ ПРОПУЩЕНА",
+      "text_uk": "ЗАПИС ПРОПУЩЕНО",
+      "text_en": "MISSED APPOINTMENT"
+    }
+  },
+  {
+    "model": "system.emailcontent",
+    "pk": 46,
+    "fields": {
+      "key": "bk_noshow_body",
+      "category": "booking",
+      "description": "Main body for no-show notification",
+      "text": "Sie haben Ihren Termin verpasst. Bitte kontaktieren Sie uns.",
+      "text_de": "Sie haben Ihren Termin verpasst. Bitte kontaktieren Sie uns.",
+      "text_ru": "К сожалению, мы не дождались вас сегодня. Пожалуйста, свяжитесь с нами для новой записи.",
+      "text_uk": "На жаль, ми не дочекалися вас сьогодні. Будь ласка, зв'яжіться з нами для нового запису.",
+      "text_en": "Unfortunately, you missed your appointment today. Please contact us to reschedule."
+    }
   }
 ]

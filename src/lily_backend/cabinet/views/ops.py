@@ -5,6 +5,7 @@ import sys
 from typing import Any
 
 from core.logger import logger
+from django.conf import settings
 from django.core.management import call_command
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
@@ -45,6 +46,7 @@ class DataMaintenanceView(StaffRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         # Check if we have logs from previous execution in session
         context["execution_log"] = self.request.session.pop("maintenance_log", None)
+        context["debug"] = settings.DEBUG
         return context
 
     def post(self, request: Any, *args: Any, **kwargs: Any) -> Any:
@@ -69,6 +71,13 @@ class DataMaintenanceView(StaffRequiredMixin, TemplateView):
             return redirect("cabinet:ops_maintenance")
 
         cmd, cmd_kwargs = commands_map[action]
+
+        # Prevent legacy migrations in production
+        if "migrate" in action and not settings.DEBUG:
+            logger.warning(f"Legacy migration blocked in production: action={action}")
+            self.request.session["maintenance_log"] = "ERROR: Legacy migration is disabled in production mode."
+            return redirect("cabinet:ops_maintenance")
+
         logger.info(f"Cabinet maintenance action started: action={action} command={cmd}")
         try:
             call_command(cmd, stdout=stdout, stderr=stderr, **cmd_kwargs)

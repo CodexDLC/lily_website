@@ -22,7 +22,8 @@ echo "Running update_all_content..."
 python /app/manage.py update_all_content
 
 # Опциональная миграция из старой базы (Neon)
-if [ "$RUN_LEGACY_MIGRATION" = "true" ]; then
+# Теперь выполняется только если DEBUG=True (локально или в спец. окружении)
+if [ "$RUN_LEGACY_MIGRATION" = "true" ] && [ "$DEBUG" = "True" ]; then
     echo "Running migrate_all_legacy from $LEGACY_DATABASE_URL..."
     python /app/manage.py migrate_all_legacy
 fi

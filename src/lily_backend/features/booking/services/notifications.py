@@ -230,7 +230,7 @@ def _iter_admin_booking_specs(appt_or_group, event_type: str, template_name: str
 @notification_handler("booking.received")
 def handle_booking_received_admin(appt):
     return list(
-        _iter_admin_booking_specs(appt, "booking.received", "emails/admin_booking_received", "bk_receipt_subject")
+        _iter_admin_booking_specs(appt, "booking.received", "emails/admin_booking_received.html", "bk_receipt_subject")
     )
 
 

@@ -19,7 +19,7 @@ class NotificationRecipient(models.Model):
     name = models.CharField(_("name"), max_length=150, blank=True)
     kind = models.CharField(_("role/kind"), max_length=20, choices=KIND_CHOICES, default=KIND_ADMIN)
     enabled = models.BooleanField(_("enabled"), default=True)
-    note = models.TextField(_("internal note"), blank=True)
+    note = models.TextField(_("internal note"), blank=True, default="")
 
     class Meta:
         verbose_name = _("Notification Recipient")

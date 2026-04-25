@@ -58,6 +58,7 @@
         </div>
 
         <!-- Legacy Import Section -->
+        {% if debug %}
         <div class="col-md-6">
             <div class="card h-100 border-0 shadow-sm">
                 <div class="card-body">
@@ -107,6 +108,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
 </section>
 
@@ -138,4 +140,4 @@
         });
     });
 </script>
-{% endblock %}
+{% endblock body %}
