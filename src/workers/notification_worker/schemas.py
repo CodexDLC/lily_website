@@ -29,6 +29,8 @@ class NotificationPayload(BaseModel):
     # Email specific
     template_name: str | None = Field(None, description="Short template name, e.g., 'bk_confirmation'")
     subject: str | None = None
+    mode: str = Field("template", description="Processing mode: 'template' or 'rendered'")
+    html_content: str | None = Field(None, description="Pre-rendered HTML content")
 
     # Telegram/Bot specific
     event_type: str | None = Field(None, description="Event type for the bot, e.g., 'new_contact_request'")

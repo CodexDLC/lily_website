@@ -3,12 +3,23 @@
 
 {% block cabinet_content %}
 <div>
-  <div class="mb-4">
-    <h5 class="fw-semibold mb-0" style="color:#0f172a;">{{ campaign.subject }}</h5>
-    <span class="text-muted" style="font-size:.82rem;">
-      <a href="{% url 'cabinet:conversations_campaigns' %}" class="text-muted text-decoration-none">{% trans "Campaigns" %}</a>
-      › {% trans "Detail" %}
-    </span>
+  <div class="d-flex align-items-start justify-content-between mb-4">
+    <div>
+      <h5 class="fw-semibold mb-0" style="color:#0f172a;">{{ campaign.subject }}</h5>
+      <span class="text-muted" style="font-size:.82rem;">
+        <a href="{% url 'cabinet:conversations_campaigns' %}" class="text-muted text-decoration-none">{% trans "Campaigns" %}</a>
+        › {% trans "Detail" %}
+      </span>
+    </div>
+    {% if campaign.status != 'sending' %}
+    <form action="{% url 'cabinet:conversations_campaigns_delete' pk=campaign.pk %}" method="POST" onsubmit="return confirm('{% trans "Are you sure you want to delete this campaign?" %}')">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1">
+        <span class="bi bi-trash"></span>
+        {% trans "Delete" %}
+      </button>
+    </form>
+    {% endif %}
   </div>
 
   {# Status / meta cards row #}

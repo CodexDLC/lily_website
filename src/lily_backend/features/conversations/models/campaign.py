@@ -26,6 +26,11 @@ class Campaign(models.Model):
 
     subject = models.CharField(_("subject"), max_length=500)
     body_text = models.TextField(_("body text"))
+    is_marketing = models.BooleanField(
+        _("is marketing"),
+        default=True,
+        help_text=_("If unchecked, marketing consent will be ignored (use for critical updates)."),
+    )
     template_key = models.CharField(_("template key"), max_length=64, default="basic")
 
     locale = models.CharField(_("locale"), max_length=10, default="de", db_index=True)

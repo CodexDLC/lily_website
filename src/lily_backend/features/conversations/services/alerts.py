@@ -88,8 +88,8 @@ def _build_thread_reply_specs(message, reply):
         subject=_build_reply_subject(message),
         event_type="conversations.thread_reply",
         channels=["email"],
-        mode="rendered",
-        text_content=reply.body,
+        mode="template",
+        template_name="contacts/ct_reply.html",
         context=_build_reply_context(message, reply),
     )
 
@@ -146,4 +146,7 @@ def _build_reply_context(message, reply) -> dict[str, object]:
         "reply_id": reply.pk,
         "thread_key": correlation.thread_key,
         "reply_match_token": correlation.reply_match_token,
+        "reply_text": reply.body,
+        "request_id": message.pk,
+        "signature": "",
     }

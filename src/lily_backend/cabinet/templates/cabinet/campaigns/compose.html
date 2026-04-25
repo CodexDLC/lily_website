@@ -13,6 +13,7 @@
 
   <form method="post" id="campaign-form">
     {% csrf_token %}
+    <input type="hidden" name="campaign_form_sent" value="1">
 
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-body p-4">
@@ -41,9 +42,17 @@
       <div class="card-body p-4">
         <h6 class="fw-semibold mb-3">{% trans "Audience" %}</h6>
 
-        <p class="text-muted mb-3" style="font-size:.85rem;">
-          {% trans "Clients with marketing consent and a valid email." %}
-        </p>
+        <div class="mb-3">
+          <div class="form-check form-switch">
+            {{ form.is_marketing }}
+            <label class="form-check-label fw-medium" for="{{ form.is_marketing.id_for_label }}" style="font-size:.88rem;">
+              {% trans "Marketing Campaign" %}
+            </label>
+          </div>
+          <p class="text-muted mb-0" style="font-size:.78rem;">
+            {% trans "If enabled, only clients who consented to marketing will receive this. Disable for critical service updates." %}
+          </p>
+        </div>
 
         <div class="mb-3">
           <label class="form-label fw-medium" style="font-size:.88rem;">{% trans "Clients with appointment since (optional)" %}</label>

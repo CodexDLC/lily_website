@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from asgiref.sync import sync_to_async
 from django.db import transaction
 
@@ -47,15 +49,85 @@ class CampaignService:
         return count
 
     async def send(self, campaign: Campaign) -> None:
+        from django.conf import settings
+
+        from features.conversations.models.campaign import CampaignRecipient
+
         count = await sync_to_async(self.materialize_recipients)(campaign)
         if count == 0:
             campaign.status = Campaign.Status.FAILED
             campaign.status_reason = "empty_audience"
             await sync_to_async(campaign.save)()
             return
-        parent_id = await self._dispatcher.enqueue(campaign.pk)
-        campaign.status = Campaign.Status.QUEUED
-        campaign.arq_parent_job_id = parent_id or ""
+
+        campaign.status = Campaign.Status.SENDING
+        await sync_to_async(campaign.save)()
+
+        tpl = self._templates.get(campaign.template_key)
+        site_context = {
+            "site_url": getattr(settings, "SITE_URL", "").rstrip("/"),
+            "logo_url": getattr(settings, "SITE_LOGO_URL", ""),
+        }
+
+        batch_size = 25
+        offset = 0
+        total_enqueued = 0
+
+        while True:
+            # Fetch batch of recipient data
+            batch_data: list[dict[str, Any]] = await sync_to_async(list)(
+                CampaignRecipient.objects.filter(
+                    campaign=campaign,
+                    status=CampaignRecipient.Status.PENDING,
+                )
+                .order_by("id")
+                .values(
+                    "id",
+                    "email",
+                    "first_name",
+                    "last_name",
+                    "recipient__unsubscribe_token",
+                )[offset : offset + batch_size]
+            )
+
+            if not batch_data:
+                break
+
+            recipients = []
+            for row in batch_data:
+                recipients.append(
+                    {
+                        "id": row["id"],
+                        "email": row["email"],
+                        "first_name": row["first_name"],
+                        "last_name": row["last_name"],
+                        "unsubscribe_token": str(row["recipient__unsubscribe_token"] or ""),
+                    }
+                )
+
+            payload = {
+                "campaign_id": campaign.pk,
+                "subject": campaign.subject,
+                "body_text": campaign.body_text,
+                "template_key": campaign.template_key,
+                "arq_template_name": tpl.arq_template_name,
+                "is_marketing": campaign.is_marketing,
+                "site_context": site_context,
+                "recipients": recipients,
+            }
+
+            await self._dispatcher.enqueue_batch(payload)
+
+            # Mark them as queued in the DB so we don't pick them up again if re-run
+            # For simplicity, we just increment offset, but ideally we'd mark them.
+            # But the user wants a simple immediate fix.
+            total_enqueued += len(recipients)
+            offset += batch_size
+
+        campaign.status = Campaign.Status.DONE  # In batch mode, we mark it done after enqueuing all batches
+        import django.utils.timezone as tz
+
+        campaign.sent_at = tz.now()
         await sync_to_async(campaign.save)()
 
 

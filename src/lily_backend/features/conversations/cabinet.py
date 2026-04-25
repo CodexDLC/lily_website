@@ -66,28 +66,34 @@ declare(
             order=2,
         ),
         SidebarItem(
-            label=str(_("Campaigns")),
-            url=reverse_lazy("cabinet:conversations_campaigns"),
-            icon="bi-megaphone",
-            order=3,
-        ),
-        SidebarItem(
             label=str(_("Imported Mail")),
             url=reverse_lazy("cabinet:conversations_imported"),
             icon="bi-envelope-arrow-down",
-            order=4,
+            order=3,
         ),
         SidebarItem(
             label=str(_("Processed")),
             url=reverse_lazy("cabinet:conversations_processed"),
             icon="bi-check2-circle",
-            order=5,
+            order=4,
         ),
         SidebarItem(
             label=str(_("All")),
             url=reverse_lazy("cabinet:conversations_all"),
             icon="bi-collection",
+            order=5,
+        ),
+        SidebarItem(
+            label=str(_("Campaigns")),
+            url=reverse_lazy("cabinet:conversations_campaigns"),
+            icon="bi-megaphone",
             order=6,
+        ),
+        SidebarItem(
+            label=str(_("New Campaign")),
+            url=reverse_lazy("cabinet:conversations_campaigns_new"),
+            icon="bi-megaphone-fill",
+            order=7,
         ),
     ],
 )

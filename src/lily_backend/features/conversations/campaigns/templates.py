@@ -18,7 +18,7 @@ class EmailTemplate(ABC):
 class BasicTemplate(EmailTemplate):
     key = "basic"
     label = "Basic (header + text + footer)"
-    arq_template_name = "mk_basic"
+    arq_template_name = "marketing/mk_basic.html"
     supported_locales = {"de"}
 
     def build_context(self, body_text: str, extra: dict) -> dict:

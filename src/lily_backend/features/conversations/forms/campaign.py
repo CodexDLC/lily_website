@@ -22,11 +22,12 @@ class CampaignForm(forms.ModelForm):
 
     class Meta:
         model = Campaign
-        fields = ["subject", "body_text", "template_key"]
+        fields = ["subject", "is_marketing", "body_text", "template_key"]
         widgets = {
             "subject": forms.TextInput(attrs={"class": "form-control", "placeholder": _("Email subject")}),
             "body_text": forms.Textarea(attrs={"class": "form-control", "rows": 10}),
             "template_key": forms.Select(attrs={"class": "form-select"}),
+            "is_marketing": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -36,11 +37,13 @@ class CampaignForm(forms.ModelForm):
             attrs={"class": "form-select"},
         )
         self.fields["template_key"].choices = template_registry.choices_for_locale("de")
+        self.fields["is_marketing"].initial = True
 
     def get_audience_filter(self) -> AudienceFilter:
         since: date | None = self.cleaned_data.get("audience_has_appointment_since")
+        is_marketing = self.cleaned_data.get("is_marketing", True)
         return AudienceFilter(
-            email_opt_in=True,
+            email_opt_in=is_marketing,
             has_valid_email=True,
             has_appointment_since=since,
         )

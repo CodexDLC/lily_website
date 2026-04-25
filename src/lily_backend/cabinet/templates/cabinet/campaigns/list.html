@@ -37,10 +37,20 @@
             </td>
             <td>{{ campaign.recipients.count }}</td>
             <td>{{ campaign.created_at|date:"d.m.Y H:i" }}</td>
-            <td>
-              <a href="{% url 'cabinet:conversations_campaigns_detail' pk=campaign.pk %}" class="btn btn-xs btn-outline-secondary" style="font-size:.78rem;">
-                {% trans "View" %}
-              </a>
+            <td class="text-end">
+              <div class="d-flex justify-content-end gap-1">
+                <a href="{% url 'cabinet:conversations_campaigns_detail' pk=campaign.pk %}" class="btn btn-xs btn-outline-secondary" style="font-size:.78rem;">
+                  {% trans "View" %}
+                </a>
+                {% if campaign.status != 'sending' %}
+                <form action="{% url 'cabinet:conversations_campaigns_delete' pk=campaign.pk %}" method="POST" class="d-inline" onsubmit="return confirm('{% trans "Are you sure you want to delete this campaign?" %}')">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-xs btn-outline-danger" style="font-size:.78rem;">
+                    <span class="bi bi-trash"></span>
+                  </button>
+                </form>
+                {% endif %}
+              </div>
             </td>
           </tr>
           {% empty %}
