@@ -9,7 +9,7 @@
         {# Hidden when cart is empty #}
   {% elif cart.mode == 'multi_day' %}
 
-    <div class="bk-scheduler-panel__title">{% trans "Termine an verschiedenen Tagen" %}</div>
+    <div class="bk-scheduler-panel__title">{% trans "bk_scheduler_multi_day_title" %}</div>
 
     {% for item in cart.items %}
       <div class="bk-scheduler-item {% if not item.date %}bk-scheduler-item--active{% endif %}"
@@ -25,7 +25,7 @@
               <button class="bk-btn-text"
                       hx-get="{% url 'booking:scheduler_calendar' %}?service_id={{ item.service_id }}"
                       hx-target="#bk-calendar-{{ item.service_id }}"
-                      hx-swap="innerHTML">{% trans "Ändern" %}</button>
+                      hx-swap="innerHTML">{% trans "bk_btn_edit" %}</button>
             </div>
           {% endif %}
         </div>
@@ -50,7 +50,7 @@
     <div class="bk-scheduler">
       <div class="bk-scheduler__header">
         <h2 class="bk-scheduler__title">
-{% trans "Выберите дату и время" %}
+{% trans "bk_scheduler_title" %}
         </h2>
       </div>
 
@@ -96,7 +96,7 @@
 <circle cx="12" cy="18" r="1.5" fill="var(--color-gold)" opacity="0.4" />
                   </svg>
                 </div>
-                <p>{% trans "Bitte wählen Sie links ein Datum aus, um verfügbare Zeiten zu sehen" %}</p>
+                <p>{% trans "bk_scheduler_no_date_hint" %}</p>
               </div>
             {% endif %}
           </div>
@@ -109,7 +109,7 @@
                 hx-post="{% url 'booking:cart_set_stage' %}"
                 hx-target="#booking-wizard-content"
                 hx-vals='{"stage": 1}'>
-{% trans "Zurück zur Liste" %}
+{% trans "bk_nav_back_to_list" %}
         </button>
 
         {% if cart.is_ready_same_day or cart.is_ready_multi_day %}
@@ -117,13 +117,13 @@
                   hx-post="{% url 'booking:cart_set_stage' %}"
                   hx-target="#booking-wizard-content"
                   hx-vals='{"stage": 3}'>
-{% trans "Weiter zur Bestätigung" %}
+            {% trans "bk_nav_next" %}
           </button>
         {% else %}
           <button class="bk-btn-next"
                   disabled
-                  title="{% trans 'Bitte wählen Sie Zeiten für alle Leistungen aus' %}">
-{% trans "Weiter" %}
+                  title="{% trans 'bk_nav_next_disabled_hint' %}">
+{% trans "bk_nav_next_simple" %}
           </button>
         {% endif %}
       </div>

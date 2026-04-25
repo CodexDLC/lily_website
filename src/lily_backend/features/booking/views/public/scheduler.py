@@ -262,7 +262,10 @@ class SchedulerConfirmTimeView(View):
         ).content.decode("utf-8")
         sidebar_html = f'<div id="bk-sidebar-wrapper" hx-swap-oob="innerHTML"><aside class="wizard-sidebar">{sidebar_content}</aside></div>'
 
-        # Toggle full-width class to false (sidebar is coming)
-        toggle_script = '<script>document.getElementById("bk-wizard-island")?.classList.toggle("wizard-island--full-width", false);</script>'
+        # Prepare response
+        response = HttpResponse(content_html + stepper_html + sidebar_html)
 
-        return HttpResponse(content_html + stepper_html + sidebar_html + toggle_script)
+        # Trigger stage change (fullWidth = false)
+        response["HX-Trigger"] = '{"stageChanged": {"fullWidth": false}}'
+
+        return response

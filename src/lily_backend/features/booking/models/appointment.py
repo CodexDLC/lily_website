@@ -94,6 +94,10 @@ class Appointment(AbstractBookableAppointment):
         self.cancel_note = note
         self.save(update_fields=["status", "cancelled_at", "cancel_reason", "cancel_note", "updated_at"])
 
+        from features.conversations.services.notifications import _get_engine
+
+        _get_engine().dispatch_event("booking.cancelled", self)
+
     def confirm(self) -> None:
         """Confirm a pending appointment."""
         if self.status != self.STATUS_PENDING:
@@ -102,6 +106,10 @@ class Appointment(AbstractBookableAppointment):
             raise ValidationError(_("Only pending appointments can be confirmed."))
         self.status = self.STATUS_CONFIRMED
         self.save(update_fields=["status", "updated_at"])
+
+        from features.conversations.services.notifications import _get_engine
+
+        _get_engine().dispatch_event("booking.confirmed", self)
 
     def mark_completed(self) -> None:
         """Mark a confirmed appointment as completed."""

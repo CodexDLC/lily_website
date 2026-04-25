@@ -8,8 +8,8 @@
   <div class="wizard-container-wide">
 
     <header class="wizard-page-header">
-      <h1 class="hero-title-small">{% trans "Online Terminbuchung" %}</h1>
-      <p class="hero-subtitle-small">{% trans "IN WENIGEN SCHRITTEN ZUM TERMIN" %}</p>
+      <h1 class="hero-title-small">{% trans "bk_wizard_title" %}</h1>
+      <p class="hero-subtitle-small">{% trans "bk_wizard_subtitle" %}</p>
     </header>
 
     <div id="bk-wizard-island" class="wizard-island {% if cart.is_empty or cart.stage < 3 %}wizard-island--full-width{% endif %}">
@@ -28,11 +28,11 @@
                   <path d="M3.7027 10.1558C3.84439 9.38139 4.4566 8.78917 5.22851 8.68112C8.61483 8.20712 15.3852 8.20712 18.7715 8.68112C19.5434 8.78917 20.1556 9.38139 20.2973 10.1558L21.3533 15.9161C21.6601 17.5891 20.3752 19.1248 18.6732 19.1248H5.32677C3.62483 19.1248 2.33989 17.5891 2.6467 15.9161L3.7027 10.1558Z" stroke="currentColor" stroke-width="1.5"/>
                 </svg>
               </div>
-              <h2 class="bk-empty-state__title">{% trans "Ваша корзина пуста" %}</h2>
-              <p class="bk-empty-state__text">{% trans "Пожалуйста, выберите услуги в каталоге, чтобы продолжить бронирование." %}</p>
+              <h2 class="bk-empty-state__title">{% trans "bk_cart_empty_title" %}</h2>
+              <p class="bk-empty-state__text">{% trans "bk_cart_empty_text" %}</p>
               <div class="bk-empty-state__actions">
                 <a href="{% url 'main:services' %}" class="bk-btn-premium">
-                  <span>{% trans "Перейти к услугам" %}</span>
+                  <span>{% trans "bk_cart_empty_cta" %}</span>
                 </a>
               </div>
             </div>
@@ -69,12 +69,19 @@
 <span class="bk-loading htmx-indicator" aria-hidden="true"></span>
 
 <script>
+  // Monitor stage changes via custom event
+  document.body.addEventListener('stageChanged', function(evt) {
+    const island = document.getElementById('bk-wizard-island');
+    if (island && evt.detail) {
+      island.classList.toggle('wizard-island--full-width', evt.detail.fullWidth);
+    }
+  });
+
   // Monitor cart updates to handle empty state dynamically if items are removed
   document.body.addEventListener('htmx:afterSwap', (evt) => {
     if (evt.detail.target.id === 'bk-cart-panel') {
       const hasItems = document.querySelectorAll('.bk-cart-item').length > 0;
       if (!hasItems) {
-        // Option 1: Refresh page to show empty state
         window.location.reload();
       }
     }
@@ -82,5 +89,5 @@
 </script>
 {% block scripts %}
 <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-{% endblock %}
+{% endblock scripts %}
 {% endblock content %}

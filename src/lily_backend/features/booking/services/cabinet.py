@@ -47,7 +47,7 @@ from .cabinet_availability import CabinetBookingAvailabilityService
 class BookingCabinetWorkflowService:
     """Default cabinet workflow over the active booking project provider."""
 
-    BLOCKING_SCHEDULE_STATUSES = {"pending", "confirmed", "reschedule_proposed"}
+    BLOCKING_SCHEDULE_STATUSES = {"pending", "confirmed", "reschedule_proposed", "completed", "no_show"}
     LIST_PAGE_SIZE = 15
 
     def __init__(self, provider: Any = None) -> None:

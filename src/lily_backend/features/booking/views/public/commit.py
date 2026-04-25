@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime
 
+from core.logger import logger
 from django.contrib import messages
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse
@@ -54,7 +55,7 @@ class BookingCommitView(View):
 
         # Validate cart readiness
         if cart.is_empty():
-            return self._error(request, cart, _("Der Warenkorb ist leer. Bitte fügen Sie Dienstleistungen hinzu."))
+            return self._error(request, cart, _("bk_err_empty_cart"))
 
         first_name = request.POST.get("first_name", "").strip()
         last_name = request.POST.get("last_name", "").strip()
@@ -80,24 +81,24 @@ class BookingCommitView(View):
         save_cart(request, cart)
 
         if not first_name or not last_name:
-            return self._error(request, cart, _("Bitte geben Sie Ihren Vornamen und Nachnamen ein."))
+            return self._error(request, cart, _("bk_err_name_required"))
         if not phone and not email:
-            return self._error(request, cart, _("Bitte geben Sie eine Telefonnummer oder E-Mail-Adresse an."))
+            return self._error(request, cart, _("bk_err_contact_required"))
 
         if not cancellation_policy:
-            messages.error(request, _("Bitte akzeptieren Sie die Stornierungsbedingungen."))
+            messages.error(request, _("bk_err_cancellation_required"))
             return self._error(request, cart, "")
         if not consent:
-            messages.error(request, _("Bitte akzeptieren Sie die Einwilligung zur Datenverarbeitung."))
+            messages.error(request, _("bk_err_consent_required"))
             return self._error(request, cart, "")
 
         # Validate slot selection
         if cart.mode == "same_day":
             if not cart.is_ready_same_day():
-                return self._error(request, cart, _("Bitte wählen Sie ein Datum und eine Uhrzeit."))
+                return self._error(request, cart, _("bk_err_time_required"))
         else:
             if not cart.is_ready_multi_day():
-                return self._error(request, cart, _("Bitte wählen Sie Datum und Uhrzeit für jede Dienstleistung."))
+                return self._error(request, cart, _("bk_err_multi_time_required"))
 
         try:
             with transaction.atomic():
@@ -114,7 +115,8 @@ class BookingCommitView(View):
             return response
 
         except Exception as exc:
-            return self._error(request, cart, _("Fehler bei der Erstellung der Buchung: %(exc)s") % {"exc": exc})
+            logger.exception("BookingCommitView: Commit failed")
+            return self._error(request, cart, _("bk_err_commit_failed") % {"exc": str(exc)})
 
     # ------------------------------------------------------------------
 

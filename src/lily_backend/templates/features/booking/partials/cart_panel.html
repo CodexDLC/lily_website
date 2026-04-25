@@ -3,8 +3,8 @@
   <div class="bk-cart-panel" id="bk-cart-panel">
 
     <div class="bk-panel-header">
-    <h2 class="bk-panel-title">{% trans "Ihre Buchung" %}</h2>
-    <p class="bk-panel-subtitle">{% trans "Gewünschte Leistungen auswählen" %}</p>
+    <h2 class="bk-panel-title">{% trans "bk_cart_title" %}</h2>
+    <p class="bk-panel-subtitle">{% trans "bk_cart_subtitle" %}</p>
     </div>
     {% if error %}
       <div class="bk-error-alert">
@@ -26,7 +26,7 @@
                   hx-vals='{"service_id": "{{ item.service_id }}"}'
                   hx-target="#bk-cart-panel"
                   hx-swap="outerHTML"
-                  title="{% trans 'Aus der Buchung entfernen' %}">
+                  title="{% trans 'bk_btn_remove' %}">
             <svg width="18"
                  height="18"
                  viewBox="0 0 24 24"
@@ -48,7 +48,7 @@
               hx-post="{% url 'booking:cart_set_stage' %}"
               hx-target="#booking-wizard-content"
               hx-vals='{"stage": 2}'>
-        {% trans "Weiter" %} →
+        {% trans "bk_nav_next_simple" %} →
       </button>
     </div>
 

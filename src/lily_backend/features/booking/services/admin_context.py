@@ -1,6 +1,5 @@
 from typing import Any
 
-from django.conf import settings
 from django.core.signing import TimestampSigner
 from django.urls import reverse
 
@@ -19,28 +18,31 @@ def build_admin_booking_context(appt_or_group: Any, recipient_email: str) -> dic
         context = build_booking_group_notification_context(appt_or_group)
         client = appt_or_group.client
         context["client_notes"] = ""  # Groups typically don't have aggregated notes currently
-        target_path = reverse("cabinet:booking-calendar")  # fallback for group
+        target_path = reverse("cabinet:booking_schedule")  # fallback for group
     else:
         context = build_booking_notification_context(appt_or_group)
         client = appt_or_group.client
-        context["client_name"] = client.first_name if client else ""
         context["client_phone"] = getattr(client, "phone", "") if client else ""
         context["client_email"] = getattr(client, "email", "") if client else ""
         context["client_notes"] = getattr(appt_or_group, "client_notes", "")
         # Link to the specific appointment modal in cabinet
-        target_path = reverse("cabinet:booking-calendar") + f"?appointment={appt_or_group.pk}"
+        target_path = reverse("cabinet:booking_schedule") + f"?appointment={appt_or_group.pk}"
 
     # Generate magic login token for this specific admin email
     signer = TimestampSigner()
     token = signer.sign(recipient_email)
 
-    # Build full absolute URL
-    base_url = getattr(settings, "SITE_BASE_URL", "http://localhost:8000").rstrip("/")
+    from .notifications import _inject_site_context
+
+    _inject_site_context(context)
+
+    # Use site_url from context for the action link base
+    site_url = context.get("site_url", "http://localhost:8000")
     magic_login_path = reverse("cabinet:magic_login")
 
     import urllib.parse
 
     query_string = urllib.parse.urlencode({"token": token, "target": target_path})
 
-    context["action_url"] = f"{base_url}{magic_login_path}?{query_string}"
+    context["action_url"] = f"{site_url}{magic_login_path}?{query_string}"
     return context

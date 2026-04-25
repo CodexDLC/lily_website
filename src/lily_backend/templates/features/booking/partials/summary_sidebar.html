@@ -1,6 +1,6 @@
 {% load i18n %}
-<div class="bk-summary-sidebar" id="bk-summary-sidebar">
-  <h3 class="bk-summary-card__title">{% trans "Ihr Termin" %}</h3>
+<div class="bk-summary-card fade-in" id="bk-summary-sidebar">
+  <h3 class="bk-summary-card__title">{% trans "bk_sidebar_title" %}</h3>
 
   <div class="bk-summary-card__content">
     {% for item in cart.items %}
@@ -8,7 +8,7 @@
         <div class="bk-summary-item__info">
           <span class="bk-summary-item__name">{{ item.service_title }}</span>
           <span class="bk-summary-item__meta">
-            {{ item.duration }} {% trans "min" %}
+            {{ item.duration }} {% trans "bk_sidebar_min" %}
           </span>
         </div>
         <div class="bk-summary-item__price">{{ item.price }} €</div>
@@ -19,12 +19,12 @@
       <div class="bk-summary-divider"></div>
       <div class="bk-summary-time">
         <div class="bk-summary-time__row">
-          <span class="bk-summary-time__label">{% trans "Datum" %}:</span>
+          <span class="bk-summary-time__label">{% trans "bk_sidebar_datum" %}:</span>
           <span class="bk-summary-time__value">{{ cart.date|date:"d.m.Y" }}</span>
         </div>
         {% if cart.time %}
         <div class="bk-summary-time__row">
-          <span class="bk-summary-time__label">{% trans "Zeit" %}:</span>
+          <span class="bk-summary-time__label">{% trans "bk_sidebar_zeit" %}:</span>
           <span class="bk-summary-time__value">{{ cart.time }}</span>
         </div>
         {% endif %}
@@ -34,7 +34,7 @@
 
   <div class="bk-summary-card__footer">
     <div class="bk-summary-total">
-      <span class="bk-summary-total__label">{% trans "Gesamt" %}</span>
+      <span class="bk-summary-total__label">{% trans "bk_sidebar_total" %}</span>
       <span class="bk-summary-total__value">{{ cart.total_price }} €</span>
     </div>
   </div>

@@ -234,8 +234,11 @@ class CartSetStageView(View):
         else:
             sidebar_html = '<div id="bk-sidebar-wrapper" hx-swap-oob="innerHTML"></div>'
 
-        # Toggle full-width class on the island
-        is_full_width = "true" if cart.stage < 3 else "false"
-        toggle_script = f'<script>document.getElementById("bk-wizard-island")?.classList.toggle("wizard-island--full-width", {is_full_width});</script>'
+        # Prepare response with OOB updates
+        response = HttpResponse(content_html + stepper_html + sidebar_html)
 
-        return HttpResponse(content_html + stepper_html + sidebar_html + toggle_script)
+        # Trigger stage change on the client side
+        is_full_width = cart.stage < 3
+        response["HX-Trigger"] = '{"stageChanged": {"fullWidth": %s}}' % ("true" if is_full_width else "false")
+
+        return response
