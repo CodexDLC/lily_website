@@ -4,6 +4,24 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
 
+## [2.6.0] - 2026-04-25
+
+### Added
+
+- **Notifications:** Added 21 missing email content keys for various booking statuses to eliminate system warnings.
+
+### Changed
+
+- **Infrastructure:** `SITE_BASE_URL` is now automatically synchronized from environment variables to the database during initialization, ensuring correct links across all environments.
+- **Fixtures:** Updated default Saturday working hours to `09:00 - 18:00` and set "Lily" as the default contact person.
+
+### Fixed
+
+- **Booking:** Resolved a critical bug where missing `.html` extension in admin notification paths caused public booking failures.
+- **Notifications:** Fixed `NotificationRecipient` model to allow adding recipients via the cabinet UI (resolved `NOT NULL` constraint on the note field).
+- **Security:** Corrected Magic Login links in emails to prioritize the production domain from `.env` over stale local database values.
+- **Cabinet UX:** Removed `required` validation from the "Add Recipient" field that previously blocked saving general site settings.
+
 ## [2.5.0] - 2026-04-25
 
 ### Added
