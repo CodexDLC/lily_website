@@ -4,6 +4,24 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
 
+## [2.5.0] - 2026-04-25
+
+### Added
+
+- **Campaigns:** Implemented full email marketing campaign cycle including composing, previewing, and tracking in the cabinet.
+- **Workers:** Added dedicated worker tasks for asynchronous campaign email distribution and event tracking.
+- **Infrastructure:** Introduced `CONVERSATIONS_VISION.md` documenting the long-term messaging and CRM roadmap.
+
+### Changed / Refactored
+
+- **Notifications:** Successfully migrated administrative and booking alerts from Telegram to a centralized, reliable email-based notification system.
+- **Cabinet:** Reorganized the cabinet URL architecture into a modular package structure for better scalability.
+- **Booking Wizard:** Enhanced the public booking experience with a modernized UI, improved stepper logic, and real-time summary panels.
+
+### Fixed
+
+- **Tests:** Restored 90% system-wide test coverage by updating integration and unit tests for the new notification and campaign workflows.
+
 ## [2.4.5] - 2026-04-24
 
 ### Fixed
