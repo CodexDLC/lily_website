@@ -28,7 +28,11 @@ def _inject_site_context(context: dict[str, Any]) -> None:
 
         logger.warning(f"Failed to load SiteSettings for email context: {exc}")
 
-    site_url = site_settings.site_base_url.rstrip("/") if site_settings and site_settings.site_base_url else base_url
+    # Use settings.SITE_BASE_URL as primary source of truth in production
+    site_url = base_url
+    if site_settings and site_settings.site_base_url and ("localhost" in base_url or "127.0.0.1" in base_url):
+        # Fallback to DB only if env is not configured for a real domain
+        site_url = site_settings.site_base_url.rstrip("/")
     logo_path = site_settings.logo_url if site_settings else "/static/img/logo_lily.webp"
     logo_url = logo_path if logo_path.startswith("http") else f"{site_url}/{logo_path.lstrip('/')}"
 
