@@ -4,25 +4,26 @@
 
 > **Разработка веб-ресурса для салона красоты в Германии.**
 >
-> 🚀 **Status:** Active Development (Django + Telegram Bot + ARQ Worker).
+> 🚀 **Status:** Active Development (Django + HTMX + Email Notifications + ARQ).
 
 ---
 
 ## 🎯 О проекте
 
-Проект представляет собой имиджевую витрину салона красоты с последующей трансформацией в полноценную систему управления записями (CRM).
+Проект представляет собой профессиональный бизнес-сайт для премиального салона красоты с публичным каталогом услуг и интегрированной системой управления записями (CRM).
 
 ### Ключевые этапы
-1.  **Витрина (MVP)**:
-    *   Презентация топ-мастеров (Liliia Yakina).
+1.  **Публичный сайт (Landing)**:
+    *   Презентация топ-мастеров.
     *   Каталог услуг, цены, портфолио работ.
     *   Trust-фактор: Интеграция дипломов и сертификатов.
 2.  **Автоматизация**:
     *   Внедрение системы онлайн-записи.
     *   Алгоритм **"Тетрис времени"**: Умный расчет свободных слотов в зависимости от длительности услуг.
-3.  **Управление (Telegram Bot)**:
-    *   Мгновенные уведомления персонала о новых записях.
-    *   Управление расписанием через мессенджер.
+3.  **Управление (Личный кабинет)**:
+    *   Персонализированный кабинет персонала для управления расписанием.
+    *   **Email-уведомления**: Автоматические напоминания клиентам и уведомления о статусах для персонала.
+    *   **Magic Login**: Безопасный вход для персонала через email без пароля.
 
 ### 🎨 Дизайн-код
 *   **Стиль:** Классика, Премиум (Dark Luxury).
@@ -33,15 +34,15 @@
 
 ## 🛠 Технологический стек
 
-Проект построен на базе модульного монорепозитория (Django + Aiogram + ARQ).
+Проект построен на базе модульной features-based архитектуры.
 
 | Компонент | Технология | Описание |
 | :--- | :--- | :--- |
 | **Backend** | **Django 5.1** | Features-based архитектура, Ninja API |
-| **Bot** | **Aiogram 3.x** | Асинхронный бот, интеграция с Redis Stream |
-| **Worker** | **ARQ** | Очередь задач для уведомлений |
+| **Уведомления** | **Email (SMTP)** | Автоматические рассылки и алерты персоналу |
+| **Worker** | **ARQ** | Очередь задач для фоновых процессов |
 | **Frontend** | **HTML/CSS/JS** | Django Templates, HTMX, Vanilla JS |
-| **Database** | **PostgreSQL** | Изоляция схем (`django_app`, `bot_app`) |
+| **Database** | **PostgreSQL** | Основное хранилище данных |
 | **Cache** | **Redis** | Кэширование, сессии, очередь задач |
 | **Infra** | **Docker** | Docker Compose, Nginx, GitHub Actions |
 
@@ -64,44 +65,63 @@ cd lily_website
 uv sync
 ```
 
-`uv sync` поднимает стандартное `dev`-окружение, в которое уже включены обязательные framework-зависимости проекта:
-
-- `codex-django` закреплен как обязательная библиотека Django-слоя для дальнейшего рефакторинга.
-- `codex-django-cli` закреплен как обязательный dev/CLI слой для scaffold и управления проектом.
-
-Для production-подобной установки по сервисам используйте явные группы:
-
-```bash
-# Backend / Django runtime
-uv sync --no-default-groups --group django --group shared --group codex_tools
-
-# Bot / Worker runtime
-uv sync --no-default-groups --group bot --group shared --group codex_tools
-```
-
 ### 3. Настройка окружения
 
-Создайте файлы `.env` в папках компонентов:
-*   `src/backend_django/.env`
-*   `src/telegram_bot/.env`
+Создайте файл `.env` в папке бэкенда:
+*   `src/lily_backend/.env`
 
 ### 4. Запуск (Local Development)
 
 **Django:**
 ```bash
-cd src/backend_django
+cd src/lily_backend
 python manage.py migrate
 python manage.py runserver
 ```
 
-**Telegram Bot:**
-```bash
-python -m src.telegram_bot.app_telegram
-```
-
 **Worker ARQ:**
 ```bash
-arq src.workers.notification_worker.worker.WorkerSettings
+# Из корня проекта
+uv run arq src.workers.system_worker.worker.WorkerSettings
+```
+
+### 5. Настройка PYTHONPATH (Важно!)
+
+Для корректного импорта модулей добавьте корень проекта в PYTHONPATH:
+
+**Linux/macOS:**
+```bash
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:PYTHONPATH = "$env:PYTHONPATH;$PWD"
+```
+
+**PyCharm:**
+1. Settings → Project → Project Structure
+2. Отметьте корень проекта (`lily_website`) как "Source Root"
+
+**VSCode:**
+
+Создайте `.vscode/settings.json`:
+```json
+{
+    "python.analysis.extraPaths": ["${workspaceFolder}"],
+    "terminal.integrated.env.linux": {
+        "PYTHONPATH": "${workspaceFolder}:${env:PYTHONPATH}"
+    },
+    "terminal.integrated.env.windows": {
+        "PYTHONPATH": "${workspaceFolder};${env:PYTHONPATH}"
+    }
+}
+```
+
+**Запуск тестов:**
+```bash
+# Из корня проекта
+uv run pytest
 ```
 
 ---
@@ -111,15 +131,14 @@ arq src.workers.notification_worker.worker.WorkerSettings
 ```
 lily_website/
 ├── src/
-│   ├── backend_django/       # Django бэкенд (features-based структура)
-│   │   ├── api/              # Ninja API эндпоинты
-│   │   ├── core/             # Настройки, urls, конфиг логирования
-│   │   ├── features/         # Бизнес-логика (booking, cabinet и др.)
-│   │   ├── static/           # Статика (CSS, JS, IMG)
-│   │   └── templates/        # HTML шаблоны
-│   ├── telegram_bot/         # Telegram Bot (aiogram 3.x)
-│   ├── workers/              # Фоновые воркеры ARQ
-│   └── shared/               # Общий код (схемы, утилиты, ядро)
+│   ├── lily_backend/         # Django бэкенд
+│   │   ├── system/           # Базовые модели (Client и др.)
+│   │   ├── cabinet/          # Интерфейс и сервисы личного кабинета
+│   │   ├── core/             # Настройки проекта, URL, логи
+│   │   ├── features/         # Модульная бизнес-логика (booking и др.)
+│   │   ├── static/           # Глобальная статика
+│   │   └── templates/        # Глобальные HTML шаблоны
+│   └── workers/              # Фоновые воркеры ARQ
 ├── deploy/                   # Docker-compose и Nginx конфиги
 ├── docs/                     # Техническая документация и роадмапы
 └── pyproject.toml            # Конфигурация uv, Hatchling, Ruff, Mypy
@@ -131,8 +150,8 @@ lily_website/
 
 ```bash
 # Линтинг и форматирование
-uv run ruff check src/
-uv run ruff format src/
+uv run ruff check .
+uv run ruff format .
 
 # Проверка типов
 uv run mypy src/

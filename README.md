@@ -4,25 +4,26 @@
 
 > **Web resource development for a beauty salon in Germany.**
 >
-> 🚀 **Status:** Active Development (Django + Telegram Bot + ARQ Worker).
+> 🚀 **Status:** Active Development (Django + HTMX + Email Notifications + ARQ).
 
 ---
 
 ## 🎯 About the Project
 
-The project is an image showcase site transforming into a full-featured appointment management system (CRM).
+The project is a professional business website for a premium beauty salon, featuring a public service catalog and an integrated appointment management system (CRM).
 
 ### Key Stages
-1.  **Showcase (MVP)**:
-    *   Presentation of top masters (Liliia Yakina).
+1.  **Public Website (Landing)**:
+    *   Presentation of top masters.
     *   Catalog of services, prices, portfolio.
     *   Trust factor: Integration of diplomas and certificates.
 2.  **Automation**:
     *   Online booking system implementation.
     *   **"Time Tetris" Algorithm**: Smart calculation of free slots based on service duration.
-3.  **Management (Telegram Bot)**:
-    *   Instant notifications for staff about new bookings.
-    *   Schedule management via messenger.
+3.  **Management (Cabinet)**:
+    *   Personalized staff cabinet for schedule management.
+    *   **Email Notifications**: Automated reminders for clients and status updates for staff.
+    *   **Magic Login**: Secure, passwordless entry for staff via email.
 
 ### 🎨 Design Code
 *   **Style:** Classic, Premium (Dark Luxury).
@@ -33,15 +34,15 @@ The project is an image showcase site transforming into a full-featured appointm
 
 ## 🛠 Tech Stack
 
-Built on a modular monorepo structure (Django + Aiogram + ARQ).
+Built on a modular features-based architecture.
 
 | Component | Technology | Description |
 | :--- | :--- | :--- |
 | **Backend** | **Django 5.1** | Features-based architecture, Ninja API |
-| **Bot** | **Aiogram 3.x** | Async bot, Redis Stream integration |
-| **Worker** | **ARQ** | Async task queue for notifications |
+| **Notifications** | **Email (SMTP)** | Automated mailings and staff alerts |
+| **Worker** | **ARQ** | Async task queue for background processes |
 | **Frontend** | **HTML/CSS/JS** | Django Templates, HTMX, Vanilla JS |
-| **Database** | **PostgreSQL** | Schema isolation (`django_app`, `bot_app`) |
+| **Database** | **PostgreSQL** | Primary persistent storage |
 | **Cache** | **Redis** | Caching, Session storage, Task queue |
 | **Infra** | **Docker** | Docker Compose, Nginx, GitHub Actions |
 
@@ -64,44 +65,24 @@ This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
 uv sync
 ```
 
-`uv sync` installs the default `dev` environment, which already includes the required framework stack for this repository:
-
-- `codex-django` is a mandatory Django-layer dependency for the ongoing framework refactor.
-- `codex-django-cli` is the mandatory scaffolding and project-management CLI in development.
-
-For production-like service installs, use explicit groups:
-
-```bash
-# Backend / Django runtime
-uv sync --no-default-groups --group django --group shared --group codex_tools
-
-# Bot / Worker runtime
-uv sync --no-default-groups --group bot --group shared --group codex_tools
-```
-
 ### 3. Environment Setup
 
-Create `.env` files in component directories:
-*   `src/backend_django/.env`
-*   `src/telegram_bot/.env`
+Create a `.env` file in the backend directory:
+*   `src/lily_backend/.env`
 
 ### 4. Run (Local Development)
 
 **Django:**
 ```bash
-cd src/backend_django
+cd src/lily_backend
 python manage.py migrate
 python manage.py runserver
 ```
 
-**Telegram Bot:**
-```bash
-python -m src.telegram_bot.app_telegram
-```
-
 **Worker ARQ:**
 ```bash
-arq src.workers.notification_worker.worker.WorkerSettings
+# From project root
+uv run arq src.workers.system_worker.worker.WorkerSettings
 ```
 
 ### 5. Python Path Configuration (Important!)
@@ -140,7 +121,7 @@ Create `.vscode/settings.json`:
 **Running Tests:**
 ```bash
 # From project root
-uv run pytest src/
+uv run pytest
 ```
 
 ---
@@ -150,15 +131,14 @@ uv run pytest src/
 ```
 lily_website/
 ├── src/
-│   ├── backend_django/       # Django backend (features-based structure)
-│   │   ├── api/              # Ninja API endpoints
-│   │   ├── core/             # Settings, urls, logging config
-│   │   ├── features/         # Business logic (booking, cabinet, etc.)
-│   │   ├── static/           # Static files (CSS, JS, IMG)
-│   │   └── templates/        # HTML templates
-│   ├── telegram_bot/         # Telegram Bot (aiogram 3.x)
-│   ├── workers/              # ARQ background workers
-│   └── shared/               # Shared code (schemas, utils, core)
+│   ├── lily_backend/         # Django backend
+│   │   ├── system/           # Core system models (Client, etc.)
+│   │   ├── cabinet/          # Staff cabinet views and services
+│   │   ├── core/             # Project settings, URLs, logging
+│   │   ├── features/         # Modular business logic (booking, etc.)
+│   │   ├── static/           # Global static files
+│   │   └── templates/        # Global HTML templates
+│   └── workers/              # ARQ background workers
 ├── deploy/                   # Docker-compose and Nginx configs
 ├── docs/                     # Technical documentation & Roadmaps
 └── pyproject.toml            # uv, Hatchling, Ruff, Mypy configs
@@ -170,8 +150,8 @@ lily_website/
 
 ```bash
 # Linting and formatting
-uv run ruff check src/
-uv run ruff format src/
+uv run ruff check .
+uv run ruff format .
 
 # Type checking
 uv run mypy src/

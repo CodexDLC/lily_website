@@ -27,12 +27,24 @@ if [ "$RUN_LEGACY_MIGRATION" = "true" ]; then
     python /app/manage.py migrate_all_legacy
 fi
 
+# Настройка логирования в зависимости от окружения
+# Если DEBUG=False (прод), снижаем уровень шума: отключаем access-log и ставим уровень info
+if [ "$DEBUG" = "False" ]; then
+    GUNICORN_LOG_LEVEL=${LOG_LEVEL:-info}
+    GUNICORN_ACCESS_LOG="/dev/null"
+    echo "Starting gunicorn in PRODUCTION mode (log_level: $GUNICORN_LOG_LEVEL, access_log: disabled)"
+else
+    GUNICORN_LOG_LEVEL="debug"
+    GUNICORN_ACCESS_LOG="-"
+    echo "Starting gunicorn in DEVELOPMENT mode (log_level: $GUNICORN_LOG_LEVEL, access_log: enabled)"
+fi
+
 echo "Starting gunicorn..."
 exec gunicorn core.wsgi:application \
     --bind 0.0.0.0:8000 \
     --workers 2 \
     --timeout 90 \
-    --access-logfile - \
+    --access-logfile "$GUNICORN_ACCESS_LOG" \
     --error-logfile - \
     --capture-output \
-    --log-level debug
+    --log-level "$GUNICORN_LOG_LEVEL"
