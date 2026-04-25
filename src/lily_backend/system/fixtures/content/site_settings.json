@@ -41,7 +41,7 @@
       "company_name": "LILY Beauty Salon",
       "owner_name": "Liliia Yakina",
       "tax_number": "",
-      "site_base_url": "https://lily-salon.de/",
+      "site_base_url": "http://127.0.0.1:8080/",
       "logo_url": "/static/img/logo_lily.webp",
       "telegram_bot_username": "",
       "working_hours_weekdays": "09:00 - 18:00",
