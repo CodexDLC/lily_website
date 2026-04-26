@@ -10,16 +10,19 @@ For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs
 
 - **Campaigns:** Introduced delivery status tracking API for marketing campaigns, allowing real-time updates from workers.
 - **Documentation:** Created a comprehensive `admin_refactoring_plan.md` for modernizing the Django Admin panel using `django-unfold`.
+- **Documentation:** Added detailed `messaging_migration/` guides documenting the phased rollout and architectural changes for the new messaging system.
 
 ### Changed
 
 - **Workers:** Enhanced email import logic with robust HTML-to-text extraction that preserves line structure and improves readability.
 - **Security:** Hardened the system entrypoint to prevent accidental legacy migrations in production by enforcing `DEBUG` mode requirement.
 - **Fixtures:** Updated pricing for cosmetology services and refreshed master availability data in system fixtures.
+- **Architecture:** Refactored Ninja API routing to `core/urls.py` to prevent circular imports during system startup.
 
 ### Fixed
 
-- **Conversations:** Added missing notification dispatch for manual outbound emails in the workflow.
+- **Conversations:** Implemented Phase 1 of the Messaging Migration, resolving the "compose-new" email dispatch bug in the cabinet.
+- **Booking:** Fixed incorrect timezone display in notification contexts by ensuring all timestamps are localized before formatting.
 - **Tests:** Updated integration and unit tests for booking and conversations to align with recent architectural changes.
 
 ## [2.6.0] - 2026-04-25
