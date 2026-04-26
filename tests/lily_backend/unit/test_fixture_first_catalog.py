@@ -327,6 +327,7 @@ def test_migrate_appointments_updates_existing_legacy_timestamps(client_obj, mas
 
 
 @pytest.mark.unit
+@override_settings(DEBUG=True)
 def test_data_maintenance_migrate_all_uses_operational_import():
     from src.lily_backend.cabinet.views.ops import DataMaintenanceView
 
@@ -380,7 +381,7 @@ def test_current_backend_entrypoint_runs_startup_commands_before_gunicorn():
     assert "python /app/manage.py migrate --noinput" in content
     assert "python /app/manage.py load_catalog" in content
     assert "python /app/manage.py update_all_content" in content
-    assert 'if [ "$RUN_LEGACY_MIGRATION" = "true" ]; then' in content
+    assert 'if [ "$RUN_LEGACY_MIGRATION" = "true" ] && [ "$DEBUG" = "True" ]; then' in content
     assert "python /app/manage.py migrate_all_legacy" in content
     assert "exec gunicorn core.wsgi:application" in content
     assert content.index("collectstatic") < content.index("exec gunicorn")

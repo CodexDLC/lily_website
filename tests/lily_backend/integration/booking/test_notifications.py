@@ -92,7 +92,7 @@ def test_handle_booking_group_received(client_obj, master, service):
     assert spec.template_name == "bk_group_booking"
     assert spec.channels == ["email"]
     assert spec.context["total_price"] == "80.00"
-    assert spec.context["datetime"] == appt_one.datetime_start.strftime("%d.%m.%Y %H:%M")
+    assert spec.context["datetime"] == timezone.localtime(appt_one.datetime_start).strftime("%d.%m.%Y %H:%M")
     assert "client_name" not in spec.context
     assert "language" not in spec.context
     assert spec.language == "de"

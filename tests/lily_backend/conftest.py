@@ -45,15 +45,15 @@ def mock_redis_settings_sync():
         ),
         patch(
             "codex_platform.redis_service.operations.string.StringOperations.get",
-            AsyncMock(return_value=None),
+            MagicMock(return_value=None),
         ),
         patch(
             "codex_platform.redis_service.operations.hash.HashOperations.get_all",
-            AsyncMock(return_value={}),
+            MagicMock(return_value={}),
         ),
         patch(
             "codex_platform.redis_service.operations.hash.HashOperations.get_field",
-            AsyncMock(return_value=None),
+            MagicMock(return_value=None),
         ),
     ):
         yield

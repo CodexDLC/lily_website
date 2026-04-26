@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 from features.conversations.services.alerts import (
+    _build_compose_new_specs,
     _build_new_message_specs,
     _build_queue_adapter,
     _build_reply_context,
@@ -10,6 +11,7 @@ from features.conversations.services.alerts import (
     _build_thread_reply_specs,
     _get_notification_engine,
     _StaticSubjectSelector,
+    notify_compose_new,
     notify_new_message,
     notify_thread_reply,
 )
@@ -97,6 +99,41 @@ class TestConversationsAlerts:
         mock_engine.dispatch_event.side_effect = Exception("error")
         mock_engine_factory.return_value = mock_engine
         notify_thread_reply(MagicMock(pk=1), MagicMock(pk=2))
+
+    @patch("features.conversations.services.alerts._get_notification_engine")
+    def test_notify_compose_new_success(self, mock_engine_factory):
+        mock_engine = MagicMock()
+        mock_engine_factory.return_value = mock_engine
+        msg = MagicMock(pk=7)
+        notify_compose_new(msg, "client@example.com")
+        mock_engine.dispatch_event.assert_called_once_with(
+            "conversations.compose_new", msg, "client@example.com"
+        )
+
+    @patch("features.conversations.services.alerts._get_notification_engine")
+    def test_notify_compose_new_error(self, mock_engine_factory):
+        mock_engine = MagicMock()
+        mock_engine.dispatch_event.side_effect = Exception("error")
+        mock_engine_factory.return_value = mock_engine
+        # Should not raise
+        notify_compose_new(MagicMock(pk=7), "client@example.com")
+
+    def test_build_compose_new_specs_uses_rendered_mode(self):
+        msg = MagicMock(subject="Hello", body="Body text")
+        spec = _build_compose_new_specs(msg, "client@example.com")
+        assert spec.recipient_email == "client@example.com"
+        assert spec.subject == "Hello"
+        assert spec.event_type == "conversations.compose_new"
+        assert spec.channels == ["email"]
+        assert spec.mode == "rendered"
+        assert spec.text_content == "Body text"
+        assert spec.template_name == ""
+
+    def test_build_compose_new_specs_blank_subject(self):
+        msg = MagicMock(subject=None, body="Body only")
+        spec = _build_compose_new_specs(msg, "client@example.com")
+        assert spec.subject == ""
+        assert spec.text_content == "Body only"
 
     def test_static_subject_selector(self):
         selector = _StaticSubjectSelector()

@@ -79,7 +79,10 @@ def test_cabinet_slots_allow_same_day_when_book_only_from_next_day_enabled(
 ):
     service.masters.add(master)
     booking_settings.book_only_from_next_day = True
-    booking_settings.save(update_fields=["book_only_from_next_day"])
+    booking_settings.sunday_is_closed = False
+    booking_settings.work_start_sunday = timezone.datetime.strptime("09:00", "%H:%M").time()
+    booking_settings.work_end_sunday = timezone.datetime.strptime("18:00", "%H:%M").time()
+    booking_settings.save()
 
     client = Client()
     client.force_login(_make_staff_user())

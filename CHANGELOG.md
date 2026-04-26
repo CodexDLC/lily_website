@@ -4,6 +4,24 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
 
+## [2.7.0] - 2026-04-26
+
+### Added
+
+- **Campaigns:** Introduced delivery status tracking API for marketing campaigns, allowing real-time updates from workers.
+- **Documentation:** Created a comprehensive `admin_refactoring_plan.md` for modernizing the Django Admin panel using `django-unfold`.
+
+### Changed
+
+- **Workers:** Enhanced email import logic with robust HTML-to-text extraction that preserves line structure and improves readability.
+- **Security:** Hardened the system entrypoint to prevent accidental legacy migrations in production by enforcing `DEBUG` mode requirement.
+- **Fixtures:** Updated pricing for cosmetology services and refreshed master availability data in system fixtures.
+
+### Fixed
+
+- **Conversations:** Added missing notification dispatch for manual outbound emails in the workflow.
+- **Tests:** Updated integration and unit tests for booking and conversations to align with recent architectural changes.
+
 ## [2.6.0] - 2026-04-25
 
 ### Added
