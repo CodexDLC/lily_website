@@ -42,6 +42,14 @@ def notify_thread_reply(message, reply) -> None:
         log.exception("Failed to dispatch thread reply notification for message_id=%s", message.pk)
 
 
+def notify_compose_new(message, to_email: str) -> None:
+    """Dispatch a freshly composed outbound email through the shared notification engine."""
+    try:
+        _get_notification_engine().dispatch_event("conversations.compose_new", message, to_email)
+    except Exception:
+        log.exception("Failed to dispatch compose-new notification for message_id=%s", message.pk)
+
+
 class _StaticSubjectSelector:
     """Fallback selector for domains that provide fully rendered subjects."""
 
@@ -91,6 +99,19 @@ def _build_thread_reply_specs(message, reply):
         mode="template",
         template_name="contacts/ct_reply.html",
         context=_build_reply_context(message, reply),
+    )
+
+
+@notification_handler("conversations.compose_new")
+def _build_compose_new_specs(message, to_email: str):
+    return NotificationDispatchSpec(
+        recipient_email=to_email,
+        subject_key="conversations.compose_new.subject",
+        subject=message.subject or "",
+        event_type="conversations.compose_new",
+        channels=["email"],
+        mode="rendered",
+        text_content=message.body,
     )
 
 

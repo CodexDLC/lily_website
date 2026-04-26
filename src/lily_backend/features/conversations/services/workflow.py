@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 from features.conversations.models import Message, MessageReply
 
-from .alerts import notify_thread_reply
+from .alerts import notify_compose_new, notify_thread_reply
 from .email_import import trigger_email_import
 
 
@@ -22,6 +22,9 @@ def create_manual_message(*, to_email: str, subject: str, body: str, user: Any) 
     sender_name = display_name or to_email
 
     with transaction.atomic():
+        # TODO(messaging-migration): Message.sender_email holds the recipient address for
+        # manual outbound messages. The semantic split (recipient_email vs sender_email)
+        # ships with the AbstractMessage migration in features/messaging/.
         message = Message.objects.create(
             sender_name=sender_name,
             sender_email=to_email,
@@ -39,6 +42,7 @@ def create_manual_message(*, to_email: str, subject: str, body: str, user: Any) 
             sent_by=user if getattr(user, "is_authenticated", False) else None,
             is_inbound=False,
         )
+    notify_compose_new(message, to_email)
     return message
 
 

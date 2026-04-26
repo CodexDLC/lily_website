@@ -28,6 +28,7 @@ class DjangoAudienceBuilder:
 
         if f.has_valid_email:
             qs = qs.exclude(Q(email__isnull=True) | Q(email=""))
+            qs = qs.filter(email__regex=r"^[^@]+@[^@]+\.[^@]+$")
 
         # Exclude already opted-out
         qs = qs.filter(email_opt_out_at__isnull=True)
