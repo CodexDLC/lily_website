@@ -14,6 +14,7 @@ SCOPE_TO_SETTING = {
     "conversations.import": "CONVERSATIONS_IMPORT_API_KEY",
     "booking.worker": "BOOKING_WORKER_API_KEY",
     "ops.worker": "OPS_WORKER_API_KEY",
+    "campaigns.worker": "OPS_WORKER_API_KEY",
 }
 
 

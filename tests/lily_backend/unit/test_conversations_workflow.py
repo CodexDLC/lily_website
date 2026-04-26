@@ -23,7 +23,8 @@ class TestConversationsWorkflow:
         user = django_user_model.objects.create(username="staff", first_name="Staff", last_name="User")
         # is_authenticated is a property, no need to set it
 
-        msg = create_manual_message(to_email="client@test.com", subject="Hi", body="Text", user=user)
+        with patch("features.conversations.services.workflow.notify_compose_new"):
+            msg = create_manual_message(to_email="client@test.com", subject="Hi", body="Text", user=user)
         assert msg.sender_name == "Staff User"
         assert msg.sender_email == "client@test.com"
         assert msg.replies.count() == 1
@@ -31,9 +32,22 @@ class TestConversationsWorkflow:
     def test_create_manual_message_anonymous(self):
         user = MagicMock()
         user.is_authenticated = False
-        msg = create_manual_message(to_email="client@test.com", subject="Hi", body="Text", user=user)
+        with patch("features.conversations.services.workflow.notify_compose_new"):
+            msg = create_manual_message(to_email="client@test.com", subject="Hi", body="Text", user=user)
         assert msg.sender_name == "client@test.com"
         assert msg.replies.first().sent_by is None
+
+    def test_create_manual_message_dispatches_compose_new(self, django_user_model):
+        user = django_user_model.objects.create(username="staff_dispatch", first_name="Staff", last_name="User")
+
+        with patch("features.conversations.services.workflow.notify_compose_new") as mock_notify:
+            msg = create_manual_message(
+                to_email="client@test.com",
+                subject="Hi there",
+                body="Hello, this is a fresh outbound email.",
+                user=user,
+            )
+            mock_notify.assert_called_once_with(msg, "client@test.com")
 
     def test_create_reply_success(self, django_user_model):
         msg = Message.objects.create(sender_name="1", sender_email="1@1.com")
