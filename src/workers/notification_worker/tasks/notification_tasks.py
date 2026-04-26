@@ -11,6 +11,37 @@ if TYPE_CHECKING:
 
     from src.workers.notification_worker.services.notification_service import NotificationService
 
+_CAMPAIGN_MAX_TRIES = 5
+
+
+async def _report_campaign_status(
+    ctx: dict[str, Any],
+    notification_id: str,
+    status: str,
+    error: str = "",
+) -> None:
+    if not notification_id.startswith("campaign_"):
+        return
+    internal_api = ctx.get("internal_api")
+    if not internal_api:
+        return
+    from src.workers.core.config import WorkerSettings
+
+    settings = WorkerSettings()
+    token = settings.ops_worker_api_key
+    if not token:
+        log.warning("_report_campaign_status: CAMPAIGNS_WORKER_API_KEY not set, skipping callback")
+        return
+    try:
+        await internal_api.post(
+            "/v1/conversations/campaigns/recipient-status",
+            scope="campaigns.worker",
+            token=token,
+            json={"notification_id": notification_id, "status": status, "error": error},
+        )
+    except Exception as exc:
+        log.warning(f"_report_campaign_status: callback failed for {notification_id}: {exc}")
+
 
 # ---------------------------------------------------------------------------
 # BotPayloadEnricher
@@ -204,9 +235,14 @@ async def send_universal_notification_task(
     if should_send_email:
         try:
             await _send_email(ctx, payload_model, notification_service, raw_payload)
+            await _report_campaign_status(ctx, payload_model.notification_id, "sent")
         except Exception as exc:
             log.error(f"Task: universal_notification | Action: EmailFailed | error={exc}")
-            raise Retry(defer=ctx["job_try"] * 30) from exc
+            job_try = ctx.get("job_try", 1)
+            if job_try >= _CAMPAIGN_MAX_TRIES:
+                await _report_campaign_status(ctx, payload_model.notification_id, "failed", error=str(exc))
+                return
+            raise Retry(defer=job_try * 30) from exc
 
 
 async def send_rendered_notification_task(

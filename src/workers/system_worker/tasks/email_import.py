@@ -185,12 +185,17 @@ def _extract_text(msg: Any) -> str:
         body_part = None
     if body_part is None:
         return ""
-    content = body_part.get_content()
+    content = str(body_part.get_content())
     if body_part.get_content_type() == "text/html":
+        # Replace common block-level tags with newlines to keep text readable
         content = re.sub(r"<(script|style).*?</\1>", "", content, flags=re.I | re.S)
-        content = re.sub(r"<[^>]+>", " ", content)
+        content = re.sub(r"<(br|p|div|tr)[^>]*>", "\n", content, flags=re.I)
+        content = re.sub(r"<[^>]+>", "", content)
         content = unescape(content)
-    return " ".join(str(content).split())
+
+    # Preserve line structure but clean up excessive whitespace on each line
+    lines = [line.strip() for line in content.splitlines()]
+    return "\n".join(lines).strip()
 
 
 def _attachments(msg: Any) -> list[dict[str, Any]]:
