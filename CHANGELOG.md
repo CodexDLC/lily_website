@@ -20,7 +20,9 @@ For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs
 ### Fixed
 
 - **Conversations:** Implemented Phase 1 of the Messaging Migration, resolving the "compose-new" email dispatch bug in the cabinet.
-- **Booking:** Fixed incorrect timezone display in notification contexts by ensuring all timestamps are localized before formatting.
+- **Booking:** Fixed incorrect timezone display in notification contexts and client history by ensuring all timestamps are localized.
+- **Cabinet:** Added visual indicators for group bookings in the appointment schedule table.
+- **Infrastructure:** Silenced linter warnings in Docker configuration and fixed session handling in maintenance views.
 - **Tests:** Updated integration and unit tests for booking and conversations to align with recent architectural changes.
 
 ## [2.6.0] - 2026-04-25
