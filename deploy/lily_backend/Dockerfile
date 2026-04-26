@@ -1,6 +1,7 @@
 # === STAGE 1: Builder ===
 FROM python:3.12-slim AS builder
 WORKDIR /app
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     g++ \
@@ -19,6 +20,7 @@ RUN python -m venv /venv && \
 # === STAGE 2: Runtime ===
 FROM python:3.12-slim
 WORKDIR /app
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     curl \

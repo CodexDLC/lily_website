@@ -208,8 +208,8 @@ class ClientService:
             )
             upcoming_preview = [
                 {
-                    "date": obj.datetime_start.strftime("%d %b"),
-                    "time": obj.datetime_start.strftime("%H:%M"),
+                    "date": timezone.localtime(obj.datetime_start).strftime("%d %b"),
+                    "time": timezone.localtime(obj.datetime_start).strftime("%H:%M"),
                     "service": obj.service.title,
                     "master": obj.master.name,
                     "status_tone": obj.status,
@@ -280,8 +280,8 @@ class ClientService:
 
         upcoming_rows = [
             ClientAppointmentRow(
-                date_label=obj.datetime_start.strftime("%d %B %Y"),
-                time_range=f"{obj.datetime_start.strftime('%H:%M')} — {(obj.datetime_start + timezone.timedelta(minutes=obj.duration_minutes)).strftime('%H:%M')}",
+                date_label=timezone.localtime(obj.datetime_start).strftime("%d %B %Y"),
+                time_range=f"{timezone.localtime(obj.datetime_start).strftime('%H:%M')} — {timezone.localtime(obj.datetime_start + timezone.timedelta(minutes=obj.duration_minutes)).strftime('%H:%M')}",
                 service=obj.service.title,
                 specialist=obj.master.name,
                 specialist_initials=obj.master.name[0].upper() if obj.master.name else "?",
@@ -295,7 +295,7 @@ class ClientService:
 
         history_rows = [
             ClientAppointmentRow(
-                date_label=obj.datetime_start.strftime("%d %B %Y"),
+                date_label=timezone.localtime(obj.datetime_start).strftime("%d %B %Y"),
                 time_range="",
                 service=obj.service.title,
                 specialist=obj.master.name,

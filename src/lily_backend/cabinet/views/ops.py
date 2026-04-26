@@ -75,7 +75,7 @@ class DataMaintenanceView(StaffRequiredMixin, TemplateView):
         # Prevent legacy migrations in production
         if "migrate" in action and not settings.DEBUG:
             logger.warning(f"Legacy migration blocked in production: action={action}")
-            self.request.session["maintenance_log"] = "ERROR: Legacy migration is disabled in production mode."
+            request.session["maintenance_log"] = "ERROR: Legacy migration is disabled in production mode."
             return redirect("cabinet:ops_maintenance")
 
         logger.info(f"Cabinet maintenance action started: action={action} command={cmd}")
