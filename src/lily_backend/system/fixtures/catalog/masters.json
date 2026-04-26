@@ -45,7 +45,7 @@
     "years_experience": 10,
     "instagram": "",
     "phone": "",
-    "status": "active",
+    "status": "inactive",
     "is_owner": false,
     "is_featured": false,
     "is_public": false,
@@ -180,7 +180,8 @@
     "bot_access_code": "LILY6731",
     "qr_token": "8D3B0F3CDBBC43B6",
     "categories": [
-      2
+      2,
+      3
     ]
   }
 },
