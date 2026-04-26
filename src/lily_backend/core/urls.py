@@ -7,12 +7,20 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 from django.views.generic import TemplateView
+from features.booking.api.bot import router as bot_router
+from features.conversations.api import router as conversations_router
 from features.conversations.views.unsubscribe import UnsubscribeView
 from system.api import api
+from system.api.tracking import router as tracking_router
 from unfold.sites import UnfoldAdminSite
 
 from core.sitemaps import sitemaps
 from core.views import LLMSTextView
+
+# Register Ninja routers here to avoid circular imports during startup
+api.add_router("/bot", bot_router)
+api.add_router("/v1/conversations", conversations_router)
+api.add_router("/v1/tracking", tracking_router)
 
 # Inject UnfoldAdminSite into default admin
 admin.site.__class__ = UnfoldAdminSite
