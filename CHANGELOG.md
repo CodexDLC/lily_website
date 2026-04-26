@@ -9,8 +9,6 @@ For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs
 ### Added
 
 - **Campaigns:** Introduced delivery status tracking API for marketing campaigns, allowing real-time updates from workers.
-- **Documentation:** Created a comprehensive `admin_refactoring_plan.md` for modernizing the Django Admin panel using `django-unfold`.
-- **Documentation:** Added detailed `messaging_migration/` guides documenting the phased rollout and architectural changes for the new messaging system.
 
 ### Changed
 
