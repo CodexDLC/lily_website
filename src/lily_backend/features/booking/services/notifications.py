@@ -42,9 +42,12 @@ def _inject_site_context(context: dict[str, Any]) -> None:
 
 def build_booking_notification_context(appt: Appointment) -> dict[str, Any]:
     """Extract standard context for booking notifications."""
+    from django.utils import timezone as tz
+
     service_name = appt.service.name
     master_name = appt.master.name
-    formatted_datetime = appt.datetime_start.strftime("%d.%m.%Y %H:%M")
+    local_start = tz.localtime(appt.datetime_start)
+    formatted_datetime = local_start.strftime("%d.%m.%Y %H:%M")
     context = {
         "id": appt.pk,
         "service": service_name,
@@ -61,6 +64,8 @@ def build_booking_notification_context(appt: Appointment) -> dict[str, Any]:
 
 def build_booking_group_notification_context(group: AppointmentGroup) -> dict[str, Any]:
     """Extract one email context for a same-day chain booking."""
+    from django.utils import timezone as tz
+
     items = []
     total_price = Decimal("0")
     total_duration = 0
@@ -74,14 +79,15 @@ def build_booking_group_notification_context(group: AppointmentGroup) -> dict[st
         total_price += appt.price or 0
         total_duration += appt.duration_minutes or 0
         if not booking_date:
-            booking_date = appt.datetime_start.strftime("%d.%m.%Y")
-            booking_datetime = appt.datetime_start.strftime("%d.%m.%Y %H:%M")
+            local_start = tz.localtime(appt.datetime_start)
+            booking_date = local_start.strftime("%d.%m.%Y")
+            booking_datetime = local_start.strftime("%d.%m.%Y %H:%M")
         items.append(
             {
                 "service_name": appt.service.name,
                 "name": appt.service.name,
                 "master_name": appt.master.name,
-                "time": appt.datetime_start.strftime("%H:%M"),
+                "time": tz.localtime(appt.datetime_start).strftime("%H:%M"),
                 "price": str(appt.price),
                 "duration_minutes": appt.duration_minutes,
             }

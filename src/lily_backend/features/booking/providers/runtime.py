@@ -161,7 +161,7 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
         date_from = kwargs.get("date_from")
         date_to = kwargs.get("date_to")
 
-        qs = Appointment.objects.select_related("master", "service", "client")
+        qs = Appointment.objects.select_related("master", "service", "client", "group_item")
 
         if status and status != "all":
             qs = qs.filter(status=status)
@@ -202,6 +202,7 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
                     "service_title": appt.service.name,
                     "price": float(price),
                     "status": appt.status,
+                    "group_id": appt.group_item.group_id if hasattr(appt, "group_item") else None,
                 }
             )
         return result
@@ -624,6 +625,16 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
                         ui_effect="none",
                         target_url="",
                     )
+
+        if action == "confirm_group" and hasattr(appt, "group_item"):
+            appt.group_item.group.confirm_all()
+            return BookingActionResult(
+                ok=True,
+                code="booking-group-confirm",
+                message=_("Group Confirmed"),
+                ui_effect="reload_modal",
+                target_url="",
+            )
 
         return BookingActionResult(
             ok=False,

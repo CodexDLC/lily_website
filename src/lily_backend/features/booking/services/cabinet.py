@@ -39,6 +39,7 @@ from codex_django.booking.cabinet.types import (
 from codex_django.cabinet import CalendarGridData, CalendarSlot
 from django.core.paginator import Paginator
 from django.urls import reverse
+from django.utils import timezone
 
 from ..providers import get_booking_project_data_provider
 from .cabinet_availability import CabinetBookingAvailabilityService
@@ -80,7 +81,7 @@ class BookingCabinetWorkflowService:
         return f"hsl({hue}, 80%, 35%)"
 
     def get_schedule_context(self, request: Any) -> dict[str, Any]:
-        today = datetime.today().strftime("%Y-%m-%d")
+        today = timezone.localdate().isoformat()
         current_date = request.GET.get("date", today)
         if current_date == "today":
             current_date = today
@@ -231,7 +232,7 @@ class BookingCabinetWorkflowService:
     def _build_separate_booking_context(self, *, mode: str) -> dict[str, Any]:
         services = self.provider.get_cabinet_services()
         masters = self.provider.get_cabinet_masters()
-        start_date = datetime.today().date()
+        start_date = timezone.localdate()
         available_days = self.availability.build_picker_days(start_date=start_date, horizon=self.builder_day_horizon)
 
         categories = self._get_selector_categories(services)
@@ -284,7 +285,7 @@ class BookingCabinetWorkflowService:
         services = self.provider.get_cabinet_services()
         clients = self.provider.get_cabinet_clients()
         masters = self.provider.get_cabinet_masters()
-        start_date = datetime.today().date()
+        start_date = timezone.localdate()
         available_days = self.availability.build_picker_days(start_date=start_date, horizon=self.builder_day_horizon)
         return {
             "title": "Series booking",
@@ -294,7 +295,7 @@ class BookingCabinetWorkflowService:
                 "course_length": 10,
                 "cadence": "every_3_days",
                 "min_gap_days": 3,
-                "start_date": datetime.today().strftime("%Y-%m-%d"),
+                "start_date": timezone.localdate().isoformat(),
                 "client_count": len(clients),
             },
             "series_services": [
@@ -328,7 +329,7 @@ class BookingCabinetWorkflowService:
 
         services = self.provider.get_cabinet_services()
         masters = self.provider.get_cabinet_masters()
-        start_date = datetime.today().date()
+        start_date = timezone.localdate()
         available_days = self.availability.build_picker_days(start_date=start_date, horizon=self.builder_day_horizon)
         service_items = [
             ServiceItem(
@@ -449,7 +450,7 @@ class BookingCabinetWorkflowService:
                         client_email=client_email,
                     )
                 )
-            target_date = first_selected_date or datetime.today().strftime("%Y-%m-%d")
+            target_date = first_selected_date or timezone.localdate().isoformat()
         else:
             current_dt = datetime.strptime(f"{selected_date} {selected_time}", "%Y-%m-%d %H:%M")
             for service_item in services:
@@ -631,7 +632,7 @@ class BookingCabinetBridgeAdapter(BookingBridge):
 
     def get_modal_state(self, request: Any, booking_id: int, mode: str) -> BookingModalState:
         if mode == "create_from_slot":
-            schedule_date = request.GET.get("date", datetime.today().strftime("%Y-%m-%d"))
+            schedule_date = request.GET.get("date", timezone.localdate().isoformat())
             col = int(request.GET.get("col", 0))
             row = int(request.GET.get("row", 0))
             quick_create = self._build_quick_create(request=request, schedule_date=schedule_date, col=col, row=row)
@@ -732,7 +733,7 @@ class BookingCabinetBridgeAdapter(BookingBridge):
                 ],
             )
         if mode == "reschedule":
-            selected_date = request.GET.get("date") or str(appt.get("date", datetime.today().strftime("%Y-%m-%d")))
+            selected_date = request.GET.get("date") or str(appt.get("date", timezone.localdate().isoformat()))
             return replace(
                 state,
                 slot_picker=self._build_slot_picker(
@@ -766,6 +767,16 @@ class BookingCabinetBridgeAdapter(BookingBridge):
                     icon="bi-check",
                 )
             )
+            if appt.get("group_id"):
+                actions.append(
+                    BookingModalActionState(
+                        label="Confirm Group",
+                        kind="execute",
+                        value="confirm_group",
+                        style="btn-outline-success",
+                        icon="bi-check-all",
+                    )
+                )
         if status == "confirmed":
             actions.extend(
                 [

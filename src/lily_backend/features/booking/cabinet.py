@@ -22,6 +22,7 @@ declare(
         SidebarItem(label=str(_("Schedule")), url=reverse_lazy("cabinet:booking_schedule"), icon="bi-calendar3"),
         SidebarItem(label=str(_("New booking")), url=reverse_lazy("cabinet:booking_new"), icon="bi-plus-circle"),
         SidebarItem(label=str(_("Appointments")), url=reverse_lazy("cabinet:booking_list"), icon="bi-list-ul"),
+        SidebarItem(label=str(_("Group Bookings")), url=reverse_lazy("cabinet:booking_groups"), icon="bi-collection"),
     ],
 )
 

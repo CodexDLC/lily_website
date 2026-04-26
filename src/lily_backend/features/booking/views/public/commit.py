@@ -165,6 +165,7 @@ class BookingCommitView(View):
                 appointment=appt,
                 order=order,
             )
+
         engine.dispatch_event("booking.group_received", group)
         return reverse("booking:success_group", kwargs={"token": group.group_token})
 

@@ -161,10 +161,13 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
         self.provider = provider or get_booking_project_data_provider()
 
     def _build_adapter(self, target_date: date | None = None) -> DjangoAvailabilityAdapter:
+        from django.conf import settings as django_settings
+
         from ..booking_settings import BookingSettings
 
         feature_models = self.provider.get_feature_models()
         strategy = BookingSettings.load().load_strategy
+        project_tz = getattr(django_settings, "TIME_ZONE", "UTC")
         return LilyBookingAvailabilityAdapter(
             resource_model=feature_models.resource_model,
             appointment_model=feature_models.appointment_model,
@@ -172,7 +175,7 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
             working_day_model=feature_models.working_day_model,
             day_off_model=feature_models.day_off_model,
             booking_settings_model=feature_models.booking_settings_model,
-            timezone="UTC",
+            timezone=project_tz,
             load_strategy=strategy,
             target_date=target_date or date.today(),
         )
@@ -290,6 +293,7 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
         notify_received: bool = True,
         **kwargs: Any,
     ) -> Any:
+        kwargs.pop("audience", "public")
         feature_models = self.provider.get_feature_models()
         adapter = self._build_adapter(target_date=target_date)
         extra_fields = build_single_service_extra_fields(
