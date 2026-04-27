@@ -73,6 +73,10 @@ async def _run_reminders_branch(ctx: dict[str, Any], settings: Any) -> int:
         if not appt_id:
             continue
 
+        if not appt.get("client_email"):
+            log.warning(f"booking_maintenance_task: appointment {appt_id} has no client email, skipping")
+            continue
+
         job = await arq.enqueue_job(
             "send_booking_reminder_task",
             appt,

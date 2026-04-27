@@ -124,3 +124,25 @@ class TestBookingMaintenanceTask:
         res = await booking_maintenance_task(mock_ctx)
 
         assert res == {"status": "ok", "actions": 0}
+
+    async def test_reminders_branch_missing_appt_id(self, mock_ctx):
+        mock_ctx["heartbeat_registry"].should_run.return_value = True
+        mock_ctx["internal_api"].get.return_value = [
+            {"client_email": "x@x.com", "name": "X"}  # No 'id'
+        ]
+
+        res = await booking_maintenance_task(mock_ctx)
+        assert res == {"status": "ok", "actions": 0}
+
+    async def test_reminders_branch_mark_failed(self, mock_ctx):
+        mock_ctx["heartbeat_registry"].should_run.return_value = True
+        mock_ctx["internal_api"].get.return_value = [
+            {"id": 1, "client_email": "x@x.com", "name": "X", "service_name": "S", "datetime": "27.04.2026 10:00", "lang": "de", "master_name": "M"}
+        ]
+        mock_ctx["arq_service"].enqueue_job.return_value = AsyncMock()
+        mock_ctx["internal_api"].post.side_effect = Exception("API fail")
+
+        # Should not raise, just log warning and continue
+        res = await booking_maintenance_task(mock_ctx)
+        assert res == {"status": "ok", "actions": 1}
+        mock_ctx["internal_api"].post.assert_called_once()
