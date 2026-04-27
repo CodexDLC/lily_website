@@ -70,7 +70,7 @@ async def _run_reminders_branch(ctx: dict[str, Any], settings: Any) -> int:
     queued = 0
     for appt in appointments:
         appt_id = appt.get("id")
-        if not appt_id or not appt.get("client_email"):
+        if not appt_id:
             continue
 
         job = await arq.enqueue_job(
@@ -80,11 +80,14 @@ async def _run_reminders_branch(ctx: dict[str, Any], settings: Any) -> int:
             _job_id=f"reminder:{appt_id}",
         )
         if job:
-            await api.post(
-                f"/booking/appointments/{appt_id}/mark-reminder-sent",
-                scope="booking.worker",
-                token=token,
-            )
+            try:
+                await api.post(
+                    f"/booking/appointments/{appt_id}/mark-reminder-sent",
+                    scope="booking.worker",
+                    token=token,
+                )
+            except Exception as mark_exc:
+                log.warning(f"booking_maintenance_task: failed to mark reminder sent for {appt_id}: {mark_exc}")
             queued += 1
             log.info(f"booking_maintenance_task: queued reminder for appointment {appt_id}")
         else:

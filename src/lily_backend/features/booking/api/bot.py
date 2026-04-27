@@ -8,6 +8,8 @@ from system.api.auth import require_internal_scope
 
 router = Router(tags=["Booking Worker"])
 
+REMINDER_WINDOW_HOURS = 3
+
 
 class ReschedulePayload(Schema):
     proposed_datetime_str: str  # Format: DD.MM.YYYY HH:MM
@@ -60,12 +62,13 @@ def get_upcoming(request):
 def get_reminders_due(request):
     require_internal_scope(request, "booking.worker")
     now = timezone.now()
-    window_end = now + timedelta(hours=3)
+    window_end = now + timedelta(hours=REMINDER_WINDOW_HOURS)
     appts = Appointment.objects.filter(
         status=Appointment.STATUS_CONFIRMED,
         datetime_start__gte=now,
         datetime_start__lte=window_end,
         reminder_sent=False,
+        client__email__gt="",
     ).select_related("client", "service", "master")
 
     result = []
