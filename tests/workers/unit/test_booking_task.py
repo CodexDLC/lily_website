@@ -10,11 +10,21 @@ def ctx():
     settings = MagicMock()
     settings.booking_worker_interval_sec = 60
     settings.booking_worker_stale_after_sec = 120
+    settings.booking_worker_api_key = "test-token"  # pragma: allowlist secret
 
     registry = AsyncMock()
     registry.should_run.return_value = True
 
-    return {"settings": settings, "heartbeat_registry": registry, "arq_service": AsyncMock(), "job_id": "test_job"}
+    internal_api = AsyncMock()
+    internal_api.get.return_value = []
+
+    return {
+        "settings": settings,
+        "heartbeat_registry": registry,
+        "arq_service": AsyncMock(),
+        "internal_api": internal_api,
+        "job_id": "test_job",
+    }
 
 
 @pytest.mark.asyncio

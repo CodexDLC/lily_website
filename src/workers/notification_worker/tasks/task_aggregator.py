@@ -7,6 +7,7 @@ from .message_tasks import send_appointment_notification, send_message_task
 from .notification_tasks import (
     expire_reservation_task,
     send_booking_notification_task,
+    send_booking_reminder_task,
     send_contact_notification_task,
     send_group_booking_notification_task,
     send_rendered_notification_task,
@@ -18,6 +19,7 @@ from .notification_tasks import (
 
 FUNCTIONS = [
     send_booking_notification_task,
+    send_booking_reminder_task,
     send_group_booking_notification_task,
     send_contact_notification_task,
     expire_reservation_task,

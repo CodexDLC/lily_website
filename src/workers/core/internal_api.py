@@ -40,3 +40,19 @@ class InternalApiClient:
         response.raise_for_status()
         payload = response.json()
         return payload if isinstance(payload, dict) else {"result": payload}
+
+    async def get(self, path: str, *, scope: str, token: str | None, params: dict[str, Any] | None = None) -> Any:
+        if not token:
+            raise RuntimeError(f"Missing internal API token for scope '{scope}'")
+        await self.open()
+        assert self._client is not None
+        response = await self._client.get(
+            path,
+            headers={
+                "X-Internal-Scope": scope,
+                "X-Internal-Token": token,
+            },
+            params=params or {},
+        )
+        response.raise_for_status()
+        return response.json()
