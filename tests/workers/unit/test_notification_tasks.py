@@ -12,6 +12,7 @@ from src.workers.notification_worker.tasks.notification_tasks import (
     _stream_event_type,
     expire_reservation_task,
     requeue_event_task,
+    send_booking_reminder_task,
     send_group_booking_notification_task,
     send_universal_notification_task,
 )
@@ -247,6 +248,40 @@ class TestGroupBookingTask:
         with pytest.raises(Retry):
             await send_group_booking_notification_task(mock_ctx, 1)
         mock_ctx["notification_service"].send_notification.assert_not_called()
+
+
+class TestBookingReminderTask:
+    @pytest.mark.asyncio
+    async def test_success(self, mock_ctx):
+        payload = {
+            "id": 10,
+            "client_email": "client@example.com",
+            "name": "Anna",
+            "service_name": "Haircut",
+            "datetime": "27.04.2026 14:00",
+            "lang": "de",
+            "master_name": "Maria",
+        }
+        await send_booking_reminder_task(mock_ctx, payload)
+        mock_ctx["notification_service"].send_notification.assert_called_once_with(
+            email="client@example.com",
+            subject="Terminerinnerung - LILY Beauty Salon",
+            template_name="bk_reminder",
+            data=payload,
+        )
+
+    @pytest.mark.asyncio
+    async def test_no_email_skips(self, mock_ctx):
+        payload = {"id": 11, "client_email": "", "name": "Ghost"}
+        await send_booking_reminder_task(mock_ctx, payload)
+        mock_ctx["notification_service"].send_notification.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_send_failure_retries(self, mock_ctx):
+        payload = {"id": 12, "client_email": "x@x.com", "name": "X", "service_name": "S", "datetime": "27.04.2026 10:00"}
+        mock_ctx["notification_service"].send_notification.side_effect = Exception("SMTP fail")
+        with pytest.raises(Retry):
+            await send_booking_reminder_task(mock_ctx, payload)
 
 
 class TestUtils:
