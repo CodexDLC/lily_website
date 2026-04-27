@@ -4,6 +4,22 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
 
+## [2.8.0] - 2026-04-27
+
+### Added
+
+- **Booking:** Implemented a new appointment reminder notification system that automatically enqueues reminders for upcoming appointments via the system worker.
+
+### Changed
+
+- **Tests:** Significantly increased system-wide test coverage to **92%**, adding comprehensive unit tests for notification tasks, services, and email import logic.
+- **Workers:** Enhanced the robustness of reminder tasks by implementing explicit email validation and mark-sent safety checks to prevent duplicate or invalid notifications.
+
+### Fixed
+
+- **Workers:** Resolved a bug where the reminder task would fail when processing appointments with missing client emails.
+- **Tests:** Fixed missing `internal_api` dependencies in worker task fixtures.
+
 ## [2.7.0] - 2026-04-26
 
 ### Added
