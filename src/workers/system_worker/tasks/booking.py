@@ -58,7 +58,7 @@ async def _run_reminders_branch(ctx: dict[str, Any], settings: Any) -> int:
     arq = ctx["arq_service"]
 
     appointments = await api.get(
-        "/booking/appointments/reminders-due",
+        "/v1/booking/appointments/reminders-due",
         scope="booking.worker",
         token=token,
     )
@@ -86,7 +86,7 @@ async def _run_reminders_branch(ctx: dict[str, Any], settings: Any) -> int:
         if job:
             try:
                 await api.post(
-                    f"/booking/appointments/{appt_id}/mark-reminder-sent",
+                    f"/v1/booking/appointments/{appt_id}/mark-reminder-sent",
                     scope="booking.worker",
                     token=token,
                 )

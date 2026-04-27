@@ -18,7 +18,7 @@ from core.sitemaps import sitemaps
 from core.views import LLMSTextView
 
 # Register Ninja routers here to avoid circular imports during startup
-api.add_router("/bot", bot_router)
+api.add_router("/v1/booking", bot_router)
 api.add_router("/v1/conversations", conversations_router)
 api.add_router("/v1/tracking", tracking_router)
 

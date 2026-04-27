@@ -17,7 +17,8 @@ For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs
 
 ### Fixed
 
-- **Workers:** Resolved a bug where the reminder task would fail when processing appointments with missing client emails.
+- **Workers:** Resolved a bug where the reminder task would fail with a 404 error due to incorrect API path; migrated booking worker endpoints to a versioned `/v1/booking/` API.
+- **Workers:** Resolved an issue where the reminder task would fail when processing appointments with missing client emails.
 - **Tests:** Fixed missing `internal_api` dependencies in worker task fixtures.
 
 ## [2.7.0] - 2026-04-26

@@ -89,7 +89,7 @@ class TestBookingMaintenanceTask:
 
         assert res == {"status": "ok", "actions": 1}
         mock_ctx["internal_api"].post.assert_called_once_with(
-            "/booking/appointments/42/mark-reminder-sent",
+            "/v1/booking/appointments/42/mark-reminder-sent",
             scope="booking.worker",
             token="test-token",
         )
