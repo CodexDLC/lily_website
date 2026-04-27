@@ -381,3 +381,39 @@ async def requeue_event_task(ctx: dict[str, Any], event_data: dict[str, Any]) ->
 async def expire_reservation_task(ctx: dict[str, Any], appointment_id: int) -> None:
     """Task for sending an expiration command to the bot."""
     log.info(f"Task: expire_reservation_task | Action: Start | appointment_id={appointment_id}")
+
+
+# ---------------------------------------------------------------------------
+# Booking reminder task
+# ---------------------------------------------------------------------------
+
+
+async def send_booking_reminder_task(ctx: dict[str, Any], appt_payload: dict[str, Any]) -> None:
+    """Send a reminder email for an upcoming appointment.
+
+    Payload fields (built by booking_maintenance_task):
+        client_email, name, service_name, datetime (%d.%m.%Y %H:%M), lang, master_name
+    """
+    appt_id = appt_payload.get("id", "?")
+    client_email = appt_payload.get("client_email", "")
+    log.info(f"Task: send_booking_reminder_task | Action: Start | appointment_id={appt_id} | to={client_email}")
+
+    if not client_email:
+        log.warning(f"Task: send_booking_reminder_task | Action: NoEmail | appointment_id={appt_id}")
+        return
+
+    notification_service = cast("NotificationService", ctx.get("notification_service"))
+
+    try:
+        await notification_service.send_notification(
+            email=client_email,
+            subject="Terminerinnerung - LILY Beauty Salon",
+            template_name="bk_reminder",
+            data=appt_payload,
+        )
+        log.info(f"Task: send_booking_reminder_task | Action: Sent | appointment_id={appt_id}")
+    except Exception as exc:
+        log.error(f"Task: send_booking_reminder_task | Action: Failed | appointment_id={appt_id} | error={exc}")
+        from arq import Retry
+
+        raise Retry(defer=ctx["job_try"] * 60) from exc

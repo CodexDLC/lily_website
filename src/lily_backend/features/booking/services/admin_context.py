@@ -10,7 +10,6 @@ def build_admin_booking_context(appt_or_group: Any, recipient_email: str) -> dic
     Includes a signed magic link to automatically log the admin in and open the booking.
     """
     is_group = hasattr(appt_or_group, "items")
-    is_group = hasattr(appt_or_group, "items")
 
     from .notifications import build_booking_group_notification_context, build_booking_notification_context
 
