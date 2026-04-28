@@ -313,7 +313,7 @@ wheels = [
 
 [[package]]
 name = "codex-django"
-version = "0.6.5"
+version = "0.6.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "codex-core" },
@@ -331,9 +331,9 @@ dependencies = [
     { name = "pillow" },
     { name = "redis" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/60/a5/776fb54b6549d6c24a83a99ec1cddd8e7e0c4cba2484fab6fcfe393efe53/codex_django-0.6.5.tar.gz", hash = "sha256:1680291dfcc56773d78976d32f317f9e1f2517310462886c21f194713838110e", size = 925555, upload-time = "2026-04-24T19:18:19.309Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8b/0e/a4de804c947eaac194af719230ebe7465c56c639ed5e69e6c6a27ce4d540/codex_django-0.6.6.tar.gz", hash = "sha256:600b8cb694f0d0ee803cfaadf2ff8d1967598c4f42c56f830e80e77a110fcef7", size = 1656592, upload-time = "2026-04-28T11:14:49.664Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/09/e8/63d2c7e68ec95c2369a89e87624217d7bb7ffc9f0ac63c4d67d28184ed60/codex_django-0.6.5-py3-none-any.whl", hash = "sha256:4448a5a0fb7fd109195c0f784bf3c200cc876097a1e9917e836ef2eca8062594", size = 773564, upload-time = "2026-04-24T19:18:17.295Z" },
+    { url = "https://files.pythonhosted.org/packages/f8/d2/180a88099b02ab8f775ab17ba367ae93aea25721f6bea67fb8f954b451bc/codex_django-0.6.6-py3-none-any.whl", hash = "sha256:9cd7415a7b845d0a93ef3426ae57bc68398fc987fad9ad530fe69b56ccfcf038", size = 773672, upload-time = "2026-04-28T11:14:47.407Z" },
 ]
 
 [[package]]
@@ -1273,7 +1273,7 @@ dev = [
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
     { name = "bandit", extras = ["toml"] },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-django", specifier = "==0.6.5" },
+    { name = "codex-django", specifier = "==0.6.6" },
     { name = "codex-django-cli", specifier = ">=0.3.0,<0.9.0" },
     { name = "codex-platform", extras = ["all"], specifier = ">=0.4.0,<0.9.0" },
     { name = "codex-services", extras = ["calendar"], specifier = ">=0.1.3,<0.9.0" },
@@ -1310,7 +1310,7 @@ dev = [
 django = [
     { name = "arq", specifier = ">=0.27.0,<0.28.0" },
     { name = "codex-core", specifier = ">=0.3.0,<0.9.0" },
-    { name = "codex-django", specifier = "==0.6.5" },
+    { name = "codex-django", specifier = "==0.6.6" },
     { name = "dj-database-url", specifier = ">=2.3.0,<3.0.0" },
     { name = "django", specifier = ">=5.2.13,<6.0" },
     { name = "django-ninja", specifier = ">=1.3.0,<2.0.0" },

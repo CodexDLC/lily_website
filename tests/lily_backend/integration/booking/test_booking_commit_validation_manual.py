@@ -1,8 +1,9 @@
 import pytest
 from django.contrib.messages import get_messages
 from django.urls import reverse
-from django.utils import translation
+from django.utils import timezone, translation
 from features.booking.dto.public_cart import SESSION_KEY, PublicCart, PublicCartItem
+from features.booking.models import Appointment
 
 
 @pytest.fixture
@@ -61,3 +62,49 @@ def test_commit_requires_checkboxes(client, service, master, store_cart, setting
     # For a smoke test, we expect it to attempt creation.
     # We might need to mock get_booking_engine_gateway if it hits DB/External.
     # But since we are testing VALIDATION, we've already proven it works if it passes.
+
+
+@pytest.mark.django_db
+def test_public_commit_persists_selected_slot_not_first_available(client, service, master, booking_settings, settings):
+    settings.TIME_ZONE = "UTC"
+    service.masters.add(master)
+    target_date = "2026-04-30"
+    selected_time = "15:30"
+
+    session = client.session
+    cart = PublicCart(
+        items=[
+            PublicCartItem(
+                service_id=service.id,
+                service_title=service.name,
+                duration=service.duration,
+                price=service.price,
+            )
+        ],
+        date=target_date,
+        time=selected_time,
+        contact={"first_name": "Slot", "last_name": "Regression", "phone": "12345", "email": "slot@example.com"},
+    )
+    cart.stage = 3
+    session[SESSION_KEY] = cart.to_dict()
+    session.save()
+
+    response = client.post(
+        reverse("booking:commit"),
+        {
+            "first_name": "Slot",
+            "last_name": "Regression",
+            "phone": "12345",
+            "email": "slot@example.com",
+            "cancellation_policy": "on",
+            "consent": "on",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["HX-Redirect"]
+
+    appointment = Appointment.objects.get(client__email="slot@example.com")
+    assert timezone.localtime(appointment.datetime_start).strftime("%Y-%m-%d %H:%M") == (
+        f"{target_date} {selected_time}"
+    )
