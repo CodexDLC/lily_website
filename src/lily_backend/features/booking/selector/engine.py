@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import logging
-from datetime import UTC, date, datetime, time, timedelta
+import zoneinfo
+from datetime import date, datetime, time, timedelta
 from typing import Any
 
 from codex_django.booking.adapters.availability import DjangoAvailabilityAdapter
@@ -134,6 +135,15 @@ class LilyBookingAvailabilityAdapter(LoadAwareDjangoAvailabilityAdapter):
             self._booking_settings = load() if callable(load) else self.booking_settings_model.objects.first()
         return self._booking_settings
 
+    def _get_tz(self, master: Any) -> zoneinfo.ZoneInfo:
+        tz_name = getattr(master, "timezone", None)
+        if not tz_name or tz_name == "UTC":
+            tz_name = self.timezone or "Europe/Berlin"
+        try:
+            return zoneinfo.ZoneInfo(tz_name)
+        except Exception:
+            return zoneinfo.ZoneInfo(self.timezone or "Europe/Berlin")
+
     def get_working_hours(self, master: Any, target_date: date) -> tuple[datetime, datetime] | None:
         weekday = target_date.weekday()
         if not self.working_day_model.objects.filter(master_id=master.pk, weekday=weekday).exists():
@@ -147,7 +157,7 @@ class LilyBookingAvailabilityAdapter(LoadAwareDjangoAvailabilityAdapter):
         tz = self._get_tz(master)
         work_start_dt = datetime.combine(target_date, start_time, tzinfo=tz)
         work_end_dt = datetime.combine(target_date, end_time, tzinfo=tz)
-        return work_start_dt.astimezone(UTC), work_end_dt.astimezone(UTC)
+        return work_start_dt, work_end_dt
 
     def get_break_interval(self, master: Any, target_date: date) -> None:
         del master, target_date

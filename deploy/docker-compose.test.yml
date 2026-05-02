@@ -51,6 +51,7 @@ services:
       - REDIS_PORT=6379
       - ENVIRONMENT=testing
       - IS_DOCKER=True
+      - RUN_LEGACY_MIGRATION=false
     volumes:
       - ../src/lily_backend:/app
       - ../src/lily_backend/media:/app/media
@@ -66,7 +67,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 60s
+      start_period: 180s
     restart: unless-stopped
     networks:
       - lily_test-network

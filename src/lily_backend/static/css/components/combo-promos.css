@@ -1,0 +1,225 @@
+/* =========================================
+   SERVICE COMBO PROMOS
+   Reusable homepage/landing offer slider
+   ========================================= */
+
+.combo-promos {
+    padding: 18px 0 46px;
+    background: var(--color-emerald);
+}
+
+.combo-promos__viewport {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(var(--color-gold-rgb), 0.28);
+    background: #002f29;
+    box-shadow: var(--shadow-lg);
+}
+
+.combo-promos__track {
+    display: flex;
+    transition: transform 0.5s ease;
+}
+
+.combo-promo {
+    position: relative;
+    min-width: 100%;
+    min-height: 420px;
+    isolation: isolate;
+}
+
+.combo-promo__image {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.combo-promo__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+        90deg,
+        rgba(var(--color-emerald-rgb), 0.98) 0%,
+        rgba(var(--color-emerald-rgb), 0.88) 46%,
+        rgba(var(--color-emerald-rgb), 0.34) 75%,
+        rgba(0, 0, 0, 0.18) 100%
+    );
+}
+
+.combo-promo__content {
+    display: grid;
+    align-content: center;
+    width: min(650px, 60%);
+    min-height: 420px;
+    padding: 48px 54px;
+}
+
+.combo-promo__title {
+    max-width: 560px;
+    margin: 0;
+    color: var(--color-white);
+    font-family: var(--font-serif, serif);
+    font-size: 46px;
+    font-weight: 400;
+    line-height: 1.08;
+}
+
+.combo-promo__text {
+    max-width: 470px;
+    margin: 18px 0 0;
+    color: var(--color-text-muted);
+    font-size: 16px;
+    line-height: 1.62;
+}
+
+.combo-promo__footer {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 30px;
+}
+
+.combo-promo__price {
+    color: var(--color-gold);
+    font-family: var(--font-serif, serif);
+    font-size: 46px;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.combo-promo__price span {
+    display: block;
+    margin-top: 8px;
+    color: var(--color-champagne);
+    font-family: var(--font-sans, sans-serif);
+    font-size: 11px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.combo-promo__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    padding: 0 32px;
+    border: 1px solid var(--color-gold);
+    border-radius: var(--radius-pill);
+    color: var(--color-gold);
+    font-size: 12px;
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background var(--transition-base), color var(--transition-base);
+}
+
+.combo-promo__button:hover {
+    background: var(--color-gold);
+    color: var(--color-emerald);
+}
+
+.combo-promos__controls {
+    position: absolute;
+    right: 24px;
+    bottom: 22px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.combo-promos__arrow {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(var(--color-gold-rgb), 0.45);
+    border-radius: var(--radius-pill);
+    background: rgba(var(--color-emerald-rgb), 0.78);
+    color: var(--color-gold);
+    cursor: pointer;
+}
+
+.combo-promos__dots {
+    display: flex;
+    gap: 7px;
+}
+
+.combo-promos__dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 1px solid var(--color-gold);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.combo-promos__dot--active {
+    width: 24px;
+    background: var(--color-gold);
+    opacity: 1;
+}
+
+@media (max-width: 767px) {
+    .combo-promos {
+        padding: 12px 0 34px;
+    }
+
+    .combo-promo,
+    .combo-promo__content {
+        min-height: 610px;
+    }
+
+    .combo-promo__overlay {
+        background: linear-gradient(
+            180deg,
+            rgba(var(--color-emerald-rgb), 0.97) 0%,
+            rgba(var(--color-emerald-rgb), 0.9) 54%,
+            rgba(0, 0, 0, 0.12) 100%
+        );
+    }
+
+    .combo-promo__image {
+        object-position: 62% center;
+    }
+
+    .combo-promo__content {
+        width: 100%;
+        align-content: start;
+        padding: 34px 24px 96px;
+    }
+
+    .combo-promo__title {
+        font-size: 34px;
+    }
+
+    .combo-promo__text {
+        font-size: 15px;
+    }
+
+    .combo-promo__footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .combo-promo__button {
+        width: 100%;
+        padding: 0 18px;
+    }
+
+    .combo-promos__controls {
+        right: auto;
+        left: 24px;
+        bottom: 22px;
+    }
+}

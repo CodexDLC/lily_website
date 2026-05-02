@@ -43,6 +43,13 @@
       {% endfor %}
     </ul>
 
+    {% if cart.combo_title %}
+      <div class="bk-cart-combo">
+        <span>{{ cart.combo_title }}</span>
+        <strong>{{ cart.total_price }} €</strong>
+      </div>
+    {% endif %}
+
     <div class="bk-panel-nav bk-flex-end">
       <button class="bk-btn-next"
               hx-post="{% url 'booking:cart_set_stage' %}"

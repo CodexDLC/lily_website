@@ -2,13 +2,25 @@ from __future__ import annotations
 
 from typing import Any
 
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.http import Http404
+from django.utils import timezone
 from django.views.generic import TemplateView
 from features.booking.models import Master
 from features.booking.providers.runtime import RuntimeBookingProvider
 
-from ..models import ServiceCategory
+from ..models import ServiceCategory, ServiceCombo
+
+
+def get_featured_combos() -> Any:
+    today = timezone.localdate()
+    return (
+        ServiceCombo.objects.filter(is_active=True, is_featured=True, show_on_home=True)
+        .filter(Q(valid_from__isnull=True) | Q(valid_from__lte=today))
+        .filter(Q(valid_until__isnull=True) | Q(valid_until__gte=today))
+        .prefetch_related("items__service")
+        .order_by("promo_order", "name")
+    )
 
 
 class HomeView(TemplateView):
@@ -16,6 +28,7 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         ctx = super().get_context_data(**kwargs)
+        ctx["combo_promos"] = get_featured_combos()
         ctx["bento"] = ServiceCategory.objects.filter(is_active=True).order_by("order", "name")
         ctx["team"] = Master.objects.filter(status=Master.STATUS_ACTIVE, is_public=True).order_by("order", "name")
         return ctx

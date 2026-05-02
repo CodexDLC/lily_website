@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime
+from decimal import ROUND_HALF_UP, Decimal
 
 from core.logger import logger
 from django.contrib import messages
@@ -17,6 +18,7 @@ from system.models import Client
 from features.booking.dto.public_cart import clear_cart, get_cart, save_cart
 from features.booking.models import AppointmentGroup, AppointmentGroupItem
 from features.booking.selector.engine import get_booking_engine_gateway
+from features.main.models import ServiceCombo
 
 
 def _get_or_create_client(first_name: str, last_name: str, phone: str, email: str) -> Client:
@@ -150,6 +152,7 @@ class BookingCommitView(View):
         if len(appointments) == 1:
             # Single appointment — no group
             appt = appointments[0]
+            self._apply_combo_pricing(cart, appointments)
             engine.dispatch_event("booking.received", appt)
             return reverse("booking:success_single", kwargs={"token": appt.finalize_token})
 
@@ -158,7 +161,9 @@ class BookingCommitView(View):
             client=client,
             mode="same_day",
             source="website",
+            combo_id=cart.combo_id,
         )
+        self._apply_combo_pricing(cart, appointments)
         for order, appt in enumerate(appointments):
             AppointmentGroupItem.objects.create(
                 group=group,
@@ -168,6 +173,33 @@ class BookingCommitView(View):
 
         engine.dispatch_event("booking.group_received", group)
         return reverse("booking:success_group", kwargs={"token": group.group_token})
+
+    def _apply_combo_pricing(self, cart, appointments: list) -> None:
+        if not cart.combo_id or cart.combo_price is None or not appointments:
+            return
+
+        combo = ServiceCombo.objects.filter(pk=cart.combo_id, discount_type=ServiceCombo.FIXED_PRICE).first()
+        if combo is None:
+            return
+
+        target_total = Decimal(cart.combo_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        base_total = sum((appt.price for appt in appointments), Decimal("0"))
+        remaining = target_total
+
+        for index, appt in enumerate(appointments):
+            if index == len(appointments) - 1:
+                price_actual = remaining
+            elif base_total > 0:
+                price_actual = (target_total * (appt.price / base_total)).quantize(
+                    Decimal("0.01"), rounding=ROUND_HALF_UP
+                )
+                remaining -= price_actual
+            else:
+                price_actual = (target_total / len(appointments)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+                remaining -= price_actual
+
+            appt.price_actual = price_actual
+            appt.save(update_fields=["price_actual", "updated_at"])
 
     def _commit_multi_day(self, request: HttpRequest, cart, client: Client) -> str:
         """Commit multi-day booking — independent appointments, no group."""

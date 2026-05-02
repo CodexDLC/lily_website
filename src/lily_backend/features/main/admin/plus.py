@@ -14,10 +14,20 @@ class ServiceComboItemInline(TabularInline):
 
 @admin.register(ServiceCombo)
 class ServiceComboAdmin(ModelAdmin):
-    list_display = ["name", "slug", "discount_type", "discount_value", "is_active", "valid_from", "valid_until"]
+    list_display = [
+        "name",
+        "slug",
+        "discount_type",
+        "discount_value",
+        "is_featured",
+        "show_on_home",
+        "is_active",
+        "valid_from",
+        "valid_until",
+    ]
     list_display_links = ["name"]
-    list_editable = ["is_active", "discount_value"]
-    list_filter = ["discount_type", "is_active"]
+    list_editable = ["discount_value", "is_featured", "show_on_home", "is_active"]
+    list_filter = ["discount_type", "is_featured", "show_on_home", "is_active"]
     search_fields = ["name", "slug"]
     warning_fields = ["discount_value"]
     prepopulated_fields = {"slug": ["name"]}
@@ -27,6 +37,20 @@ class ServiceComboAdmin(ModelAdmin):
         (
             _("Basic Info"),
             {"fields": ("name", "slug", "description", "is_active")},
+        ),
+        (
+            _("Promo display"),
+            {
+                "fields": (
+                    "is_featured",
+                    "show_on_home",
+                    "promo_order",
+                    "promo_title",
+                    "promo_text",
+                    "promo_image",
+                    "promo_button_text",
+                )
+            },
         ),
         (
             _("Discount"),

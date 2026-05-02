@@ -1656,6 +1656,24 @@
     border-color: #ff4d4d;
 }
 
+.bk-cart-combo,
+.bk-hub-combo {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 14px;
+    padding: 12px 14px;
+    border: 1px solid rgba(var(--color-gold-rgb), 0.26);
+    color: var(--color-champagne);
+    background: rgba(var(--color-gold-rgb), 0.08);
+}
+
+.bk-cart-combo strong,
+.bk-hub-combo strong {
+    color: var(--color-gold);
+    white-space: nowrap;
+}
+
 .success-details {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);

@@ -64,6 +64,8 @@ class CartAddView(View):
         if cart.has(service.pk):
             return _render_cart(request, cart)
 
+        cart.clear_combo()
+
         # Apply conflict rules (server-side, source → this service)
         rules = ServiceConflictRule.objects.filter(source=service, is_active=True).select_related("target")
 

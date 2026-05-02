@@ -1,6 +1,8 @@
 from typing import ClassVar
 
 from django.db import models
+from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -23,6 +25,13 @@ class ServiceCombo(models.Model):
     name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), unique=True)
     description = models.TextField(_("description"), blank=True)
+    promo_title = models.CharField(_("promo title"), max_length=200, blank=True)
+    promo_text = models.TextField(_("promo text"), blank=True)
+    promo_image = models.ImageField(_("promo image"), upload_to="combos/", blank=True, null=True)
+    promo_button_text = models.CharField(_("promo button text"), max_length=80, default=_("Termin buchen"))
+    show_on_home = models.BooleanField(_("show on home page"), default=True)
+    is_featured = models.BooleanField(_("featured promo"), default=False)
+    promo_order = models.PositiveIntegerField(_("promo order"), default=0)
     discount_type = models.CharField(
         _("discount type"),
         max_length=20,
@@ -48,6 +57,27 @@ class ServiceCombo(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    @property
+    def display_title(self) -> str:
+        return self.promo_title or self.name
+
+    @property
+    def display_text(self) -> str:
+        return self.promo_text or self.description
+
+    @property
+    def booking_url(self) -> str:
+        return f"{reverse('booking:booking_wizard')}?combo={self.slug}"
+
+    @property
+    def is_available_now(self) -> bool:
+        today = timezone.localdate()
+        if not self.is_active:
+            return False
+        if self.valid_from and self.valid_from > today:
+            return False
+        return not (self.valid_until and self.valid_until < today)
 
 
 class ServiceComboItem(models.Model):

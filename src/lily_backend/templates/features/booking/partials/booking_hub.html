@@ -39,6 +39,13 @@
           </li>
         {% endfor %}
       </ul>
+
+      {% if cart.combo_title %}
+        <div class="bk-hub-combo">
+          <span>{{ cart.combo_title }}</span>
+          <strong>{{ cart.total_price }} €</strong>
+        </div>
+      {% endif %}
     </details>
 
     <a href="{% url 'booking:booking_wizard' %}" class="bk-hub-continue">

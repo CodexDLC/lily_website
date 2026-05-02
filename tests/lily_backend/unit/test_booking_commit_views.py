@@ -33,6 +33,8 @@ def mock_cart():
     cart.mode = "same_day"
     cart.is_ready_same_day.return_value = True
     cart.contact = {}
+    cart.combo_id = None
+    cart.combo_price = None
     return cart
 
 

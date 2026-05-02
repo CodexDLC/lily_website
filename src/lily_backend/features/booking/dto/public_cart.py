@@ -59,6 +59,10 @@ class PublicCart:
     date: str | None = None  # same_day flow
     time: str | None = None  # same_day flow
     contact: dict = field(default_factory=lambda: {"name": "", "phone": "", "email": ""})
+    combo_id: int | None = None
+    combo_slug: str = ""
+    combo_title: str = ""
+    combo_price: Decimal | None = None
 
     # --- Service operations ---
 
@@ -69,11 +73,27 @@ class PublicCart:
 
     def remove(self, service_id: int) -> None:
         self.items = [i for i in self.items if i.service_id != service_id]
+        self.clear_combo()
 
     def remove_ids(self, service_ids: list[int]) -> None:
         """Bulk remove by IDs (used by conflict rule enforcement)."""
         ids_set = set(service_ids)
         self.items = [i for i in self.items if i.service_id not in ids_set]
+        if ids_set:
+            self.clear_combo()
+
+    def apply_combo(self, *, combo_id: int, combo_slug: str, combo_title: str, combo_price: Decimal) -> None:
+        self.combo_id = combo_id
+        self.combo_slug = combo_slug
+        self.combo_title = combo_title
+        self.combo_price = combo_price
+        self.mode = MODE_SAME_DAY
+
+    def clear_combo(self) -> None:
+        self.combo_id = None
+        self.combo_slug = ""
+        self.combo_title = ""
+        self.combo_price = None
 
     def has(self, service_id: int) -> bool:
         return any(i.service_id == service_id for i in self.items)
@@ -95,6 +115,8 @@ class PublicCart:
         return [i.service_id for i in self.items]
 
     def total_price(self) -> Decimal:
+        if self.combo_price is not None:
+            return self.combo_price
         return sum((i.price for i in self.items), Decimal("0"))
 
     def total_duration(self) -> int:
@@ -124,6 +146,10 @@ class PublicCart:
             "date": self.date,
             "time": self.time,
             "contact": self.contact,
+            "combo_id": self.combo_id,
+            "combo_slug": self.combo_slug,
+            "combo_title": self.combo_title,
+            "combo_price": str(self.combo_price) if self.combo_price is not None else None,
         }
 
     @classmethod
@@ -135,6 +161,10 @@ class PublicCart:
             date=data.get("date"),
             time=data.get("time"),
             contact=data.get("contact", {"name": "", "phone": "", "email": ""}),
+            combo_id=data.get("combo_id"),
+            combo_slug=data.get("combo_slug", ""),
+            combo_title=data.get("combo_title", ""),
+            combo_price=Decimal(data["combo_price"]) if data.get("combo_price") is not None else None,
         )
 
 

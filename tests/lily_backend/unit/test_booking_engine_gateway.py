@@ -138,7 +138,7 @@ class TestLilyBookingAvailabilityAdapter:
             working_day_model=MasterWorkingDay,
             day_off_model=MasterDayOff,
             booking_settings_model=BookingSettings,
-            timezone="UTC",
+            timezone="Europe/Berlin",
             load_strategy="fill_first",
             target_date=dt.date(2026, 5, 11),
         )
@@ -160,6 +160,25 @@ class TestLilyBookingAvailabilityAdapter:
 
         assert start.time() == dt.time(8, 0)
         assert end.time() == dt.time(18, 0)
+        assert start.tzinfo.key == "Europe/Berlin"
+        assert start.astimezone(dt.UTC).time() == dt.time(6, 0)
+
+    def test_working_hours_treat_scaffold_utc_master_timezone_as_project_timezone(
+        self, db, master, booking_settings
+    ):
+        booking_settings.monday_is_closed = False
+        booking_settings.work_start_monday = dt.time(8, 0)
+        booking_settings.work_end_monday = dt.time(18, 0)
+        booking_settings.save(update_fields=["monday_is_closed", "work_start_monday", "work_end_monday"])
+        master.timezone = "UTC"
+        master.save(update_fields=["timezone"])
+
+        start, end = self._make_adapter().get_working_hours(master, dt.date(2026, 5, 11))
+
+        assert start.strftime("%H:%M") == "08:00"
+        assert end.strftime("%H:%M") == "18:00"
+        assert start.tzinfo.key == "Europe/Berlin"
+        assert start.astimezone(dt.UTC).strftime("%H:%M") == "06:00"
 
     def test_working_hours_require_master_working_day(self, db, booking_settings):
         from tests.factories import MasterFactory
@@ -494,3 +513,53 @@ class TestCreateBookingPersistence:
             )
 
         assert Appointment.objects.count() == 0
+
+    def test_duplicate_chain_service_time_is_rejected(self, db, service, client_obj):
+        from features.booking.models import Appointment
+        from features.booking.persistence import DuplicateChainAppointmentError, LilyBookingPersistenceHook
+
+        start = timezone.make_aware(dt.datetime(2026, 5, 11, 10, 0))
+        solution = SimpleNamespace(
+            items=[
+                SimpleNamespace(resource_id=123, start_time=start, duration_minutes=60),
+                SimpleNamespace(resource_id=456, start_time=start, duration_minutes=60),
+            ]
+        )
+        hook = LilyBookingPersistenceHook(Appointment, notify_received=False)
+
+        with pytest.raises(DuplicateChainAppointmentError):
+            hook.persist_chain(
+                solution=solution,
+                service_ids=[service.pk, service.pk],
+                client=client_obj,
+            )
+
+        assert Appointment.objects.count() == 0
+
+    def test_existing_client_service_time_is_rejected(self, db, master, service, client_obj):
+        from features.booking.models import Appointment
+        from features.booking.persistence import DuplicateChainAppointmentError, LilyBookingPersistenceHook
+
+        start = timezone.make_aware(dt.datetime(2026, 5, 11, 10, 0))
+        Appointment.objects.create(
+            master=master,
+            service=service,
+            client=client_obj,
+            datetime_start=start,
+            duration_minutes=60,
+            price="50.00",
+            status=Appointment.STATUS_PENDING,
+        )
+        solution = SimpleNamespace(
+            items=[SimpleNamespace(resource_id=master.pk, start_time=start, duration_minutes=60)]
+        )
+        hook = LilyBookingPersistenceHook(Appointment, notify_received=False)
+
+        with pytest.raises(DuplicateChainAppointmentError):
+            hook.persist_chain(
+                solution=solution,
+                service_ids=[service.pk],
+                client=client_obj,
+            )
+
+        assert Appointment.objects.count() == 1

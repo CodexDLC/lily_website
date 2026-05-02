@@ -17,4 +17,4 @@ class ServiceTranslationOptions(TranslationOptions):
 
 @register(ServiceCombo)
 class ServiceComboTranslationOptions(TranslationOptions):
-    fields = ("name", "description")
+    fields = ("name", "description", "promo_title", "promo_text", "promo_button_text")

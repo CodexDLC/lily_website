@@ -11,6 +11,10 @@ class BookingServiceNotFoundError(ValueError):
     """Raised when the booking engine asks to persist an unknown service."""
 
 
+class DuplicateChainAppointmentError(ValueError):
+    """Raised when a booking engine solution would duplicate a chain item."""
+
+
 def _load_services(service_ids: list[int]) -> dict[int, Service]:
     services = Service.objects.in_bulk(service_ids)
     missing_ids = [service_id for service_id in service_ids if service_id not in services]
@@ -57,6 +61,50 @@ def create_appointment_from_solution_item(
     return appointment_model.objects.create(**fields)
 
 
+def _active_statuses(appointment_model: type[Any]) -> list[str]:
+    return [
+        getattr(appointment_model, "STATUS_PENDING", "pending"),
+        getattr(appointment_model, "STATUS_CONFIRMED", "confirmed"),
+        getattr(appointment_model, "STATUS_RESCHEDULE_PROPOSED", "reschedule_proposed"),
+    ]
+
+
+def _validate_no_duplicate_chain_items(
+    *,
+    appointment_model: type[Any],
+    items: list[Any],
+    service_ids: list[int],
+    client: Any,
+) -> None:
+    seen: set[tuple[int, Any]] = set()
+    duplicate_keys: set[tuple[int, Any]] = set()
+
+    for item, service_id in zip(items, service_ids, strict=False):
+        key = (service_id, getattr(item, "start_time", None))
+        if key in seen:
+            duplicate_keys.add(key)
+        seen.add(key)
+
+    if duplicate_keys:
+        raise DuplicateChainAppointmentError("Booking chain contains duplicate service/time items")
+
+    if client is None:
+        return
+
+    existing_filters = [
+        {
+            "client": client,
+            "service_id": service_id,
+            "datetime_start": getattr(item, "start_time", None),
+            "status__in": _active_statuses(appointment_model),
+        }
+        for item, service_id in zip(items, service_ids, strict=False)
+    ]
+    for filters in existing_filters:
+        if filters["datetime_start"] is not None and appointment_model.objects.filter(**filters).exists():
+            raise DuplicateChainAppointmentError("Client already has this service booked at the selected time")
+
+
 class LilyBookingPersistenceHook:
     """Project persistence policy for chain and any-resource bookings."""
 
@@ -76,6 +124,13 @@ class LilyBookingPersistenceHook:
             return []
         if len(items) != len(service_ids):
             raise ValueError("Booking solution item count does not match requested services")
+
+        _validate_no_duplicate_chain_items(
+            appointment_model=self.appointment_model,
+            items=items,
+            service_ids=service_ids,
+            client=client,
+        )
 
         services = _load_services(service_ids)
         appointments = [

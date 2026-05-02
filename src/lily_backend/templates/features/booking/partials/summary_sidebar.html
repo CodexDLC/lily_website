@@ -15,6 +15,17 @@
       </div>
     {% endfor %}
 
+    {% if cart.combo_title %}
+      <div class="bk-summary-divider"></div>
+      <div class="bk-summary-item">
+        <div class="bk-summary-item__info">
+          <span class="bk-summary-item__name">{{ cart.combo_title }}</span>
+          <span class="bk-summary-item__meta">{% trans "Spezialpreis" %}</span>
+        </div>
+        <div class="bk-summary-item__price">{{ cart.total_price }} €</div>
+      </div>
+    {% endif %}
+
     {% if cart.date %}
       <div class="bk-summary-divider"></div>
       <div class="bk-summary-time">

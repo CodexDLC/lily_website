@@ -1,0 +1,54 @@
+{% load i18n %}
+
+{% if combo_promos %}
+<section class="combo-promos" aria-label="{% trans 'Aktuelle Angebote' %}">
+  <div class="container">
+    <div class="combo-promos__viewport" data-combo-promos>
+      <div class="combo-promos__track">
+        {% for combo in combo_promos %}
+          <article class="combo-promo{% if forloop.first %} combo-promo--active{% endif %}">
+            {% if combo.promo_image %}
+              <img class="combo-promo__image" src="{{ combo.promo_image.url }}" alt="" loading="lazy">
+            {% endif %}
+
+            <div class="combo-promo__overlay"></div>
+            <div class="combo-promo__content">
+              <h2 class="combo-promo__title">{{ combo.display_title }}</h2>
+
+              {% if combo.display_text %}
+                <p class="combo-promo__text">{{ combo.display_text }}</p>
+              {% endif %}
+
+              <div class="combo-promo__footer">
+                <div class="combo-promo__price">
+                  {% if combo.discount_type == combo.FIXED_PRICE %}
+                    {{ combo.discount_value }} €
+                  {% else %}
+                    {% trans "Spezialpreis" %}
+                  {% endif %}
+                  <span>{% trans "Termin nach Vereinbarung" %}</span>
+                </div>
+                <a class="combo-promo__button" href="{{ combo.booking_url }}">
+                  {{ combo.promo_button_text }}
+                </a>
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+
+      {% if combo_promos|length > 1 %}
+        <div class="combo-promos__controls" aria-label="{% trans 'Angebote wechseln' %}">
+          <button class="combo-promos__arrow" type="button" data-combo-prev aria-label="{% trans 'Vorheriges Angebot' %}">‹</button>
+          <div class="combo-promos__dots" aria-hidden="true">
+            {% for combo in combo_promos %}
+              <button class="combo-promos__dot{% if forloop.first %} combo-promos__dot--active{% endif %}" type="button" data-combo-dot="{{ forloop.counter0 }}"></button>
+            {% endfor %}
+          </div>
+          <button class="combo-promos__arrow" type="button" data-combo-next aria-label="{% trans 'Nächstes Angebot' %}">›</button>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}

@@ -180,7 +180,7 @@ class LilyCheckRunner(BaseCheckRunner):
                 return False
 
             # Dynamic wait for health
-            if not self.wait_for_services_healthy(timeout=120):
+            if not self.wait_for_services_healthy(timeout=240):
                 self.print_docker_logs()
                 return False
 

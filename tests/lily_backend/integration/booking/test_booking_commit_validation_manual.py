@@ -1,3 +1,5 @@
+from datetime import UTC
+
 import pytest
 from django.contrib.messages import get_messages
 from django.urls import reverse
@@ -66,10 +68,16 @@ def test_commit_requires_checkboxes(client, service, master, store_cart, setting
 
 @pytest.mark.django_db
 def test_public_commit_persists_selected_slot_not_first_available(client, service, master, booking_settings, settings):
-    settings.TIME_ZONE = "UTC"
+    settings.TIME_ZONE = "Europe/Berlin"
+    booking_settings.thursday_is_closed = False
+    booking_settings.work_start_thursday = timezone.datetime.strptime("08:00", "%H:%M").time()
+    booking_settings.work_end_thursday = timezone.datetime.strptime("18:00", "%H:%M").time()
+    booking_settings.save(update_fields=["thursday_is_closed", "work_start_thursday", "work_end_thursday"])
+    master.timezone = "UTC"
+    master.save(update_fields=["timezone"])
     service.masters.add(master)
     target_date = "2026-04-30"
-    selected_time = "15:30"
+    selected_time = "08:00"
 
     session = client.session
     cart = PublicCart(
@@ -89,22 +97,25 @@ def test_public_commit_persists_selected_slot_not_first_available(client, servic
     session[SESSION_KEY] = cart.to_dict()
     session.save()
 
-    response = client.post(
-        reverse("booking:commit"),
-        {
-            "first_name": "Slot",
-            "last_name": "Regression",
-            "phone": "12345",
-            "email": "slot@example.com",
-            "cancellation_policy": "on",
-            "consent": "on",
-        },
-    )
+    with timezone.override("Europe/Berlin"):
+        response = client.post(
+            reverse("booking:commit"),
+            {
+                "first_name": "Slot",
+                "last_name": "Regression",
+                "phone": "12345",
+                "email": "slot@example.com",
+                "cancellation_policy": "on",
+                "consent": "on",
+            },
+        )
 
     assert response.status_code == 200
     assert response.headers["HX-Redirect"]
 
     appointment = Appointment.objects.get(client__email="slot@example.com")
-    assert timezone.localtime(appointment.datetime_start).strftime("%Y-%m-%d %H:%M") == (
-        f"{target_date} {selected_time}"
-    )
+    with timezone.override("Europe/Berlin"):
+        assert timezone.localtime(appointment.datetime_start).strftime("%Y-%m-%d %H:%M") == (
+            f"{target_date} {selected_time}"
+        )
+    assert appointment.datetime_start.astimezone(UTC).strftime("%Y-%m-%d %H:%M") == "2026-04-30 06:00"

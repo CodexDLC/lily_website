@@ -4,6 +4,31 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
 
+## [2.9.0] - 2026-05-02
+
+### Added
+
+- **Service Combos:** Added homepage promo support for featured service combos, including localized promo copy, images, ordering, admin controls, and a responsive slider.
+- **Booking Wizard:** Added `?combo=<slug>` deep links that prefill the public booking cart with combo services and fixed-price combo metadata.
+- **Media Tools:** Added a Playwright helper for generating flyer and poster PDFs from local HTML sources.
+
+### Changed
+
+- **Booking Pricing:** Fixed-price combos now keep their promotional total through checkout and distribute the final price across created appointments.
+- **Booking UI:** Cart, hub, and summary panels now show selected combo details and special pricing alongside individual services.
+- **Availability:** Master working hours now stay in the configured project timezone instead of being converted to UTC before slot selection.
+- **Infrastructure:** Test Docker startup now disables legacy migration by default and allows longer service health checks.
+
+### Fixed
+
+- **Booking:** Prevented duplicate chain appointment creation for repeated service/time pairs and existing active client bookings.
+- **Booking:** Clearing or changing individual cart services now also clears stale combo pricing state.
+- **Tests:** Expanded booking wizard, commit, persistence, and timezone regression coverage for combo and selected-slot flows.
+
+### Removed
+
+- **Docs:** Removed outdated planning notes for the conversations vision and Django admin refactor.
+
 ## [2.8.0] - 2026-04-27
 
 ### Added
