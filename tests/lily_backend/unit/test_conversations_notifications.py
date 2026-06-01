@@ -75,16 +75,12 @@ class TestConversationsNotifications:
         client_name = "Anna"
         context = {"time": "10:00"}
 
-        NotificationService.send_booking_receipt(
+        result = NotificationService.send_booking_receipt(
             recipient_email=recipient_email, client_name=client_name, context=context, lang="de"
         )
 
-        mock_engine.dispatch.assert_called_once()
-        kwargs = mock_engine.dispatch.call_args.kwargs
-        assert kwargs["recipient_email"] == recipient_email
-        assert kwargs["template_name"] == "bk_receipt"
-        assert kwargs["event_type"] == "booking.received"
-        assert kwargs["time"] == "10:00"
+        assert result is None
+        mock_engine.dispatch.assert_not_called()
 
     def test_send_booking_confirmation(self, mock_engine, mock_selector, mock_should_notify):
         NotificationService.send_booking_confirmation(

@@ -172,6 +172,7 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
                 Q(client__first_name__icontains=search)
                 | Q(client__last_name__icontains=search)
                 | Q(client__phone__icontains=search)
+                | Q(client__email__icontains=search)
                 | Q(service__name__icontains=search)
             )
         if date_from:
@@ -199,6 +200,7 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
                     "client_notes": appt.client_notes,
                     "client_created_at": client.created_at.isoformat() if client else None,
                     "phone": client.phone if client else "",
+                    "email": client.email if client else "",
                     "service_title": appt.service.name,
                     "price": float(price),
                     "status": appt.status,
@@ -419,6 +421,7 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
             "duration": appt.duration_minutes,
             "client_name": client_name,
             "phone": client_phone,
+            "email": client_email,
             "service_title": service.name,
             "price": float(appt.price),
             "status": appt.status,

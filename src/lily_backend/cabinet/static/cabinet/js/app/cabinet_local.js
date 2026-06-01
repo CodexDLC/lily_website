@@ -33,8 +33,8 @@
         const input = document.querySelector('input[name=csrfmiddlewaretoken]');
         if (input && input.value) return input.value;
 
-        // Prefer the longest csrftoken* cookie name to avoid stale duplicates
-        // left by legacy deploys (e.g. "csrftoken" vs renamed "csrftoken_app").
+
+
         let best = null;
         const re = /(?:^|;\s*)(csrftoken[^=]*)=([^;]+)/g;
         let match;

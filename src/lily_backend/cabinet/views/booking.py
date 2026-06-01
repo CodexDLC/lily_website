@@ -171,7 +171,7 @@ class BookingListView(BaseBookingView):
 class BookingModalView(BaseBookingView):
     """Renders modular modals for a specific booking."""
 
-    template_name = "cabinet/components/generic_modal.html"
+    template_name = "cabinet/booking/generic_modal.html"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)

@@ -245,6 +245,9 @@ class TestSuccessPages:
         url = reverse("booking:success_single", kwargs={"token": "FINTOKEN"})
         resp = client.get(url)
         assert resp.status_code == 200
+        assert "Terminprüfung läuft".encode() in resp.content
+        assert "Dies ist noch keine Bestätigung".encode() in resp.content
+        assert "In Bearbeitung".encode() in resp.content
 
     def test_success_single_404_on_bad_token(self, client):
         url = reverse("booking:success_single", kwargs={"token": "BADTOKEN"})
@@ -259,6 +262,8 @@ class TestSuccessPages:
         assert resp.status_code == 200
         assert pending_appointment.service.name.encode() in resp.content
         assert pending_appointment.master.name.encode() in resp.content
+        assert "Terminprüfung läuft".encode() in resp.content
+        assert "In Bearbeitung".encode() in resp.content
 
     def test_success_multi_view_renders_empty_tokens_via_url(self, client):
         resp = client.get(reverse("booking:success_multi"), {"tokens": ""})
@@ -273,6 +278,8 @@ class TestSuccessPages:
         resp = client.get(reverse("booking:success_group", kwargs={"token": group.group_token}))
         assert resp.status_code == 200
         assert pending_appointment.service.name.encode() in resp.content
+        assert "Terminprüfung läuft".encode() in resp.content
+        assert "In Bearbeitung".encode() in resp.content
 
 
 # ── _get_or_create_client utility ─────────────────────────────────────────────

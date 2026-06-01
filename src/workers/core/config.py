@@ -101,7 +101,7 @@ class WorkerSettings(BaseWorkerConfig):
 
     tracking_flush_interval_sec: int = Field(default=1800, alias="TRACKING_FLUSH_INTERVAL_SEC")
     tracking_flush_stale_after_sec: int = Field(default=3900, alias="TRACKING_FLUSH_STALE_AFTER_SEC")
-    booking_worker_interval_sec: int = Field(default=900, alias="BOOKING_WORKER_INTERVAL_SEC")
+    booking_worker_interval_sec: int = Field(default=3600, alias="BOOKING_WORKER_INTERVAL_SEC")
     booking_worker_stale_after_sec: int = Field(default=2700, alias="BOOKING_WORKER_STALE_AFTER_SEC")
 
     @property

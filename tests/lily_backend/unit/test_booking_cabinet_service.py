@@ -496,9 +496,11 @@ class TestBridgeAdapterHelpers:
             {
                 "client_name": "Anna Test",
                 "phone": "+49111",
+                "email": "anna@test.local",
             }
         )
         assert profile.name == "Anna Test"
+        assert profile.subtitle == "+49111 · anna@test.local"
         assert profile.avatar == "AT"
 
     def test_build_summary(self):
@@ -516,6 +518,30 @@ class TestBridgeAdapterHelpers:
         assert len(items) == 4
         assert items[0].label == "Service"
         assert items[0].value == "Cut"
+
+    def test_build_summary_adds_email_and_conversation_link(self):
+        from types import SimpleNamespace
+
+        from features.booking.services.cabinet import BookingCabinetBridgeAdapter
+
+        with patch.object(
+            BookingCabinetBridgeAdapter,
+            "_find_contact_conversation",
+            return_value=SimpleNamespace(label="Conversation", value="AW: Booking", url="/cabinet/conversations/7/"),
+        ):
+            items = BookingCabinetBridgeAdapter._build_summary(
+                {
+                    "service_title": "Cut",
+                    "status": "pending",
+                    "date": "2026-05-11",
+                    "time": "10:00",
+                    "price": 50,
+                    "phone": "+49111",
+                    "email": "anna@test.local",
+                }
+            )
+        assert any(item.label == "Email" and item.value == "anna@test.local" for item in items)
+        assert any(getattr(item, "url", "") == "/cabinet/conversations/7/" for item in items)
 
     def test_shift_date_forward(self):
         from features.booking.services.cabinet import BookingCabinetBridgeAdapter

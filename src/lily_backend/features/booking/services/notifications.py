@@ -149,35 +149,17 @@ def handle_booking_cancelled(appt: Appointment) -> NotificationDispatchSpec:
 
 
 @notification_handler("booking.received")
-def handle_booking_received(appt: Appointment) -> NotificationDispatchSpec:
-    """Handler for new booking requests (receipt)."""
-    return NotificationDispatchSpec(
-        recipient_email=appt.client.email,
-        client_name=appt.client.first_name,
-        subject_key="bk_receipt_subject",
-        event_type="booking.received",
-        template_name="bk_receipt",
-        channels=["email"],
-        language=appt.lang,
-        context=build_booking_notification_context(appt),
-    )
+def handle_booking_received(appt: Appointment) -> None:
+    """Do not send client receipts for booking requests; wait for confirmation."""
+    del appt
+    return None
 
 
 @notification_handler("booking.group_received")
-def handle_booking_group_received(group: AppointmentGroup) -> NotificationDispatchSpec:
-    """Handler for same-day chain booking requests (one receipt for the group)."""
-    context = build_booking_group_notification_context(group)
-    client = group.client
-    return NotificationDispatchSpec(
-        recipient_email=getattr(client, "email", "") if client else "",
-        client_name=getattr(client, "first_name", "") if client else "",
-        subject_key="bk_receipt_subject",
-        event_type="booking.received",
-        template_name="bk_group_booking",
-        channels=["email"],
-        language=context["booking_language"],
-        context=context,
-    )
+def handle_booking_group_received(group: AppointmentGroup) -> None:
+    """Do not send client receipts for group requests; wait for confirmation."""
+    del group
+    return None
 
 
 @notification_handler("booking.no_show")

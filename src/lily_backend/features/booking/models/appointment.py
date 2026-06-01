@@ -1,3 +1,4 @@
+import logging
 import secrets
 from typing import Any, ClassVar
 
@@ -8,6 +9,8 @@ from django.utils.translation import gettext_lazy as _
 from features.main.models import Service
 
 from .master import Master
+
+log = logging.getLogger(__name__)
 
 
 class Appointment(AbstractBookableAppointment):
@@ -110,6 +113,12 @@ class Appointment(AbstractBookableAppointment):
         from features.conversations.services.notifications import _get_engine
 
         _get_engine().dispatch_event("booking.confirmed", self)
+        try:
+            from features.booking.services import reminders
+
+            reminders.schedule_booking_reminder(self)
+        except Exception:
+            log.exception("Failed to schedule booking reminder for appointment_id=%s", self.pk)
 
     def mark_completed(self) -> None:
         """Mark a confirmed appointment as completed."""

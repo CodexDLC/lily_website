@@ -37,9 +37,7 @@ class TestBookingNotifications:
     def test_handle_booking_received(self):
         appt = AppointmentFactory()
         spec = handle_booking_received(appt)
-        assert spec.template_name == "bk_receipt"
-        assert spec.event_type == "booking.received"
-        assert spec.context["service_name"] == appt.service.name
+        assert spec is None
 
     def test_handle_booking_group_received(self):
         group = AppointmentGroupFactory()
@@ -49,11 +47,7 @@ class TestBookingNotifications:
         AppointmentGroupItemFactory(group=group, appointment=appt2, order=1)
 
         spec = handle_booking_group_received(group)
-        assert spec.template_name == "bk_group_booking"
-        assert spec.event_type == "booking.received"
-        assert len(spec.context["items"]) == 2
-        assert spec.context["items"][0]["service_name"] == appt1.service.name
-        assert spec.context["items"][1]["service_name"] == appt2.service.name
+        assert spec is None
 
     def test_handle_booking_rescheduled(self):
         appt = AppointmentFactory()

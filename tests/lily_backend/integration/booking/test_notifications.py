@@ -49,9 +49,7 @@ def test_handle_booking_cancelled(mock_appt):
 
 def test_handle_booking_received(mock_appt):
     spec = handle_booking_received(mock_appt)
-    assert spec.event_type == "booking.received"
-    assert spec.subject_key == "bk_receipt_subject"
-    assert spec.channels == ["email"]
+    assert spec is None
 
 
 def test_handle_booking_group_received(client_obj, master, service):
@@ -87,16 +85,7 @@ def test_handle_booking_group_received(client_obj, master, service):
 
     spec = handle_booking_group_received(group)
 
-    assert spec.recipient_email == "anna@test.local"
-    assert spec.event_type == "booking.received"
-    assert spec.template_name == "bk_group_booking"
-    assert spec.channels == ["email"]
-    assert spec.context["total_price"] == "80.00"
-    assert spec.context["datetime"] == timezone.localtime(appt_one.datetime_start).strftime("%d.%m.%Y %H:%M")
-    assert "client_name" not in spec.context
-    assert "language" not in spec.context
-    assert spec.language == "de"
-    assert [item["service_name"] for item in spec.context["items"]] == ["Test Service", "Second Service"]
+    assert spec is None
 
 
 def test_same_day_chain_sends_one_group_received_event(client_obj, master, service):

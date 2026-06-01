@@ -101,7 +101,19 @@ class BookingService:
             )
         if state.summary_items:
             sections.append(
-                SummarySection(items=[KeyValueItem(item.label, item.value) for item in state.summary_items])
+                SummarySection(
+                    items=[
+                        {
+                            "label": item.label,
+                            "value": item.value,
+                            "url": url,
+                            "icon": getattr(item, "icon", ""),
+                        }
+                        if (isinstance((url := getattr(item, "url", "")), str) and url)
+                        else KeyValueItem(item.label, item.value)
+                        for item in state.summary_items
+                    ]
+                )
             )
         if state.form and state.form.fields:
             sections.append(

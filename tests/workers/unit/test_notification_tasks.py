@@ -26,6 +26,8 @@ def mock_ctx():
         "notification_service": MagicMock(send_notification=AsyncMock()),
         "redis_service": mock_redis,
         "stream_manager": MagicMock(add_event=AsyncMock()),
+        "internal_api": AsyncMock(),
+        "settings": MagicMock(booking_worker_api_key="test-token"),
         "job_try": 1,
     }
 
@@ -278,10 +280,87 @@ class TestBookingReminderTask:
 
     @pytest.mark.asyncio
     async def test_send_failure_retries(self, mock_ctx):
-        payload = {"id": 12, "client_email": "x@x.com", "name": "X", "service_name": "S", "datetime": "27.04.2026 10:00"}
+        payload = {
+            "id": 12,
+            "client_email": "x@x.com",
+            "name": "X",
+            "service_name": "S",
+            "datetime": "27.04.2026 10:00",
+        }
         mock_ctx["notification_service"].send_notification.side_effect = Exception("SMTP fail")
         with pytest.raises(Retry):
             await send_booking_reminder_task(mock_ctx, payload)
+
+    @pytest.mark.asyncio
+    async def test_scheduled_payload_validates_fresh_appointment_before_send(self, mock_ctx):
+        payload = {
+            "id": 42,
+            "client_email": "stale@example.com",
+            "requires_validation": True,
+            "mark_sent_on_success": True,
+            "expected_datetime_start": "2026-04-27T12:00:00+00:00",
+        }
+        fresh_payload = {
+            "id": 42,
+            "client_email": "fresh@example.com",
+            "name": "Anna",
+            "service_name": "Haircut",
+            "datetime": "27.04.2026 14:00",
+            "lang": "de",
+            "master_name": "Maria",
+        }
+        mock_ctx["internal_api"].get.return_value = {"send": True, "payload": fresh_payload}
+
+        await send_booking_reminder_task(mock_ctx, payload)
+
+        mock_ctx["internal_api"].get.assert_called_once_with(
+            "/v1/booking/appointments/42/reminder-payload",
+            scope="booking.worker",
+            token="test-token",
+            params={"expected_datetime_start": "2026-04-27T12:00:00+00:00"},
+        )
+        mock_ctx["notification_service"].send_notification.assert_called_once_with(
+            email="fresh@example.com",
+            subject="Terminerinnerung - LILY Beauty Salon",
+            template_name="bk_reminder",
+            data=fresh_payload,
+        )
+        mock_ctx["internal_api"].post.assert_called_once_with(
+            "/v1/booking/appointments/42/mark-reminder-sent",
+            scope="booking.worker",
+            token="test-token",
+        )
+
+    @pytest.mark.asyncio
+    async def test_scheduled_payload_skips_when_validation_rejects(self, mock_ctx):
+        payload = {
+            "id": 42,
+            "client_email": "stale@example.com",
+            "requires_validation": True,
+            "expected_datetime_start": "2026-04-27T12:00:00+00:00",
+        }
+        mock_ctx["internal_api"].get.return_value = {"send": False}
+
+        await send_booking_reminder_task(mock_ctx, payload)
+
+        mock_ctx["notification_service"].send_notification.assert_not_called()
+        mock_ctx["internal_api"].post.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_mark_sent_failure_does_not_retry_after_email_sent(self, mock_ctx):
+        payload = {
+            "id": 43,
+            "client_email": "client@example.com",
+            "name": "Anna",
+            "service_name": "Haircut",
+            "datetime": "27.04.2026 14:00",
+            "mark_sent_on_success": True,
+        }
+        mock_ctx["internal_api"].post.side_effect = Exception("mark failed")
+
+        await send_booking_reminder_task(mock_ctx, payload)
+
+        mock_ctx["notification_service"].send_notification.assert_called_once()
 
 
 class TestUtils:

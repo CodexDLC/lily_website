@@ -7,6 +7,14 @@ from src.workers.core.config import WorkerSettings
 from src.workers.core.site_settings import WorkerSiteSettings
 
 
+def test_worker_settings_default_booking_polling_interval_is_one_hour(monkeypatch):
+    monkeypatch.delenv("BOOKING_WORKER_INTERVAL_SEC", raising=False)
+
+    settings = WorkerSettings(_env_file=None)
+
+    assert settings.booking_worker_interval_sec == 3600
+
+
 @pytest.fixture
 def mock_settings():
     settings = MagicMock(spec=WorkerSettings)

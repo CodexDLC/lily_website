@@ -90,13 +90,17 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # Certbot is a manual helper only. Certificate renewal is scheduled on the
+  # host so the same job can reload the nginx container after a successful renew.
   certbot:
     image: certbot/certbot:v2.11.0
     container_name: lily_website-certbot
+    profiles:
+      - manual
     volumes:
       - certs_volume:/etc/letsencrypt
       - certbot_challenge_volume:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    restart: "no"
     networks:
       - lily_website-network
 

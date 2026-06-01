@@ -26,6 +26,12 @@ TASK_ID = "conversations.import"
 QUEUE_NAME = "system"
 _SIZE_RE = re.compile(rb"RFC822\.SIZE\s+(\d+)", re.IGNORECASE)
 _THREAD_KEY_RE = re.compile(r"(?:thread_key|thread|reply_match_token)[=:]\s*([A-Za-z0-9_\-]{16,128})", re.I)
+_QUOTED_HISTORY_MARKERS = [
+    re.compile(r"\s*-{2,}\s*(?:Original Message|Urspr(?:ü|ue)ngliche Nachricht)\s*-{2,}.*", re.I | re.S),
+    re.compile(r"\s*(?:Original Message|Urspr(?:ü|ue)ngliche Nachricht)\s*:.*", re.I | re.S),
+    re.compile(r"\n\s*(?:On .{1,220} wrote:|Am .{1,220} schrieb .{0,220}:).*", re.I | re.S),
+    re.compile(r"\n\s*(?:From|Von):\s+.+\n\s*(?:Sent|Gesendet):\s+.*", re.I | re.S),
+]
 
 
 @dataclass
@@ -195,7 +201,17 @@ def _extract_text(msg: Any) -> str:
 
     # Preserve line structure but clean up excessive whitespace on each line
     lines = [line.strip() for line in content.splitlines()]
-    return "\n".join(lines).strip()
+    return _strip_quoted_history("\n".join(lines).strip())
+
+
+def _strip_quoted_history(content: str) -> str:
+    """Keep only the new inbound text, not the quoted previous correspondence."""
+    stripped = content.strip()
+    for marker in _QUOTED_HISTORY_MARKERS:
+        match = marker.search(stripped)
+        if match:
+            return stripped[: match.start()].strip()
+    return stripped
 
 
 def _attachments(msg: Any) -> list[dict[str, Any]]:

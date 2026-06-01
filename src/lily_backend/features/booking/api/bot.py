@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from features.booking.models import Appointment
+from features.booking.services.reminders import build_reminder_payload, should_send_reminder
 from ninja import Router, Schema
 from system.api.auth import require_internal_scope
 
@@ -86,6 +87,18 @@ def get_reminders_due(request):
             }
         )
     return result
+
+
+@router.get("/appointments/{appointment_id}/reminder-payload")
+def get_reminder_payload(request, appointment_id: int, expected_datetime_start: str | None = None):
+    require_internal_scope(request, "booking.worker")
+    appt = get_object_or_404(
+        Appointment.objects.select_related("client", "service", "master"),
+        id=appointment_id,
+    )
+    if not should_send_reminder(appt, expected_datetime_start=expected_datetime_start):
+        return {"send": False}
+    return {"send": True, "payload": build_reminder_payload(appt)}
 
 
 @router.post("/appointments/{appointment_id}/mark-reminder-sent")

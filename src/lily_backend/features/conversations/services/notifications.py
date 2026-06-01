@@ -185,31 +185,9 @@ class NotificationService:
         recipient_phone: str | None = None,
         lang: str = "de",
     ) -> str | None:
-        """Send booking-received auto-receipt to client."""
-        if not _should_notify(recipient_email, "notify_service"):
-            return None
-
-        greeting = _t("bk_greeting", lang, "Hallo")
-        return _get_engine().dispatch(
-            recipient_email=recipient_email,
-            recipient_phone=recipient_phone,
-            client_name=client_name,
-            template_name="bk_receipt",
-            event_type="booking.received",
-            channels=["email"],
-            language=lang,
-            subject_key="bk_receipt_subject",
-            subject=_t("bk_receipt_subject", lang, "Eingangsbestätigung: Ihre Terminanfrage"),
-            greeting=f"{greeting} {client_name},",
-            email_tag=_t("bk_receipt_tag", lang, "STATUS: IN PRÜFUNG ⏳"),
-            email_body=_t(
-                "bk_receipt_body",
-                lang,
-                "Wir prüfen, ob der Termin verfügbar ist. Bitte warten Sie auf die verbindliche Bestätigung.",
-            ),
-            signature=_t("email_signature_common", lang, "Ihr LILY Beauty Team"),
-            **context,
-        )
+        """Booking request receipts are disabled; clients get the confirmation email only."""
+        del recipient_email, client_name, context, recipient_phone, lang
+        return None
 
     @classmethod
     def send_booking_confirmation(

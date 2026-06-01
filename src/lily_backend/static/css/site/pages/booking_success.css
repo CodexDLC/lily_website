@@ -55,6 +55,16 @@
     box-shadow: 0 0 15px rgba(237, 208, 113, 0.2);
 }
 
+.bk-success__icon svg {
+    width: 44px;
+    height: 44px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 .bk-success__title {
     font-family: var(--font-serif, serif);
     font-size: 36px;
@@ -68,6 +78,20 @@
     color: var(--color-white);
     margin-bottom: 30px;
     opacity: 0.9;
+}
+
+.bk-success__warning {
+    display: inline-block;
+    margin: 0 0 28px;
+    padding: 10px 16px;
+    border: 1px solid rgba(237, 208, 113, 0.45);
+    border-radius: 6px;
+    color: var(--color-gold);
+    background: rgba(237, 208, 113, 0.08);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
 }
 
 .bk-success__details {
@@ -85,6 +109,7 @@
     color: var(--color-white);
     display: flex;
     justify-content: space-between;
+    gap: 20px;
 }
 
 .bk-success__details p:last-child {
@@ -97,6 +122,11 @@
     text-transform: uppercase;
     font-size: 13px;
     letter-spacing: 1px;
+    flex: 0 0 auto;
+}
+
+.bk-success__details span {
+    text-align: right;
 }
 
 .bk-success__list {

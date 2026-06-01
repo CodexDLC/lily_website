@@ -108,6 +108,16 @@ class TestEmailImportLogic:
         msg.set_content("Plain")
         assert _extract_text(msg) == "Plain"
 
+    def test_extract_text_strips_quoted_lily_history(self):
+        msg = EmailMessage()
+        msg.set_content(
+            "Bitte Termin um 13 Uhr.\n\nUrsprüngliche Nachricht: Von: info@lily-salon.de\n"
+            '<img src="data:image/gif;base64,abc"> STATUS: IN PRÜFUNG',
+        )
+        text = _extract_text(msg)
+        assert text == "Bitte Termin um 13 Uhr."
+        assert "STATUS: IN PRÜFUNG" not in text
+
     @pytest.mark.asyncio
     async def test_import_emails_task_skipped(self, ctx):
         ctx["heartbeat_registry"].should_run.return_value = False

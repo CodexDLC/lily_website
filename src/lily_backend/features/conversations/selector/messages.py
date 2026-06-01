@@ -38,6 +38,19 @@ def get_replies(message_id: int) -> QuerySet[MessageReply]:
     return MessageReply.objects.filter(message_id=message_id).select_related("sent_by").order_by("sent_at")
 
 
+def get_latest_thread_for_contact(*, email: str = "", phone: str = "") -> Message | None:
+    filters = Q()
+    email = email.strip()
+    phone = phone.strip()
+    if email:
+        filters |= Q(sender_email__iexact=email)
+    if phone:
+        filters |= Q(sender_phone__icontains=phone)
+    if not filters:
+        return None
+    return Message.objects.filter(filters, is_archived=False).order_by("-updated_at", "-created_at").first()
+
+
 def get_topic_counts() -> list[dict[str, Any]]:
     return list(
         Message.objects.filter(is_archived=False)

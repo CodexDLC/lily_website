@@ -1,0 +1,357 @@
+{% comment %}
+    Project override for booking modal rendering. Keeps the codex-django
+    modal contract, with support for linked summary values.
+{% endcomment %}
+
+<style>
+    #modal-loader {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    #modal-loader.htmx-request {
+        opacity: 1;
+        pointer-events: auto;
+    }
+</style>
+
+<div class="cab-modal-composer" x-data="{ loading: false }">
+    <div class="cab-modal-composer__header d-flex align-items-center justify-content-between p-3 border-bottom">
+        <h5 class="m-0 fw-bold text-gradient">{{ obj.title }}</h5>
+        <button type="button" class="btn-close" @click="$dispatch('close-modal')"></button>
+    </div>
+
+    <form class="cab-modal-composer__body p-0">
+        {% for section in obj.sections %}
+            {% if section.type == 'profile' %}
+                <div class="cab-modal-section cab-modal-section--profile p-4 border-bottom bg-light-subtle">
+                    <div class="d-flex align-items-center gap-3">
+                        {% if section.avatar %}
+                            <div class="cab-avatar cab-avatar--lg bg-primary text-white d-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width: 48px; height: 48px; font-weight: 600;">
+                                {{ section.avatar }}
+                            </div>
+                        {% endif %}
+                        <div>
+                            <div class="fs-5 fw-bold text-dark">{{ section.name }}</div>
+                            <div class="text-secondary small">{{ section.subtitle|default:"No contact data" }}</div>
+                        </div>
+                    </div>
+                </div>
+
+            {% elif section.type == 'summary' %}
+                <div class="cab-modal-section cab-modal-section--summary p-4 border-bottom">
+                    <div class="row g-4">
+                        {% for item in section.items %}
+                            <div class="col-6">
+                                <div class="text-muted small text-uppercase fw-semibold mb-1" style="font-size: 0.7rem; letter-spacing: 0.05rem;">
+                                    {{ item.label }}
+                                </div>
+                                {% if item.url %}
+                                    <a href="{{ item.url }}" class="fw-medium text-primary text-decoration-none d-inline-flex align-items-center gap-2">
+                                        {% if item.icon %}<i class="bi {{ item.icon }}"></i>{% endif %}
+                                        <span>{{ item.value }}</span>
+                                    </a>
+                                {% else %}
+                                    <div class="fw-medium text-dark">{{ item.value }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% elif section.type == 'form' %}
+                <div class="cab-modal-section cab-modal-section--form p-4 border-bottom">
+                    {% for field in section.fields %}
+                        <div class="mb-3 last-child-mb-0">
+                            <label class="form-label small fw-bold text-secondary">{{ field.label }}</label>
+                            {% if field.field_type == 'textarea' %}
+                                <textarea name="{{ field.name }}"
+                                          class="form-control cab-input"
+                                          placeholder="{{ field.placeholder }}"
+                                          rows="3">{{ field.value }}</textarea>
+                            {% elif field.field_type == 'select' %}
+                                <select name="{{ field.name }}" class="form-select cab-input">
+                                    {% for val, label in field.options %}
+                                        <option value="{{ val }}" {% if val == field.value %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% else %}
+                                <input type="{{ field.field_type }}"
+                                       name="{{ field.name }}"
+                                       class="form-control cab-input"
+                                       value="{{ field.value }}"
+                                       placeholder="{{ field.placeholder }}">
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+            {% elif section.type == 'slot_picker' %}
+                <div class="cab-modal-section cab-modal-section--slot-picker p-4 border-bottom"
+                     x-data="{ selectedTime: '{{ section.data.selected_time }}' }">
+                    <input type="hidden" name="date" value="{{ section.data.selected_date }}">
+                    <input type="hidden" name="time" :value="selectedTime">
+
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        {% if section.data.prev_url %}
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
+                                    style="width: 36px; height: 36px;"
+                                    hx-get="{{ section.data.prev_url }}"
+                                    hx-target="#modal-body"
+                                    hx-swap="innerHTML"
+                                    hx-indicator="#modal-loader">
+                                <span class="bi bi-chevron-left"></span>
+                            </button>
+                        {% endif %}
+
+                        <div class="btn btn-outline-secondary flex-grow-1 d-flex align-items-center justify-content-center gap-2 fw-semibold"
+                             style="pointer-events: none;">
+                            <span class="bi bi-calendar3 opacity-50"></span>
+                            {{ section.data.selected_date_label }}
+                        </div>
+
+                        {% if section.data.next_url %}
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
+                                    style="width: 36px; height: 36px;"
+                                    hx-get="{{ section.data.next_url }}"
+                                    hx-target="#modal-body"
+                                    hx-swap="innerHTML"
+                                    hx-indicator="#modal-loader">
+                                <span class="bi bi-chevron-right"></span>
+                            </button>
+                        {% endif %}
+
+                        {% if section.data.today_url %}
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    hx-get="{{ section.data.today_url }}"
+                                    hx-target="#modal-body"
+                                    hx-swap="innerHTML"
+                                    hx-indicator="#modal-loader">
+                                Сегодня
+                            </button>
+                        {% endif %}
+                    </div>
+
+                    <div class="text-muted small fw-semibold mb-2">Свободные слоты</div>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for slot in section.data.slots %}
+                            <button type="button"
+                                    class="btn btn-sm"
+                                    :class="selectedTime === '{{ slot.value }}' ? 'btn-primary' : 'btn-outline-secondary'"
+                                    {% if not slot.available %}disabled{% endif %}
+                                    @click="selectedTime = '{{ slot.value }}'">
+                                {{ slot.label }}
+                            </button>
+                        {% empty %}
+                            <div class="text-muted small">На выбранную дату свободных слотов нет.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% elif section.type == 'quick_create' %}
+                <div class="cab-modal-section cab-modal-section--quick-create p-4 border-bottom"
+                     x-data='{
+                        selectedClientId: "{{ section.data.selected_client_id|default:"" }}",
+                        query: "{{ section.data.client_search_query|default:""|escapejs }}",
+                        showDropdown: false,
+                        showNewClient: {% if section.data.selected_client_id == "new" %}true{% else %}false{% endif %},
+                        minChars: {{ section.data.client_search_min_chars|default:3 }},
+                        options: [
+                            {% for option in section.data.client_options %}
+                            {
+                                value: "{{ option.value|escapejs }}",
+                                label: "{{ option.label|escapejs }}",
+                                subtitle: "{{ option.subtitle|escapejs }}",
+                                email: "{{ option.email|default:""|escapejs }}",
+                                search: "{{ option.search_text|default:""|escapejs }}"
+                            }{% if not forloop.last %},{% endif %}
+                            {% endfor %}
+                        ],
+                        get filteredOptions() {
+                            const needle = this.query.trim().toLowerCase();
+                            if (needle.length < this.minChars) {
+                                return [];
+                            }
+                            return this.options.filter((option) => option.search.includes(needle));
+                        },
+                        selectClient(option) {
+                            this.selectedClientId = option.value;
+                            this.query = option.subtitle ? `${option.label} · ${option.subtitle}` : option.label;
+                            this.showDropdown = false;
+                            this.showNewClient = false;
+                        },
+                        activateNewClient() {
+                            this.selectedClientId = "new";
+                            this.showNewClient = true;
+                            this.showDropdown = false;
+                        },
+                        resetClientSelection() {
+                            this.selectedClientId = "";
+                            this.showNewClient = false;
+                        }
+                     }'>
+                    <input type="hidden" name="resource_id" value="{{ section.data.resource_id }}">
+                    <input type="hidden" name="date" value="{{ section.data.booking_date }}">
+                    <input type="hidden" name="time" value="{{ section.data.selected_time }}">
+                    <input type="hidden" name="client_id" :value="selectedClientId">
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-4">
+                            <div class="text-muted small text-uppercase fw-semibold mb-1">Мастер</div>
+                            <div class="fw-medium text-dark">{{ section.data.resource_label }}</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-muted small text-uppercase fw-semibold mb-1">Дата</div>
+                            <div class="fw-medium text-dark">{{ section.data.date_label }}</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="text-muted small text-uppercase fw-semibold mb-1">Время</div>
+                            <div class="fw-medium text-dark">{{ section.data.time_label }}</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-secondary">Услуга</label>
+                        <select name="service_id" class="form-select cab-input">
+                            {% for option in section.data.service_options %}
+                                <option value="{{ option.value }}" {% if option.value == section.data.selected_service_id %}selected{% endif %}>
+                                    {{ option.label }}{% if option.price_label or option.duration_label %} · {{ option.price_label }} {{ option.duration_label }}{% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3 position-relative">
+                        <label class="form-label small fw-bold text-secondary">Клиент</label>
+                        <input type="text"
+                               class="form-control cab-input"
+                               x-model="query"
+                               @focus="showDropdown = true"
+                               @input="resetClientSelection(); showDropdown = true"
+                               @keydown.escape.window="showDropdown = false"
+                               placeholder="Начните вводить имя, телефон или email">
+
+                        <div class="position-absolute start-0 end-0 mt-2 bg-white border rounded-3 shadow-sm overflow-hidden"
+                             x-show="showDropdown"
+                             x-cloak
+                             @click.outside="showDropdown = false"
+                             style="z-index: 20;">
+                            <template x-if="query.trim().length >= minChars && filteredOptions.length">
+                                <div class="list-group list-group-flush">
+                                    <template x-for="option in filteredOptions" :key="option.value">
+                                        <button type="button"
+                                                class="list-group-item list-group-item-action"
+                                                @click="selectClient(option)">
+                                            <div class="fw-semibold" x-text="option.label"></div>
+                                            <div class="text-muted small" x-text="[option.subtitle, option.email].filter(Boolean).join(' · ')"></div>
+                                        </button>
+                                    </template>
+                                </div>
+                            </template>
+
+                            {% if section.data.allow_new_client %}
+                                <template x-if="query.trim().length < minChars || !filteredOptions.length">
+                                    <div>
+                                        <div class="px-3 pt-3 pb-2 text-muted small" x-show="query.trim().length >= minChars">
+                                            Клиент не найден. Можно создать нового.
+                                        </div>
+                                        <button type="button"
+                                                class="list-group-item list-group-item-action border-0 rounded-0"
+                                                @click="activateNewClient()">
+                                            <span class="fw-semibold">Новый клиент</span>
+                                        </button>
+                                    </div>
+                                </template>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if section.data.allow_new_client %}
+                        <div x-show="showNewClient" x-cloak class="row g-3">
+                            <div class="col-6">
+                                <input type="text"
+                                       name="client_first_name"
+                                       class="form-control cab-input"
+                                       placeholder="Имя"
+                                       value="{{ section.data.new_client_first_name }}">
+                            </div>
+                            <div class="col-6">
+                                <input type="text"
+                                       name="client_last_name"
+                                       class="form-control cab-input"
+                                       placeholder="Фамилия"
+                                       value="{{ section.data.new_client_last_name }}">
+                            </div>
+                            <div class="col-12">
+                                <input type="text"
+                                       name="client_phone"
+                                       class="form-control cab-input"
+                                       placeholder="Телефон"
+                                       value="{{ section.data.new_client_phone }}">
+                            </div>
+                            <div class="col-12">
+                                <input type="email"
+                                       name="client_email"
+                                       class="form-control cab-input"
+                                       placeholder="Email"
+                                       value="{{ section.data.new_client_email }}">
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+            {% elif section.type == 'chain_preview' %}
+                <div class="cab-modal-section cab-modal-section--chain-preview p-4 border-bottom">
+                    <div class="small text-uppercase fw-semibold text-muted mb-3">{{ section.data.title }}</div>
+                    <div class="d-flex flex-column gap-2">
+                        {% for item in section.data.items %}
+                            <div class="border rounded-3 p-3 bg-light-subtle">
+                                <div class="fw-semibold text-dark">{{ item.title }}</div>
+                                {% if item.subtitle %}<div class="text-secondary small">{{ item.subtitle }}</div>{% endif %}
+                                {% if item.meta %}<div class="text-muted small mt-1">{{ item.meta }}</div>{% endif %}
+                            </div>
+                        {% empty %}
+                            <div class="text-muted small">Цепочка пока не собрана.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% elif section.type == 'actions' %}
+                <div class="cab-modal-section cab-modal-section--actions p-4 d-flex gap-2 justify-content-end bg-light-subtle">
+                    {% for action in section.actions %}
+                        <button
+                            type="button"
+                            class="btn {{ action.style }} cab-btn-shadow px-4"
+                            {% if action.method == 'CLOSE' %}
+                                @click="$dispatch('close-modal')"
+                            {% elif action.url %}
+                                hx-{{ action.method|lower }}="{{ action.url }}"
+                                hx-target="#modal-body"
+                                hx-swap="innerHTML"
+                                hx-indicator="#modal-loader"
+                                {% if action.method == 'POST' %}
+                                hx-include="closest form"
+                                {% endif %}
+                                @click="loading = true"
+                                hx-on::after-request="loading = false"
+                                hx-on::response-error="loading = false"
+                            {% endif %}
+                        >
+                            {% if action.icon %}<i class="bi {{ action.icon }} me-2"></i>{% endif %}
+                            {{ action.label }}
+                        </button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </form>
+
+    <div id="modal-loader" class="htmx-indicator position-absolute top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex align-items-center justify-content-center" style="z-index: 10;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>

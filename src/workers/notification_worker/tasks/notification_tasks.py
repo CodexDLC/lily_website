@@ -394,6 +394,10 @@ async def send_booking_reminder_task(ctx: dict[str, Any], appt_payload: dict[str
     Payload fields (built by booking_maintenance_task):
         client_email, name, service_name, datetime (%d.%m.%Y %H:%M), lang, master_name
     """
+    appt_payload = await _validate_booking_reminder_payload(ctx, appt_payload)
+    if appt_payload is None:
+        return
+
     appt_id = appt_payload.get("id", "?")
     client_email = appt_payload.get("client_email", "")
     log.info(f"Task: send_booking_reminder_task | Action: Start | appointment_id={appt_id} | to={client_email}")
@@ -411,9 +415,68 @@ async def send_booking_reminder_task(ctx: dict[str, Any], appt_payload: dict[str
             template_name="bk_reminder",
             data=appt_payload,
         )
+        await _mark_booking_reminder_sent(ctx, appt_payload)
         log.info(f"Task: send_booking_reminder_task | Action: Sent | appointment_id={appt_id}")
     except Exception as exc:
         log.error(f"Task: send_booking_reminder_task | Action: Failed | appointment_id={appt_id} | error={exc}")
         from arq import Retry
 
         raise Retry(defer=ctx["job_try"] * 60) from exc
+
+
+async def _validate_booking_reminder_payload(
+    ctx: dict[str, Any],
+    appt_payload: dict[str, Any],
+) -> dict[str, Any] | None:
+    if not appt_payload.get("requires_validation"):
+        return appt_payload
+
+    appt_id = appt_payload.get("id")
+    if not appt_id:
+        log.warning("Task: send_booking_reminder_task | Action: ValidationSkipped | missing appointment id")
+        return None
+
+    internal_api = ctx.get("internal_api")
+    settings = ctx.get("settings")
+    token = getattr(settings, "booking_worker_api_key", None)
+    if not internal_api or not token:
+        log.warning("Task: send_booking_reminder_task | Action: ValidationSkipped | internal API or token unavailable")
+        return None
+
+    response = await internal_api.get(
+        f"/v1/booking/appointments/{appt_id}/reminder-payload",
+        scope="booking.worker",
+        token=token,
+        params={"expected_datetime_start": str(appt_payload.get("expected_datetime_start", ""))},
+    )
+    if not isinstance(response, dict) or not response.get("send"):
+        log.info(f"Task: send_booking_reminder_task | Action: ValidationRejected | appointment_id={appt_id}")
+        return None
+    fresh_payload = response.get("payload")
+    if not isinstance(fresh_payload, dict):
+        return None
+    fresh_payload["mark_sent_on_success"] = bool(appt_payload.get("mark_sent_on_success"))
+    return fresh_payload
+
+
+async def _mark_booking_reminder_sent(ctx: dict[str, Any], appt_payload: dict[str, Any]) -> None:
+    if not appt_payload.get("mark_sent_on_success"):
+        return
+
+    appt_id = appt_payload.get("id")
+    internal_api = ctx.get("internal_api")
+    settings = ctx.get("settings")
+    token = getattr(settings, "booking_worker_api_key", None)
+    if not appt_id or not internal_api or not token:
+        return
+
+    try:
+        await internal_api.post(
+            f"/v1/booking/appointments/{appt_id}/mark-reminder-sent",
+            scope="booking.worker",
+            token=token,
+        )
+    except Exception as exc:
+        log.warning(
+            f"Task: send_booking_reminder_task | Action: MarkSentFailed | appointment_id={appt_id} | error={exc}"
+        )

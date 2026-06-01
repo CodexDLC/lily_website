@@ -4,19 +4,29 @@
 {% block content %}
 <section class="bk-success-wrapper">
   <div class="bk-success">
-    <div class="bk-success__icon">✓</div>
-    <h1 class="bk-success__title">{% trans "Terminanfrage erhalten!" %}</h1>
-    <p class="bk-success__subtitle">{% trans "Vielen Dank für Ihre Anfrage. Wir prüfen die Verfügbarkeit und melden uns so schnell wie möglich." %}</p>
+    <div class="bk-success__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" focusable="false">
+        <path d="M6 2h12M6 22h12M8 2v5c0 2.5 4 3.3 4 5s-4 2.5-4 5v5M16 2v5c0 2.5-4 3.3-4 5s4 2.5 4 5v5M8 7h8M8 17h8" />
+      </svg>
+    </div>
+    <h1 class="bk-success__title">{% trans "Terminprüfung läuft..." %}</h1>
+    <p class="bk-success__subtitle">{% trans "Warten Sie bitte auf die Bestätigungs-E-Mail. Erst dann ist Ihr Termin fest gebucht." %}</p>
+    <p class="bk-success__warning">{% trans "Dies ist noch keine Bestätigung!" %}</p>
 
     <div class="bk-success__groups">
       {% for appointment in appointments %}
         <div class="bk-success__group-item">
+          <p><strong>{% trans "Status" %}:</strong> <span>{% trans "In Bearbeitung" %}</span></p>
           <p><strong>{% trans "Leistung" %}:</strong> <span>{{ appointment.service.name }}</span></p>
           <p><strong>{% trans "Datum & Uhrzeit" %}:</strong> <span>{{ appointment.datetime_start|date:"d.m.Y H:i" }}</span></p>
           <p><strong>{% trans "Master" %}:</strong> <span>{{ appointment.master.name }}</span></p>
         </div>
       {% endfor %}
     </div>
+
+    <p class="bk-success__note">
+      {% trans "Wir senden Ihnen eine zweite E-Mail, sobald die Fachkraft den Termin bestätigt hat." %}
+    </p>
 
     <div class="bk-success__actions">
       <a href="{% url 'main:index' %}" class="bk-success__btn">{% trans "Zur Startseite" %}</a>

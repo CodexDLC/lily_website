@@ -580,16 +580,44 @@ class BookingCabinetBridgeAdapter(BookingBridge):
     def _build_profile(appt: Mapping[str, Any]) -> BookingProfileState:
         client_name = str(appt.get("client_name", "Unknown"))
         initials = "".join(part[0] for part in client_name.split() if part)[:2].upper()
-        return BookingProfileState(name=client_name, subtitle=str(appt.get("phone", "")), avatar=initials)
+        contact_parts = [str(appt.get("phone", "")).strip(), str(appt.get("email", "")).strip()]
+        return BookingProfileState(
+            name=client_name, subtitle=" · ".join(part for part in contact_parts if part), avatar=initials
+        )
 
     @staticmethod
-    def _build_summary(appt: Mapping[str, Any]) -> list[BookingSummaryItemState]:
-        return [
+    def _build_summary(appt: Mapping[str, Any]) -> list[Any]:
+        items: list[Any] = [
             BookingSummaryItemState("Service", str(appt.get("service_title", ""))),
             BookingSummaryItemState("Status", str(appt.get("status", "")).upper()),
             BookingSummaryItemState("Time", f"{appt.get('date', 'Today')}, {appt.get('time', '')}"),
             BookingSummaryItemState("Price", f"${appt.get('price', 0)}"),
         ]
+        email = str(appt.get("email", "")).strip()
+        phone = str(appt.get("phone", "")).strip()
+        if email:
+            items.append(BookingSummaryItemState("Email", email))
+        conversation = BookingCabinetBridgeAdapter._find_contact_conversation(email=email, phone=phone)
+        if conversation:
+            items.append(conversation)
+        return items
+
+    @staticmethod
+    def _find_contact_conversation(*, email: str, phone: str) -> Any | None:
+        from types import SimpleNamespace
+
+        from features.conversations.selector.messages import get_latest_thread_for_contact
+
+        thread = get_latest_thread_for_contact(email=email, phone=phone)
+        if thread is None:
+            return None
+        label = thread.subject or thread.body[:60] or f"Thread #{thread.pk}"
+        return SimpleNamespace(
+            label="Conversation",
+            value=label,
+            url=reverse("cabinet:conversations_thread", kwargs={"pk": thread.pk}),
+            icon="bi-chat-dots",
+        )
 
     @staticmethod
     def _shift_date(value: str, *, days: int) -> str:
