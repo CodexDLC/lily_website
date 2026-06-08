@@ -4,9 +4,21 @@ All notable changes to the **Lily Website** project will be documented in this f
 
 For the history of changes before version 2.0.0, see [CHANGELOG_archive.md](docs/CHANGELOG_archive.md).
 
+## [Unreleased]
+
+### Changed
+
+- **Catalog:** Synchronized `Maniküre & Pediküre` service titles and Ukrainian translations in fixture data for controlled production replacements by PK (without changing slugs, prices structure, or other fields).
+
+### Fixed
+
+- **Security tooling:** Updated `pip-audit` pre-commit hook dependency to enforce `pip>=26.1.2` so CI no longer fails on `PYSEC-2026-196`.
+
 ## [2.9.0] - 2026-05-02
 
 ### Added
+
+- **Catalog:** Updated service prices and descriptions for new nail extension packages in the public fixtures.
 
 - **Service Combos:** Added homepage promo support for featured service combos, including localized promo copy, images, ordering, admin controls, and a responsive slider.
 - **Booking Wizard:** Added `?combo=<slug>` deep links that prefill the public booking cart with combo services and fixed-price combo metadata.
