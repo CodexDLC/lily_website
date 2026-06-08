@@ -16,7 +16,7 @@ Public site CSS:
 - source entry: `src/lily_backend/static/css/base.css`
 - config: `src/lily_backend/static/css/compiler_config.json`
 - compiled output: `src/lily_backend/static/css/app.css`
-- loaded by public templates through `{% static 'css/app.css' %}`
+- loaded by public templates through the Django `static` tag: `static 'css/app.css'`
 
 Cabinet CSS:
 
