@@ -6,13 +6,13 @@
   <div class="bk-success">
     <div class="bk-success__icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" focusable="false">
-        <path d="M6 2h12M6 22h12M8 2v5c0 2.5 4 3.3 4 5s-4 2.5-4 5v5M16 2v5c0 2.5-4 3.3-4 5s4 2.5 4 5v5M8 7h8M8 17h8" />
+        <path d="M20 6 9 17l-5-5" />
       </svg>
     </div>
-    <h1 class="bk-success__title">{% trans "Terminprüfung läuft..." %}</h1>
+    <h1 class="bk-success__title">{% trans "Termin bestätigt" %}</h1>
 
-    <p class="bk-success__subtitle">{% trans "Warten Sie bitte auf die Bestätigungs-E-Mail. Erst dann ist Ihr Termin fest gebucht." %}</p>
-    <p class="bk-success__warning">{% trans "Dies ist noch keine Bestätigung!" %}</p>
+    <p class="bk-success__subtitle">{% trans "Ihre Termine sind fest gebucht. Die Bestätigungs-E-Mail wurde an Ihre Kontaktdaten gesendet." %}</p>
+    <p class="bk-success__warning">{% trans "Bitte bewahren Sie die Bestätigungs-E-Mail auf." %}</p>
 
     <ul class="bk-success__list">
       {% for item in group.items.all %}
@@ -24,12 +24,12 @@
     </ul>
 
     <div class="bk-success__details">
-      <p><strong>{% trans "Status" %}:</strong> <span>{% trans "In Bearbeitung" %}</span></p>
+      <p><strong>{% trans "Status" %}:</strong> <span>{% trans "Bestätigt" %}</span></p>
       <p><strong>{% trans "Datum" %}:</strong> <span>{{ group.items.first.appointment.datetime_start|date:"d.m.Y" }}</span></p>
     </div>
 
     <p class="bk-success__note">
-      {% trans "Wir senden Ihnen eine zweite E-Mail, sobald die Fachkraft den Termin bestätigt hat." %}
+      {% trans "Zur Stornierung oder Umbuchung nutzen Sie bitte den Link in der Bestätigungs-E-Mail." %}
     </p>
 
     <a href="{% url 'main:index' %}" class="bk-success__back">{% trans "Zur Startseite" %}</a>

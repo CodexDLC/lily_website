@@ -530,12 +530,15 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
             reason = payload.get("cancel_reason", Appointment.CANCEL_REASON_OTHER)
             note = payload.get("cancel_note", "")
             try:
-                appt.cancel(reason=reason, note=note)
-                # 6.4: Send cancellation notification
-                from features.conversations.services.notifications import _get_engine
+                if self._is_past_active_appointment(appt):
+                    self._cancel_without_notifications(appt, reason=reason, note=note)
+                else:
+                    appt.cancel(reason=reason, note=note)
+                    # 6.4: Send cancellation notification
+                    from features.conversations.services.notifications import _get_engine
 
-                appt._booking_origin = "staff"
-                _get_engine().dispatch_event("booking.cancelled", appt)
+                    appt._booking_origin = "staff"
+                    _get_engine().dispatch_event("booking.cancelled", appt)
 
                 return BookingActionResult(
                     ok=True,
@@ -646,6 +649,26 @@ class RuntimeBookingProvider(BookingProjectDataProvider):
             ui_effect="none",
             target_url="",
         )
+
+    @staticmethod
+    def _is_past_active_appointment(appt: Appointment) -> bool:
+        return (
+            appt.status
+            in {
+                Appointment.STATUS_PENDING,
+                Appointment.STATUS_CONFIRMED,
+                Appointment.STATUS_RESCHEDULE_PROPOSED,
+            }
+            and appt.datetime_start < timezone.now()
+        )
+
+    @staticmethod
+    def _cancel_without_notifications(appt: Appointment, *, reason: str, note: str) -> None:
+        appt.status = Appointment.STATUS_CANCELLED
+        appt.cancelled_at = timezone.now()
+        appt.cancel_reason = reason
+        appt.cancel_note = note
+        appt.save(update_fields=["status", "cancelled_at", "cancel_reason", "cancel_note", "updated_at"])
 
 
 _provider = RuntimeBookingProvider()

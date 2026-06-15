@@ -394,9 +394,10 @@ async def send_booking_reminder_task(ctx: dict[str, Any], appt_payload: dict[str
     Payload fields (built by booking_maintenance_task):
         client_email, name, service_name, datetime (%d.%m.%Y %H:%M), lang, master_name
     """
-    appt_payload = await _validate_booking_reminder_payload(ctx, appt_payload)
-    if appt_payload is None:
+    validated_payload = await _validate_booking_reminder_payload(ctx, appt_payload)
+    if validated_payload is None:
         return
+    appt_payload = validated_payload
 
     appt_id = appt_payload.get("id", "?")
     client_email = appt_payload.get("client_email", "")

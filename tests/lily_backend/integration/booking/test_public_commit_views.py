@@ -54,6 +54,8 @@ def _valid_contact() -> dict:
 def _mock_appointment(token: str = "TOKEN123") -> MagicMock:
     appt = MagicMock()
     appt.finalize_token = token
+    appt.status = "pending"
+    appt.STATUS_PENDING = "pending"
     return appt
 
 
@@ -135,6 +137,7 @@ class TestCommitSameDay:
         assert resp.headers.get("HX-Redirect", "").endswith(
             reverse("booking:success_single", kwargs={"token": "SINGLETOKEN"})
         )
+        appt.confirm.assert_called_once_with()
 
     def test_multi_service_same_day_redirects_to_success_group(self, client, master, service, booking_settings):
         from tests.factories import AppointmentFactory, ServiceFactory
@@ -171,6 +174,11 @@ class TestCommitSameDay:
         assert resp.status_code == 200
         hx_redirect = resp.headers.get("HX-Redirect", "")
         assert "success/group/" in hx_redirect
+        appt1.refresh_from_db()
+        appt2.refresh_from_db()
+        assert appt1.status == appt1.STATUS_CONFIRMED
+        assert appt2.status == appt2.STATUS_CONFIRMED
+        assert appt1.group_item.group.status == appt1.group_item.group.STATUS_CONFIRMED
 
     def test_booking_exception_returns_error(self, client, service, booking_settings):
         cart = _cart_with_slot(service)
@@ -231,6 +239,7 @@ class TestCommitMultiDay:
         hx_redirect = resp.headers.get("HX-Redirect", "")
         assert "success/multi/" in hx_redirect
         assert "MULTITOKEN" in hx_redirect
+        appt.confirm.assert_called_once_with()
 
 
 # ── Success pages ─────────────────────────────────────────────────────────────
@@ -245,9 +254,9 @@ class TestSuccessPages:
         url = reverse("booking:success_single", kwargs={"token": "FINTOKEN"})
         resp = client.get(url)
         assert resp.status_code == 200
-        assert "Terminprüfung läuft".encode() in resp.content
-        assert "Dies ist noch keine Bestätigung".encode() in resp.content
-        assert "In Bearbeitung".encode() in resp.content
+        assert "Termin bestätigt".encode() in resp.content
+        assert "Bestätigt".encode() in resp.content
+        assert "Dies ist noch keine Bestätigung".encode() not in resp.content
 
     def test_success_single_404_on_bad_token(self, client):
         url = reverse("booking:success_single", kwargs={"token": "BADTOKEN"})
@@ -262,8 +271,8 @@ class TestSuccessPages:
         assert resp.status_code == 200
         assert pending_appointment.service.name.encode() in resp.content
         assert pending_appointment.master.name.encode() in resp.content
-        assert "Terminprüfung läuft".encode() in resp.content
-        assert "In Bearbeitung".encode() in resp.content
+        assert "Termin bestätigt".encode() in resp.content
+        assert "Bestätigt".encode() in resp.content
 
     def test_success_multi_view_renders_empty_tokens_via_url(self, client):
         resp = client.get(reverse("booking:success_multi"), {"tokens": ""})
@@ -278,8 +287,8 @@ class TestSuccessPages:
         resp = client.get(reverse("booking:success_group", kwargs={"token": group.group_token}))
         assert resp.status_code == 200
         assert pending_appointment.service.name.encode() in resp.content
-        assert "Terminprüfung läuft".encode() in resp.content
-        assert "In Bearbeitung".encode() in resp.content
+        assert "Termin bestätigt".encode() in resp.content
+        assert "Bestätigt".encode() in resp.content
 
 
 # ── _get_or_create_client utility ─────────────────────────────────────────────

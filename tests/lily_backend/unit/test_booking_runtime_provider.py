@@ -468,6 +468,26 @@ class TestRunCabinetAction:
         assert result.ok
         assert result.code == "booking-cancel"
 
+    def test_cancel_action_allows_past_active_booking_without_notifications(self, db, pending_appointment, provider):
+        pending_appointment.datetime_start = timezone.now() - dt.timedelta(days=1)
+        pending_appointment.save(update_fields=["datetime_start", "updated_at"])
+
+        with patch("features.conversations.services.notifications._get_engine") as mock_eng:
+            result = provider.run_cabinet_action(
+                booking_id=pending_appointment.pk,
+                action="cancel",
+                payload={"cancel_reason": "other", "cancel_note": "expired cleanup"},
+            )
+
+        pending_appointment.refresh_from_db()
+        assert result.ok
+        assert result.code == "booking-cancel"
+        assert pending_appointment.status == pending_appointment.STATUS_CANCELLED
+        assert pending_appointment.cancel_reason == "other"
+        assert pending_appointment.cancel_note == "expired cleanup"
+        assert pending_appointment.cancelled_at is not None
+        mock_eng.assert_not_called()
+
     def test_complete_action(self, db, confirmed_appointment, provider):
         result = provider.run_cabinet_action(booking_id=confirmed_appointment.pk, action="complete")
         confirmed_appointment.refresh_from_db()

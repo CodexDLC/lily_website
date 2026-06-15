@@ -88,7 +88,7 @@ def test_handle_booking_group_received(client_obj, master, service):
     assert spec is None
 
 
-def test_same_day_chain_sends_one_group_received_event(client_obj, master, service):
+def test_same_day_chain_auto_confirms_group_and_sends_admin_event(client_obj, master, service):
     service_two = Service.objects.create(
         category=service.category,
         name="Second Service",
@@ -152,8 +152,22 @@ def test_same_day_chain_sends_one_group_received_event(client_obj, master, servi
         extra_fields=None,
     )
     assert redirect_url == reverse("booking:success_group", kwargs={"token": appt_one.group_item.group.group_token})
-    engine.dispatch_event.assert_has_calls([call("booking.group_received", appt_one.group_item.group)])
-    assert engine.dispatch_event.call_count == 1
+    appt_one.refresh_from_db()
+    appt_two.refresh_from_db()
+    group = appt_one.group_item.group
+    group.refresh_from_db()
+    assert appt_one.status == Appointment.STATUS_CONFIRMED
+    assert appt_two.status == Appointment.STATUS_CONFIRMED
+    assert group.status == group.STATUS_CONFIRMED
+    engine.dispatch_event.assert_has_calls(
+        [
+            call("booking.group_received", group),
+            call("booking.confirmed", appt_one),
+            call("booking.confirmed", appt_two),
+        ],
+        any_order=True,
+    )
+    assert engine.dispatch_event.call_count == 3
 
 
 def test_handle_booking_no_show(mock_appt):

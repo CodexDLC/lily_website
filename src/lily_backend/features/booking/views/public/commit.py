@@ -154,6 +154,7 @@ class BookingCommitView(View):
             appt = appointments[0]
             self._apply_combo_pricing(cart, appointments)
             engine.dispatch_event("booking.received", appt)
+            self._confirm_public_appointment(appt)
             return reverse("booking:success_single", kwargs={"token": appt.finalize_token})
 
         # 2+ appointments → create group
@@ -172,7 +173,12 @@ class BookingCommitView(View):
             )
 
         engine.dispatch_event("booking.group_received", group)
+        group.confirm_all()
         return reverse("booking:success_group", kwargs={"token": group.group_token})
+
+    def _confirm_public_appointment(self, appt) -> None:
+        if appt.status == appt.STATUS_PENDING:
+            appt.confirm()
 
     def _apply_combo_pricing(self, cart, appointments: list) -> None:
         if not cart.combo_id or cart.combo_price is None or not appointments:
@@ -206,6 +212,10 @@ class BookingCommitView(View):
         gateway = get_booking_engine_gateway()
         tokens: list[str] = []
 
+        from features.conversations.services.notifications import _get_engine
+
+        engine = _get_engine()
+
         for item in cart.items:
             target_date = datetime.date.fromisoformat(item.date)
             result = gateway.create_booking(
@@ -214,10 +224,13 @@ class BookingCommitView(View):
                 selected_time=item.time,
                 resource_id=None,
                 client=client,
+                notify_received=False,
                 extra_fields={"client_notes": cart.contact.get("notes", "")} if cart.contact.get("notes") else None,
             )
             appts = result if isinstance(result, list) else [result]
             for appt in appts:
+                engine.dispatch_event("booking.received", appt)
+                self._confirm_public_appointment(appt)
                 tokens.append(appt.finalize_token)
 
         notes = cart.contact.get("notes", "")
