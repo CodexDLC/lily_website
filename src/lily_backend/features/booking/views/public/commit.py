@@ -43,6 +43,43 @@ def _get_or_create_client(first_name: str, last_name: str, phone: str, email: st
     )
 
 
+def _money_to_float(value: Decimal | None) -> float:
+    amount = Decimal(str(value)) if value is not None else Decimal("0")
+    return float(amount.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+
+
+def _build_booking_analytics_payload(appointments: list, *, mode: str, transaction_id: str) -> dict[str, object]:
+    """Build a PII-free dataLayer payload for a completed public booking."""
+    items = []
+    total = Decimal("0")
+
+    for appt in appointments:
+        price = appt.price_actual if appt.price_actual is not None else appt.price
+        total += price or Decimal("0")
+        service = appt.service
+        category = getattr(service, "category", None)
+        items.append(
+            {
+                "item_id": str(service.pk),
+                "item_name": service.name,
+                "item_category": category.name if category else "",
+                "price": _money_to_float(price),
+                "quantity": 1,
+            }
+        )
+
+    payload = {
+        "event": "booking_success",
+        "booking_mode": mode,
+        "transaction_id": transaction_id,
+        "value": _money_to_float(total),
+        "currency": "EUR",
+        "appointment_count": len(appointments),
+        "items": items,
+    }
+    return payload
+
+
 class BookingCommitView(View):
     """POST — validate contact, create appointments, redirect to success page.
 
@@ -263,7 +300,14 @@ class BookingSuccessSingleView(View):
         return render(
             request,
             "features/booking/success_single.html",
-            {"appointment": appt},
+            {
+                "appointment": appt,
+                "booking_analytics_payload": _build_booking_analytics_payload(
+                    [appt],
+                    mode="single",
+                    transaction_id=f"appointment_{appt.pk}",
+                ),
+            },
         )
 
 
@@ -272,13 +316,21 @@ class BookingSuccessGroupView(View):
 
     def get(self, request: HttpRequest, token: str) -> HttpResponse:
         group = get_object_or_404(
-            AppointmentGroup.objects.prefetch_related("items__appointment__service"),
+            AppointmentGroup.objects.prefetch_related("items__appointment__service__category"),
             group_token=token,
         )
+        appointments = [item.appointment for item in group.items.all()]
         return render(
             request,
             "features/booking/success_group.html",
-            {"group": group},
+            {
+                "group": group,
+                "booking_analytics_payload": _build_booking_analytics_payload(
+                    appointments,
+                    mode="same_day_group",
+                    transaction_id=f"group_{group.pk}",
+                ),
+            },
         )
 
 
@@ -291,10 +343,20 @@ class BookingSuccessMultiView(View):
         raw_tokens = request.GET.get("tokens", "")
         tokens = [t.strip() for t in raw_tokens.split(",") if t.strip()]
         appointments = list(
-            Appointment.objects.filter(finalize_token__in=tokens).select_related("service").order_by("datetime_start")
+            Appointment.objects.filter(finalize_token__in=tokens)
+            .select_related("service__category")
+            .order_by("datetime_start")
         )
+        transaction_id = f"multi_{appointments[0].pk}" if appointments else "multi_empty"
         return render(
             request,
             "features/booking/success_multi.html",
-            {"appointments": appointments},
+            {
+                "appointments": appointments,
+                "booking_analytics_payload": _build_booking_analytics_payload(
+                    appointments,
+                    mode="multi_day",
+                    transaction_id=transaction_id,
+                ),
+            },
         )

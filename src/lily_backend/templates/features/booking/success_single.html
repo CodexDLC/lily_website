@@ -29,3 +29,17 @@
   </div>
 </section>
 {% endblock content %}
+
+{% block scripts %}
+{{ block.super }}
+{% if booking_analytics_payload %}
+{{ booking_analytics_payload|json_script:"booking-analytics-payload" }}
+<script>
+  const bookingAnalyticsPayload = document.getElementById('booking-analytics-payload');
+  if (bookingAnalyticsPayload) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(JSON.parse(bookingAnalyticsPayload.textContent));
+  }
+</script>
+{% endif %}
+{% endblock scripts %}

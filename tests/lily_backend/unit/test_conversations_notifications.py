@@ -1,8 +1,11 @@
 from unittest.mock import MagicMock, patch
 
 import pytest
+from django.test import override_settings
+from django.utils import timezone
 from features.conversations.services.notifications import (
     NotificationService,
+    _handle_imported_client_email,
     _handle_new_contact_message,
 )
 
@@ -228,3 +231,36 @@ class TestConversationsNotifications:
             specs = _handle_new_contact_message(mock_msg)
             assert len(specs) == 1
             assert "<None>" in specs[0].text_content
+
+    @override_settings(SITE_BASE_URL="https://lily.test")
+    def test_handle_imported_client_email_uses_reply_body(self):
+        from types import SimpleNamespace
+
+        mock_msg = MagicMock()
+        mock_msg.pk = 12
+        mock_msg.sender_name = "Anna Testova"
+        mock_msg.sender_email = "anna@test.local"
+        mock_msg.subject = "Re: Termin"
+        mock_msg.body = "Original thread body"
+
+        appointment = MagicMock()
+        appointment.datetime_start = timezone.now()
+        appointment.service = SimpleNamespace(name="Manicure")
+        appointment.master = SimpleNamespace(name="Liliya")
+        appointment.get_status_display.return_value = "Confirmed"
+
+        reply = MagicMock()
+        reply.body = "Fresh imported reply"
+
+        with patch(
+            "features.notifications.services.recipients.get_admin_notification_emails",
+            return_value=["owner@lily.test"],
+        ):
+            specs = _handle_imported_client_email(mock_msg, appointment, reply)
+
+        assert len(specs) == 1
+        assert specs[0].recipient_email == "owner@lily.test"
+        assert specs[0].event_type == "conversations.imported_client_email"
+        assert "Fresh imported reply" in specs[0].text_content
+        assert "Original thread body" not in specs[0].text_content
+        assert "https://lily.test" in specs[0].text_content

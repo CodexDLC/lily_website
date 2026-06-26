@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 from django.db import transaction
@@ -8,6 +9,7 @@ from ninja import Router, Schema
 from features.conversations.models import Message, MessageReply
 
 router = Router(tags=["Conversations"])
+log = logging.getLogger(__name__)
 
 
 class AttachmentMetadata(Schema):
@@ -55,6 +57,9 @@ def import_email(request, payload: InboundEmailPayload) -> dict[str, Any]:
             thread.status = Message.Status.OPEN
             thread.is_read = False
             thread.save(update_fields=["status", "is_read", "updated_at"])
+            transaction.on_commit(
+                lambda message=thread, imported_reply=reply: _notify_imported_client_email(message, imported_reply)
+            )
             return {"status": "reply-created", "message_id": thread.pk, "reply_id": reply.pk}
 
         message = Message.objects.create(
@@ -69,6 +74,10 @@ def import_email(request, payload: InboundEmailPayload) -> dict[str, Any]:
             is_read=False,
             admin_notes=_build_admin_notes(payload),
         )
+        if not payload.spam:
+            transaction.on_commit(
+                lambda imported_message=message: _notify_imported_client_email(imported_message, None)
+            )
         return {"status": "message-created", "message_id": message.pk, "reply_id": None}
 
 
@@ -121,3 +130,12 @@ def _build_admin_notes(payload: InboundEmailPayload) -> str:
     if payload.spam:
         parts.append("Import status: spam")
     return "\n".join(parts)
+
+
+def _notify_imported_client_email(message: Message, reply: MessageReply | None) -> None:
+    try:
+        from features.conversations.services.notifications import notify_imported_client_email_if_relevant
+
+        notify_imported_client_email_if_relevant(message, reply=reply)
+    except Exception:
+        log.exception("Failed to dispatch imported client email notification for message_id=%s", message.pk)

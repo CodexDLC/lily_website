@@ -33,7 +33,7 @@ from __future__ import annotations
 
 import logging
 from functools import lru_cache
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from codex_django.notifications import (
     BaseEmailContentSelector,
@@ -46,10 +46,15 @@ from codex_django.notifications import (
     notification_handler,
 )
 from django.conf import settings
+from django.utils import timezone
 
 log = logging.getLogger(__name__)
 
 _HAS_ARQ = bool(getattr(settings, "ARQ_REDIS_URL", None) or getattr(settings, "REDIS_URL", None))
+
+if TYPE_CHECKING:
+    from features.booking.models import Appointment
+    from features.conversations.models import Message, MessageReply
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -107,6 +112,46 @@ def _should_notify(email: str, field: str) -> bool:
     if user and hasattr(user, "profile"):
         return getattr(user.profile, field, True)
     return True
+
+
+def notify_imported_client_email_if_relevant(message: Message, *, reply: MessageReply | None = None) -> None:
+    """Notify admins when a mailbox import belongs to a known booking client."""
+    appointment = _find_imported_client_appointment(message.sender_email)
+    if not appointment:
+        return
+    try:
+        _get_engine().dispatch_event("conversations.imported_client_email", message, appointment, reply)
+    except Exception:
+        log.exception("Failed to dispatch imported client email notification for message_id=%s", message.pk)
+
+
+def _find_imported_client_appointment(sender_email: str | None) -> Appointment | None:
+    email = (sender_email or "").strip()
+    if not email:
+        return None
+
+    from system.models import Client
+
+    from features.booking.models import Appointment
+
+    client = Client.objects.filter(email__iexact=email).first()
+    if not client:
+        return None
+
+    qs = (
+        Appointment.objects.filter(client=client)
+        .exclude(status=Appointment.STATUS_CANCELLED)
+        .select_related("client", "master", "service")
+    )
+    upcoming_statuses = [
+        Appointment.STATUS_PENDING,
+        Appointment.STATUS_CONFIRMED,
+        Appointment.STATUS_RESCHEDULE_PROPOSED,
+    ]
+    return (
+        qs.filter(status__in=upcoming_statuses, datetime_start__gte=timezone.now()).order_by("datetime_start").first()
+        or qs.order_by("-datetime_start").first()
+    )
 
 
 def _account_verification_fallbacks(lang: str, signup: bool) -> tuple[str, str, str]:
@@ -578,3 +623,64 @@ def _handle_new_contact_message(message) -> list[NotificationDispatchSpec]:
             )
         )
     return specs
+
+
+@notification_handler("conversations.imported_client_email")
+def _handle_imported_client_email(
+    message: Message,
+    appointment: Appointment,
+    reply: MessageReply | None = None,
+) -> list[NotificationDispatchSpec]:
+    """Notify admins when the info mailbox receives email from a booking client."""
+    from django.utils import timezone as tz
+
+    from features.notifications.services.recipients import get_admin_notification_emails
+
+    content = reply.body if reply else message.body
+    local_start = tz.localtime(appointment.datetime_start)
+    action_urls = {
+        email: _build_conversation_action_url(email, message.pk) for email in get_admin_notification_emails() if email
+    }
+    subject = f"[Client email] {message.sender_name} — {(message.subject or content)[:60]}"
+
+    specs = []
+    for email, action_url in action_urls.items():
+        body = (
+            f"Imported email from known booking client\n\n"
+            f"From: {message.sender_name} <{message.sender_email}>\n"
+            f"Subject: {message.subject or '-'}\n\n"
+            f"Matched appointment:\n"
+            f"Service: {appointment.service.name}\n"
+            f"Date & Time: {local_start.strftime('%d.%m.%Y %H:%M')}\n"
+            f"Master: {appointment.master.name}\n"
+            f"Status: {appointment.get_status_display()}\n\n"
+            f"Message:\n{content}\n\n"
+            f"--- \n"
+            f"Open in cabinet: {action_url}"
+        )
+        specs.append(
+            NotificationDispatchSpec(
+                recipient_email=email,
+                subject_key="",
+                subject=subject,
+                event_type="conversations.imported_client_email",
+                channels=["email"],
+                mode="rendered",
+                text_content=body,
+            )
+        )
+    return specs
+
+
+def _build_conversation_action_url(recipient_email: str, message_id: int) -> str:
+    import urllib.parse
+
+    from django.core.signing import TimestampSigner
+    from django.urls import reverse
+
+    base_url = getattr(settings, "SITE_BASE_URL", "http://localhost:8000").rstrip("/")
+    magic_login_path = reverse("cabinet:magic_login")
+    target_path = reverse("cabinet:conversations_thread", kwargs={"pk": message_id})
+    token = TimestampSigner().sign(recipient_email)
+    query_string = urllib.parse.urlencode({"token": token, "target": target_path})
+    return f"{base_url}{magic_login_path}?{query_string}"

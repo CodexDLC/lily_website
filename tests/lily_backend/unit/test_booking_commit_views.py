@@ -6,7 +6,7 @@ from django.contrib.messages.storage.cookie import CookieStorage
 from django.test import RequestFactory
 from django.urls import reverse
 from features.booking.dto.public_cart import PublicCart
-from features.booking.views.public.commit import BookingCommitView
+from features.booking.views.public.commit import BookingCommitView, _build_booking_analytics_payload
 from tests.factories.booking import AppointmentFactory
 
 
@@ -115,3 +115,34 @@ class TestBookingSuccessViews:
 
         assert response.status_code == 200
         assert appt.service.name in response.content.decode("utf-8")
+        assert "booking_success" in response.content.decode("utf-8")
+
+    def test_booking_analytics_payload_is_pii_free(self, client_obj, master, service):
+        appt = AppointmentFactory(
+            client=client_obj,
+            master=master,
+            service=service,
+            price=100,
+            price_actual=80,
+        )
+
+        payload = _build_booking_analytics_payload([appt], mode="single", transaction_id=f"appointment_{appt.pk}")
+
+        assert payload["event"] == "booking_success"
+        assert payload["booking_mode"] == "single"
+        assert payload["transaction_id"] == f"appointment_{appt.pk}"
+        assert payload["value"] == 80.0
+        assert payload["currency"] == "EUR"
+        assert payload["appointment_count"] == 1
+        assert payload["items"] == [
+            {
+                "item_id": str(service.pk),
+                "item_name": service.name,
+                "item_category": service.category.name,
+                "price": 80.0,
+                "quantity": 1,
+            }
+        ]
+        serialized = str(payload)
+        assert client_obj.phone not in serialized
+        assert client_obj.email not in serialized

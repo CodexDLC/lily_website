@@ -397,6 +397,47 @@ class TestGetAvailableSlots:
             )
             assert mock_slots.called  # not blocked
 
+    def test_category_booking_start_time_filters_early_slots(self, db, service, booking_settings):
+        service.category.booking_start_time = dt.time(9, 0)
+        service.category.save(update_fields=["booking_start_time"])
+
+        gateway = self._gateway()
+        result = SimpleNamespace(get_unique_start_times=lambda: ["08:00", "08:45", "09:00", "09:15"])
+
+        with (
+            patch.object(gateway, "_build_adapter", return_value=MagicMock()),
+            patch(
+                "features.booking.selector.engine.runtime_get_available_slots",
+                return_value=result,
+            ),
+        ):
+            slots = gateway.get_available_slots(
+                service_ids=[service.pk],
+                target_date=dt.date(2026, 5, 11),
+                audience="public",
+            )
+
+        assert slots.get_unique_start_times() == ["09:00", "09:15"]
+
+    def test_unrestricted_category_keeps_early_slots(self, db, service, booking_settings):
+        gateway = self._gateway()
+        result = SimpleNamespace(get_unique_start_times=lambda: ["08:00", "08:45", "09:00"])
+
+        with (
+            patch.object(gateway, "_build_adapter", return_value=MagicMock()),
+            patch(
+                "features.booking.selector.engine.runtime_get_available_slots",
+                return_value=result,
+            ),
+        ):
+            slots = gateway.get_available_slots(
+                service_ids=[service.pk],
+                target_date=dt.date(2026, 5, 11),
+                audience="public",
+            )
+
+        assert slots.get_unique_start_times() == ["08:00", "08:45", "09:00"]
+
 
 # ── BookingRuntimeEngineGateway: get_nearest_slots ───────────────────────────
 
@@ -426,6 +467,27 @@ class TestGetNearestSlots:
             # second positional arg to runtime_get_nearest_slots is the effective_search_from
             call_args = mock_nearest.call_args
             assert call_args[0][2] == tomorrow
+
+    def test_category_booking_start_time_filters_nearest_slots(self, db, service, booking_settings):
+        service.category.booking_start_time = dt.time(9, 0)
+        service.category.save(update_fields=["booking_start_time"])
+        result = SimpleNamespace(get_unique_start_times=lambda: ["08:00", "09:00"])
+        gateway = BookingRuntimeEngineGateway()
+
+        with (
+            patch.object(gateway, "_build_adapter", return_value=MagicMock()),
+            patch(
+                "features.booking.selector.engine.runtime_get_nearest_slots",
+                return_value=result,
+            ),
+        ):
+            slots = gateway.get_nearest_slots(
+                service_ids=[service.pk],
+                search_from=dt.date(2026, 5, 11),
+                audience="public",
+            )
+
+        assert slots.get_unique_start_times() == ["09:00"]
 
 
 @pytest.mark.unit

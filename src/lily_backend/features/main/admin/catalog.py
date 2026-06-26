@@ -8,9 +8,9 @@ from ..models import Service, ServiceCategory
 
 @admin.register(ServiceCategory)
 class ServiceCategoryAdmin(TranslationAdmin, ModelAdmin):
-    list_display = ["name", "slug", "bento_group", "is_active", "is_planned", "order"]
+    list_display = ["name", "slug", "bento_group", "booking_start_time", "is_active", "is_planned", "order"]
     list_display_links = ["name"]
-    list_editable = ["order", "bento_group", "is_active", "is_planned"]
+    list_editable = ["order", "bento_group", "booking_start_time", "is_active", "is_planned"]
     search_fields = ("name",)
     prepopulated_fields = {"slug": ["name"]}
 
@@ -33,7 +33,7 @@ class ServiceCategoryAdmin(TranslationAdmin, ModelAdmin):
         (
             _("System"),
             {
-                "fields": ("order",),
+                "fields": ("order", "booking_start_time"),
                 "classes": ("collapse",),
             },
         ),

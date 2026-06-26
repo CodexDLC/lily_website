@@ -70,6 +70,52 @@ class EmptyAvailableSlots:
         return []
 
 
+class StartTimeFilteredSlots:
+    """Availability result wrapper that hides starts before a category limit."""
+
+    def __init__(self, result: Any, minimum_start_time: time) -> None:
+        self._result = result
+        self._minimum_start_time = minimum_start_time
+
+    def _is_allowed(self, slot: str) -> bool:
+        try:
+            slot_time = datetime.strptime(slot, "%H:%M").time()
+        except ValueError:
+            return True
+        return slot_time >= self._minimum_start_time
+
+    def get_unique_start_times(self) -> list[str]:
+        if hasattr(self._result, "get_unique_start_times"):
+            slots = self._result.get_unique_start_times()
+        elif isinstance(self._result, list):
+            slots = self._result
+        else:
+            slots = []
+        return [slot for slot in slots if self._is_allowed(str(slot))]
+
+    def to_dict(self) -> dict:
+        if hasattr(self._result, "to_dict"):
+            payload = self._result.to_dict()
+        elif isinstance(self._result, list):
+            payload = {"slots": list(self._result), "metadata": {}}
+        else:
+            payload = {"slots": [], "metadata": {}}
+
+        filtered_payload = dict(payload)
+        slots = filtered_payload.get("slots", [])
+        if isinstance(slots, list):
+            filtered_payload["slots"] = [slot for slot in slots if self._payload_slot_allowed(slot)]
+        return filtered_payload
+
+    def _payload_slot_allowed(self, slot: Any) -> bool:
+        if isinstance(slot, str):
+            return self._is_allowed(slot)
+        if isinstance(slot, dict):
+            value = slot.get("time") or slot.get("start") or slot.get("start_time")
+            return not value or self._is_allowed(str(value))
+        return True
+
+
 class LoadAwareDjangoAvailabilityAdapter(DjangoAvailabilityAdapter):
     """Availability adapter with project-specific resource prioritization."""
 
@@ -190,6 +236,18 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
             target_date=target_date or date.today(),
         )
 
+    def _get_category_booking_start_time(self, service_ids: list[int]) -> time | None:
+        from features.main.models import Service
+
+        start_times = [
+            value
+            for value in Service.objects.filter(pk__in=service_ids, is_active=True).values_list(
+                "category__booking_start_time", flat=True
+            )
+            if value is not None
+        ]
+        return max(start_times) if start_times else None
+
     def get_calendar_data(
         self,
         *,
@@ -217,10 +275,15 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
 
         adapter = self._build_adapter(target_date=target_date)
         try:
-            return runtime_get_available_slots(adapter, service_ids, target_date, **effective_kwargs)
+            result = runtime_get_available_slots(adapter, service_ids, target_date, **effective_kwargs)
         except Exception as exc:
             logger.debug("Booking get_available_slots fallback to empty payload: {}", exc)
             return EmptyAvailableSlots()
+
+        minimum_start_time = self._get_category_booking_start_time(service_ids)
+        if minimum_start_time is None:
+            return result
+        return StartTimeFilteredSlots(result, minimum_start_time)
 
     def get_nearest_slots(self, *, service_ids: list[int], search_from: date, **kwargs: Any) -> Any:
         from datetime import date as dt_date
@@ -235,7 +298,11 @@ class BookingRuntimeEngineGateway(BookingEngineGateway):
 
         effective_kwargs = {key: value for key, value in kwargs.items() if value is not None}
         adapter = self._build_adapter(target_date=effective_search_from)
-        return runtime_get_nearest_slots(adapter, service_ids, effective_search_from, **effective_kwargs)
+        result = runtime_get_nearest_slots(adapter, service_ids, effective_search_from, **effective_kwargs)
+        minimum_start_time = self._get_category_booking_start_time(service_ids)
+        if minimum_start_time is None:
+            return result
+        return StartTimeFilteredSlots(result, minimum_start_time)
 
     def get_resource_day_slots(
         self,

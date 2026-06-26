@@ -121,3 +121,19 @@ class BackToBackBookingTest(TestCase):
         self.assertIn("16:00", time_slots, f"16:00 should be the last slot for 2h service. Found: {time_slots}")
         self.assertNotIn("16:15", time_slots, "16:15 should be blocked for 2h service ending at 18:00")
         self.assertNotIn("18:30", time_slots, "18:30 should DEFINITELY be blocked")
+
+    def test_category_booking_start_time_filters_runtime_slots(self):
+        from features.booking.selector.engine import get_booking_engine_gateway
+
+        booking_date = date(2026, 4, 20)  # Monday
+        self.category.booking_start_time = time(9, 0)
+        self.category.save(update_fields=["booking_start_time"])
+        self.master.categories.add(self.category)
+        self.service.masters.add(self.master)
+
+        slots = get_booking_engine_gateway().get_available_slots(service_ids=[self.service.id], target_date=booking_date)
+        time_slots = slots.get_unique_start_times()
+
+        self.assertNotIn("08:00", time_slots)
+        self.assertNotIn("08:45", time_slots)
+        self.assertIn("09:00", time_slots)

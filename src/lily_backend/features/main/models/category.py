@@ -27,6 +27,12 @@ class ServiceCategory(SeoMixin, models.Model):
     icon = models.FileField(_("icon"), upload_to="categories/icons/", blank=True, null=True)
     description = models.TextField(_("description"), blank=True)
     content = models.TextField(_("SEO content"), blank=True)
+    booking_start_time = models.TimeField(
+        _("booking start time"),
+        blank=True,
+        null=True,
+        help_text=_("Earliest start time for booking services in this category. Leave empty to use global hours."),
+    )
     is_active = models.BooleanField(
         _("is active"),
         default=True,
