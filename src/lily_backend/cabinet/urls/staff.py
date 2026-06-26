@@ -1,7 +1,7 @@
 from django.urls import path
 
 from ..views.services import CategoryStatusToggleView, ServiceQuickEditView, ServicesListView
-from ..views.staff import StaffListView, StaffQuickEditView
+from ..views.staff import StaffDaysOffView, StaffListView, StaffQuickEditView
 from ..views.users import ClientDetailView, UserListView
 
 staff_urlpatterns = [
@@ -12,6 +12,7 @@ staff_urlpatterns = [
     path("clients/ghost/<int:pk>/modal/", ClientDetailView.as_view(), name="client_ghost_modal"),
     # Staff / Masters
     path("staff/", StaffListView.as_view(), name="staff_list"),
+    path("staff/days-off/", StaffDaysOffView.as_view(), name="staff_days_off"),
     path("staff/modal/<int:pk>/", StaffQuickEditView.as_view(), name="staff_modal"),
     # Services catalog management
     path("services/", ServicesListView.as_view(), name="services_list"),

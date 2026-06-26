@@ -43,5 +43,10 @@ declare(
             url=reverse_lazy("cabinet:staff_list"),
             icon="bi-people",
         ),
+        SidebarItem(
+            label=str(_("Days off")),
+            url=reverse_lazy("cabinet:staff_days_off"),
+            icon="bi-calendar-x",
+        ),
     ],
 )

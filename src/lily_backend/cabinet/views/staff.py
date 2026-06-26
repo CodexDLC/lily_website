@@ -1,8 +1,13 @@
 from typing import Any
 
 from django import forms
+from django.contrib import messages
 from django.db import transaction
 from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.utils.http import urlencode
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView, UpdateView
 from features.booking.booking_settings import BookingSettings
 from features.booking.models.master import Master
@@ -92,6 +97,59 @@ class StaffListView(StaffRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context.update(StaffService.get_list_context(self.request))
         return context
+
+
+class StaffDaysOffView(StaffRequiredMixin, TemplateView):
+    template_name = "cabinet/staff/days_off.html"
+
+    def dispatch(self, request: Any, *args: Any, **kwargs: Any) -> Any:
+        request.cabinet_module = "staff"
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context.update(
+            StaffService.get_days_off_context(
+                self.request,
+                master_id=self._get_int(self.request.GET.get("master_id")),
+                year=self._get_int(self.request.GET.get("year")),
+                month=self._get_int(self.request.GET.get("month")),
+            )
+        )
+        return context
+
+    def post(self, request: Any, *args: Any, **kwargs: Any) -> Any:
+        master_id = self._get_int(request.POST.get("master_id"))
+        year = self._get_int(request.POST.get("year"))
+        month = self._get_int(request.POST.get("month"))
+        if master_id is None or year is None or month is None:
+            messages.error(request, _("Please select a master and month."))
+            return redirect("cabinet:staff_days_off")
+
+        result = StaffService.save_days_off(
+            master_id=master_id,
+            year=year,
+            month=month,
+            selected_dates=request.POST.getlist("dates"),
+        )
+        blocked_dates = result["blocked_dates"]
+        if blocked_dates:
+            messages.warning(
+                request,
+                _("Some days were not closed because they already have active appointments."),
+            )
+        messages.success(request, _("Days off saved."))
+        query = urlencode({"master_id": master_id, "year": year, "month": month})
+        return redirect(f"{reverse('cabinet:staff_days_off')}?{query}")
+
+    @staticmethod
+    def _get_int(value: str | None) -> int | None:
+        if not value:
+            return None
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
 
 
 class StaffQuickEditView(StaffRequiredMixin, UpdateView):

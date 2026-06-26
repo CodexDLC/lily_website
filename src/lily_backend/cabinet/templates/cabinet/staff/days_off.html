@@ -1,0 +1,211 @@
+{% extends "cabinet/base_cabinet.html" %}
+{% load i18n %}
+
+{% block cabinet_content %}
+<style>
+  .staff-days-calendar {
+    table-layout: fixed;
+  }
+  .staff-days-calendar th,
+  .staff-days-calendar td {
+    width: 14.285%;
+  }
+  .staff-days-calendar__cell {
+    min-height: 6.5rem;
+  }
+  .staff-days-calendar__toggle {
+    cursor: pointer;
+    min-height: 6.5rem;
+    transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+  }
+  .staff-days-calendar__toggle:hover {
+    border-color: var(--bs-primary) !important;
+    box-shadow: 0 .25rem .75rem rgba(13, 110, 253, .08);
+  }
+  .staff-days-calendar__toggle.is-selected {
+    background: #fff4f4;
+    border-color: #dc3545 !important;
+  }
+  .staff-days-calendar__toggle.is-blocked {
+    cursor: not-allowed;
+    background: #f8f9fa;
+  }
+  .staff-days-calendar__muted {
+    opacity: .45;
+  }
+</style>
+
+<div class="container-fluid py-4">
+  <div class="d-flex flex-column flex-xl-row align-items-xl-end justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="h4 mb-1 text-dark fw-bold">{{ header_title }}</h1>
+      <p class="text-muted small mb-0">{{ header_subtitle }}</p>
+    </div>
+    <a href="{% url 'cabinet:staff_list' %}" class="btn btn-light border">
+      <span class="bi bi-people me-1" aria-hidden="true"></span>
+      {% trans "Personnel" %}
+    </a>
+  </div>
+
+  {% if messages %}
+    <div class="mb-3">
+      {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} mb-2" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if masters %}
+    <form method="get" class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-lg-5">
+            <label class="form-label small fw-semibold text-uppercase text-muted" for="master_id">
+              {% trans "Master" %}
+            </label>
+            <select id="master_id" name="master_id" class="form-select" onchange="this.form.submit()">
+              {% for master in masters %}
+                <option value="{{ master.pk }}" {% if selected_master.pk == master.pk %}selected{% endif %}>
+                  {{ master.name }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12 col-lg-4">
+            <label class="form-label small fw-semibold text-uppercase text-muted">
+              {% trans "Month" %}
+            </label>
+            <div class="d-flex align-items-center gap-2">
+              <a class="btn btn-light border"
+                 href="{% url 'cabinet:staff_days_off' %}?master_id={{ selected_master.pk }}&year={{ prev_month.year }}&month={{ prev_month.month }}"
+                 aria-label="{% trans 'Previous month' %}">
+                <span class="bi bi-chevron-left" aria-hidden="true"></span>
+              </a>
+              <div class="form-control bg-white text-center fw-semibold">{{ month_label }}</div>
+              <a class="btn btn-light border"
+                 href="{% url 'cabinet:staff_days_off' %}?master_id={{ selected_master.pk }}&year={{ next_month.year }}&month={{ next_month.month }}"
+                 aria-label="{% trans 'Next month' %}">
+                <span class="bi bi-chevron-right" aria-hidden="true"></span>
+              </a>
+            </div>
+          </div>
+          <div class="col-12 col-lg-3">
+            <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+              <span class="badge rounded-pill text-bg-danger">
+                <span class="bi bi-calendar-x me-1" aria-hidden="true"></span>
+                {{ selected_days_count }}
+              </span>
+              <span class="badge rounded-pill text-bg-light border text-muted">
+                <span class="bi bi-calendar-check me-1" aria-hidden="true"></span>
+                {{ active_appointment_count }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" name="year" value="{{ month_start.year }}">
+        <input type="hidden" name="month" value="{{ month_start.month }}">
+      </div>
+    </form>
+
+    <form method="post" id="staff-days-off-form" class="card border-0 shadow-sm">
+      {% csrf_token %}
+      <input type="hidden" name="master_id" value="{{ selected_master.pk }}">
+      <input type="hidden" name="year" value="{{ month_start.year }}">
+      <input type="hidden" name="month" value="{{ month_start.month }}">
+
+      <div class="card-header bg-white border-0 pt-4 px-4 d-flex flex-column flex-lg-row justify-content-between gap-3">
+        <div>
+          <p class="small text-uppercase text-muted fw-semibold mb-2">{% trans "Calendar" %}</p>
+          <h2 class="h5 mb-0">{{ selected_master.name }}</h2>
+        </div>
+        <button type="submit" class="btn btn-primary px-4">
+          <span class="bi bi-save me-1" aria-hidden="true"></span>
+          {% trans "Save" %}
+        </button>
+      </div>
+
+      <div class="card-body px-4 pb-4">
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle staff-days-calendar mb-0">
+            <thead class="table-light">
+              <tr class="text-center small text-muted">
+                <th>{% trans "Mon" %}</th>
+                <th>{% trans "Tue" %}</th>
+                <th>{% trans "Wed" %}</th>
+                <th>{% trans "Thu" %}</th>
+                <th>{% trans "Fri" %}</th>
+                <th>{% trans "Sat" %}</th>
+                <th>{% trans "Sun" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for week in calendar_weeks %}
+                <tr>
+                  {% for day in week %}
+                    <td class="p-1">
+                      {% if day.is_current_month %}
+                        <label class="staff-days-calendar__toggle d-flex flex-column justify-content-between border rounded-2 p-2 mb-0
+                                      {% if day.is_day_off %}is-selected{% endif %}
+                                      {% if day.appointment_count and not day.is_day_off %}is-blocked{% endif %}
+                                      {% if day.is_today %}border-primary{% endif %}">
+                          <input class="staff-days-calendar__input visually-hidden"
+                                 type="checkbox"
+                                 name="dates"
+                                 value="{{ day.iso }}"
+                                 {% if day.is_day_off %}checked{% endif %}
+                                 {% if day.appointment_count and not day.is_day_off %}disabled{% endif %}>
+                          <span class="d-flex align-items-center justify-content-between">
+                            <span class="fw-semibold">{{ day.day }}</span>
+                            {% if day.is_day_off %}
+                              <span class="bi bi-calendar-x text-danger" aria-hidden="true"></span>
+                            {% elif day.appointment_count %}
+                              <span class="bi bi-calendar-check text-muted" aria-hidden="true"></span>
+                            {% endif %}
+                          </span>
+                          <span class="small">
+                            {% if day.is_day_off %}
+                              <span class="text-danger fw-semibold">{% trans "Day off" %}</span>
+                            {% elif day.appointment_count %}
+                              <span class="text-muted">{{ day.appointment_count }} {% trans "appointments" %}</span>
+                            {% else %}
+                              <span class="text-muted">{% trans "Available" %}</span>
+                            {% endif %}
+                          </span>
+                        </label>
+                      {% else %}
+                        <div class="staff-days-calendar__cell staff-days-calendar__muted p-2">
+                          <span class="small text-muted">{{ day.day }}</span>
+                        </div>
+                      {% endif %}
+                    </td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </form>
+  {% else %}
+    <div class="alert alert-light border shadow-sm" role="alert">
+      {% trans "No masters found." %}
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  document.querySelectorAll(".staff-days-calendar__toggle").forEach((toggle) => {
+    const input = toggle.querySelector(".staff-days-calendar__input");
+    if (!input || input.disabled) {
+      return;
+    }
+    toggle.addEventListener("click", () => {
+      window.setTimeout(() => {
+        toggle.classList.toggle("is-selected", input.checked);
+      }, 0);
+    });
+  });
+</script>
+{% endblock cabinet_content %}
