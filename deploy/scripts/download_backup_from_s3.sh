@@ -103,7 +103,7 @@ openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 \
 
 docker run --rm \
   -v "$BACKUP_DIR:/backups:ro" \
-  postgres:16-alpine \
+  postgres:17-alpine \
   pg_restore --list "/backups/$(basename "$dump_path")" >/dev/null
 
 trap - EXIT HUP INT TERM

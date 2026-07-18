@@ -92,20 +92,20 @@ fi
 echo "Validating dump before Neon sync: $backup_path"
 docker run --rm \
   -v "$BACKUP_DIR:/backups:ro" \
-  postgres:16-alpine \
+  postgres:17-alpine \
   pg_restore --list "/backups/$backup_name" >/dev/null
 
 echo "Restoring $backup_name into Neon backup target..."
 docker run --rm \
   -e BACKUP_NEON_DATABASE_URL="$BACKUP_NEON_DATABASE_URL" \
   -v "$BACKUP_DIR:/backups:ro" \
-  postgres:16-alpine \
+  postgres:17-alpine \
   sh -ec 'pg_restore --exit-on-error --clean --if-exists --no-owner --no-acl -d "$BACKUP_NEON_DATABASE_URL" "/backups/'"$backup_name"'"'
 
 echo "Validating Neon warm target..."
 docker run --rm \
   -e BACKUP_NEON_DATABASE_URL="$BACKUP_NEON_DATABASE_URL" \
-  postgres:16-alpine \
+  postgres:17-alpine \
   sh -ec 'test "$(psql "$BACKUP_NEON_DATABASE_URL" -Atqc "SELECT count(*) FROM django_migrations")" -gt 0'
 
 echo "Neon backup target synchronized from: $backup_path"

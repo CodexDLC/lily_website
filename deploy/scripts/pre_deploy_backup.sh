@@ -49,7 +49,7 @@ case "$DATABASE_URL" in
     docker run --rm \
       -e DATABASE_URL="$DATABASE_URL" \
       -v "$BACKUP_DIR:/backups" \
-      postgres:16-alpine \
+      postgres:17-alpine \
       sh -ec 'pg_dump "$DATABASE_URL" --no-owner --no-acl -Fc -f /backups/tmp_backup.dump && pg_restore --list /backups/tmp_backup.dump >/dev/null'
     ;;
 esac

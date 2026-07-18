@@ -74,7 +74,7 @@ echo "Creating the final Neon snapshot..."
 docker run --rm \
   -e LEGACY_DATABASE_URL="$LEGACY_DATABASE_URL" \
   -v "$BACKUP_DIR:/backups" \
-  postgres:16-alpine \
+  postgres:17-alpine \
   sh -ec 'pg_dump "$LEGACY_DATABASE_URL" --no-owner --no-acl -Fc -f /backups/tmp_cutover_backup.dump && pg_restore --list /backups/tmp_cutover_backup.dump >/dev/null'
 mv "$tmp_path" "$backup_path"
 test -s "$backup_path"
