@@ -46,7 +46,7 @@ BACKUP_S3_ACCESS_KEY_ID="$(read_env_value BACKUP_S3_ACCESS_KEY_ID)"
 BACKUP_S3_SECRET_ACCESS_KEY="$(read_env_value BACKUP_S3_SECRET_ACCESS_KEY)"
 BACKUP_ENCRYPTION_PASSWORD="$(read_env_value BACKUP_ENCRYPTION_PASSWORD)"
 BACKUP_AWS_CLI_IMAGE="$(read_env_value BACKUP_AWS_CLI_IMAGE)"
-BACKUP_AWS_CLI_IMAGE="${BACKUP_AWS_CLI_IMAGE:-amazon/aws-cli:2}"
+BACKUP_AWS_CLI_IMAGE="${BACKUP_AWS_CLI_IMAGE:-public.ecr.aws/aws-cli/aws-cli:latest}"
 
 require_value() {
   name="$1"
