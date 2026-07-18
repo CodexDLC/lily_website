@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Lily local Postgres backup every night
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+RandomizedDelaySec=20m
+Persistent=true
+Unit=lily-postgres-backup.service
+
+[Install]
+WantedBy=timers.target

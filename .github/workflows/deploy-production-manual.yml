@@ -1,0 +1,155 @@
+name: Deploy Production (Manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Image tag to deploy, e.g. v2.9.5"
+        required: true
+        type: string
+      mode:
+        description: "Deploy to an initialized local DB, or perform the one-time Neon-to-local cutover"
+        required: true
+        default: "deploy"
+        type: choice
+        options:
+          - deploy
+          - cutover_local_database
+      confirm_local_database_cutover:
+        description: "Required only for cutover_local_database"
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  deploy:
+    name: Apply Selected Image Version on VPS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate version
+        run: |
+          VERSION="${{ inputs.version }}"
+          if ! echo "$VERSION" | grep -Eq '^v[0-9]+(\.[0-9]+){2}([-.][0-9A-Za-z.-]+)?$'; then
+            echo "Invalid version: $VERSION"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "DEPLOY_MODE=${{ inputs.mode }}" >> "$GITHUB_ENV"
+
+          if [ "${{ inputs.mode }}" = "cutover_local_database" ] && [ "${{ inputs.confirm_local_database_cutover }}" != "true" ]; then
+            echo "Local database cutover requires explicit confirmation."
+            exit 1
+          fi
+
+      - name: Lowercase repo name
+        run: echo "REPO_LOWER=${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
+      - name: Prepare configs
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: echo "$ENV_FILE" > deploy/.env
+
+      - name: Prepare VPS directories
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e
+            mkdir -p /opt/lily_website/deploy/scripts /opt/lily_website/backups /opt/lily_website/state
+
+      - name: Copy backup script to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "deploy/scripts/pre_deploy_backup.sh"
+          target: "/opt/lily_website/deploy/scripts/"
+          strip_components: 2
+          rm: false
+          overwrite: true
+
+      - name: Create DB backup on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          VERSION: ${{ env.VERSION }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          envs: VERSION
+          script: |
+            set -e
+            sh /opt/lily_website/deploy/scripts/pre_deploy_backup.sh
+
+      - name: Copy configs to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "deploy/"
+          target: "/opt/lily_website/"
+          strip_components: 0
+          rm: false
+          overwrite: true
+
+      - name: SSH Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          DOCKER_IMAGE_BACKEND: ghcr.io/${{ env.REPO_LOWER }}-backend:${{ env.VERSION }}
+          DOCKER_IMAGE_WORKER: ghcr.io/${{ env.REPO_LOWER }}-worker:${{ env.VERSION }}
+          DOCKER_IMAGE_NGINX: ghcr.io/${{ env.REPO_LOWER }}-nginx:${{ env.VERSION }}
+          DEPLOY_MODE: ${{ env.DEPLOY_MODE }}
+          CONFIRM_LOCAL_DATABASE_CUTOVER: ${{ inputs.confirm_local_database_cutover }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          VERSION: ${{ env.VERSION }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          envs: DOCKER_IMAGE_BACKEND,DOCKER_IMAGE_WORKER,DOCKER_IMAGE_NGINX,DEPLOY_MODE,CONFIRM_LOCAL_DATABASE_CUTOVER,GITHUB_TOKEN,GITHUB_ACTOR,VERSION
+          script: |
+            set -e
+            cd /opt/lily_website/deploy
+
+            update_var() {
+              grep -q "^$1=" .env && sed -i "s|^$1=.*|$1=$2|g" .env || echo "$1=$2" >> .env
+            }
+            update_var "DOCKER_IMAGE_BACKEND" "$DOCKER_IMAGE_BACKEND"
+            update_var "DOCKER_IMAGE_WORKER" "$DOCKER_IMAGE_WORKER"
+            update_var "DOCKER_IMAGE_NGINX" "$DOCKER_IMAGE_NGINX"
+
+            echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+            docker compose -f docker-compose.prod.yml pull db redis backend worker system_worker nginx
+
+            if [ "$DEPLOY_MODE" = "cutover_local_database" ]; then
+              if [ "$CONFIRM_LOCAL_DATABASE_CUTOVER" != "true" ]; then
+                echo "Local database cutover was not confirmed."
+                exit 1
+              fi
+              CONFIRM_LOCAL_DB_CUTOVER=1 sh scripts/cutover_local_postgres.sh
+              sh scripts/install_postgres_backup_timer.sh
+              docker image prune -f
+              echo "Database cutover and deployment $VERSION completed."
+              exit 0
+            fi
+
+            if [ ! -f /opt/lily_website/state/local-db-ready ]; then
+              echo "Refusing deployment: local PostgreSQL has not passed the cutover verification."
+              exit 1
+            fi
+
+            docker compose -f docker-compose.prod.yml up -d --wait db redis
+            sh scripts/verify_local_postgres.sh
+            docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py migrate --noinput
+            docker compose -f docker-compose.prod.yml run --rm -T backend python manage.py collectstatic --noinput
+            docker compose -f docker-compose.prod.yml up -d --wait backend worker system_worker nginx
+            sh scripts/install_postgres_backup_timer.sh
+            docker image prune -f
+            echo "Deployment $VERSION completed."

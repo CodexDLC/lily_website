@@ -1,0 +1,11 @@
+[Unit]
+Description=Lily Postgres local, S3, and optional Neon backup pipeline
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/lily_website/deploy
+UMask=0077
+TimeoutStartSec=2h
+ExecStart=/bin/sh /opt/lily_website/deploy/scripts/run_postgres_backup.sh
