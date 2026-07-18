@@ -1,3 +1,5 @@
+from zoneinfo import ZoneInfo
+
 from arq import cron
 from codex_core.common.loguru_setup import setup_logging
 from codex_platform.workers.arq import BaseArqWorkerSettings, base_shutdown, base_startup
@@ -6,6 +8,7 @@ from loguru import logger as log
 from src.workers.core.config import WorkerSettings as CoreWorkerSettings
 
 from .dependencies import SHUTDOWN_DEPENDENCIES, STARTUP_DEPENDENCIES
+from .tasks.booking import complete_past_appointments_task
 from .tasks.maintenance import ensure_tasks_scheduled, system_watchdog_task
 from .tasks.task_aggregator import FUNCTIONS
 
@@ -40,6 +43,7 @@ class WorkerSettings(BaseArqWorkerSettings):
     job_timeout = int(max(settings.arq_job_timeout, settings.internal_api_timeout + 30))
     keep_result = settings.arq_keep_result
     queue_name = "system"
+    timezone = ZoneInfo(settings.timezone_name)
 
     on_startup = worker_startup
     on_shutdown = worker_shutdown
@@ -47,4 +51,11 @@ class WorkerSettings(BaseArqWorkerSettings):
     functions = FUNCTIONS
     cron_jobs = [
         cron(system_watchdog_task, minute=None, run_at_startup=True),
+        cron(
+            complete_past_appointments_task,
+            hour=8,
+            minute=0,
+            run_at_startup=True,
+            max_tries=3,
+        ),
     ]

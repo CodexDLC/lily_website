@@ -84,6 +84,7 @@ class WorkerSettings(BaseWorkerConfig):
     booking_worker_api_key: str | None = Field(default=None, alias="BOOKING_WORKER_API_KEY")
     ops_worker_api_key: str | None = Field(default=None, alias="OPS_WORKER_API_KEY")
     internal_api_timeout: float = 30.0
+    timezone_name: str = Field(default="Europe/Berlin", alias="TIME_ZONE")
 
     # IMAP import v1
     imap_host: str | None = Field(default=None, alias="IMAP_HOST")

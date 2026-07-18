@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from features.booking.models import Appointment
+from features.booking.services.completion import complete_finished_confirmed_appointments
 from features.booking.services.reminders import build_reminder_payload, should_send_reminder
 from ninja import Router, Schema
 from system.api.auth import require_internal_scope
@@ -109,3 +110,10 @@ def mark_reminder_sent(request, appointment_id: int):
     appt.reminder_sent_at = timezone.now()
     appt.save(update_fields=["reminder_sent", "reminder_sent_at", "updated_at"])
     return {"success": True}
+
+
+@router.post("/appointments/complete-past")
+def complete_past_appointments(request):
+    require_internal_scope(request, "booking.worker")
+    completed = complete_finished_confirmed_appointments()
+    return {"success": True, "completed": completed}

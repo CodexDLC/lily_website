@@ -2,7 +2,12 @@ from unittest.mock import ANY, AsyncMock, MagicMock
 
 import pytest
 
-from src.workers.system_worker.tasks.booking import TASK_ID, _schedule_next, booking_maintenance_task
+from src.workers.system_worker.tasks.booking import (
+    TASK_ID,
+    _schedule_next,
+    booking_maintenance_task,
+    complete_past_appointments_task,
+)
 
 
 @pytest.fixture
@@ -97,7 +102,15 @@ class TestBookingMaintenanceTask:
     async def test_reminders_branch_skips_already_queued(self, mock_ctx):
         mock_ctx["heartbeat_registry"].should_run.return_value = True
         mock_ctx["internal_api"].get.return_value = [
-            {"id": 7, "client_email": "x@x.com", "name": "X", "service_name": "S", "datetime": "27.04.2026 10:00", "lang": "de", "master_name": "M"}
+            {
+                "id": 7,
+                "client_email": "x@x.com",
+                "name": "X",
+                "service_name": "S",
+                "datetime": "27.04.2026 10:00",
+                "lang": "de",
+                "master_name": "M",
+            }
         ]
         mock_ctx["arq_service"].enqueue_job.return_value = None  # already in queue
 
@@ -109,7 +122,15 @@ class TestBookingMaintenanceTask:
     async def test_reminders_branch_skips_missing_email(self, mock_ctx):
         mock_ctx["heartbeat_registry"].should_run.return_value = True
         mock_ctx["internal_api"].get.return_value = [
-            {"id": 5, "client_email": "", "name": "Ghost", "service_name": "S", "datetime": "27.04.2026 12:00", "lang": "de", "master_name": "M"}
+            {
+                "id": 5,
+                "client_email": "",
+                "name": "Ghost",
+                "service_name": "S",
+                "datetime": "27.04.2026 12:00",
+                "lang": "de",
+                "master_name": "M",
+            }
         ]
 
         res = await booking_maintenance_task(mock_ctx)
@@ -137,7 +158,15 @@ class TestBookingMaintenanceTask:
     async def test_reminders_branch_mark_failed(self, mock_ctx):
         mock_ctx["heartbeat_registry"].should_run.return_value = True
         mock_ctx["internal_api"].get.return_value = [
-            {"id": 1, "client_email": "x@x.com", "name": "X", "service_name": "S", "datetime": "27.04.2026 10:00", "lang": "de", "master_name": "M"}
+            {
+                "id": 1,
+                "client_email": "x@x.com",
+                "name": "X",
+                "service_name": "S",
+                "datetime": "27.04.2026 10:00",
+                "lang": "de",
+                "master_name": "M",
+            }
         ]
         mock_ctx["arq_service"].enqueue_job.return_value = AsyncMock()
         mock_ctx["internal_api"].post.side_effect = Exception("API fail")
@@ -146,3 +175,38 @@ class TestBookingMaintenanceTask:
         res = await booking_maintenance_task(mock_ctx)
         assert res == {"status": "ok", "actions": 1}
         mock_ctx["internal_api"].post.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_complete_past_appointments_task_calls_scoped_internal_api(mock_ctx):
+    mock_ctx["internal_api"].post.return_value = {"success": True, "completed": 4}
+
+    result = await complete_past_appointments_task(mock_ctx)
+
+    assert result == {"status": "ok", "completed": 4}
+    mock_ctx["internal_api"].post.assert_awaited_once_with(
+        "/v1/booking/appointments/complete-past",
+        scope="booking.worker",
+        token="test-token",
+    )
+
+
+@pytest.mark.asyncio
+async def test_complete_past_appointments_task_skips_without_api_key(mock_ctx):
+    mock_ctx["settings"].booking_worker_api_key = None
+
+    result = await complete_past_appointments_task(mock_ctx)
+
+    assert result == {"status": "skipped", "completed": 0}
+    mock_ctx["internal_api"].post.assert_not_awaited()
+
+
+def test_system_worker_registers_daily_local_morning_completion():
+    from src.workers.system_worker.worker import WorkerSettings
+
+    completion_cron = next(job for job in WorkerSettings.cron_jobs if job.coroutine is complete_past_appointments_task)
+
+    assert completion_cron.hour == 8
+    assert completion_cron.minute == 0
+    assert completion_cron.run_at_startup is True
+    assert str(WorkerSettings.timezone) == "Europe/Berlin"

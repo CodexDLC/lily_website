@@ -101,6 +101,25 @@ async def _run_reminders_branch(ctx: dict[str, Any], settings: Any) -> int:
     return queued
 
 
+async def complete_past_appointments_task(ctx: dict[str, Any]) -> dict[str, Any]:
+    """Complete elapsed confirmed appointments through the booking internal API."""
+    settings = cast("WorkerSettings", ctx["settings"])
+    token = settings.booking_worker_api_key
+    if not token:
+        log.warning("complete_past_appointments_task: BOOKING_WORKER_API_KEY not set, skipping")
+        return {"status": "skipped", "completed": 0}
+
+    api = cast("InternalApiClient", ctx["internal_api"])
+    response = await api.post(
+        "/v1/booking/appointments/complete-past",
+        scope="booking.worker",
+        token=token,
+    )
+    completed = int(response.get("completed", 0))
+    log.info(f"complete_past_appointments_task: completed={completed}")
+    return {"status": "ok", "completed": completed}
+
+
 async def _schedule_next(ctx: dict[str, Any], task: HeartbeatTask) -> None:
     arq_service = ctx.get("arq_service")
     if not arq_service:
