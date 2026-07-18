@@ -209,6 +209,31 @@ class LilyBookingAvailabilityAdapter(LoadAwareDjangoAvailabilityAdapter):
         del master, target_date
         return None
 
+    def _get_busy_intervals(
+        self,
+        resource_ids: list[int],
+        target_date: date,
+        exclude_appointment_ids: list[int] | None = None,
+    ) -> dict[int, list[tuple[datetime, datetime]]]:
+        busy_by_resource = super()._get_busy_intervals(
+            resource_ids,
+            target_date,
+            exclude_appointment_ids,
+        )
+        resource_timezones = {
+            master.pk: self._get_tz(master) for master in self.resource_model.objects.filter(pk__in=resource_ids)
+        }
+
+        for resource_id, intervals in busy_by_resource.items():
+            resource_tz = resource_timezones.get(resource_id)
+            if resource_tz is None:
+                continue
+            busy_by_resource[resource_id] = [
+                (start.astimezone(resource_tz), end.astimezone(resource_tz)) for start, end in intervals
+            ]
+
+        return busy_by_resource
+
 
 class BookingRuntimeEngineGateway(BookingEngineGateway):
     """Feature-facing engine gateway."""

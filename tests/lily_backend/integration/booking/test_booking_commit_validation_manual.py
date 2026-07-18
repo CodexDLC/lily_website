@@ -1,4 +1,4 @@
-from datetime import UTC
+from datetime import UTC, datetime
 
 import pytest
 from django.contrib.messages import get_messages
@@ -67,7 +67,14 @@ def test_commit_requires_checkboxes(client, service, master, store_cart, setting
 
 
 @pytest.mark.django_db
-def test_public_commit_persists_selected_slot_not_first_available(client, service, master, booking_settings, settings):
+def test_public_commit_persists_selected_slot_after_busy_interval_in_local_timezone(
+    client,
+    client_obj,
+    service,
+    master,
+    booking_settings,
+    settings,
+):
     settings.TIME_ZONE = "Europe/Berlin"
     booking_settings.thursday_is_closed = False
     booking_settings.work_start_thursday = timezone.datetime.strptime("08:00", "%H:%M").time()
@@ -77,7 +84,18 @@ def test_public_commit_persists_selected_slot_not_first_available(client, servic
     master.save(update_fields=["timezone"])
     service.masters.add(master)
     target_date = "2026-04-30"
-    selected_time = "08:00"
+    selected_time = "11:00"
+
+    with timezone.override("Europe/Berlin"):
+        busy_start = timezone.make_aware(datetime.fromisoformat(f"{target_date} 10:00"))
+    Appointment.objects.create(
+        master=master,
+        service=service,
+        client=client_obj,
+        datetime_start=busy_start,
+        duration_minutes=60,
+        status=Appointment.STATUS_CONFIRMED,
+    )
 
     session = client.session
     cart = PublicCart(
@@ -118,4 +136,4 @@ def test_public_commit_persists_selected_slot_not_first_available(client, servic
         assert timezone.localtime(appointment.datetime_start).strftime("%Y-%m-%d %H:%M") == (
             f"{target_date} {selected_time}"
         )
-    assert appointment.datetime_start.astimezone(UTC).strftime("%Y-%m-%d %H:%M") == "2026-04-30 06:00"
+    assert appointment.datetime_start.astimezone(UTC).strftime("%Y-%m-%d %H:%M") == "2026-04-30 09:00"
