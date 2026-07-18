@@ -180,8 +180,7 @@
     "bot_access_code": "LILY6731",
     "qr_token": "8D3B0F3CDBBC43B6",
     "categories": [
-      2,
-      3
+      2
     ]
   }
 },
@@ -242,6 +241,7 @@
     "bot_access_code": "LILY3707",
     "qr_token": "A97CA76C71D14736",
     "categories": [
+      3,
       5,
       6
     ]
