@@ -5,27 +5,29 @@
 {
   "@context": "https://schema.org",
   "@type": "Service",
-  "serviceType": "{{ category.title }}",
-  "name": "{{ category.title }}",
-  "description": "{{ category.description|striptags|truncatechars:200 }}",
-  "image": "{{ request.build_absolute_uri }}{% if category.image %}{{ category.image.url }}{% else %}{% static 'img/default_service.webp' %}{% endif %}",
-  "url": "{{ request.build_absolute_uri }}",
+  "serviceType": "{{ category.title|escapejs }}",
+  "name": "{{ category.title|escapejs }}",
+  "description": "{{ category.description|striptags|truncatechars:200|escapejs }}",
+  "image": "{{ CANONICAL_BASE_URL }}{% if category.image %}{{ category.image.url }}{% else %}{% static 'img/default_service.webp' %}{% endif %}",
+  "url": "{{ CANONICAL_BASE_URL }}{{ request.path }}",
   "provider": {
     "@type": "LocalBusiness",
-    "@id": "https://lily-salon.de/#organization"
+    "@id": "{{ CANONICAL_BASE_URL }}/#organization",
+    "name": "{{ site_settings.company_name|default:'LILY Beauty Salon' }}",
+    "url": "{{ CANONICAL_BASE_URL }}/"
   },
-  "hasOffer": [
+  "offers": [
     {% for service in category.services.all %}
     {
       "@type": "Offer",
-      "name": "{{ service.title }}",
-      "description": "{{ service.description|striptags|truncatechars:100 }}",
+      "name": "{{ service.title|escapejs }}",
+      "description": "{{ service.description|striptags|truncatechars:100|escapejs }}",
       "priceSpecification": {
         "@type": "PriceSpecification",
         "price": "{% load l10n %}{% localize off %}{{ service.price|default:'0' }}{% endlocalize %}",
         "priceCurrency": "EUR"
       },
-      "url": "{{ request.build_absolute_uri }}"
+      "url": "{{ CANONICAL_BASE_URL }}{{ request.path }}"
     }{% if not forloop.last %},{% endif %}
     {% endfor %}
   ]

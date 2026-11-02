@@ -29,7 +29,13 @@ class LilyCheckRunner(BaseCheckRunner):
     ) -> tuple[bool, str]:
         """Wrap commands to use .venv binaries if available."""
         venv_python = self.project_root / ".venv" / "Scripts" / "python.exe"
-        venv_scripts = self.project_root / ".venv" / "Scripts"
+        module_tools = {
+            "mypy": "mypy",
+            "pip-audit": "pip_audit",
+            "pre-commit": "pre_commit",
+            "pytest": "pytest",
+            "ruff": "ruff",
+        }
 
         # Create a copy/ref to avoid mutating the original Sequence if it's a list
         cmd = list(command) if isinstance(command, (list, tuple)) else command
@@ -43,22 +49,19 @@ class LilyCheckRunner(BaseCheckRunner):
                     # If calling python directly, swap to venv python
                     if "python" in main_tool:
                         cmd = cmd.replace(parts[0], f'"{venv_python}"', 1)
-                    # If calling a tool, use the venv binary if it exists
-                    elif main_tool in ["pytest", "ruff", "mypy", "pip-audit", "pre-commit"]:
-                        binary = venv_scripts / f"{main_tool}.exe"
-                        if binary.exists():
-                            cmd = cmd.replace(parts[0], f'"{binary}"', 1)
+                    elif module_name := module_tools.get(main_tool):
+                        remainder = cmd[len(parts[0]) :].lstrip()
+                        cmd = f'"{venv_python}" -m {module_name}'
+                        if remainder:
+                            cmd = f"{cmd} {remainder}"
 
             elif isinstance(cmd, list) and cmd:
                 main_tool = str(cmd[0]).replace(".exe", "").lower()
                 # If calling python directly, swap to venv python
                 if "python" in main_tool:
                     cmd[0] = str(venv_python)
-                # If calling a tool, use the venv binary if it exists
-                elif main_tool in ["pytest", "ruff", "mypy", "pip-audit", "pre-commit"]:
-                    binary = venv_scripts / f"{main_tool}.exe"
-                    if binary.exists():
-                        cmd[0] = str(binary)
+                elif module_name := module_tools.get(main_tool):
+                    cmd = [str(venv_python), "-m", module_name, *cmd[1:]]
 
         return super().run_command(cmd, capture_output=capture_output, env=env)
 

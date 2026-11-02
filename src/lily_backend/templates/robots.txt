@@ -4,7 +4,12 @@ Allow: /llms.txt
 Allow: /*/llms.txt
 
 Disallow: /admin/
+Disallow: /*/admin/
 Disallow: /api/
 Disallow: /static/
+Disallow: /accounts/
+Disallow: /*/accounts/
+Disallow: /cabinet/
+Disallow: /*/cabinet/
 
 Sitemap: {{ CANONICAL_BASE_URL }}/sitemap.xml

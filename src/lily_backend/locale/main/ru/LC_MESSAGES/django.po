@@ -112,6 +112,10 @@ msgstr "Используются для персонализации рекла�
 
 msgid "cookie_btn_save"
 msgstr "Сохранить выбор"
+
+msgid "faq_page_title"
+msgstr "Часто задаваемые вопросы"
+
 msgid "impressum_page_title"
 msgstr "Выходные данные"
 
@@ -333,3 +337,6 @@ msgstr "Google Maps"
 
 msgid "ds_section_6_text_1"
 msgstr "Эта страница использует картографический сервис Google Maps. Для использования функций Google Maps необходимо сохранить ваш IP-адрес. Эта информация обычно передается на сервер Google в США."
+
+msgid "nav_legal_booking_rules"
+msgstr "Правила бронирования"

@@ -43,7 +43,7 @@ async def test_close_arq_service():
 
 
 @pytest.mark.asyncio
-async def test_init_notification_service():
+async def test_init_notification_service(tmp_path):
     ctx = {
         "site_settings": MagicMock(
             site_base_url="http://site",
@@ -62,7 +62,7 @@ async def test_init_notification_service():
         )
     }
     settings = MagicMock()
-    settings.TEMPLATES_DIR = "/tmp"
+    settings.TEMPLATES_DIR = str(tmp_path)
 
     await init_notification_service(ctx, settings)
     assert "notification_service" in ctx

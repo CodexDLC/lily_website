@@ -112,6 +112,10 @@ msgstr "Wird zur Personalisierung von Werbung verwendet (FB Pixel и др.)."
 
 msgid "cookie_btn_save"
 msgstr "Auswahl speichern"
+
+msgid "faq_page_title"
+msgstr "Häufig gestellte Fragen"
+
 msgid "impressum_page_title"
 msgstr "Impressum"
 
@@ -333,3 +337,6 @@ msgstr "Google Maps"
 
 msgid "ds_section_6_text_1"
 msgstr "Diese Seite nutzt den Kartendienst Google Maps. Anbieter ist die Google Ireland Limited. Zur Nutzung der Funktionen von Google Maps ist es notwendig, Ihre IP-Adresse zu speichern. Diese Informationen werden in der Regel an einen Server von Google in den USA übertragen. Der Anbieter dieser Seite hat keinen Einfluss auf diese Datenübertragung."
+
+msgid "nav_legal_booking_rules"
+msgstr "Buchungsregeln"

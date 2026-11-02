@@ -49,11 +49,11 @@ def mock_redis_settings_sync():
         ),
         patch(
             "codex_platform.redis_service.operations.hash.HashOperations.get_all",
-            MagicMock(return_value={}),
+            AsyncMock(return_value={}),
         ),
         patch(
             "codex_platform.redis_service.operations.hash.HashOperations.get_field",
-            MagicMock(return_value=None),
+            AsyncMock(return_value=None),
         ),
     ):
         yield

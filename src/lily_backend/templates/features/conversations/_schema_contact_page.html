@@ -5,31 +5,41 @@
 {
   "@context": "https://schema.org",
   "@type": "ContactPage",
-  "name": "{% block title %}{% firstof seo.seo_title "Kontakt | LILY Beauty Salon" %}{% endblock %}",
-  "description": "{% block meta_description %}{% firstof seo.seo_description "Kontaktieren Sie uns." %}{% endblock %}",
-  "url": "{{ request.build_absolute_uri }}",
+  "name": "{% firstof seo.seo_title static_content.contacts_meta_title static_content.contacts_hero_title 'Kontakt | LILY Beauty Salon' %}",
+  "description": "{% firstof seo.seo_description static_content.contacts_meta_description 'Kontaktieren Sie uns.' %}",
+  "url": "{{ CANONICAL_BASE_URL }}{{ request.path }}",
   "mainEntity": {
     "@type": "LocalBusiness",
-    "@id": "{{ settings.site_base_url }}#organization",
+    "@id": "{{ CANONICAL_BASE_URL }}/#organization",
+    "name": "{{ site_settings.company_name|default:'LILY Beauty Salon' }}",
+    "image": "{{ CANONICAL_BASE_URL }}{% static 'img/logo_lily.webp' %}",
+    "telephone": "{{ site_settings.phone|default:'+49 1573 8219451' }}",
+    "email": "{{ site_settings.email|default:'info@lily-salon.de' }}",
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "{{ settings.phone }}",
+      "telephone": "{{ site_settings.phone|default:'+49 1573 8219451' }}",
       "contactType": "customer service",
-      "email": "{{ settings.email }}",
+      "email": "{{ site_settings.email|default:'info@lily-salon.de' }}",
       "areaServed": "DE",
       "availableLanguage": ["de", "en", "uk", "ru"]
     },
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "{{ settings.address_street }}",
-      "addressLocality": "{{ settings.address_locality }}",
-      "postalCode": "{{ settings.address_postal_code }}",
+      "streetAddress": "{{ site_settings.address_street|default:'Lange Str. 12' }}",
+      "addressLocality": "{{ site_settings.address_locality|default:'Köthen' }}",
+      "postalCode": "{{ site_settings.address_postal_code|default:'06366' }}",
       "addressCountry": "DE"
     },
     "openingHours": [
-      "Mo-Fr {{ settings.working_hours_weekdays }}",
-      "Sa {{ settings.working_hours_saturday }}",
-      "Su {{ settings.working_hours_sunday }}"
+      {% if site_settings.working_hours_weekdays and ":" in site_settings.working_hours_weekdays %}
+      "Mo-Fr {{ site_settings.working_hours_weekdays|cut:' ' }}"{% if site_settings.working_hours_saturday and ":" in site_settings.working_hours_saturday or site_settings.working_hours_sunday and ":" in site_settings.working_hours_sunday %},{% endif %}
+      {% endif %}
+      {% if site_settings.working_hours_saturday and ":" in site_settings.working_hours_saturday %}
+      "Sa {{ site_settings.working_hours_saturday|cut:' ' }}"{% if site_settings.working_hours_sunday and ":" in site_settings.working_hours_sunday %},{% endif %}
+      {% endif %}
+      {% if site_settings.working_hours_sunday and ":" in site_settings.working_hours_sunday %}
+      "Su {{ site_settings.working_hours_sunday|cut:' ' }}"
+      {% endif %}
     ]
   }
 }

@@ -1,6 +1,11 @@
 {% extends request.headers.HX_Request|yesno:"layouts/partial.html,base.html" %}
 {% load i18n %}
 {% load static %}
+{% block title %}{% trans "Sign Up" %} | {{ site_settings.company_name|default:"LILY Beauty Salon" }}{% endblock title %}
+
+{% block meta_robots %}
+<meta name="robots" content="noindex, nofollow">
+{% endblock meta_robots %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/components/auth.css' %}">

@@ -28,8 +28,8 @@
             <section class="legal-section">
                 <h3>{% trans "impressum_contact_title" %}</h3>
                 <p>
-                    {% trans "impressum_phone_label" %}: <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a><br>
-                    {% trans "impressum_email_label" %}: <a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a>
+                    {% trans "impressum_phone_label" %}: <a href="tel:{{ site_settings.phone|default:'+4915738219451' }}" aria-label="{% trans 'Phone' %}: {{ site_settings.phone|default:'+49 1573 8219451' }}">{{ site_settings.phone|default:'+49 1573 8219451' }}</a><br>
+                    {% trans "impressum_email_label" %}: <a href="mailto:{{ site_settings.email|default:'info@lily-salon.de' }}" aria-label="{% trans 'Email' %}: {{ site_settings.email|default:'info@lily-salon.de' }}">{{ site_settings.email|default:'info@lily-salon.de' }}</a>
                 </p>
             </section>
 

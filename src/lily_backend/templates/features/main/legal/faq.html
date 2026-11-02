@@ -2,7 +2,7 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{{ static_content.faq_title }} | LILY Beauty Salon{% endblock %}
+{% block title %}{% firstof static_content.faq_title static_content.faq_meta_title %}{% trans "faq_page_title" %} | LILY Beauty Salon{% endblock %}
 {% block meta_description %}{{ static_content.faq_meta_description }}{% endblock %}
 
 {% block content %}
@@ -155,74 +155,74 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "{{ static_content.faq_q1 }}",
+      "name": "{{ static_content.faq_q1|default:'Welche Dienstleistungen bieten Sie an?'|striptags|escapejs }}",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "{{ static_content.faq_a1_schema }}"
+        "text": "{{ static_content.faq_a1_schema|default:'Wir bieten Maniküre, Pediüre, Friseurdienstleistungen, Kosmetologie, Massage und Haarentfernung an.'|striptags|escapejs }}"
       }
     },
     {
       "@type": "Question",
-      "name": "{{ static_content.faq_q2 }}",
+      "name": "{{ static_content.faq_q2|default:'Welche Kosmetikmarken verwenden Sie?'|striptags|escapejs }}",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "{{ static_content.faq_a2_schema }}"
+        "text": "{{ static_content.faq_a2_schema|default:'Wir verwenden professionelle Produkte von Ga&Ma, Dark, SAGA Professional, Anubis Barcelona, Christina, Zemits, Italwax und Platinum.'|striptags|escapejs }}"
       }
     },
     {
       "@type": "Question",
-      "name": "{{ static_content.faq_q3 }}",
+      "name": "{{ static_content.faq_q3|default:'Sind Ihre Behandlungen für empfindliche Haut geeignet?'|striptags|escapejs }}",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "{{ static_content.faq_a3_schema }}"
+        "text": "{{ static_content.faq_a3_schema|default:'Ja, unsere Kosmetikerinnen wählen Pflegeprogramme individuell aus und berücksichtigen dabei die Besonderheiten empfindlicher Haut.'|striptags|escapejs }}"
       }
     },
     {
       "@type": "Question",
-      "name": "{{ static_content.faq_q4 }}",
+      "name": "{{ static_content.faq_q4|default:'Wie kann ich einen Termin buchen?'|striptags|escapejs }}",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "{{ static_content.faq_a4_schema }}"
+        "text": "{{ static_content.faq_a4_schema|default:'Sie können ganz bequem online über unsere Website, telefonisch oder per WhatsApp buchen.'|striptags|escapejs }}"
       }
     },
     {
       "@type": "Question",
-      "name": "{{ static_content.faq_q5 }}",
+      "name": "{{ static_content.faq_q5|default:'Was soll ich tun, wenn ich mich verspäte oder absagen muss?'|striptags|escapejs }}",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "{{ static_content.faq_a5 }}"
+        "text": "{% if static_content.faq_a5_schema %}{{ static_content.faq_a5_schema|striptags|escapejs }}{% elif static_content.faq_a5 %}{{ static_content.faq_a5|striptags|escapejs }}{% else %}Bitte informieren Sie uns mindestens 24 Stunden im Voraus über eine Stornierung oder Verspätung.{% endif %}"
       }
     },
     {
       "@type": "Question",
-      "name": "{{ static_content.faq_q6 }}",
+      "name": "{{ static_content.faq_q6|default:'Welche Zahlungsmethoden akzeptieren Sie?'|striptags|escapejs }}",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "{{ static_content.faq_a6_schema }}"
+        "text": "{{ static_content.faq_a6_schema|default:'Wir akzeptieren Barzahlung sowie gängige EC- und Kreditkarten.'|striptags|escapejs }}"
       }
     },
     {
       "@type": "Question",
-      "name": "{{ static_content.faq_q7 }}",
+      "name": "{{ static_content.faq_q7|default:'Gibt es Gutscheine zu kaufen?'|striptags|escapejs }}",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "{{ static_content.faq_a7_schema }}"
+        "text": "{{ static_content.faq_a7_schema|default:'Ja, bei uns erhalten Sie Geschenkgutscheine für alle Behandlungen oder über einen beliebigen Betrag.'|striptags|escapejs }}"
       }
     },
     {
       "@type": "Question",
-      "name": "{{ static_content.faq_q8 }}",
+      "name": "{{ static_content.faq_q8|default:'Bieten Sie Beratungsgespräche vor Behandlungen an?'|striptags|escapejs }}",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "{{ static_content.faq_a8_schema }}"
+        "text": "{{ static_content.faq_a8_schema|default:'Ja, vor jeder Behandlung führen unsere Fachkräfte eine ausführliche Beratung durch.'|striptags|escapejs }}"
       }
     },
     {
       "@type": "Question",
-      "name": "{{ static_content.faq_q9 }}",
+      "name": "{{ static_content.faq_q9|default:'Gibt es Parkmöglichkeiten in der Nähe?'|striptags|escapejs }}",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "{{ static_content.faq_a9_schema }}"
+        "text": "{{ static_content.faq_a9_schema|default:'In unmittelbarer Nähe unseres Salons in der Langen Straße in Köthen stehen öffentliche Parkplätze zur Verfügung.'|striptags|escapejs }}"
       }
     }
   ]

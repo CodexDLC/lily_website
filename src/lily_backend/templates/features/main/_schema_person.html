@@ -7,16 +7,17 @@
   {
     "@context": "https://schema.org",
     "@type": "Person",
-    "name": "{{ owner.name }}",
-    "jobTitle": "{{ owner.title }}",
-    "image": "{{ request.build_absolute_uri }}{% if owner.photo %}{{ owner.photo.url }}{% else %}{% static 'img/lily.webp' %}{% endif %}",
-    "url": "{{ request.build_absolute_uri }}",
+    "name": "{{ owner.name|escapejs }}",
+    "jobTitle": "{{ owner.title|escapejs }}",
+    "image": "{{ CANONICAL_BASE_URL }}{% if owner.photo %}{{ owner.photo.url }}{% else %}{% static 'img/lily.webp' %}{% endif %}",
+    "url": "{{ CANONICAL_BASE_URL }}{{ request.path }}",
     {% if owner.instagram %}
     "sameAs": "https://instagram.com/{{ owner.instagram }}",
     {% endif %}
     "memberOf": {
-      "@type": "Organization",
-      "@id": "https://lily-salon.de/#organization"
+      "@type": "LocalBusiness",
+      "@id": "{{ CANONICAL_BASE_URL }}/#organization",
+      "name": "{{ site_settings.company_name|default:'LILY Beauty Salon' }}"
     }
   }{% if team %},{% endif %}
   {% endif %}
@@ -25,16 +26,17 @@
   {
     "@context": "https://schema.org",
     "@type": "Person",
-    "name": "{{ master.name }}",
-    "jobTitle": "{{ master.title }}",
-    "image": "{{ request.build_absolute_uri }}{% if master.photo %}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}",
-    "url": "{{ request.build_absolute_uri }}",
+    "name": "{{ master.name|escapejs }}",
+    "jobTitle": "{{ master.title|escapejs }}",
+    "image": "{% if master.photo %}{{ CANONICAL_BASE_URL }}{{ master.photo.url }}{% else %}https://ui-avatars.com/api/?name={{ master.name|urlencode }}&background=0D8ABC&color=fff{% endif %}",
+    "url": "{{ CANONICAL_BASE_URL }}{{ request.path }}",
     {% if master.instagram %}
     "sameAs": "https://instagram.com/{{ master.instagram }}",
     {% endif %}
     "memberOf": {
-      "@type": "Organization",
-      "@id": "https://lily-salon.de/#organization"
+      "@type": "LocalBusiness",
+      "@id": "{{ CANONICAL_BASE_URL }}/#organization",
+      "name": "{{ site_settings.company_name|default:'LILY Beauty Salon' }}"
     }
   }{% if not forloop.last %},{% endif %}
   {% endfor %}

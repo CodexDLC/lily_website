@@ -2,8 +2,8 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{{ seo.seo_title|default:"LILY Beauty Salon | Köthen" }}{% endblock %}
-{% block meta_description %}{{ seo.seo_description|default:content.home_hero_uptitle }}{% endblock %}
+{% block title %}{% firstof seo.seo_title "LILY Beauty Salon | Köthen" %}{% endblock %}
+{% block meta_description %}{% firstof seo.seo_description static_content.home_hero_uptitle %}{% endblock %}
 
 {% block content %}
 {% include "features/main/_schema_home_page.html" %}

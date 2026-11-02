@@ -2,11 +2,60 @@
 {% load i18n %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <title>{% block title %}{% firstof seo.seo_title 'LILY Beauty Salon | Köthen' %}{% endblock title %}</title>
+
+    <meta name="description"
+        content="{% block meta_description %}{% firstof seo.seo_description 'Ukrainian beauty experts in Köthen. High-end manicure, cosmetology, and hair care.' %}{% endblock meta_description %}">
+
+    <meta name="author" content="LILY Beauty Salon">
+    <meta name="generator" content="Django">
+    <link rel="canonical" href="{{ CANONICAL_BASE_URL }}{{ request.path }}">
+
+    {% block meta_robots %}
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    {% endblock meta_robots %}
+
+    {% include 'includes/_hreflang_tags.html' %}
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ CANONICAL_BASE_URL }}{{ request.path }}">
+
+    <meta property="og:title"
+        content="{% block og_title %}{% firstof seo.seo_title 'LILY Beauty Salon | Köthen' %}{% endblock og_title %}">
+
+    <meta property="og:description"
+        content="{% block og_description %}{% firstof seo.seo_description 'Ukrainian beauty experts in Köthen. High-end manicure, cosmetology, and hair care.' %}{% endblock og_description %}">
+
+    <meta property="og:image"
+        content="{% block og_image %}{% if seo.seo_image %}{{ CANONICAL_BASE_URL }}{{ seo.seo_image.url }}{% else %}{{ CANONICAL_BASE_URL }}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock og_image %}">
+
+    <meta property="og:site_name" content="LILY Beauty Salon">
+    <meta property="og:locale" content="{{ LANGUAGE_CODE }}">
+
+    <meta name="twitter:card" content="summary_large_image">
+
+    <meta name="twitter:title"
+        content="{% block twitter_title %}{% firstof seo.seo_title 'LILY Beauty Salon' %}{% endblock twitter_title %}">
+
+    <meta name="twitter:description"
+        content="{% block twitter_description %}{% firstof seo.seo_description 'Ukrainian beauty experts in Köthen.' %}{% endblock twitter_description %}">
+
+    <meta name="twitter:image"
+        content="{% block twitter_image %}{% if twitter_image %}{{ twitter_image }}{% else %}{{ CANONICAL_BASE_URL }}{% static 'img/logo_lily.webp' %}{% endif %}{% endblock twitter_image %}">
+
+    {% if object.updated_at %}
+    <meta property="article:modified_time" content="{{ object.updated_at.isoformat }}">
+    {% endif %}
+
     {% include "includes/_meta.html" %}
     {% include "includes/_analytics_head.html" %}
+
+    {% block extra_head_schema %}{% endblock extra_head_schema %}
 
     <!-- LCP Preload (Adaptive) -->
     <link rel="preload" as="image" href="{% static 'img/5-mobile.webp' %}" media="(max-width: 767px)" fetchpriority="high">

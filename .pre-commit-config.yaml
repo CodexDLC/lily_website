@@ -41,12 +41,10 @@ repos:
           - "--local"
           - "--timeout"
           - "15"
-          - "--ignore-vuln"
-          - "CVE-2026-3219"  # pip 26.0.1 vulnerability with no fix available yet
         additional_dependencies:
-          - "pip>=26.1.2"
+          - "pip>=26.2.2"
           - "pip-audit[toml]"
-          - "msgpack>=1.2.1"
+          - "msgpack>=1.2.4"
           - "toml"
 
   # 2. Поиск "забытых" секретов и паролей (усиленный)

@@ -112,6 +112,10 @@ msgstr "Help us understand how you use the website."
 
 msgid "cookie_cat_marketing_name"
 msgstr "Marketing"
+
+msgid "faq_page_title"
+msgstr "Frequently Asked Questions"
+
 msgid "impressum_page_title"
 msgstr "Legal Notice"
 
@@ -339,3 +343,6 @@ msgstr "Used for personalizing ads (FB Pixel, etc.)."
 
 msgid "cookie_btn_save"
 msgstr "Save Selection"
+
+msgid "nav_legal_booking_rules"
+msgstr "Booking Rules"

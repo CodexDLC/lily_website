@@ -112,3 +112,15 @@ msgstr "Використовуються для персоналізації р�
 
 msgid "cookie_btn_save"
 msgstr "Зберегти вибір"
+
+msgid "faq_page_title"
+msgstr "Поширені запитання"
+
+msgid "impressum_page_title"
+msgstr "Вихідні дані"
+
+msgid "datenschutz_page_title"
+msgstr "Конфіденційність"
+
+msgid "nav_legal_booking_rules"
+msgstr "Правила бронювання"

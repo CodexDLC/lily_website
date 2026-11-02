@@ -93,9 +93,9 @@ def test_confirmed_appointment_blocks_slots(master, client_obj, service, booking
     avail = availability.get(master.pk) or availability.get(str(master.pk))
 
     assert avail is not None
-    # 10:00-11:00 must be absent from free windows
+    expected_start = appt_start.astimezone(datetime.UTC).replace(second=0, microsecond=0)
     for start, _ in avail.free_windows:
-        assert not (start.hour == 10 and start.minute == 0)
+        assert start != expected_start
 
 
 def test_day_off_returns_no_availability(master, booking_settings):

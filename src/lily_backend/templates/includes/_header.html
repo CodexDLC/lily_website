@@ -5,11 +5,11 @@
 <div class="header-top-bar">
     <div class="container top-bar-row">
         <div class="top-bar-item">
-            <span>📍 {{ site_settings.address_street }}, {{ site_settings.address_locality }}</span>
+            <span>📍 {{ site_settings.address_street|default:'Lange Str. 12' }}, {{ site_settings.address_locality|default:'Köthen' }}</span>
         </div>
         <div class="top-bar-item">
             <span>📞 </span>
-            <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a>
+            <a href="tel:{{ site_settings.phone|default:'+4915738219451' }}" aria-label="{% trans 'Call us' %}: {{ site_settings.phone|default:'+49 1573 8219451' }}">{{ site_settings.phone|default:'+49 1573 8219451' }}</a>
         </div>
     </div>
 </div>
@@ -18,9 +18,9 @@
 <header class="header-split">
     <div class="container header-row">
 
-        <a href="{% url 'main:index' %}" class="logo-link">
+        <a href="{% url 'main:index' %}" class="logo-link" aria-label="{{ site_settings.company_name|default:'LILY Beauty Salon' }} - Home">
             <img src="{% static 'img/logo_lily-small.webp' %}"
-                 alt="{{ site_settings.company_name }}"
+                 alt="{{ site_settings.company_name|default:'LILY Beauty Salon' }}"
                  class="logo-img"
                  width="154"
                  height="100">

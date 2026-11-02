@@ -2,8 +2,8 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{{ seo.seo_title|default:content.contacts_meta_title }}{% endblock %}
-{% block meta_description %}{{ seo.seo_description|default:content.contacts_meta_description }}{% endblock %}
+{% block title %}{% firstof seo.seo_title static_content.contacts_meta_title static_content.contacts_title %}{% trans "Contacts" %} | LILY Beauty Salon{% endblock %}
+{% block meta_description %}{% firstof seo.seo_description static_content.contacts_meta_description static_content.contacts_subtitle %}{% endblock %}
 
 {% block content %}
 {% include "features/conversations/_schema_contact_page.html" %}
@@ -54,9 +54,9 @@
                 <div style="margin-bottom: 30px;">
                     <span class="label">{% trans "label_address" %}</span>
                     <span class="value">
-                        <a href="{{ site_settings.google_maps_link }}" target="_blank" rel="noopener noreferrer" style="border-bottom: 1px dashed rgba(255,255,255,0.3);">
-                            {{ site_settings.address_street }}<br>
-                            {{ site_settings.address_postal_code }} {{ site_settings.address_locality }}
+                        <a href="{{ site_settings.google_maps_link|default:'https://maps.google.com/?q=Lange+Str.+12+06366+K%C3%B6then' }}" target="_blank" rel="noopener noreferrer" style="border-bottom: 1px dashed rgba(255,255,255,0.3);" aria-label="{% trans 'Address on Google Maps' %}">
+                            {{ site_settings.address_street|default:'Lange Str. 12' }}<br>
+                            {{ site_settings.address_postal_code|default:'06366' }} {{ site_settings.address_locality|default:'Köthen' }}
                         </a>
                     </span>
                 </div>
@@ -64,14 +64,14 @@
                 <div style="margin-bottom: 30px;">
                     <span class="label">{% trans "label_phone" %}</span>
                     <span class="value">
-                        <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a>
+                        <a href="tel:{{ site_settings.phone|default:'+4915738219451' }}" aria-label="{% trans 'Phone' %}: {{ site_settings.phone|default:'+49 1573 8219451' }}">{{ site_settings.phone|default:'+49 1573 8219451' }}</a>
                     </span>
                 </div>
 
                 <div style="margin-bottom: 30px;">
                     <span class="label">{% trans "label_email" %}</span>
                     <span class="value">
-                        <a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a>
+                        <a href="mailto:{{ site_settings.email|default:'info@lily-salon.de' }}" aria-label="{% trans 'Email' %}: {{ site_settings.email|default:'info@lily-salon.de' }}">{{ site_settings.email|default:'info@lily-salon.de' }}</a>
                     </span>
                 </div>
 

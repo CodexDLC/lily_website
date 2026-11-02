@@ -1,9 +1,8 @@
 from django.urls import path
-
-from .views import ContactFormView
+from django.views.generic import RedirectView
 
 app_name = "conversations"
 
 urlpatterns = [
-    path("contact/", ContactFormView.as_view(), name="contact"),
+    path("contact/", RedirectView.as_view(pattern_name="main:contacts", permanent=True), name="contact"),
 ]

@@ -2,8 +2,8 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{{ seo.seo_title|default:content.services_meta_title }}{% endblock title %}
-{% block meta_description %}{{ seo.seo_description|default:content.services_meta_description }}{% endblock meta_description %}
+{% block title %}{% firstof seo.seo_title static_content.services_meta_title static_content.services_title %}{% trans "Services" %} | LILY Beauty Salon{% endblock title %}
+{% block meta_description %}{% firstof seo.seo_description static_content.services_meta_description static_content.services_subtitle %}{% endblock meta_description %}
 
 {% block content %}
 <section class="hero-text-block">

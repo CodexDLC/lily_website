@@ -5,39 +5,47 @@
 {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "@id": "{{ site_settings.site_base_url }}#organization",
-  "name": "{{ site_settings.company_name }}",
-  "image": "{% static 'img/logo_lily.webp' %}",
-  "url": "{{ site_settings.site_base_url }}",
-  "telephone": "{{ site_settings.phone }}",
-  "email": "{{ site_settings.email }}",
+  "@id": "{{ CANONICAL_BASE_URL }}/#organization",
+  "name": "{{ site_settings.company_name|default:'LILY Beauty Salon' }}",
+  "image": "{{ CANONICAL_BASE_URL }}{% static 'img/logo_lily.webp' %}",
+  "url": "{{ CANONICAL_BASE_URL }}/",
+  "telephone": "{{ site_settings.phone|default:'+49 1573 8219451' }}",
+  "email": "{{ site_settings.email|default:'info@lily-salon.de' }}",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "{{ site_settings.address_street }}",
-    "addressLocality": "{{ site_settings.address_locality }}",
-    "postalCode": "{{ site_settings.address_postal_code }}",
+    "streetAddress": "{{ site_settings.address_street|default:'Lange Str. 12' }}",
+    "addressLocality": "{{ site_settings.address_locality|default:'Köthen' }}",
+    "postalCode": "{{ site_settings.address_postal_code|default:'06366' }}",
     "addressCountry": "DE"
   },
+  {% if site_settings.latitude and site_settings.longitude %}
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": "{{ site_settings.latitude }}",
-    "longitude": "{{ site_settings.longitude }}"
+    "latitude": "{% load l10n %}{% localize off %}{{ site_settings.latitude }}{% endlocalize %}",
+    "longitude": "{% localize off %}{{ site_settings.longitude }}{% endlocalize %}"
   },
+  {% endif %}
   "openingHours": [
-    "Mo-Fr {{ site_settings.working_hours_weekdays }}",
-    "Sa {{ site_settings.working_hours_saturday }}",
-    "Su {{ site_settings.working_hours_sunday }}"
+    {% if site_settings.working_hours_weekdays and ":" in site_settings.working_hours_weekdays %}
+    "Mo-Fr {{ site_settings.working_hours_weekdays|cut:' ' }}"{% if site_settings.working_hours_saturday and ":" in site_settings.working_hours_saturday or site_settings.working_hours_sunday and ":" in site_settings.working_hours_sunday %},{% endif %}
+    {% endif %}
+    {% if site_settings.working_hours_saturday and ":" in site_settings.working_hours_saturday %}
+    "Sa {{ site_settings.working_hours_saturday|cut:' ' }}"{% if site_settings.working_hours_sunday and ":" in site_settings.working_hours_sunday %},{% endif %}
+    {% endif %}
+    {% if site_settings.working_hours_sunday and ":" in site_settings.working_hours_sunday %}
+    "Su {{ site_settings.working_hours_sunday|cut:' ' }}"
+    {% endif %}
   ],
-  "priceRange": "{{ site_settings.price_range }}",
+  "priceRange": "{{ site_settings.price_range|default:'$$' }}",
   "sameAs": [
-    "{{ site_settings.instagram_url }}",
-    "https://www.facebook.com/lilybeautysalonkoethen/"
+    "{{ site_settings.facebook_url|default:'https://www.facebook.com/lilybeautysalonkoethen/' }}"{% if site_settings.instagram_url %},
+    "{{ site_settings.instagram_url }}"{% endif %}
   ],
   "potentialAction": {
     "@type": "ReserveAction",
     "target": {
       "@type": "EntryPoint",
-      "urlTemplate": "{% url 'booking:booking_wizard' %}",
+      "urlTemplate": "{{ CANONICAL_BASE_URL }}/{% if request.LANGUAGE_CODE != 'de' %}{{ request.LANGUAGE_CODE }}/{% endif %}booking/",
       "inLanguage": "{{ request.LANGUAGE_CODE }}",
       "actionPlatform": [
         "https://schema.org/DesktopWebPlatform",

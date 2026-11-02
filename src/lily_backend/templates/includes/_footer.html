@@ -8,11 +8,11 @@
 
             <!-- Column 1: Contacts & CTA -->
             <div class="f-col contact-col">
-                <div class="f-row"><span class="icon">📞</span> <a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a></div>
+                <div class="f-row"><span class="icon">📞</span> <a href="tel:{{ site_settings.phone|default:'+4915738219451' }}" aria-label="{% trans 'Call us' %}: {{ site_settings.phone|default:'+49 1573 8219451' }}">{{ site_settings.phone|default:'+49 1573 8219451' }}</a></div>
                 <div class="f-row">
                     <span class="icon">📍</span>
-                    <a href="{{ site_settings.google_maps_link|default:'#' }}" target="_blank" rel="noopener" class="link-dashed">
-                        {{ site_settings.address_street }},<br>{{ site_settings.address_locality }}
+                    <a href="{{ site_settings.google_maps_link|default:'https://maps.google.com/?q=Lange+Str.+12+06366+K%C3%B6then' }}" target="_blank" rel="noopener" class="link-dashed" aria-label="{% trans 'Address on Google Maps' %}">
+                        {{ site_settings.address_street|default:'Lange Str. 12' }},<br>{{ site_settings.address_locality|default:'Köthen' }}
                     </a>
                 </div>
                 <div class="f-row" style="margin-top: 15px;">
@@ -72,6 +72,8 @@
             <a href="{% url 'main:impressum' %}">{% trans "nav_legal_impressum" %}</a>
             <span class="separator-text">|</span>
             <a href="{% url 'main:datenschutz' %}">{% trans "nav_legal_privacy" %}</a>
+            <span class="separator-text">|</span>
+            <a href="{% url 'main:buchungsregeln' %}">{% trans "nav_legal_booking_rules" %}</a>
             <span class="separator-text">|</span>
             <a href="#" onclick="window.revokeCookieConsent?.(); return false;">{% trans "nav_legal_cookies" %}</a>
             <span class="separator-text">|</span>

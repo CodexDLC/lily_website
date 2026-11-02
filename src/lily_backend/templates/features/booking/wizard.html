@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static i18n %}
 
+{% block title %}{% trans "bk_wizard_title" %} | {{ site_settings.company_name|default:"LILY Beauty Salon" }}{% endblock title %}
+
 {% block body_class %}page-booking{% endblock body_class %}
 
 {% block content %}
