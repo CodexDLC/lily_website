@@ -47,6 +47,8 @@ services:
       - logs_volume:/app/logs
     restart: always
     depends_on:
+      backend:
+        condition: service_healthy
       db:
         condition: service_healthy
       redis:
